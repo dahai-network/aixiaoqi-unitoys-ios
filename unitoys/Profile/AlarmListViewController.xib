@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AlarmListViewController">
+            <connections>
+                <outlet property="footView" destination="PeJ-4b-bYj" id="eJv-cV-0sV"/>
+                <outlet property="tableView" destination="nH0-7o-PnV" id="nj9-J7-i9R"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nH0-7o-PnV">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" red="0.91764705882352937" green="0.92549019607843142" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="1jH-hp-Bil"/>
+                        <outlet property="delegate" destination="-1" id="NUk-vw-HYR"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="0.91764705882352937" green="0.92549019607843142" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="nH0-7o-PnV" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="2at-CX-35F"/>
+                <constraint firstItem="nH0-7o-PnV" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="B6e-FP-x6W"/>
+                <constraint firstAttribute="bottom" secondItem="nH0-7o-PnV" secondAttribute="bottom" id="kA0-qZ-t5h"/>
+                <constraint firstAttribute="trailing" secondItem="nH0-7o-PnV" secondAttribute="trailing" id="zJU-1j-h5p"/>
+            </constraints>
+        </view>
+        <view contentMode="scaleToFill" id="PeJ-4b-bYj">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="94"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="振动过程中敲击手环即可停止闹钟" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cgX-zT-mg3">
+                    <rect key="frame" x="10" y="10" width="355" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="A1W-Fq-3Lu"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <color key="textColor" red="0.68627450980392157" green="0.68627450980392157" blue="0.68627450980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.91764705882352937" green="0.92549019607843142" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="cgX-zT-mg3" firstAttribute="leading" secondItem="PeJ-4b-bYj" secondAttribute="leading" constant="10" id="hUn-5K-v3D"/>
+                <constraint firstAttribute="trailing" secondItem="cgX-zT-mg3" secondAttribute="trailing" constant="10" id="t6O-zo-WQi"/>
+                <constraint firstItem="cgX-zT-mg3" firstAttribute="top" secondItem="PeJ-4b-bYj" secondAttribute="top" constant="10" id="yqB-kU-pHe"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="490" y="-232"/>
+        </view>
+    </objects>
+</document>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CommunicateDetailViewController">
+            <connections>
+                <outlet property="footView" destination="Vqv-W7-1gc" id="2yR-MF-Jo4"/>
+                <outlet property="tableView" destination="jon-D0-waK" id="1m1-Vt-aQm"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="jon-D0-waK">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <color key="backgroundColor" red="0.91764705882352937" green="0.92549019607843142" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="qIK-Sa-DcP"/>
+                        <outlet property="delegate" destination="-1" id="jh5-Mx-SCQ"/>
+                    </connections>
+                </tableView>
+            </subviews>
+            <color key="backgroundColor" red="0.91764705882352937" green="0.92549019607843142" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="jon-D0-waK" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="4GY-af-ZB6"/>
+                <constraint firstAttribute="bottom" secondItem="jon-D0-waK" secondAttribute="bottom" id="Ho5-Cr-14W"/>
+                <constraint firstAttribute="trailing" secondItem="jon-D0-waK" secondAttribute="trailing" id="ove-7E-spK"/>
+                <constraint firstItem="jon-D0-waK" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="r3U-jh-qKa"/>
+            </constraints>
+        </view>
+        <view contentMode="scaleToFill" id="Vqv-W7-1gc">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="147"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ezj-UP-QgM">
+                    <rect key="frame" x="8" y="40" width="359" height="40"/>
+                    <color key="backgroundColor" red="0.0039215686274509803" green="0.81176470588235294" blue="0.74901960784313726" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="PMV-7F-pCw"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <state key="normal" title="点击购买">
+                        <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="3"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="bitToBuyAction:" destination="-1" eventType="touchUpInside" id="DaC-U5-ciM"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.91764705882352937" green="0.92549019607843142" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="Ezj-UP-QgM" firstAttribute="top" secondItem="Vqv-W7-1gc" secondAttribute="top" constant="40" id="MGp-G0-pg4"/>
+                <constraint firstAttribute="trailing" secondItem="Ezj-UP-QgM" secondAttribute="trailing" constant="8" id="Ya5-8b-yF9"/>
+                <constraint firstItem="Ezj-UP-QgM" firstAttribute="leading" secondItem="Vqv-W7-1gc" secondAttribute="leading" constant="8" id="fxo-Ni-451"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="537" y="-205"/>
+        </view>
+    </objects>
+</document>

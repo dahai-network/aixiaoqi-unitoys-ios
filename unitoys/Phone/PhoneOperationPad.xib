@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PhoneOperationPad">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UwM-kO-3sF">
+                    <rect key="frame" x="16" y="0.0" width="44" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="UwM-kO-3sF" secondAttribute="height" multiplier="1:1" id="toO-uG-uQ0"/>
+                    </constraints>
+                    <state key="normal" image="tel_numberpad_pulloff"/>
+                    <connections>
+                        <action selector="switchNumberPad:" destination="iN0-l3-epB" eventType="touchUpInside" id="X70-q8-PIf"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7zZ-iv-0W8">
+                    <rect key="frame" x="295" y="0.0" width="64" height="44"/>
+                    <state key="normal" image="tel_numberpad_del"/>
+                    <connections>
+                        <action selector="deleteNumber:" destination="iN0-l3-epB" eventType="touchUpInside" id="CzZ-cW-5A8"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HSH-a9-rgm">
+                    <rect key="frame" x="110.5" y="0.0" width="154" height="44"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="HSH-a9-rgm" secondAttribute="height" multiplier="7:2" id="7TM-ow-w1s"/>
+                        <constraint firstAttribute="width" secondItem="HSH-a9-rgm" secondAttribute="height" multiplier="7:2" id="f5y-ux-mBh"/>
+                    </constraints>
+                    <state key="normal" image="tel_call"/>
+                    <connections>
+                        <action selector="callout:" destination="iN0-l3-epB" eventType="touchUpInside" id="BmG-kt-Jps"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="HSH-a9-rgm" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="26G-Tq-ysu"/>
+                <constraint firstItem="7zZ-iv-0W8" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="OJi-ak-9Mm"/>
+                <constraint firstItem="UwM-kO-3sF" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="VRJ-U1-5JF"/>
+                <constraint firstAttribute="bottom" secondItem="HSH-a9-rgm" secondAttribute="bottom" id="W6N-XP-qRP"/>
+                <constraint firstItem="7zZ-iv-0W8" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="16:11" id="WAp-iq-P4p"/>
+                <constraint firstAttribute="bottom" secondItem="7zZ-iv-0W8" secondAttribute="bottom" id="XTZ-eJ-FIa"/>
+                <constraint firstItem="HSH-a9-rgm" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Ycl-HW-THx"/>
+                <constraint firstAttribute="trailing" secondItem="7zZ-iv-0W8" secondAttribute="trailing" constant="16" id="qvn-Wg-2Dt"/>
+                <constraint firstItem="UwM-kO-3sF" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="sOd-6c-TTU"/>
+                <constraint firstAttribute="bottom" secondItem="UwM-kO-3sF" secondAttribute="bottom" id="v95-Z3-tqr"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="btnDelNumber" destination="7zZ-iv-0W8" id="L6h-uN-WjC"/>
+                <outlet property="btnSwitchNumberPad" destination="UwM-kO-3sF" id="3lN-IG-5yh"/>
+            </connections>
+            <point key="canvasLocation" x="33.5" y="119"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="tel_call" width="23" height="23"/>
+        <image name="tel_numberpad_del" width="23" height="23"/>
+        <image name="tel_numberpad_pulloff" width="23" height="23"/>
+    </resources>
+</document>

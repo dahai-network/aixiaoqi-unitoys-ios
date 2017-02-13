@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BindChargeCardViewController">
+            <connections>
+                <outlet property="chargeCardNumber" destination="lpF-XY-kM8" id="OQU-pt-NQ4"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="joQ-p7-rQf">
+                    <rect key="frame" x="0.0" y="15" width="375" height="40"/>
+                    <subviews>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="输入充值卡密码" textAlignment="natural" clearsOnBeginEditing="YES" minimumFontSize="17" clearButtonMode="always" translatesAutoresizingMaskIntoConstraints="NO" id="lpF-XY-kM8">
+                            <rect key="frame" x="8" y="0.0" width="359" height="40"/>
+                            <nil key="textColor"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                        </textField>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="lpF-XY-kM8" firstAttribute="leading" secondItem="joQ-p7-rQf" secondAttribute="leading" constant="8" id="2ej-pu-ARW"/>
+                        <constraint firstAttribute="trailing" secondItem="lpF-XY-kM8" secondAttribute="trailing" constant="8" id="8g4-gR-dQd"/>
+                        <constraint firstItem="lpF-XY-kM8" firstAttribute="top" secondItem="joQ-p7-rQf" secondAttribute="top" id="bIi-JS-hU9"/>
+                        <constraint firstAttribute="bottom" secondItem="lpF-XY-kM8" secondAttribute="bottom" id="mji-Sy-o75"/>
+                        <constraint firstAttribute="height" constant="40" id="zOA-gj-nO9"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S9G-VG-916">
+                    <rect key="frame" x="16" y="95" width="343" height="40"/>
+                    <color key="backgroundColor" red="0.0039215686274509803" green="0.81568627450980391" blue="0.75294117647058822" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="Ebi-PS-z51"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <state key="normal" title="绑定并使用">
+                        <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="3"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="bindingAndUse:" destination="-1" eventType="touchUpInside" id="1Nu-hZ-KEG"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.91764705882352937" green="0.92549019607843142" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="S9G-VG-916" secondAttribute="trailing" constant="16" id="4cB-k4-HQB"/>
+                <constraint firstItem="joQ-p7-rQf" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="15" id="6sn-rQ-XwQ"/>
+                <constraint firstAttribute="trailing" secondItem="joQ-p7-rQf" secondAttribute="trailing" id="91S-Qy-FmZ"/>
+                <constraint firstItem="S9G-VG-916" firstAttribute="top" secondItem="joQ-p7-rQf" secondAttribute="bottom" constant="40" id="EoS-bp-ezZ"/>
+                <constraint firstItem="joQ-p7-rQf" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="bkl-Uh-orv"/>
+                <constraint firstItem="S9G-VG-916" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="16" id="mZl-nV-84z"/>
+            </constraints>
+            <point key="canvasLocation" x="33.5" y="53.5"/>
+        </view>
+    </objects>
+</document>
