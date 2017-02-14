@@ -8,6 +8,7 @@
 
 #import "SettingViewController.h"
 #import "LinkUsViewController.h"
+#import "JPUSHService.h"
 
 @implementation SettingViewController
 
@@ -42,6 +43,12 @@
 //        [userDefaults setObject:@"" forKey:@"KEY_USER_NAME"];
         [userDefaults setObject:@"" forKey:@"KEY_PASS_WORD"];
         [userDefaults synchronize];
+        
+        //注销极光推送
+        [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
+            
+        }];
+//        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
     }];

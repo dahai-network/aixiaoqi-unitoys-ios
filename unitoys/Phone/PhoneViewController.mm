@@ -615,14 +615,16 @@
             
             
         }else if ([action isEqualToString:@"SwitchSound"]){
+            NSLog(@"当前扩音状态:%zd", self.speakerStatus);
             //
             self.speakerStatus = !self.speakerStatus;
             theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
         }else if ([action isEqualToString:@"MuteSound"]){
+            NSLog(@"MuteSound");
             self.muteStatus = !self.muteStatus;
             theSipEngine->MuteMic(self.muteStatus);
         }else if ([action isEqualToString:@"Answer"]){
-            
+            NSLog(@"Answer");
             //选择最后一条，更新为
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             NSString *path = [paths objectAtIndex:0];
@@ -722,7 +724,7 @@
 
 /*呼叫接通*/
 -(void) OnCallStreamsRunning:(bool)is_video_call{
-    //    NSLog(@"接通...");
+        NSLog(@"接通...");
     //    [mStatus setText:@"呼叫接通"];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在通话"];
 }
@@ -974,6 +976,9 @@
 - (void)showOperation {
     
     if (self.callView) {
+        //重置拨打图标
+        [self.callView.btnSwitchNumberPad setImage:[UIImage imageNamed:@"tel_numberpad_pushon"] forState:UIControlStateNormal];
+        
         [self.callView setHidden:NO];
         [self.tabBarController.tabBar bringSubviewToFront:self.callView];
     }else{
@@ -1193,16 +1198,17 @@
     
     if (hidden) {
         NSLog(@"关闭键盘");
-        [self.phonePadView setFrame:CGRectMake(self.phonePadView.frame.origin.x, self.phonePadView.frame.origin.y+self.phonePadView.frame.size.height, self.phonePadView.frame.size.width, 0)];
+//        NSLog(@"y值---%.2f", self.self.phonePadView.frame.origin.y);
+//        [self.phonePadView setFrame:CGRectMake(self.phonePadView.frame.origin.x, self.phonePadView.frame.origin.y+self.phonePadView.frame.size.height, self.phonePadView.frame.size.width, 0)];
+        [self.phonePadView setFrame:CGRectMake(0, kScreenHeightValue - 64 - 49, self.phonePadView.frame.size.width, 0)];
         
         self.numberPadStatus = YES;
-        
-        
     }else{
         NSLog(@"打开键盘");
-        [self.phonePadView setFrame:CGRectMake(self.phonePadView.frame.origin.x, self.phonePadView.frame.origin.y-201, self.phonePadView.frame.size.width, 201)];
+//        [self.phonePadView setFrame:CGRectMake(self.phonePadView.frame.origin.x, self.phonePadView.frame.origin.y-201, self.phonePadView.frame.size.width, 201)];
+        [self.phonePadView setFrame:CGRectMake(0, kScreenHeightValue - 64 - 49 - 225, self.phonePadView.frame.size.width, 225)];
+        
         self.numberPadStatus = NO;
-
     }
     
     self.callView.isPadHidden = self.numberPadStatus;
@@ -1211,6 +1217,7 @@
     //[self.tableView needsUpdateConstraints];
     
 }
+
 
 - (IBAction)switchOperation:(id)sender {
     
@@ -1225,8 +1232,11 @@
         [self.btnWriteMessage setHidden:YES];
         
         [self.phonePadView setHidden:NO];
-        
+        [self switchNumberPad:NO];
         [self.callView.btnSwitchNumberPad setImage:[UIImage imageNamed:@"tel_numberpad_pulloff"] forState:UIControlStateNormal];
+        //点击拨打按钮时tabbarItem状态更新
+        [self.navigationController.tabBarItem setImage:[UIImage imageNamed:@"tel_numberpad_pushon"]];
+        [self.navigationController.tabBarItem setSelectedImage:[UIImage imageNamed:@"tel_numberpad_pushon"]];
         
         self.tableView.mj_header = nil;
         
@@ -1238,10 +1248,8 @@
         }
         [self.btnWriteMessage setHidden:NO];
         
-    
         [self.callView.btnSwitchNumberPad setImage:[UIImage imageNamed:@"tel_numberpad_pushon"] forState:UIControlStateNormal];
         [self.phonePadView setHidden:YES];
-        
         
         self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             //Call this Block When enter the refresh status automatically

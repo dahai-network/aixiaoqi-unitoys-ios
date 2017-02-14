@@ -642,7 +642,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
-                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
+//                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
+                //更新别名为token
+                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
                 [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
                     NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
                 }];
@@ -740,7 +742,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         // NSSet<UIUserNotificationCategory *> *categories for iOS8 and iOS9
     }
     [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
-    
+   
     //初始化JPush
     // Optional
     // 获取IDFA

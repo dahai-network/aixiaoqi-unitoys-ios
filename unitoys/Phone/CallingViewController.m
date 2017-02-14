@@ -39,7 +39,6 @@
         if ([self.lblCallingHint.text isEqualToString:@"呼叫接通"]) {
             self.callingStatus = YES;
             
-            
         }else if ([self.lblCallingHint.text isEqualToString:@"正在通话"]) {
             self.callingStatus = YES;
             

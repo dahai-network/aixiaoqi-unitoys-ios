@@ -219,7 +219,9 @@
                         
                         
                         //        [self.view addSubview:calendar];
-                        [self.navigationController.view addSubview:calendar];
+                        
+                        //注释此行,将日添加到window上,以覆盖tabbar
+//                        [self.navigationController.view addSubview:calendar];
                         
                         
                         self.calendar = calendar;
@@ -259,7 +261,8 @@
         } headers:self.headers];
         
     }else{
-        [self.calendar setHidden:NO];
+//        [self.calendar setHidden:NO];
+        [self.calendar showCalendar];
     }
 }
 
@@ -311,7 +314,10 @@
     //选择日期后，查询相应日期的运动数据
     [self setBarTitle:date];
     self.currentDate = date;
-    [self.calendar setHidden:YES];
+//    [self.calendar setHidden:YES];
+    //隐藏日历
+    [self.calendar hiddenCalendar];
+    
     [self checkdayStepData];
     //查询相关运动日期
 //    [self checkNotedStepDataWithDate:self.currentDate dayCount:@"31"];

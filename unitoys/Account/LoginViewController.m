@@ -59,7 +59,9 @@
         
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
-                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
+//                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
+                //更新别名为token
+                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
                 [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
                     NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
                 }];
@@ -127,7 +129,9 @@
                 [userDefaults setObject:self.edtPassText.text forKey:@"KEY_PASS_WORD"];
                 [userDefaults synchronize];
                 
-                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userData[@"Tel"]];
+//                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userData[@"Tel"]];
+                //更新别名为token
+                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userData[@"Token"]];
                 [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
                     NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
                 }];

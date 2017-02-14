@@ -9,6 +9,7 @@
 #import "MainViewController.h"
 #import "PhoneViewController.h"
 #import "LoginViewController.h"
+#import "JPUSHService.h"
 
 @implementation MainViewController
 
@@ -64,6 +65,10 @@
 }
 
 - (void)reloginAction {
+    //注销极光推送
+    [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
+    }];
+    
     UIApplication *application = [UIApplication sharedApplication];
     if ([application.keyWindow.rootViewController isKindOfClass:[LoginViewController class]]) {
         [self dismissViewControllerAnimated:YES completion:nil];
@@ -121,6 +126,16 @@
        
        UIViewController *nextViewController = [viewController.childViewControllers objectAtIndex:0];
         if ([nextViewController isKindOfClass:[PhoneViewController class]]) {
+            
+            //从其他模块回到拨打界面时重置segmented的状态
+//            [[(PhoneViewController *)nextViewController segmentType] setSelectedSegmentIndex:0];
+            if (![currentViewController isKindOfClass:[PhoneViewController class]]) {
+                if ([(PhoneViewController *)nextViewController segmentType].selectedSegmentIndex != 0) {
+                    [(PhoneViewController *)nextViewController segmentType].selectedSegmentIndex = 0;
+                    [(PhoneViewController *)nextViewController switchOperation:[(PhoneViewController *)nextViewController segmentType]];
+                }
+            }
+            
             //如果切换到拨打面板则键盘的图标为键盘操作
             
             if ([viewController isEqual:self.selectedViewController]) {

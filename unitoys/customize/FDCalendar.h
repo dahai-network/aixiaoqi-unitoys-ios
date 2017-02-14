@@ -18,6 +18,11 @@
 
 @property (nonatomic) id delegate;
 
+@property (readonly, nonatomic) UIWindow *bgWindow;
+
+- (void)showCalendar;
+- (void)hiddenCalendar;
+
 @end
 
 @protocol FDCalendarDelegate <NSObject>

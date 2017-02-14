@@ -36,20 +36,20 @@
     
     /////////开始证书认证
     
-    NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"https" ofType:@"cer"];
-    NSData * certData =[NSData dataWithContentsOfFile:cerPath];
-    //    NSSet * certSet = [[NSSet alloc] initWithObjects:certData, nil];
-    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-    // 是否允许,NO-- 不允许无效的证书
-    [securityPolicy setAllowInvalidCertificates:YES];
-    // 设置证书
-    //    [securityPolicy setPinnedCertificates:@[certData]]; 2.0写法
-    [securityPolicy setPinnedCertificates:[[NSSet alloc] initWithObjects:certData, nil]];
-    
-    
-    //    [securityPolicy setPinnedCertificates:<#(NSArray * _Nullable)#>]
-    
-    manager.securityPolicy = securityPolicy;
+//    NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"https" ofType:@"cer"];
+//    NSData * certData =[NSData dataWithContentsOfFile:cerPath];
+//    //    NSSet * certSet = [[NSSet alloc] initWithObjects:certData, nil];
+//    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+//    // 是否允许,NO-- 不允许无效的证书
+//    [securityPolicy setAllowInvalidCertificates:YES];
+//    // 设置证书
+//    //    [securityPolicy setPinnedCertificates:@[certData]]; 2.0写法
+//    [securityPolicy setPinnedCertificates:[[NSSet alloc] initWithObjects:certData, nil]];
+//    
+//    
+//    //    [securityPolicy setPinnedCertificates:<#(NSArray * _Nullable)#>]
+//    
+//    manager.securityPolicy = securityPolicy;
     /////////结束证书认证
     [manager GET:url parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
         //
@@ -93,18 +93,18 @@
     
     /////////开始证书认证
     
-    NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"https" ofType:@"cer"];
-    NSData * certData =[NSData dataWithContentsOfFile:cerPath];
-    //    NSSet * certSet = [[NSSet alloc] initWithObjects:certData, nil];
-    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-    // 是否允许,NO-- 不允许无效的证书
-    [securityPolicy setAllowInvalidCertificates:YES];
-    // 设置证书
-    [securityPolicy setPinnedCertificates:[[NSSet alloc] initWithObjects:certData, nil]];
-    //    [securityPolicy setPinnedCertificates:@[certData]];
-    //    [securityPolicy setPinnedCertificates:<#(NSArray * _Nullable)#>]
-    
-    manager.securityPolicy = securityPolicy;
+//    NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"https" ofType:@"cer"];
+//    NSData * certData =[NSData dataWithContentsOfFile:cerPath];
+//    //    NSSet * certSet = [[NSSet alloc] initWithObjects:certData, nil];
+//    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+//    // 是否允许,NO-- 不允许无效的证书
+//    [securityPolicy setAllowInvalidCertificates:YES];
+//    // 设置证书
+//    [securityPolicy setPinnedCertificates:[[NSSet alloc] initWithObjects:certData, nil]];
+//    //    [securityPolicy setPinnedCertificates:@[certData]];
+//    //    [securityPolicy setPinnedCertificates:<#(NSArray * _Nullable)#>]
+//    
+//    manager.securityPolicy = securityPolicy;
     /////////结束证书认证
     
     
@@ -125,7 +125,7 @@
     }];
     /*
      [manager POST:url parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
-     
+     [1]	(null)	@"NSLocalizedDescription" : @"已取消"	
      successHandler(responseObject);
      } failure:^(AFHTTPRequestOperation * _Nullable operation, NSError * _Nonnull error) {
      //        XLLog(@"------请求失败-------%@",error);

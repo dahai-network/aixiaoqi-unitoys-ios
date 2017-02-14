@@ -26,12 +26,39 @@ static NSDateFormatter *dateFormattor;
 @property (strong, nonatomic) UIView *datePickerView;
 @property (strong, nonatomic) UIDatePicker *datePicker;
 
+@property (strong, nonatomic) UIWindow *bgWindow;
+
 @end
 
 @implementation FDCalendar
 
+- (void)showCalendar
+{
+    [self setHidden:NO];
+    [self.bgWindow setHidden:NO];
+}
+
+- (void)hiddenCalendar
+{
+    [self setHidden:YES];
+    [self.bgWindow setHidden:YES];
+}
+
+- (UIWindow *)bgWindow
+{
+    if (!_bgWindow) {
+        _bgWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        _bgWindow.windowLevel = UIWindowLevelStatusBar;
+        _bgWindow.backgroundColor = [UIColor clearColor];
+        _bgWindow.hidden = NO;
+    }
+    return _bgWindow;
+}
+
 - (instancetype)initWithCurrentDate:(NSDate *)date {
     if (self = [super init]) {
+        //将日历添加到window上
+         [self.bgWindow addSubview:self];
         self.backgroundColor = [UIColor colorWithRed:236 / 255.0 green:236 / 255.0 blue:236 / 255.0 alpha:1.0];
         self.date = date;
         
@@ -48,7 +75,8 @@ static NSDateFormatter *dateFormattor;
 
 - (instancetype)initWithCurrentDate:(NSDate *)date delegate:(id)delegate disableDate:(NSArray *)arrDisableDate {
     if (self = [super init]) {
-        
+        //将日历添加到window上
+        [self.bgWindow addSubview:self];
         
         self.backgroundColor = [UIColor colorWithRed:236 / 255.0 green:236 / 255.0 blue:236 / 255.0 alpha:1.0];
         self.date = date;
@@ -68,6 +96,7 @@ static NSDateFormatter *dateFormattor;
         [self setFrame:CGRectMake(0, 0, DeviceWidth, CGRectGetMaxY(self.scrollView.frame)+300)];
         
         UIView *blankView = [[UIView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(self.scrollView.frame),DeviceWidth,300)];
+        [self.bgWindow addSubview:blankView];
         blankView.backgroundColor = [UIColor clearColor];
         
         UITapGestureRecognizer*tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelSelect)];
@@ -87,6 +116,7 @@ static NSDateFormatter *dateFormattor;
 
 - (void)cancelSelect {
     [self setHidden:YES];
+    [self.bgWindow setHidden:YES];
 }
 
 #pragma mark - Custom Accessors
@@ -177,7 +207,8 @@ static NSDateFormatter *dateFormattor;
     titleButton.titleLabel.textColor = [UIColor whiteColor];
     titleButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
     titleButton.center = titleView.center;
-    [titleButton addTarget:self action:@selector(showDatePicker) forControlEvents:UIControlEventTouchUpInside];
+    //屏蔽显示选择日期功能
+//    [titleButton addTarget:self action:@selector(showDatePicker) forControlEvents:UIControlEventTouchUpInside];
     [titleView addSubview:titleButton];
     
     self.titleButton = titleButton;
@@ -286,7 +317,6 @@ static NSDateFormatter *dateFormattor;
 // 选择日期，而不调用选中日期
 - (void)choiceDate:(NSDate *)date {
 
-    
     self.centerCalendarItem.date = date;
     self.leftCalendarItem.date = [self.centerCalendarItem previousMonthDate];
     self.rightCalendarItem.date = [self.centerCalendarItem nextMonthDate];
