@@ -76,7 +76,6 @@
 //    HUDNormal(@"扩音")
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
     
-    
     if (_btnSpeakerStatus.tag==0) {
         [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeon"] forState:UIControlStateNormal];
         _btnSpeakerStatus.tag=1;

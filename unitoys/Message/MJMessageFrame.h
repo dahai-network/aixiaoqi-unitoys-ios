@@ -33,6 +33,14 @@
 @property (nonatomic, assign, readonly) CGFloat cellHeight;
 
 /**
+ *  容器的frame
+ */
+@property (nonatomic, assign, readonly) CGRect containerViewF;
+
+@property (nonatomic, assign, readonly) UIEdgeInsets contentEdge;
+
+
+/**
  *  数据模型
  */
 @property (nonatomic, strong) MJMessage *message;

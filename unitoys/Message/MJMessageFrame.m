@@ -66,6 +66,16 @@
     textSize = CGSizeMake(textSize.width+20, textSize.height+10);
     _textF = (CGRect){{textX, textY}, textSize};
     
+//    CGFloat leftX;
+//    _contentEdge = UIEdgeInsetsMake(5, 10, 5, 10);
+//    if (message.type == MJMessageTypeOther) {
+//        leftX= padding;
+//    }else{
+//        leftX = screenW - padding -
+//    }
+//    _containerViewF = CGRectMake(, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)
+    
+    
     // 4.cell的高度
     CGFloat textMaxY = CGRectGetMaxY(_textF);
     CGFloat iconMaxY = CGRectGetMaxY(_iconF);

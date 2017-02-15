@@ -1801,7 +1801,6 @@
         } else {
             NSLog(@"绑定失败");
         }
-        
     }
     //判断接收到的固件版本号
     if (str.length > 8 &&[[str substringWithRange:NSMakeRange(1, 4)] isEqualToString:@"bb0a"]) {

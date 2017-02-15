@@ -101,12 +101,6 @@
 }
 
 - (IBAction)handfreeCalling:(id)sender {
-    if (self.hadRing){
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
-        
-    }else{
-        self.isHandfree = !self.isHandfree;
-    }
     
     if (_btnSpeakerStatus.tag==0) {
         [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeon"] forState:UIControlStateNormal];
@@ -114,6 +108,14 @@
     } else {
         [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeoff"] forState:UIControlStateNormal];
         _btnSpeakerStatus.tag=0;
+    }
+    
+    if (self.hadRing){
+        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
+        //解决通话前设置扩音无效问题
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound" userInfo:@{@"isHandfreeon" : @(_btnSpeakerStatus.tag)}];
+    }else{
+        self.isHandfree = !self.isHandfree;
     }
 }
 

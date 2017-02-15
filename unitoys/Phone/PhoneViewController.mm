@@ -615,16 +615,20 @@
             
             
         }else if ([action isEqualToString:@"SwitchSound"]){
+            //保存扩音状态,在未接通时修改扩音状态无效,因此保存此状态,在接通时更新.
+            if (notification.userInfo) {
+                if (notification.userInfo[@"isHandfreeon"]) {
+                    self.speakerStatus = [notification.userInfo[@"isHandfreeon"] boolValue];
+                }
+            }
+            
             NSLog(@"当前扩音状态:%zd", self.speakerStatus);
-            //
-            self.speakerStatus = !self.speakerStatus;
+//            self.speakerStatus = !self.speakerStatus;
             theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
         }else if ([action isEqualToString:@"MuteSound"]){
-            NSLog(@"MuteSound");
             self.muteStatus = !self.muteStatus;
             theSipEngine->MuteMic(self.muteStatus);
         }else if ([action isEqualToString:@"Answer"]){
-            NSLog(@"Answer");
             //选择最后一条，更新为
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             NSString *path = [paths objectAtIndex:0];
@@ -726,6 +730,10 @@
 -(void) OnCallStreamsRunning:(bool)is_video_call{
         NSLog(@"接通...");
     //    [mStatus setText:@"呼叫接通"];
+    //在接通时更新扩音状态
+    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+    theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在通话"];
 }
 
@@ -1090,6 +1098,7 @@
 }
 
 - (void)callNumber :(NSString *)strNumber {
+    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     
     if (storyboard) {
@@ -1105,9 +1114,30 @@
             self.callStartTime = [NSDate date];
             callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
             [self presentViewController:callingViewController animated:YES completion:^{
-                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-                callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
-                theSipEngine->MakeCall([[NSString stringWithFormat:@"981%@#%d",[self formatPhoneNum:self.phoneNumber],self.maxPhoneCall] UTF8String],false,NULL);
+                
+//                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+//                callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
+//                theSipEngine->MakeCall([[NSString stringWithFormat:@"981%@#%d",[self formatPhoneNum:self.phoneNumber],self.maxPhoneCall] UTF8String],false,NULL);
+                
+                //获取最大通话时长后再拨打
+                [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
+                    NSLog(@"有数据：%@",responseObj);
+                    if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                        self.maxPhoneCall = [[[responseObj objectForKey:@"data"]  objectForKey:@"maximumPhoneCallTime"] intValue];
+                        SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+                        callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
+                        theSipEngine->MakeCall([[NSString stringWithFormat:@"981%@#%d",[self formatPhoneNum:self.phoneNumber],self.maxPhoneCall] UTF8String],false,NULL);
+                    }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+                    }else{
+                        //数据请求失败
+                        NSLog(@"获取最大时长失败");
+                    }
+                } failure:^(id dataObj, NSError *error) {
+                    NSLog(@"有异常：%@",[error description]);
+                    HUDNormal(@"网络异常")
+                } headers:self.headers];
+
             }];
         }
     }
@@ -1344,7 +1374,8 @@
             cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"To"]];
         }
         
-        cell.lblMessageDate.text = [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]];
+        NSString *textStr = [NSString stringWithFormat:@"%@ >", [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]]];
+        cell.lblMessageDate.text = textStr;
         
         cell.lblContent.text = [dicMessageRecord objectForKey:@"SMSContent"];
         

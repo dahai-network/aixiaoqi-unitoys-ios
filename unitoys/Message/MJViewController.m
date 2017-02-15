@@ -23,8 +23,6 @@
 {
     [super viewDidLoad];
     
-    
-    
     // 1.表格的设置
     // 去除分割线
     self.tableView.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1.0];
@@ -59,18 +57,15 @@
         NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                
+                //可通过异步处理优化
                 NSArray *arrMessages = [responseObj objectForKey:@"data"];
                 
-                
                 arrMessages = [arrMessages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                    
                     
                     NSString *time1 = [obj1 objectForKey:@"SMSTime"];
                     NSString *time2 = [obj2 objectForKey:@"SMSTime"];
                     
                     NSComparisonResult result = [time1 compare:time2];
-                    
                     return result == NSOrderedDescending; // 升序
                     //        return result == NSOrderedAscending;  // 降序
                 }];

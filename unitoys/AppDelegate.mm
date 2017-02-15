@@ -403,6 +403,9 @@
         NSLog(@"会话id -- %@", self.communicateID);
         
         //获取电话端口号
+        if ([string length] <= 44) {
+            return;
+        }
         NSString *callPortStr = [string substringFromIndex:44];
         NSString *newString = [NSString stringFromHexString:callPortStr];
         NSLog(@"截取到的电话端口 -- %@", newString);
