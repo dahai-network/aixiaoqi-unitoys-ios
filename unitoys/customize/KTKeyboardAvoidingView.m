@@ -66,13 +66,17 @@
     }
     
     self.OVLayoutGuideConstraint.constant = keyboardRect.size.height;
+    
     [UIView animateWithDuration:[[[notif userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue]
                           delay:0.0
                         options:[[[notif userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]
                      animations:^{
                          [self layoutIfNeeded];
                      }
-                     completion:nil];
+                     completion:^(BOOL finished) {
+                         //动画完成后滑动到底部
+                             [[NSNotificationCenter defaultCenter] postNotificationName:@"KeyboardWillShowFinished" object:nil];
+                     }];
 }
 
 - (void)OVKeyboardDidShow:(NSNotification *)notif

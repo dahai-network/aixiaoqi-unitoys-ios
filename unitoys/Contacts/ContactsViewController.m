@@ -61,7 +61,7 @@ UISearchBarDelegate,UISearchDisplayDelegate>
         [AddressBookManager shareManager].isOpenedAddress = YES;
         
         [self.view addSubview:self.searchBar];
-        self.tableView.frame = CGRectMake(0, 44, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 109);
+        self.tableView.frame = CGRectMake(0, 44, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - 44);
 //        self.tableView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 65);
     }
     // Do any additional setup after loading the view, typically from a nib.

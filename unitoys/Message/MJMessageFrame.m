@@ -39,45 +39,54 @@
     _timeF = CGRectMake(timeX, timeY, timeW, timeH); //因为timeF属性是readonly的所以没有自动生成set方法  所以不能用点语法  所以用_timeF
     
     // 2.头像
-    CGFloat iconY = CGRectGetMaxY(_timeF);  //头像的y值就是时间的最大Y值
-    CGFloat iconW = 0;
-    CGFloat iconH = 0;
-    CGFloat iconX;
-    if (message.type == MJMessageTypeOther) {// 别人发的
-        iconX = padding;
-    } else { // 自己的发的
-        iconX = screenW - padding - iconW;
-    }
-    _iconF = CGRectMake(iconX, iconY, iconW, iconH);
+//    CGFloat iconY = CGRectGetMaxY(_timeF);  //头像的y值就是时间的最大Y值
+//    CGFloat iconW = 0;
+//    CGFloat iconH = 0;
+//    CGFloat iconX;
+//    if (message.type == MJMessageTypeOther) {// 别人发的
+//        iconX = padding;
+//    } else { // 自己的发的
+//        iconX = screenW - padding - iconW;
+//    }
+//    _iconF = CGRectMake(iconX, iconY, iconW, iconH);
     
     // 3.正文
-    CGFloat textY = iconY;
-    // 文字的尺寸
-    CGSize textMaxSize = CGSizeMake(250, MAXFLOAT);  //文字不限高度 ，要限制宽度
-    CGSize textSize = [self sizeWithText:message.text font:MJTextFont maxSize:textMaxSize];
-    CGFloat textX;
-    if (message.type == MJMessageTypeOther) {// 别人发的
-        textX = CGRectGetMaxX(_iconF) + padding;
-    } else {// 自己的发的
-        textX = iconX - padding - textSize.width;
-    }
-    //    _textF = CGRectMake(textX, textY, textSize.width, textSize.height);
-    
-    textSize = CGSizeMake(textSize.width+20, textSize.height+10);
-    _textF = (CGRect){{textX, textY}, textSize};
-    
-//    CGFloat leftX;
-//    _contentEdge = UIEdgeInsetsMake(5, 10, 5, 10);
-//    if (message.type == MJMessageTypeOther) {
-//        leftX= padding;
-//    }else{
-//        leftX = screenW - padding -
+//    CGFloat textY = iconY;
+//    // 文字的尺寸
+//    CGSize textMaxSize = CGSizeMake(250, MAXFLOAT);  //文字不限高度 ，要限制宽度
+//    CGSize textSize = [self sizeWithText:message.text font:MJTextFont maxSize:textMaxSize];
+//    CGFloat textX;
+//    if (message.type == MJMessageTypeOther) {// 别人发的
+//        textX = CGRectGetMaxX(_iconF) + padding;
+//    } else {// 自己的发的
+//        textX = iconX - padding - textSize.width;
 //    }
-//    _containerViewF = CGRectMake(, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)
+//    //    _textF = CGRectMake(textX, textY, textSize.width, textSize.height);
+//    
+//    textSize = CGSizeMake(textSize.width+20, textSize.height+10);
+//    _textF = (CGRect){{textX, textY}, textSize};
+    
+    CGFloat containerX;
+    CGFloat containerY;
+    CGFloat containerW;
+    CGFloat containerH;
+    _contentEdge = UIEdgeInsetsMake(5, 13, 5, 13);
+    containerY = CGRectGetMaxY(_timeF);
+    CGSize textMaxSize = CGSizeMake(screenW * 3.0 / 4.0, MAXFLOAT);
+    CGSize contentSize = [self sizeWithText:message.text font:MJTextFont maxSize:textMaxSize];
+    containerW = contentSize.width + _contentEdge.left + _contentEdge.right;
+    containerH = contentSize.height + _contentEdge.top + _contentEdge.bottom;
+    if (message.type == MJMessageTypeOther) {
+        containerX= padding;
+    }else{
+        containerX = screenW - padding - containerW;
+    }
+    _containerViewF = CGRectMake(containerX, containerY, containerW, containerH);
     
     
     // 4.cell的高度
-    CGFloat textMaxY = CGRectGetMaxY(_textF);
+//    CGFloat textMaxY = CGRectGetMaxY(_textF);
+    CGFloat textMaxY = CGRectGetMaxY(_containerViewF);
     CGFloat iconMaxY = CGRectGetMaxY(_iconF);
     _cellHeight = MAX(textMaxY, iconMaxY) + padding;  //正文和头像的最大Y值的较大者加上间距就是cell的高度
 }

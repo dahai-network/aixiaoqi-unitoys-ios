@@ -170,7 +170,7 @@
                                                 <rect key="frame" x="0.0" y="28" width="375" height="70"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="brY-di-NbB" id="Vg4-1F-h7s">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="69"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </tableViewCellContentView>
                                             </tableViewCell>
@@ -227,7 +227,7 @@
                                     <constraint firstItem="QuK-cF-tPm" firstAttribute="leading" secondItem="lAv-ZC-4co" secondAttribute="leading" id="s7q-U6-mXl"/>
                                 </constraints>
                                 <connections>
-                                    <outlet property="OVLayoutGuideConstraint" destination="Y6F-RR-zng" id="Jqt-VC-2EM"/>
+                                    <outlet property="OVLayoutGuideConstraint" destination="gIH-7x-4py" id="air-4h-PFp"/>
                                 </connections>
                             </view>
                         </subviews>
@@ -235,8 +235,8 @@
                         <constraints>
                             <constraint firstItem="lAv-ZC-4co" firstAttribute="leading" secondItem="0G3-60-sJx" secondAttribute="leading" id="7dm-UI-rkk"/>
                             <constraint firstItem="lAv-ZC-4co" firstAttribute="top" secondItem="0G3-60-sJx" secondAttribute="top" id="Uji-Ah-o5D"/>
-                            <constraint firstItem="DyO-9q-geQ" firstAttribute="top" secondItem="lAv-ZC-4co" secondAttribute="bottom" id="Y6F-RR-zng"/>
                             <constraint firstAttribute="trailing" secondItem="lAv-ZC-4co" secondAttribute="trailing" id="a0o-3Z-U0b"/>
+                            <constraint firstAttribute="bottom" secondItem="lAv-ZC-4co" secondAttribute="bottom" id="gIH-7x-4py"/>
                         </constraints>
                     </view>
                     <connections>
@@ -451,7 +451,7 @@
                                                 <rect key="frame" x="0.0" y="28" width="375" height="70"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gDY-IF-d4o" id="i6v-Od-kbe">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="69"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </tableViewCellContentView>
                                             </tableViewCell>

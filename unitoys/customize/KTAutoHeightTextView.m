@@ -31,6 +31,7 @@
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     [self setup];
 }
 
@@ -143,17 +144,27 @@
                 [self findHeightConstraint];
                 return;
             }
-            if (self.heightConstraint)
+//            if (self.heightConstraint)
+//            {
+//                self.heightConstraint.constant = fitHeight;
+//                [self layoutIfNeeded];
+//            }
+//            else
+//            {
+//                CGRect bounds = self.bounds;
+//                bounds.size.height = fitHeight;
+//                self.bounds = bounds;
+//            }
+            
+            if (!self.heightConstraint)
             {
-                self.heightConstraint.constant = fitHeight;
-                [self layoutIfNeeded];
+                [self findHeightConstraint];
             }
-            else
-            {
-                CGRect bounds = self.bounds;
-                bounds.size.height = fitHeight;
-                self.bounds = bounds;
-            }
+            self.heightConstraint.constant = fitHeight;
+            
+            [self layoutIfNeeded];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"KTAutoHeightTextViewFontChange" object:nil];
         }
         else // 查找height约束，记录初值
         {

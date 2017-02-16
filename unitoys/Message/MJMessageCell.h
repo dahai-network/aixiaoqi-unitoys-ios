@@ -10,12 +10,14 @@
 
 @class MJMessageFrame;
 
+typedef void(^LongPressCellBlock)(NSString *content, UIView *longPressView);
+
 @interface MJMessageCell : UITableViewCell
 
 + (instancetype)cellWithTableView:(UITableView *)tableView;
 
 @property (nonatomic, strong) MJMessageFrame *messageFrame;
 
-
+@property (nonatomic, copy) LongPressCellBlock longPressCellBlock;
 @end
 

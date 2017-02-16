@@ -15,6 +15,8 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *messageFrames;
 
+@property (nonatomic, copy) NSString *cellContent;
+
 @end
 
 @implementation MJViewController
@@ -35,6 +37,17 @@
     
     self.txtSendText.delegate = self;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KTAutoHeightTextViewFontChange" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KeyboardWillShowFinished" object:nil];
+}
+
+- (void)textViewFontChange
+{
+    NSLog(@"更新inputContainerView");
+    NSLog(@"tableView---%@", NSStringFromCGRect(self.tableView.frame));
+    NSLog(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
+    [self.tableView layoutIfNeeded];
+    [self scrollTableViewToBottomWithAnimated:NO];
 }
 
 - (void)dealloc
@@ -103,6 +116,9 @@
                 
                 [self.tableView reloadData];
                 
+                //自动滚动到底部
+                [self scrollTableViewToBottomWithAnimated:NO];
+                
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -126,6 +142,16 @@
     }
 }
 
+//自动滚动到底部
+- (void)scrollTableViewToBottomWithAnimated:(BOOL)animated
+{
+    //自动滚动到底部
+    if ([self.messageFrames count]) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.messageFrames.count - 1 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
+    }
+}
+
 - (NSMutableArray *)messageFrames
 {
     return _messageFrames;
@@ -139,12 +165,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    kWeakSelf
     // 1.创建cell
     MJMessageCell *cell = [MJMessageCell cellWithTableView:tableView];
     
     // 2.给cell传递模型
     cell.messageFrame = self.messageFrames[indexPath.row];
     
+    cell.longPressCellBlock = ^(NSString *content, UIView *longPressView){
+        [weakSelf longPressActionWithContent:content longPressView:longPressView];
+    };
     // 3.返回cell
     return cell;
 }
@@ -171,7 +201,15 @@
         self.btnSend.enabled = NO;
         self.checkToken = YES;
         NSString *receiveNumbers = self.toTelephone;
-        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
+        
+        
+//        NSString * emojiUnicode = @"\U0001F604";
+//        NSLog(@"emojiUnicode:%@",emojiUnicode);
+        //如果直接输入\ud83d\ude04会报错，加了转义后不会报错，但是会输出字符串\ud83d\ude04,而不是
+        NSString *emojiUTF16 = [NSString stringWithCString:[self.txtSendText.text cStringUsingEncoding:NSUTF8StringEncoding] encoding:NSNonLossyASCIIStringEncoding];
+        NSLog(@"emojiUnicode2:%@",emojiUTF16);
+        
+        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",emojiUTF16,@"SMSContent", nil];
         
         [self getBasicHeader];
         NSLog(@"表演头：%@",self.headers);
@@ -213,7 +251,6 @@
                 self.btnSend.enabled = YES;
             }
             
-            
         } failure:^(id dataObj, NSError *error) {
             //
             NSLog(@"啥都没：%@",[error description]);
@@ -231,6 +268,43 @@
     
 
 }
+
+//设置响应
+-(BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
+
+//长按响应
+- (void)longPressActionWithContent:(NSString *)content longPressView:(UIView *)longPressView
+{
+    NSArray *menus = [self menusItems];
+    if ([menus count] && [self becomeFirstResponder]) {
+        UIMenuController *menuController = [UIMenuController sharedMenuController];
+        menuController.menuItems = menus;
+        _cellContent = content;
+        [menuController setTargetRect:longPressView.bounds inView:longPressView];
+        [menuController setMenuVisible:YES animated:YES];
+    }
+}
+
+//获取长按菜单
+- (NSArray *)menusItems
+{
+    NSMutableArray *items = [NSMutableArray array];
+    [items addObject:[[UIMenuItem alloc] initWithTitle:@"复制" action:@selector(copyText:)]];
+    return items;
+}
+
+//复制
+- (void)copyText:(id)sender
+{
+    if (self.cellContent.length) {
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        [pasteboard setString:self.cellContent];
+    }
+}
+
 @end
 
 
