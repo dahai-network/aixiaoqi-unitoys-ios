@@ -16,7 +16,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"广告";
+    if (self.titleStr && ![self.titleStr isEqualToString:@"null"]) {
+        self.title = self.titleStr;
+    } else {
+        self.title = @"广告";
+    }
     
     [self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.loadUrl]]];
     // Do any additional setup after loading the view.

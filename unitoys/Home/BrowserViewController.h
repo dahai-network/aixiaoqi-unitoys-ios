@@ -10,5 +10,6 @@
 
 @interface BrowserViewController : BaseViewController
 @property (strong,nonatomic) NSString *loadUrl;
+@property (nonatomic, copy) NSString *titleStr;
 @property (weak, nonatomic) IBOutlet UIWebView *webview;
 @end

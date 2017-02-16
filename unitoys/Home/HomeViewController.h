@@ -16,6 +16,7 @@
 
 @property (nonatomic,strong) NSMutableArray *arrPicUrls;
 @property (nonatomic,strong) NSMutableArray *arrPicJump;
+@property (nonatomic, strong) NSMutableArray *arrPicTitles;
 
 @property (strong,nonatomic) NSMutableArray *arrCountry;
 

@@ -1015,10 +1015,12 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             self.arrPicUrls = [[NSMutableArray alloc] init];
             self.arrPicJump = [[NSMutableArray alloc] init];
+            self.arrPicTitles = [[NSMutableArray alloc] init];
             //构造图片列表和链接列表
             for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
                 [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
                 [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
+                [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
             }
         
         
@@ -1297,6 +1299,7 @@
 
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {
     NSString *url = [self.arrPicJump objectAtIndex:index];
+    NSString *title = [self.arrPicTitles objectAtIndex:index];
     if ((NSNull*)url!=[NSNull null]) {
         if ([url length]>5) {
             UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -1304,6 +1307,7 @@
             if (browserViewController) {
                 self.tabBarController.tabBar.hidden = YES;
                 browserViewController.loadUrl = url;
+                browserViewController.titleStr = title;
                 [self.navigationController pushViewController:browserViewController animated:YES];
             }
         }
