@@ -59,24 +59,49 @@
 
 - (void)OVKeyboardWillShow:(NSNotification *)notif
 {
-    CGRect keyboardRect = [self convertRect:[[[notif userInfo] objectForKey:_UIKeyboardFrameEndUserInfoKey] CGRectValue] fromView:nil];
-    if (CGRectIsEmpty(keyboardRect))
-    {
-        return;
+//    CGRect keyboardRect = [self convertRect:[[[notif userInfo] objectForKey:_UIKeyboardFrameEndUserInfoKey] CGRectValue] fromView:nil];
+//    if (CGRectIsEmpty(keyboardRect))
+//    {
+//        return;
+//    }
+//    
+//    self.OVLayoutGuideConstraint.constant = keyboardRect.size.height;
+//    
+//    [UIView animateWithDuration:[[[notif userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue]
+//                          delay:0.0
+//                        options:[[[notif userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]
+//                     animations:^{
+//                         [self layoutIfNeeded];
+//                     }
+//                     completion:^(BOOL finished) {
+//                         //动画完成后滑动到底部
+//                             [[NSNotificationCenter defaultCenter] postNotificationName:@"KeyboardWillShowFinished" object:nil];
+//                     }];
+    
+    
+    CGRect begin = [[[notif userInfo] objectForKey:@"UIKeyboardFrameBeginUserInfoKey"] CGRectValue];
+    CGRect end = [[[notif userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
+    //由于第三方输入法可能调用多次,只有当最后一次时才更新布局
+    if(begin.size.height>0 && (begin.origin.y-end.origin.y>0)){
+        CGRect keyboardRect = [self convertRect:[[[notif userInfo] objectForKey:_UIKeyboardFrameEndUserInfoKey] CGRectValue] fromView:nil];
+        if (CGRectIsEmpty(keyboardRect))
+        {
+            return;
+        }
+        
+        self.OVLayoutGuideConstraint.constant = keyboardRect.size.height;
+        [UIView animateWithDuration:[[[notif userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue]
+                              delay:0.0
+                            options:[[[notif userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]
+                         animations:^{
+                             [self layoutIfNeeded];
+                         }
+                         completion:^(BOOL finished) {
+                             //动画完成后滑动到底部
+                             [[NSNotificationCenter defaultCenter] postNotificationName:@"KeyboardWillShowFinished" object:nil];
+                         }];
     }
     
-    self.OVLayoutGuideConstraint.constant = keyboardRect.size.height;
-    
-    [UIView animateWithDuration:[[[notif userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue]
-                          delay:0.0
-                        options:[[[notif userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]
-                     animations:^{
-                         [self layoutIfNeeded];
-                     }
-                     completion:^(BOOL finished) {
-                         //动画完成后滑动到底部
-                             [[NSNotificationCenter defaultCenter] postNotificationName:@"KeyboardWillShowFinished" object:nil];
-                     }];
 }
 
 - (void)OVKeyboardDidShow:(NSNotification *)notif

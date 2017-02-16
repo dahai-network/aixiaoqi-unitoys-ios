@@ -370,6 +370,7 @@
                         <outlet property="imgStatueImage" destination="YhL-hZ-daP" id="2D8-tt-cXS"/>
                         <outlet property="lblStatue" destination="dfv-D7-Gam" id="jBH-OR-aSu"/>
                         <outlet property="macAddress" destination="Dvu-1F-c1q" id="9r9-rp-2q4"/>
+                        <outlet property="relieveBoundButton" destination="VuM-1L-NWo" id="6Rr-Dt-0sd"/>
                         <outlet property="versionNumber" destination="Bm4-Bk-p7c" id="EEr-ru-pSj"/>
                     </connections>
                 </tableViewController>

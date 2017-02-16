@@ -14,6 +14,7 @@
 @interface BindDeviceViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *lblStatue;
 @property (weak, nonatomic) IBOutlet UIImageView *imgStatueImage;
+@property (weak, nonatomic) IBOutlet UIButton *relieveBoundButton;
 
 @end
 
@@ -188,6 +189,7 @@
     } else {
 //        HUDNormal(@"没有可解绑的设备")
         [self checkHasBindDevice];
+        
     }
 }
 

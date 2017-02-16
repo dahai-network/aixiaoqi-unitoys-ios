@@ -43,20 +43,27 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="振动过程中敲击手环即可停止闹钟" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cgX-zT-mg3">
-                    <rect key="frame" x="10" y="10" width="355" height="21"/>
+                    <rect key="frame" x="20" y="23" width="335" height="28"/>
+                    <color key="backgroundColor" red="0.82352941176470584" green="0.82352941176470584" blue="0.82352941176470584" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="21" id="A1W-Fq-3Lu"/>
+                        <constraint firstAttribute="height" constant="28" id="A1W-Fq-3Lu"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                    <color key="textColor" red="0.68627450980392157" green="0.68627450980392157" blue="0.68627450980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <nil key="highlightedColor"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="3"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                    </userDefinedRuntimeAttributes>
                 </label>
             </subviews>
             <color key="backgroundColor" red="0.91764705882352937" green="0.92549019607843142" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="cgX-zT-mg3" firstAttribute="leading" secondItem="PeJ-4b-bYj" secondAttribute="leading" constant="10" id="hUn-5K-v3D"/>
-                <constraint firstAttribute="trailing" secondItem="cgX-zT-mg3" secondAttribute="trailing" constant="10" id="t6O-zo-WQi"/>
-                <constraint firstItem="cgX-zT-mg3" firstAttribute="top" secondItem="PeJ-4b-bYj" secondAttribute="top" constant="10" id="yqB-kU-pHe"/>
+                <constraint firstItem="cgX-zT-mg3" firstAttribute="leading" secondItem="PeJ-4b-bYj" secondAttribute="leading" constant="20" id="hUn-5K-v3D"/>
+                <constraint firstAttribute="trailing" secondItem="cgX-zT-mg3" secondAttribute="trailing" constant="20" id="t6O-zo-WQi"/>
+                <constraint firstItem="cgX-zT-mg3" firstAttribute="top" secondItem="PeJ-4b-bYj" secondAttribute="top" constant="23" id="yqB-kU-pHe"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="490" y="-232"/>

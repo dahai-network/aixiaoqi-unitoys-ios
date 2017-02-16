@@ -15,7 +15,7 @@
 - (IBAction)inputPhoneStr:(id)sender;
 
 
-@property (strong,nonatomic) NSString *inputedPhoneNumber;
+@property (copy,nonatomic) NSString *inputedPhoneNumber;
 
 
 typedef void (^InputCompletedBlock)(NSString *btnText,NSInteger btnTag);

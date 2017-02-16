@@ -202,14 +202,7 @@
         self.checkToken = YES;
         NSString *receiveNumbers = self.toTelephone;
         
-        
-//        NSString * emojiUnicode = @"\U0001F604";
-//        NSLog(@"emojiUnicode:%@",emojiUnicode);
-        //如果直接输入\ud83d\ude04会报错，加了转义后不会报错，但是会输出字符串\ud83d\ude04,而不是
-        NSString *emojiUTF16 = [NSString stringWithCString:[self.txtSendText.text cStringUsingEncoding:NSUTF8StringEncoding] encoding:NSNonLossyASCIIStringEncoding];
-        NSLog(@"emojiUnicode2:%@",emojiUTF16);
-        
-        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",emojiUTF16,@"SMSContent", nil];
+        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
         
         [self getBasicHeader];
         NSLog(@"表演头：%@",self.headers);
