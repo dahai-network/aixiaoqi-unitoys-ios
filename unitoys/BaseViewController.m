@@ -11,6 +11,7 @@
 #import "ContactModel.h"
 #import "AddressBookManager.h"
 #import "WXApi.h"
+#import "UIBarButtonItem+Extension.h"
 
 @implementation BaseViewController
 
@@ -25,6 +26,28 @@
 }
 
 - (void)leftButtonAction {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark-----设置左边按钮
+-(void)setLeftButton:(id)LeftButton{
+    NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
+    textAttrs[NSForegroundColorAttributeName] = [UIColor whiteColor];
+    textAttrs[NSFontAttributeName] = [UIFont systemFontOfSize:16.5];
+    if ([LeftButton isKindOfClass:[UIImage class]]) {
+        self.navigationItem.leftBarButtonItem=[UIBarButtonItem itemWithTarget:self action:@selector(leftButtonClick) image:LeftButton highImage:LeftButton];
+        [self.navigationItem.leftBarButtonItem setTitleTextAttributes:textAttrs forState:UIControlStateNormal];
+        return;
+    }
+    if ([LeftButton isKindOfClass:[NSString class]]) {
+        self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithTitle:LeftButton style:UIBarButtonItemStylePlain target:self action:@selector(leftButtonClick)];
+        [self.navigationItem.leftBarButtonItem setTitleTextAttributes:textAttrs forState:UIControlStateNormal];
+        return;
+    }
+}
+
+#pragma mark-----点击左按钮出发事情
+-(void)leftButtonClick{
     [self.navigationController popViewControllerAnimated:YES];
 }
 

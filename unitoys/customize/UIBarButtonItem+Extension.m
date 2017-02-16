@@ -29,7 +29,7 @@
     [btn setImage:highImage forState:UIControlStateHighlighted];
     // 设置尺寸
     //btn.backgroundColor=[UIColor redColor];
-    btn.size = CGSizeMake(26, 26);
+    btn.size = CGSizeMake(15, 26);
     return [[UIBarButtonItem alloc] initWithCustomView:btn];
 }
 @end

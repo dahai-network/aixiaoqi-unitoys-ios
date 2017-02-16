@@ -46,6 +46,8 @@
 		04EAB8C11E2788DB000D3D13 /* AlarmListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EAB8BF1E2788DB000D3D13 /* AlarmListTableViewCell.m */; };
 		04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EAB8C01E2788DB000D3D13 /* AlarmListTableViewCell.xib */; };
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
+		7402B32E1E55967600DC73B9 /* UIBarButtonItem+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402B32D1E55967600DC73B9 /* UIBarButtonItem+Extension.m */; };
+		7402B3311E5597FF00DC73B9 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402B3301E5597FF00DC73B9 /* UIView+Extension.m */; };
 		740FD38F1E287F9E009413F1 /* euble_interface.c in Sources */ = {isa = PBXBuildFile; fileRef = 740FD3801E287F9E009413F1 /* euble_interface.c */; };
 		740FD3901E287F9E009413F1 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 740FD3821E287F9E009413F1 /* Makefile */; };
 		740FD3911E287F9E009413F1 /* Provider.c in Sources */ = {isa = PBXBuildFile; fileRef = 740FD3831E287F9E009413F1 /* Provider.c */; };
@@ -263,6 +265,10 @@
 		4593CF0952180069953F0247 /* Pods-unitoys.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unitoys.debug.xcconfig"; path = "Pods/Target Support Files/Pods-unitoys/Pods-unitoys.debug.xcconfig"; sourceTree = "<group>"; };
 		48EFF6451E37F27600874FC6 /* CallActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallActionView.h; sourceTree = "<group>"; };
 		48EFF6461E37F27600874FC6 /* CallActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallActionView.m; sourceTree = "<group>"; };
+		7402B32C1E55967600DC73B9 /* UIBarButtonItem+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+Extension.h"; sourceTree = "<group>"; };
+		7402B32D1E55967600DC73B9 /* UIBarButtonItem+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+Extension.m"; sourceTree = "<group>"; };
+		7402B32F1E5597FF00DC73B9 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
+		7402B3301E5597FF00DC73B9 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		740FD37F1E287F9E009413F1 /* eos_typedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eos_typedef.h; sourceTree = "<group>"; };
 		740FD3801E287F9E009413F1 /* euble_interface.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = euble_interface.c; sourceTree = "<group>"; };
 		740FD3811E287F9E009413F1 /* euble_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = euble_interface.h; sourceTree = "<group>"; };
@@ -751,6 +757,10 @@
 		95334A651D8A89B9002C1CFB /* customize */ = {
 			isa = PBXGroup;
 			children = (
+				7402B32F1E5597FF00DC73B9 /* UIView+Extension.h */,
+				7402B3301E5597FF00DC73B9 /* UIView+Extension.m */,
+				7402B32C1E55967600DC73B9 /* UIBarButtonItem+Extension.h */,
+				7402B32D1E55967600DC73B9 /* UIBarButtonItem+Extension.m */,
 				046BF6FE1E27A544008C10C7 /* YBPopupMenu.h */,
 				046BF6FF1E27A544008C10C7 /* YBPopupMenu.m */,
 				9554C9E81DE7E44400162624 /* FDCalendar.h */,
@@ -1515,6 +1525,7 @@
 				95C576001DA79FAE00F459DF /* TopLeftLabel.m in Sources */,
 				954A87D31D98BBA700570843 /* JSONHTTPClient.m in Sources */,
 				95E918691DDCAB9C005DABC0 /* RoundLable.m in Sources */,
+				7402B32E1E55967600DC73B9 /* UIBarButtonItem+Extension.m in Sources */,
 				952B2B051DC22A3C006A7C69 /* MJMessageFrame.m in Sources */,
 				950BC6171DBCE0640048CEAB /* OrderActivationViewController.m in Sources */,
 				954A87D01D98BBA700570843 /* JSONModelError.m in Sources */,
@@ -1588,6 +1599,7 @@
 				740FD3B91E2A58CB009413F1 /* Test.m in Sources */,
 				952AB0091DF8DA8900C5A927 /* PhoneOperationPad.m in Sources */,
 				95C575FC1DA77C1000F459DF /* MessageRecordCell.m in Sources */,
+				7402B3311E5597FF00DC73B9 /* UIView+Extension.m in Sources */,
 				952B2AFC1DC228F2006A7C69 /* MJMessageCell.m in Sources */,
 				95CD33ED1D9CE4F300EE5DD3 /* DataSigner.m in Sources */,
 				95E9185A1DDC7EB6005DABC0 /* BeforeOutViewController.m in Sources */,
