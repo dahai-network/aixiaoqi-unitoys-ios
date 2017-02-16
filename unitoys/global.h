@@ -17,7 +17,7 @@
 #define defaultPort @":8000"
 */
 
-#define DEBUGMODE 0
+#define DEBUGMODE 1
 
 #if DEBUGMODE
 
