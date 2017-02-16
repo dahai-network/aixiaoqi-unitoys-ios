@@ -11,21 +11,27 @@
 #import "MJMessage.h"
 
 #import "UIImage+Extension.h"
+#import "global.h"
 
 @interface MJMessageCell()
+{
+    UILongPressGestureRecognizer *_longPressGesture;
+}
+
 /**
  *  时间
  */
 @property (nonatomic, weak) UILabel *timeView;
-/**
- *  头像
- */
-@property (nonatomic, weak) UIImageView *iconView;
-/**
- *  正文
- */
-@property (nonatomic, weak) UIButton *textView;
+///**
+// *  头像
+// */
+//@property (nonatomic, weak) UIImageView *iconView;
+///**
+// *  正文
+// */
+//@property (nonatomic, weak) UIButton *textView;
 
+@property (nonatomic, copy) NSString *content;
 
 /**
  *  容器
@@ -75,28 +81,54 @@
 //        self.iconView = iconView;
         
         // 3.正文
-        UIButton *textView = [[UIButton alloc] init];
-        textView.titleLabel.numberOfLines = 0; // 自动换行
-//        textView.backgroundColor = [UIColor purpleColor];
-        textView.titleLabel.font = MJTextFont;
-//        textView.titleLabel.textColor = [UIColor blackColor];
-        [self.contentView addSubview:textView];
-        self.textView = textView;
+//        UIButton *textView = [[UIButton alloc] init];
+//        textView.titleLabel.numberOfLines = 0; // 自动换行
+////        textView.backgroundColor = [UIColor purpleColor];
+//        textView.titleLabel.font = MJTextFont;
+////        textView.titleLabel.textColor = [UIColor blackColor];
+//        [self.contentView addSubview:textView];
+//        self.textView = textView;
         
         
         UIView *containerView = [[UIView alloc] init];
+        self.containerView = containerView;
         [self.contentView addSubview:containerView];
         
         UIImageView *bgImageView = [[UIImageView alloc] init];
+        self.bgImageView = bgImageView;
         [containerView addSubview:bgImageView];
         
         UILabel *contentLabel = [[UILabel alloc] init];
+        self.contentLabel = contentLabel;
+        contentLabel.userInteractionEnabled = YES;
+        contentLabel.font = MJTextFont;
+        contentLabel.numberOfLines = 0;
         [containerView addSubview:contentLabel];
         
         // 4.设置cell的背景色
         self.backgroundColor = [UIColor clearColor];
+        
+        [self makeGesture];
     }
     return self;
+}
+
+- (void)makeGesture
+{
+    if (!_longPressGesture) {
+        _longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressGestureAction:)];
+        [self.contentLabel addGestureRecognizer:_longPressGesture];
+    }
+}
+
+- (void)longPressGestureAction:(UIGestureRecognizer *)gestureRecognizer
+{
+    if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]] && gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        kWeakSelf
+        if (_longPressCellBlock) {
+            _longPressCellBlock(weakSelf.contentLabel.text, weakSelf.containerView);
+        }
+    }
 }
 
 - (void)setMessageFrame:(MJMessageFrame *)messageFrame
@@ -115,22 +147,32 @@
 //    self.iconView.frame = messageFrame.iconF;
     
     // 3.正文
-    [self.textView setTitle:message.text forState:UIControlStateNormal];
-    self.textView.frame = messageFrame.textF;
+//    [self.textView setTitle:message.text forState:UIControlStateNormal];
+//    self.textView.frame = messageFrame.textF;
 
-//    self.containerView.frame = messageFrame.containerViewF;
-//    self.contentLabel.frame = CGRectMake(<#CGFloat x#>, <#CGFloat y#>, <#CGFloat width#>, <#CGFloat height#>)
+    self.contentLabel.text = message.text;
+    self.containerView.frame = messageFrame.containerViewF;
+    self.bgImageView.frame = self.containerView.bounds;
+    self.contentLabel.frame = CGRectMake(messageFrame.contentEdge.left, messageFrame.contentEdge.top, messageFrame.containerViewF.size.width - messageFrame.contentEdge.left - messageFrame.contentEdge.right, messageFrame.containerViewF.size.height - messageFrame.contentEdge.top - messageFrame.contentEdge.bottom);
+    if (message.type == MJMessageTypeMe) {
+        [self.bgImageView setImage:[UIImage resizableImage:@"msg_send"]];
+        [self.contentLabel setTextColor:[UIColor whiteColor]];
+    }else{
+        [self.bgImageView setImage:[UIImage resizableImage1:@"msg_receive"]];
+        [self.contentLabel setTextColor:[UIColor blackColor]];
+    }
+    
     
     // 4.正文的背景(设置拉升效果）
-    if (message.type == MJMessageTypeMe) { // 自己发的,蓝色
-        [self.textView setBackgroundImage:[UIImage resizableImage:@"msg_send"] forState:UIControlStateNormal];
-        [self.textView setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        
-    } else { // 别人发的,白色
-        [self.textView setBackgroundImage:[UIImage resizableImage1:@"msg_receive"] forState:UIControlStateNormal];
-        [self.textView setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [self.textView setContentEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
-    }
+//    if (message.type == MJMessageTypeMe) { // 自己发的,蓝色
+//        [self.textView setBackgroundImage:[UIImage resizableImage:@"msg_send"] forState:UIControlStateNormal];
+//        [self.textView setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+//        
+//    } else { // 别人发的,白色
+//        [self.textView setBackgroundImage:[UIImage resizableImage1:@"msg_receive"] forState:UIControlStateNormal];
+//        [self.textView setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+//        [self.textView setContentEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+//    }
 }
 
 @end
