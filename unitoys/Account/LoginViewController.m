@@ -147,6 +147,8 @@
             }else{
                 if (resonseObj[@"msg"]) {
                     [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                }else{
+                    HUDNormal(@"登录失败")
                 }
 //                HUDNormal(resonseObj[@"msg"])
             }

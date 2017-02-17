@@ -14,6 +14,8 @@
 #import "MBProgressHUD.h"
 #import "UIImageView+WebCache.h"
 
+#import "UIView+Utils.h"
+
 /**
  *  HUD自动隐藏
  *

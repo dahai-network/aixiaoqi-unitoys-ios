@@ -56,14 +56,16 @@ UISearchBarDelegate,UISearchDisplayDelegate>
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if (![AddressBookManager shareManager].isOpenedAddress) {
+    if (![AddressBookManager shareManager].isOpenedAddress && !self.bOnlySelectNumber) {
         self.navigationItem.leftBarButtonItem = nil;
         [AddressBookManager shareManager].isOpenedAddress = YES;
         
         [self.view addSubview:self.searchBar];
         self.tableView.frame = CGRectMake(0, 44, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - 44);
-//        self.tableView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 65);
+    }else{
+        self.tableView.height -= 15;
     }
+    
     // Do any additional setup after loading the view, typically from a nib.
     //[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"navBar_bg"] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
     
@@ -105,8 +107,8 @@ UISearchBarDelegate,UISearchDisplayDelegate>
     _rowArr=[ContactDataHelper getFriendListDataBy:self.dataArr];
     _sectionArr=[ContactDataHelper getFriendListSectionBy:[_rowArr mutableCopy]];
     
-    //configNav
-    [self configNav];
+    //设置Nav
+//    [self configNav];
     //布局View
     [self setUpView];
     
@@ -133,13 +135,19 @@ UISearchBarDelegate,UISearchDisplayDelegate>
 - (void)configNav{
     UIButton *btn=[UIButton buttonWithType:UIButtonTypeCustom];
     [btn setFrame:CGRectMake(0.0, 0.0, 30.0, 30.0)];
-    [btn setBackgroundImage:[UIImage imageNamed:@"contacts_add_friend"] forState:UIControlStateNormal];
+//    [btn setBackgroundImage:[UIImage imageNamed:@"contacts_add_friend"] forState:UIControlStateNormal];
+    [btn setImage:[UIImage imageNamed:@"alarm_add"] forState:UIControlStateNormal];
+    [btn addTarget:self action:@selector(addContactsAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithCustomView:btn]];
+}
+
+- (void)addContactsAction:(UIButton *)button
+{
+    NSLog(@"添加联系人");
 }
 
 #pragma mark - setUpView
 - (void)setUpView{
-   
     UIImageView *imageView=[[UIImageView alloc]initWithFrame:CGRectMake(0.0, kScreenHeight-49.0, kScreenWidth, 49.0)];
     [imageView setImage:[UIImage imageNamed:@"footerImage"]];
     [imageView setContentMode:UIViewContentModeScaleToFill];

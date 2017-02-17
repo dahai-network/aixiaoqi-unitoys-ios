@@ -11,6 +11,7 @@
 @class MJMessageFrame;
 
 typedef void(^LongPressCellBlock)(NSString *content, UIView *longPressView);
+typedef void(^RepeatSendMessageBlock)(MJMessageFrame *messageFrame);
 
 @interface MJMessageCell : UITableViewCell
 
@@ -19,5 +20,7 @@ typedef void(^LongPressCellBlock)(NSString *content, UIView *longPressView);
 @property (nonatomic, strong) MJMessageFrame *messageFrame;
 
 @property (nonatomic, copy) LongPressCellBlock longPressCellBlock;
+
+@property (nonatomic, copy) RepeatSendMessageBlock repeatSendMessageBlock;
 @end
 

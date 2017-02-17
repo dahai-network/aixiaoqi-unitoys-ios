@@ -45,6 +45,7 @@
 		04EAB8BD1E2787F6000D3D13 /* AlarmListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EAB8BB1E2787F6000D3D13 /* AlarmListViewController.xib */; };
 		04EAB8C11E2788DB000D3D13 /* AlarmListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EAB8BF1E2788DB000D3D13 /* AlarmListTableViewCell.m */; };
 		04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EAB8C01E2788DB000D3D13 /* AlarmListTableViewCell.xib */; };
+		3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */; };
 		3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */; };
 		3C8CFA6B1E55988B0035A460 /* UCallPhoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6A1E55988B0035A460 /* UCallPhoneButton.m */; };
 		3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */; };
@@ -267,6 +268,8 @@
 		04EAB8BE1E2788DB000D3D13 /* AlarmListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlarmListTableViewCell.h; sourceTree = "<group>"; };
 		04EAB8BF1E2788DB000D3D13 /* AlarmListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlarmListTableViewCell.m; sourceTree = "<group>"; };
 		04EAB8C01E2788DB000D3D13 /* AlarmListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlarmListTableViewCell.xib; sourceTree = "<group>"; };
+		3C116DF61E56CD90006C0641 /* CustomRefreshMessageHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomRefreshMessageHeader.h; sourceTree = "<group>"; };
+		3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshMessageHeader.m; sourceTree = "<group>"; };
 		3C8CFA661E5597D10035A460 /* UCallPhonePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhonePadView.h; sourceTree = "<group>"; };
 		3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCallPhonePadView.m; sourceTree = "<group>"; };
 		3C8CFA691E55988B0035A460 /* UCallPhoneButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhoneButton.h; sourceTree = "<group>"; };
@@ -815,6 +818,8 @@
 				95D0004E1E0ACBB600283ADC /* NotifyTextField.m */,
 				3C8CFA6C1E55A1CB0035A460 /* UIView+Utils.h */,
 				3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */,
+				3C116DF61E56CD90006C0641 /* CustomRefreshMessageHeader.h */,
+				3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -1570,6 +1575,7 @@
 				9562EEA31DD3672F00E10C98 /* NewMessageViewController.m in Sources */,
 				953CF9D01DCCF16A0001CE8E /* PaySuccessViewController.m in Sources */,
 				954A87DC1D99136300570843 /* BrowserViewController.m in Sources */,
+				3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */,
 				952B2B021DC229E0006A7C69 /* MJMessage.m in Sources */,
 				95938D411D93ABF0008A0A21 /* PackageDetailViewController.m in Sources */,
 				95BAED651D87A5D4005A6402 /* BaseViewController.m in Sources */,

@@ -18,6 +18,8 @@
 @property (nonatomic, strong) NSMutableArray *messageFrames;
 
 //@property (weak, nonatomic) IBOutlet UITextField *inputView;
+
+@property (nonatomic, copy) NSString *cellContent;
 @end
 
 @implementation NewMessageViewController
@@ -53,12 +55,31 @@
 //    [self.txtLinkman becomeFirstResponder];
     [self loadMessages];
     
-    
     self.txtSendText.delegate = self;
-    
     self.txtLinkman.notifyTextFieldDelegate = self;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KTAutoHeightTextViewFontChange" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KeyboardWillShowFinished" object:nil];
 }
 
+- (void)textViewFontChange
+{
+    NSLog(@"更新inputContainerView");
+    NSLog(@"tableView---%@", NSStringFromCGRect(self.tableView.frame));
+    NSLog(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
+    [self.tableView layoutIfNeeded];
+    [self scrollTableViewToBottomWithAnimated:NO];
+}
+
+//自动滚动到底部
+- (void)scrollTableViewToBottomWithAnimated:(BOOL)animated
+{
+    //自动滚动到底部
+    if ([self.messageFrames count]) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.messageFrames.count - 1 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
+    }
+}
 
 - (void)dealloc
 {
@@ -93,6 +114,17 @@
                 
                 NSArray *arrMessages = [responseObj objectForKey:@"data"];
                 
+                //排序
+                arrMessages = [arrMessages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                    
+                    NSString *time1 = [obj1 objectForKey:@"SMSTime"];
+                    NSString *time2 = [obj2 objectForKey:@"SMSTime"];
+                    
+                    NSComparisonResult result = [time1 compare:time2];
+                    return result == NSOrderedDescending; // 升序
+                    //        return result == NSOrderedAscending;  // 降序
+                }];
+                
                 for (NSDictionary *dict in arrMessages){
                     if ([[dict objectForKey:@"Fm"] isEqualToString:self.title]) {
                         [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type", nil]];
@@ -125,6 +157,9 @@
                 _messageFrames = mfArray;
                 
                 [self.tableView reloadData];
+                
+                //自动滚动到底部
+                [self scrollTableViewToBottomWithAnimated:NO];
                 
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
@@ -162,11 +197,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    kWeakSelf
     // 1.创建cell
     MJMessageCell *cell = [MJMessageCell cellWithTableView:tableView];
     
     // 2.给cell传递模型
     cell.messageFrame = self.messageFrames[indexPath.row];
+    
+    cell.longPressCellBlock = ^(NSString *content, UIView *longPressView){
+        [weakSelf longPressActionWithContent:content longPressView:longPressView];
+    };
     
     // 3.返回cell
     return cell;
@@ -216,7 +256,7 @@
     NSString *receiveNumbers;
      if ([self.txtSendText.text length]>0) {
          self.btnSend.enabled = NO;
-     self.checkToken = YES;
+         self.checkToken = YES;
          if (![self.txtLinkman.text isValidateMobile]) {
              receiveNumbers = [self getNumbers];
          } else {
@@ -229,46 +269,37 @@
 //             self.linkManTele = receiveNumbers;
 //         }
          self.linkManTele = receiveNumbers;
-     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
-     
-     [self getBasicHeader];
-     NSLog(@"表演头：%@",self.headers);
-     [SSNetworkRequest postRequest:apiSMSSend params:info success:^(id responseObj) {
-     
-     
-     NSLog(@"查询到的用户数据：%@",responseObj);
-     
-     if ([[responseObj objectForKey:@"status"] intValue]==1) {
-     
-//     [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"发送成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-//     HUDNormal(@"发送成功")
-     
-     self.txtSendText.text = @"";
-     
-     [self.txtSendText resignFirstResponder];
-     
-     _messageFrames = nil;
-     
-     [self loadMessages];
-    self.btnSend.enabled = YES;
-     
-     }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-     
-     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-         self.btnSend.enabled = YES;
-     }else{
-     //数据请求失败
-//     [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-         HUDNormal(responseObj[@"msg"])
-         self.btnSend.enabled = YES;
-     }
-     
-     
-     } failure:^(id dataObj, NSError *error) {
-     HUDNormal([error description])
-         self.btnSend.enabled = YES;
-//     NSLog(@"啥都没：%@",[error description]);
-     } headers:self.headers];
+         NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
+         
+         [self getBasicHeader];
+         NSLog(@"表演头：%@",self.headers);
+         [SSNetworkRequest postRequest:apiSMSSend params:info success:^(id responseObj) {
+             NSLog(@"查询到的用户数据：%@",responseObj);
+             
+             if ([[responseObj objectForKey:@"status"] intValue]==1) {
+        //     [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"发送成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        //     HUDNormal(@"发送成功")
+             self.txtSendText.text = @"";
+             [self.txtSendText resignFirstResponder];
+             _messageFrames = nil;
+             
+             [self loadMessages];
+            self.btnSend.enabled = YES;
+             
+             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+                 self.btnSend.enabled = YES;
+             }else{
+             //数据请求失败
+        //     [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                 HUDNormal(responseObj[@"msg"])
+                 self.btnSend.enabled = YES;
+             }
+         } failure:^(id dataObj, NSError *error) {
+             HUDNormal([error description])
+            self.btnSend.enabled = YES;
+        //     NSLog(@"啥都没：%@",[error description]);
+         } headers:self.headers];
      }
 }
 
@@ -324,9 +355,6 @@
                 //删除号位，更新数据
                 [self pairLinkman];
             }else{
-                
-                
-                
                 //删除这个联系人..要好看就处理下光标
                 [self.arrLinkman removeObjectAtIndex:mans.count-1];
                 self.txtLinkman.text = [self getLinkmans];
@@ -354,9 +382,6 @@
                 self.txtLinkman.text = [self getLinkmans];
                 [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
             }else{
-                
-                
-                
                 //删除这个联系人..要好看就处理下光标
                 [self.arrLinkman removeObjectAtIndex:mans.count-1];
                 self.txtLinkman.text = [self getLinkmans];
@@ -365,7 +390,6 @@
                 
                 [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
             }
-            
             
         }
     }
@@ -384,7 +408,6 @@
             //更新即可
             for (int i=0; i<self.arrLinkman.count; i++) {
                 NSMutableDictionary *dicNumber = [self.arrLinkman objectAtIndex:i];
-                
                 
                 if ([[dicNumber objectForKey:@"linkman"] isEqualToString:[dicNumber objectForKey:@"number"]]) {
                     [dicNumber setObject:[numbers objectAtIndex:i] forKey:@"number"];
@@ -480,7 +503,45 @@
     
 }
 
+//设置响应
+-(BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
 
+//长按响应
+- (void)longPressActionWithContent:(NSString *)content longPressView:(UIView *)longPressView
+{
+    NSArray *menus = [self menusItems];
+    if ([menus count] && [self becomeFirstResponder]) {
+        UIMenuController *menuController = [UIMenuController sharedMenuController];
+        menuController.menuItems = menus;
+        _cellContent = content;
+        [menuController setTargetRect:longPressView.bounds inView:longPressView];
+        [menuController setMenuVisible:YES animated:YES];
+    }
+}
 
+//获取长按菜单
+- (NSArray *)menusItems
+{
+    NSMutableArray *items = [NSMutableArray array];
+    [items addObject:[[UIMenuItem alloc] initWithTitle:@"复制" action:@selector(copyText:)]];
+    return items;
+}
+
+//复制
+- (void)copyText:(id)sender
+{
+    if (self.cellContent.length) {
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        [pasteboard setString:self.cellContent];
+    }
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self.view endEditing:YES];
+}
 
 @end

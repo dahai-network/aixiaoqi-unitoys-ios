@@ -511,15 +511,15 @@
                                     <constraint firstItem="Y88-Sr-bW6" firstAttribute="top" secondItem="hqc-vL-BSW" secondAttribute="bottom" id="oOF-Eh-Xqy"/>
                                 </constraints>
                                 <connections>
-                                    <outlet property="OVLayoutGuideConstraint" destination="pxK-rO-Gd7" id="gyk-dH-tvj"/>
+                                    <outlet property="OVLayoutGuideConstraint" destination="9vq-KN-j9x" id="fqT-68-MO1"/>
                                 </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="SJI-om-3Hp" firstAttribute="leading" secondItem="GqH-k6-qje" secondAttribute="leading" id="2FN-1Z-ZK5"/>
+                            <constraint firstAttribute="bottom" secondItem="SJI-om-3Hp" secondAttribute="bottom" id="9vq-KN-j9x"/>
                             <constraint firstItem="SJI-om-3Hp" firstAttribute="top" secondItem="GqH-k6-qje" secondAttribute="top" id="TaD-07-8br"/>
-                            <constraint firstItem="Tg5-Im-RnY" firstAttribute="top" secondItem="SJI-om-3Hp" secondAttribute="bottom" id="pxK-rO-Gd7"/>
                             <constraint firstAttribute="trailing" secondItem="SJI-om-3Hp" secondAttribute="trailing" id="sW3-qP-IFy"/>
                         </constraints>
                     </view>

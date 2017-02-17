@@ -20,9 +20,10 @@
 
 - (void)updateCellWithModel:(ContactModel *)model HightText:(NSString *)hightText
 {
-    if (!model) {
+    if (!model || !hightText) {
         return;
     }
+    self.iconImageView.image = [UIImage imageNamed:model.portrait];
     if (model.name) {
         self.nameLabel.text = model.name;
         NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:model.phoneNumber attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13], NSForegroundColorAttributeName : [UIColor lightGrayColor]}];

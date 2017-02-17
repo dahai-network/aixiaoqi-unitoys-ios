@@ -13,7 +13,19 @@ typedef enum {
     MJMessageTypeOther   // 别人发的
 } MJMessageType;
 
+typedef enum {
+    MJMessageStatuProcessing = 0,   //正在处理
+    MJMessageStatuSuccess = 1,      //处理成功
+    MJMessageStatuError = 2         //处理失败
+} MJMessageStatu;
+
 @interface MJMessage : NSObject
+
+@property (nonatomic, copy) NSString *SMSID;
+/**
+ *  短信状态
+ */
+@property (nonatomic, assign) MJMessageStatu Status;
 /**
  *  聊天内容
  */

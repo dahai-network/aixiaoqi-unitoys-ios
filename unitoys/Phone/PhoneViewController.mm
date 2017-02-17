@@ -298,28 +298,36 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             
             if (_arrMessageRecord.count>=20) {
                 self.tableView.mj_footer.hidden = NO;
+            }else{
+                self.tableView.mj_footer.hidden = YES;
             }
-            
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
+            NSLog(@"请求短信数据失败");
         }
         
     } failure:^(id dataObj, NSError *error) {
-        //
         [self.tableView.mj_header endRefreshing];
     } headers:self.headers];
 }
 
+//短信加载更多数据
 - (void)loadMoreMessage {
+    
+    if (self.tableView.mj_header.isRefreshing) {
+        [self.tableView.mj_footer endRefreshing];
+        return;
+    }
+    
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber", nil];
     
     [self getBasicHeader];
     NSLog(@"表演头：%@",self.headers);
+
     [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理
@@ -330,7 +338,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
          [manager.requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
          }*/
         NSLog(@"查询到的用户数据：%@",responseObj);
-        [self.tableView.mj_header endRefreshing];
+//        [self.tableView.mj_footer endRefreshing];
+        
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             
             NSArray *arrNewMessages = [responseObj objectForKey:@"data"];
@@ -338,26 +347,27 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             if (arrNewMessages.count>0) {
                 self.page = self.page + 1;
                 _arrMessageRecord = [_arrMessageRecord arrayByAddingObjectsFromArray:arrNewMessages];
+                [self.tableView.mj_footer endRefreshing];
             }else{
-                [self.tableView.mj_header endRefreshing];
-                self.tableView.mj_footer.hidden = NO;
+//                [self.tableView.mj_header endRefreshing];
+//                self.tableView.mj_footer.hidden = NO;
                 [self.tableView.mj_footer endRefreshingWithNoMoreData];
             }
             
             [self.tableView reloadData];
             
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            
+            HUDNormal(@"数据请求失败")
+            [self.tableView.mj_footer endRefreshing];
         }
         
     } failure:^(id dataObj, NSError *error) {
-        //
-        [self.tableView.mj_header endRefreshing];
+//        [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
+        HUDNormal(@"网络异常")
     } headers:self.headers];
 }
 
@@ -602,14 +612,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (void)makeCallAction :(NSNotification *)notification {
-    
-    
-        NSString *phoneNumber = notification.object;
-        if (phoneNumber) {
-            [self callNumber:phoneNumber];
-        }
-    
-    
+    NSString *phoneNumber = notification.object;
+    if (phoneNumber) {
+        [self callNumber:phoneNumber];
+    }
 }
 
 - (void)makeUnitysCallAction:(NSNotification *)notification {
@@ -1120,16 +1126,69 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)standardCall {
     NSString *strPhoneNumber = self.phonePadView.inputedPhoneNumber;
-    self.phonePadView.inputedPhoneNumber = nil;
-    self.lblPhoneNumber.text = nil;
-//    [self showOperation];
-    self.lblPhoneNumber.hidden = YES;
-    self.segmentType.hidden = NO;
-    self.callView.hidden = YES;
+//    self.phonePadView.inputedPhoneNumber = nil;
+//    self.lblPhoneNumber.text = nil;
+////    [self showOperation];
+//    self.lblPhoneNumber.hidden = YES;
+//    self.segmentType.hidden = NO;
+//    self.callView.hidden = YES;
+//    //清空搜索状态
+//    self.isSearchStatu = NO;
+//    [self.searchLists removeAllObjects];
     
-//    if ([strPhoneNumber length]>=8) {
-        [self callNumber:[self formatPhoneNum:strPhoneNumber]];
-//    }
+    
+//    [self callNumber:[self formatPhoneNum:strPhoneNumber]];
+    
+    //展示拨打电话选项
+    [self selectCallPhoneType:[self formatPhoneNum:strPhoneNumber]];
+    
+
+}
+
+- (void)selectCallPhoneType:(NSString *)phoneNumber
+{
+    //电话记录，拨打电话
+    if (!self.callActionView){
+        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+        
+        [self.view addSubview:self.callActionView];
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    
+    self.callActionView.cancelBlock = ^(){
+        weakSelf.callActionView.hidden = YES;
+    };
+    
+    self.callActionView.actionBlock = ^(NSInteger callType){
+        weakSelf.callActionView.hidden = YES;
+        
+        weakSelf.phonePadView.inputedPhoneNumber = nil;
+        weakSelf.lblPhoneNumber.text = nil;
+    //    [self showOperation];
+        weakSelf.lblPhoneNumber.hidden = YES;
+        weakSelf.segmentType.hidden = NO;
+        weakSelf.callView.hidden = YES;
+        //清空搜索状态
+        weakSelf.isSearchStatu = NO;
+        [weakSelf.searchLists removeAllObjects];
+        [weakSelf.tableView reloadData];
+        
+        if (callType==1) {
+            //网络电话
+            //电话记录，拨打电话
+            [weakSelf callNumber:phoneNumber];
+        }else if (callType==2){
+            //手环电话
+            if ([BlueToothDataManager shareManager].isRegisted) {
+                //电话记录，拨打电话
+                [weakSelf callUnitysNumber:phoneNumber];
+            } else {
+                HUDNormal(@"手环内sim卡未注册或已掉线")
+            }
+        }
+    };
+    self.callActionView.hidden = NO;
 }
 
 - (NSString *)formatPhoneNum:(NSString *)phone
@@ -1168,37 +1227,36 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
         self.calledTelNum = [NSString stringWithFormat:@"981%@",self.phoneNumber];
         
-        CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
-        if (callingViewController) {
-            self.callStartTime = [NSDate date];
-            callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
-            [self presentViewController:callingViewController animated:YES completion:^{
+        //获取最大通话时长后再拨打
+        [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
+            NSLog(@"有数据：%@",responseObj);
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 
-//                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-//                callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
-//                theSipEngine->MakeCall([[NSString stringWithFormat:@"981%@#%d",[self formatPhoneNum:self.phoneNumber],self.maxPhoneCall] UTF8String],false,NULL);
-                
-                //获取最大通话时长后再拨打
-                [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
-                    NSLog(@"有数据：%@",responseObj);
-                    if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
+                if (callingViewController) {
+                    self.callStartTime = [NSDate date];
+                    callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
+                    [self presentViewController:callingViewController animated:YES completion:^{
                         self.maxPhoneCall = [[[responseObj objectForKey:@"data"]  objectForKey:@"maximumPhoneCallTime"] intValue];
                         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
                         callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
                         theSipEngine->MakeCall([[NSString stringWithFormat:@"981%@#%d",[self formatPhoneNum:self.phoneNumber],self.maxPhoneCall] UTF8String],false,NULL);
-                    }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-                    }else{
-                        //数据请求失败
-                        NSLog(@"获取最大时长失败");
-                    }
-                } failure:^(id dataObj, NSError *error) {
-                    NSLog(@"有异常：%@",[error description]);
-                    HUDNormal(@"网络异常")
-                } headers:self.headers];
-
-            }];
-        }
+                        
+                    }];
+                }
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+                NSLog(@"获取最大时长失败");
+                //                    HUDNormal(responseObj[@"msg"])
+                HUDNormal(@"获取通话时长失败")
+            }
+        } failure:^(id dataObj, NSError *error) {
+            NSLog(@"有异常：%@",[error description]);
+            HUDNormal(@"网络异常")
+        } headers:self.headers];
+        
     }
     
 }
@@ -1235,9 +1293,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     int dat = [self.callStopTime timeIntervalSinceReferenceDate]-[self.callStartTime timeIntervalSinceReferenceDate];
     
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    
-    
-    
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[userdata objectForKey:@"Tel"],@"DeviceName",self.calledTelNum,@"calledTelNum",[self formatTime:self.callStartTime],@"callStartTime", [self formatTime:self.callStopTime],@"callStopTime",[NSString stringWithFormat:@"%d",dat],@"callSessionTime",self.outIP,@"callSourceIp",self.outIP,@"callServerIp",self.hostHungup,@"acctterminatedirection",nil];
     
     [self getBasicHeader];
@@ -1290,7 +1345,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //        NSLog(@"y值---%.2f", self.self.phonePadView.frame.origin.y);
 //        [self.phonePadView setFrame:CGRectMake(self.phonePadView.frame.origin.x, self.phonePadView.frame.origin.y+self.phonePadView.frame.size.height, self.phonePadView.frame.size.width, 0)];
         [self.phonePadView setFrame:CGRectMake(0, kScreenHeightValue - 64 - 49, self.phonePadView.frame.size.width, 0)];
-        
         self.numberPadStatus = YES;
     }else{
         NSLog(@"打开键盘");
@@ -1301,7 +1355,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
     
     self.callView.isPadHidden = self.numberPadStatus;
-
     
     //[self.tableView needsUpdateConstraints];
     
@@ -1345,16 +1398,16 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             self.arrMessageRecord = nil;
             self.page = 1;
             [self loadMessage];
-            
         }];
-        
-//        [self.tableView.mj_header beginRefreshing];
-
+    
         //刷新尾部
         self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMessage)];
-        //防止网络慢的时候，显示脚部刷新，进入隐藏
-        self.tableView.mj_footer.hidden = YES;
-        //不加载
+        //如果数据不够则隐藏
+        if (!_arrMessageRecord || _arrMessageRecord.count < 20) {
+            self.tableView.mj_footer.hidden = YES;
+        }else{
+            self.tableView.mj_footer.hidden = NO;
+        }
     }
     [self.tableView reloadData];
 }
@@ -1363,8 +1416,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     NewMessageViewController *newMessageViewController = [mainStory instantiateViewControllerWithIdentifier:@"newMessageViewController"];
     if (newMessageViewController) {
-        
-        //        writeMessageViewController.destNumber = [dicPackage objectForKey:@"PackageId"];
+        //writeMessageViewController.destNumber = [dicPackage objectForKey:@"PackageId"];
         [self.navigationController pushViewController:newMessageViewController animated:YES];
     }
 }
@@ -1377,7 +1429,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.phoneOperation==0) {
 //        return self.arrPhoneRecord.count;
-        if (self.isSearchStatu) {
+        if (self.isSearchStatu && self.lblPhoneNumber.text) {
             return self.searchLists.count;
         }else{
             return self.arrPhoneRecord.count;
@@ -1389,7 +1441,16 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (self.phoneOperation==0) {
-        if (!self.isSearchStatu) {
+        if (self.isSearchStatu && self.lblPhoneNumber.text) {
+            ContactModel *model;
+            if ([self.searchLists count] > indexPath.row ) {
+                model = self.searchLists[indexPath.row];
+            }
+            //展示搜索信息
+            SearchContactsCell *cell = [tableView dequeueReusableCellWithIdentifier:searchContactsCellID];
+            [cell updateCellWithModel:model HightText:self.lblPhoneNumber.text];
+            return cell;
+        }else{
             PhoneRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"PhoneRecordCell"];
             
             NSDictionary *dicPhoneRecord = [self.arrPhoneRecord objectAtIndex:indexPath.row];
@@ -1424,15 +1485,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             cell.lblPhoneType.text = [dicPhoneRecord objectForKey:@"location"];
             
             return cell;
-        }else{
-            ContactModel *model;
-            if ([self.searchLists count] > indexPath.row ) {
-                model = self.searchLists[indexPath.row];
-            }
-            //展示搜索信息
-            SearchContactsCell *cell = [tableView dequeueReusableCellWithIdentifier:searchContactsCellID];
-            [cell updateCellWithModel:model HightText:self.lblPhoneNumber.text];
-            return cell;
         }
 
     }else{
@@ -1465,7 +1517,41 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.phoneOperation==0) {
-        if (!self.isSearchStatu) {
+        if (self.isSearchStatu && self.lblPhoneNumber.text) {
+            //通过点击联系人拨打电话
+            ContactModel *model;
+            if ([self.searchLists count] > indexPath.row ) {
+                model = self.searchLists[indexPath.row];
+            }
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+            if (storyboard) {
+                
+                ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
+                if (contactsDetailViewController) {
+                        NSLog(@"联系结果：%@",model);
+                    //重置状态
+                    self.callActionView.hidden = YES;
+                    
+                    self.phonePadView.inputedPhoneNumber = nil;
+                    self.lblPhoneNumber.text = nil;
+                    //    [self showOperation];
+                    self.lblPhoneNumber.hidden = YES;
+                    self.segmentType.hidden = NO;
+                    self.callView.hidden = YES;
+                    //清空搜索状态
+                    self.isSearchStatu = NO;
+                    [self.searchLists removeAllObjects];
+                    [self.tableView reloadData];
+                    
+                    contactsDetailViewController.contactMan = model.name;
+                    contactsDetailViewController.phoneNumbers = model.phoneNumber;
+                    contactsDetailViewController.contactHead = model.portrait;
+                    [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
+                    [self.navigationController pushViewController:contactsDetailViewController animated:YES];
+                }
+            }
+        }else{
             //电话记录，拨打电话
             if (!self.callActionView){
                 self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
@@ -1520,9 +1606,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             };
             
             self.callActionView.hidden = NO;
-        }else{
-            //通过点击联系人拨打电话
-            
         }
         
     } else {
@@ -1553,14 +1636,89 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//允许左滑删除
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.phoneOperation == 1) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
+//左滑删除
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.phoneOperation == 1) {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
+            
+            NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_arrMessageRecord];
+            [tempArray removeObjectAtIndex:indexPath.row];
+            _arrMessageRecord = [tempArray copy];
+            
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            //从服务器删除数据
+            [self deleteMessageWithPhoneNumber:dicMessageRecord[@"To"]];
+        }
+    }
+}
+
+- (void)deleteMessageWithPhoneNumber:(NSString *)phoneNumber
+{
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: phoneNumber ,@"Tel",nil];
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiSMSDeletesByTel params:params success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"删除单条短信成功");
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            NSLog(@"删除单条短信失败");
+        }
+    } failure:^(id dataObj, NSError *error) {
+        NSLog(@"删除单条短信异常：%@",[error description]);
+    } headers:self.headers];
+    
+//    [SSNetworkRequest getRequest:apiSMSDeletesByTel params:nil success:^(id responseObj) {
+//        NSLog(@"有数据：%@",responseObj);
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//        }
+//        
+//    } failure:^(id dataObj, NSError *error) {
+//        NSLog(@"有异常：%@",[error description]);
+//    } headers:self.headers];
+}
+
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ([alertView.title isEqualToString:@"错误提示"]) {
         [self OnCallEnded];
     }
 }
 
+//滑动时隐藏键盘
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if (self.isSearchStatu && self.lblPhoneNumber.text) {
+        [self switchNumberPad:YES];
+        [self.callView.btnSwitchNumberPad setImage:[UIImage imageNamed:@"tel_numberpad_pulloff"] forState:UIControlStateNormal];
+    }
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBook"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallingAction" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeCallAction" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeUnitysCallAction" object:nil];
 }
 @end

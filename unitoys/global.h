@@ -192,6 +192,12 @@
 //使用签名，手环设备查询
 #define apiDeviceBracelet defaultHost@"api/DeviceBracelet/Get"
 
+//删除单个联系人短信
+#define apiSMSDeletesByTel  defaultHost@"api/SMS/DeletesByTel"
+
+//短信发送错误-重试
+#define apiSMSSendRetryForError  defaultHost@"api/SMS/SendRetryForError"
+
 //环形进度条密集度系数
 #define AnnularProgressBar @"60"
 
