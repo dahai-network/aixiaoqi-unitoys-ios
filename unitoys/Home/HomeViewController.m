@@ -23,8 +23,15 @@
 #import "VSWManager.h"
 
 #import "QuickSettingViewController.h"
+#import <iOSDFULibrary/iOSDFULibrary-Swift.h>
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
+
+@interface HomeViewController ()<DFUServiceDelegate,LoggerDelegate,DFUProgressDelegate>
+@property (nonatomic, strong) DFUServiceController *myController;
+@property (nonatomic, strong) NSFileHandle *writeHandle;
+
+@end
 
 @implementation HomeViewController
 
@@ -156,6 +163,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(unBindSuccess) name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];//解绑成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notToConnectedAndStopScan) name:@"stopScanBLE" object:@"stopScanBLE"];//停止扫描
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cardNumberNotTrueAction:) name:@"cardNumberNotTrue" object:nil];//号码有问题专用
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(oatUpdataAction:) name:@"OTAAction" object:nil];//空中升级
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
     
@@ -300,6 +308,101 @@
             [self fetchAddressBookOnIOS9AndLater];
         }
     }
+}
+
+#pragma mark 空中升级指令
+- (NSData *)checkOATDFU {
+    Byte reg[7];
+    //    0x88 0x80 0x03 0x0A 0x00 0xB1
+    reg[0]=0x88;
+    reg[1]=0x80;
+    reg[2]=0x03;
+    reg[3]=0x0A;
+    reg[4]=0x00;
+    reg[5]=0xB1;
+    reg[6]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]^reg[5]);
+    NSData *data=[NSData dataWithBytes:reg length:7];
+    return data;
+}
+
+
+#pragma mark - 空中升级
+- (void)oatUpdataAction:(NSNotification *)sender {
+    [self sendConnectingInstructWithData:[self checkOATDFU]];
+    NSURL *downloadURL = [NSURL URLWithString:sender.object];
+    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:downloadURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        //下载完成之后的回调
+        // 文件路径
+        NSString* ceches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+        NSString* filepath = [ceches stringByAppendingPathComponent:response.suggestedFilename];
+        NSLog(@"文件路径 --> %@", filepath);
+        
+        // 创建一个空的文件到沙盒中
+        NSFileManager *mgr = [NSFileManager defaultManager];
+        [mgr createFileAtPath:filepath contents:nil attributes:nil];
+        
+        // 创建一个用来写数据的文件句柄对象
+        self.writeHandle = [NSFileHandle fileHandleForWritingAtPath:filepath];
+        // 将数据写入沙盒
+        [self.writeHandle writeData:data];
+        // 关闭文件
+        [self.writeHandle closeFile];
+        self.writeHandle = nil;
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
+            
+            //        NSURL *fileURL = [NSURL fileURLWithPath:filepath];
+            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
+            DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
+            DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:self.mgr target:self.peripheral];
+            [initiator withFirmwareFile:selectedFirmware];
+            initiator.delegate = self;
+            initiator.logger = self;
+            initiator.progressDelegate = self;
+            self.myController = [initiator start];//开始升级
+        });
+    }];
+}
+
+#pragma mark 代理方法
+- (void)didStateChangedTo:(enum DFUState)state {
+    /*
+     DFUStateConnecting = 0,
+     DFUStateStarting = 1,
+     DFUStateEnablingDfuMode = 2,
+     DFUStateUploading = 3,
+     DFUStateValidating = 4,
+     DFUStateDisconnecting = 5,
+     DFUStateCompleted = 6,
+     DFUStateAborted = 7,
+     DFUStateSignatureMismatch = 8,
+     DFUStateOperationNotPermitted = 9,
+     DFUStateFailed = 10,
+     */
+    //    DFUState dfuStateType = (DFUState)state;
+    NSLog(@"显示升级状态 --> %ld", (long)state);
+}
+
+- (void)didErrorOccur:(enum DFUError)error withMessage:(NSString *)message {
+    NSLog(@"ERROR %ld:%@", (long)error, message);
+}
+
+- (void)onUploadProgress:(NSInteger)part totalParts:(NSInteger)totalParts progress:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
+    //进度
+    NSLog(@"dfuProgressChangedFor: %ld%% (part %ld/%ld).speed:%f bps, Avg speed:%f bps", (long)progress, (long)part, (long)totalParts, currentSpeedBytesPerSecond, avgSpeedBytesPerSecond);
+}
+
+- (void)logWith:(enum LogLevel)level message:(NSString *)message {
+    /*
+     LogLevelDebug = 0,
+     LogLevelVerbose = 1,
+     LogLevelInfo = 5,
+     LogLevelApplication = 10,
+     LogLevelWarning = 15,
+     LogLevelError = 20,
+     */
+    NSLog(@"升级步骤显示 --> %ld, %@", (long)level, message);
 }
 
 #pragma mark - VSW相关
@@ -2867,6 +2970,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"stopScanBLE" object:@"stopScanBLE"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"cardNumberNotTrue" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"OTAAction" object:nil];
     
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {

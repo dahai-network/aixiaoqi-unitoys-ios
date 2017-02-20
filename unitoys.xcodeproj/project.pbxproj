@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		041BB4B11E5B07B9001C4841 /* yynew15.zip in Resources */ = {isa = PBXBuildFile; fileRef = 041BB4B01E5B07B9001C4841 /* yynew15.zip */; };
 		0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */; };
 		0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */; };
 		0436C3651E1F90460033A8F1 /* CommunicatePackageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C3631E1F90460033A8F1 /* CommunicatePackageTableViewCell.m */; };
@@ -209,6 +210,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		041BB4B01E5B07B9001C4841 /* yynew15.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = yynew15.zip; sourceTree = "<group>"; };
 		0436C35D1E1F86180033A8F1 /* CommunicatePackageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommunicatePackageViewController.h; sourceTree = "<group>"; };
 		0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunicatePackageViewController.m; sourceTree = "<group>"; };
 		0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunicatePackageViewController.xib; sourceTree = "<group>"; };
@@ -1040,6 +1042,7 @@
 		955CCC3D1D90FF4A00BC8110 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				041BB4B01E5B07B9001C4841 /* yynew15.zip */,
 				955CCC3E1D91758400BC8110 /* HomeViewController.h */,
 				955CCC3F1D91758400BC8110 /* HomeViewController.m */,
 				740FD39D1E28B674009413F1 /* VSWManager.h */,
@@ -1476,6 +1479,7 @@
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
 				950E79221E02CDB5003AE0D5 /* Device.storyboard in Resources */,
+				041BB4B11E5B07B9001C4841 /* yynew15.zip in Resources */,
 				952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */,
 				3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */,
 				954A87E21D9A0DA400570843 /* PhonePadView.xib in Resources */,

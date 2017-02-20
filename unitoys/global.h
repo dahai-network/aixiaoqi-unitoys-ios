@@ -194,6 +194,9 @@
 //使用签名，手环设备查询
 #define apiDeviceBracelet defaultHost@"api/DeviceBracelet/Get"
 
+//使用签名，空中升级
+#define apiDeviceBraceletOTA defaultHost@"api/DeviceBracelet/OTA"
+
 //删除单个联系人短信
 #define apiDeletesByTel  defaultHost@"api/SMS/DeletesByTel"
 

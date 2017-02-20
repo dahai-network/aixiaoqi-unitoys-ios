@@ -264,6 +264,36 @@
     });
 }
 
+#pragma mark 调用空中升级接口
+- (void)otaDownload {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    NSLog(@"表头：%@",self.headers);
+    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:@"1", @"Version", nil];
+    [SSNetworkRequest getRequest:apiDeviceBraceletOTA params:info success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"空中升级的请求结果 -- %@", responseObj);
+            if (responseObj[@"data"][@"Descr"]) {
+                [self dj_alertAction:self alertTitle:nil actionTitle:@"升级" message:responseObj[@"data"][@"Descr"] alertAction:^{
+                    //点击升级
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"OTAAction" object:responseObj[@"data"][@"Url"]];
+                }];
+            } else {
+                HUDNormal(responseObj[@"msg"])
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==0){
+            //数据请求失败
+            NSLog(@"请求失败");
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(@"网络貌似有问题")
+        //
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 15;
 }
@@ -284,6 +314,9 @@
             } else {
                 HUDNormal(@"未连接手环")
             }
+        }
+        if (indexPath.row == 1) {
+            [self otaDownload];
         }
     }
 }
