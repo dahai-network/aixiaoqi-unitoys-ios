@@ -36,6 +36,9 @@
 
 //当前是否为搜索状态
 @property (nonatomic, assign) BOOL isSearchStatu;
+
+//处理过的拨打记录列表
+@property (nonatomic, copy) NSArray *searchPhoneRecords;
 //联系人列表
 @property (nonatomic, copy) NSArray *contactsLists;
 //搜索列表
@@ -47,21 +50,29 @@
 static NSString *searchContactsCellID = @"SearchContactsCell";
 @implementation PhoneViewController
 
-//- (NSMutableArray *)searchLists
-//{
-//    if (!_searchLists) {
-//        _searchLists = [NSMutableArray array];
-//    }
-//    return _searchLists;
-//}
+- (NSMutableArray *)searchLists
+{
+    if (!_searchLists) {
+        _searchLists = [NSMutableArray array];
+    }
+    return _searchLists;
+}
 
 - (NSArray *)contactsLists
 {
     if (!_contactsLists) {
         //获取联系人信息
-        _contactsLists = [AddressBookManager shareManager].dataArr;
+        _contactsLists = [[AddressBookManager shareManager].dataArr copy];
     }
     return _contactsLists;
+}
+
+- (NSArray *)searchPhoneRecords
+{
+    if (!_searchPhoneRecords) {
+        _searchPhoneRecords = [_arrPhoneRecord copy];
+    }
+    return _searchPhoneRecords;
 }
 
 //收到重新登入通知后，注销Sip账号
@@ -71,7 +82,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (theSipEngine->AccountIsRegstered()) {
         theSipEngine->DeRegisterSipAccount();
     }
-    
 }
 
 - (BOOL)initEngine {
@@ -257,13 +267,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 {
     NSString *searchString = [NSString stringWithUTF8String:searchText.UTF8String];
     //    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[c] %@", searchString];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"phoneNumber CONTAINS[c] %@", searchString];
+    NSPredicate *contactsPredicate = [NSPredicate predicateWithFormat:@"phoneNumber CONTAINS[c] %@ || allPinyinNumber CONTAINS[c] %@ || headerPinyinNumber CONTAINS[c] %@", searchString, searchString, searchString];
+    NSPredicate *recordsPredicate = [NSPredicate predicateWithFormat:@"hostnumber CONTAINS[c] %@ || destnumber CONTAINS[c] %@", searchString, searchString];
     //用predicateWithFormat创建一个谓词，name作为键路径
     if (_searchLists!= nil) {
         [_searchLists removeAllObjects];
     }
-    self.searchLists= [NSMutableArray arrayWithArray:[self.contactsLists filteredArrayUsingPredicate:predicate]];
+    [self.searchLists addObjectsFromArray:[self.searchPhoneRecords filteredArrayUsingPredicate:recordsPredicate]];
+    [self.searchLists addObjectsFromArray:[self.contactsLists filteredArrayUsingPredicate:contactsPredicate]];
     [self.tableView reloadData];
 }
 
@@ -1338,13 +1349,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     if (hidden) {
         NSLog(@"关闭键盘");
-//        NSLog(@"y值---%.2f", self.self.phonePadView.frame.origin.y);
-//        [self.phonePadView setFrame:CGRectMake(self.phonePadView.frame.origin.x, self.phonePadView.frame.origin.y+self.phonePadView.frame.size.height, self.phonePadView.frame.size.width, 0)];
         [self.phonePadView setFrame:CGRectMake(0, kScreenHeightValue - 64 - 49, self.phonePadView.frame.size.width, 0)];
         self.numberPadStatus = YES;
     }else{
         NSLog(@"打开键盘");
-//        [self.phonePadView setFrame:CGRectMake(self.phonePadView.frame.origin.x, self.phonePadView.frame.origin.y-201, self.phonePadView.frame.size.width, 201)];
         [self.phonePadView setFrame:CGRectMake(0, kScreenHeightValue - 64 - 49 - 225, self.phonePadView.frame.size.width, 225)];
         
         self.numberPadStatus = NO;
@@ -1435,48 +1443,115 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (self.phoneOperation==0) {
         if (self.isSearchStatu && self.lblPhoneNumber.text) {
-            ContactModel *model;
+            id model;
             if ([self.searchLists count] > indexPath.row ) {
                 model = self.searchLists[indexPath.row];
             }
-            //展示搜索信息
-            SearchContactsCell *cell = [tableView dequeueReusableCellWithIdentifier:searchContactsCellID];
-            [cell updateCellWithModel:model HightText:self.lblPhoneNumber.text];
-            return cell;
+            if ([model isKindOfClass:[ContactModel class]]) {
+                //展示搜索信息
+                SearchContactsCell *cell = [tableView dequeueReusableCellWithIdentifier:searchContactsCellID];
+                [cell updateCellWithModel:model HightText:self.lblPhoneNumber.text];
+                return cell;
+            }else{
+                PhoneRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"PhoneRecordCell"];
+                NSDictionary *dicPhoneRecord = (NSDictionary *)model;
+                cell.lblCallTime.text = [self compareCurrentTime:[dicPhoneRecord objectForKey:@"calltime"]];
+//                cell.lblPhoneType.text = [dicPhoneRecord objectForKey:@"type"];
+                [cell.lblPhoneNumber setTextColor:[UIColor blackColor]];
+                NSMutableString *bottomStr = [NSMutableString string];
+                if ([[dicPhoneRecord objectForKey:@"calltype"] isEqualToString:@"来电"]) {
+                    [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callin"]];
+                    
+                    NSString *phoneNum = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
+                    
+//                    cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
+                    
+                    if (![(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"] containsString:phoneNum]) {
+                        [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
+                        [bottomStr appendString:@"  "];
+                        cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
+                    }else{
+                        NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:phoneNum attributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+                        NSRange range = [phoneNum rangeOfString:self.lblPhoneNumber.text];
+                        if (range.length) {
+                            [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+                        }
+                        cell.lblPhoneNumber.attributedText = attriStr;
+                    }
+                    
+                    if ([cell.lblCallTime.text isEqualToString:@"刚刚"]) {
+                        NSLog(@"有了：%@",dicPhoneRecord);
+                    }
+//                    if ([[dicPhoneRecord objectForKey:@"status"] intValue]==0){  //如果未接听则显示红色
+//                        [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
+//                    }
+                }else{
+                    [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callout"]];
+                    
+                    
+                    NSString *phoneNum = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
+                    
+//                    cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
+                    
+                    if (![(NSString *)[dicPhoneRecord objectForKey:@"destnumber"] containsString:phoneNum]) {
+                        [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
+                        [bottomStr appendString:@"  "];
+                        cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
+                    }else{
+                        NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:phoneNum attributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+                        NSRange range = [phoneNum rangeOfString:self.lblPhoneNumber.text];
+                        if (range.length) {
+                            [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+                        }
+                        cell.lblPhoneNumber.attributedText = attriStr;
+                    }
+                }
+                [bottomStr appendString:[dicPhoneRecord objectForKey:@"location"]];
+                
+                NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:bottomStr attributes:@{NSForegroundColorAttributeName : [UIColor lightGrayColor]}];
+                NSRange range = [bottomStr rangeOfString:self.lblPhoneNumber.text];
+                if (range.length) {
+                    [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+                }
+                cell.lblPhoneType.attributedText = attriStr;
+                return cell;
+
+            }
         }else{
             PhoneRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"PhoneRecordCell"];
-            
             NSDictionary *dicPhoneRecord = [self.arrPhoneRecord objectAtIndex:indexPath.row];
-            
-            
             cell.lblCallTime.text = [self compareCurrentTime:[dicPhoneRecord objectForKey:@"calltime"]];
-            
             cell.lblPhoneType.text = [dicPhoneRecord objectForKey:@"type"];
-            
             [cell.lblPhoneNumber setTextColor:[UIColor blackColor]];
+            
+            NSMutableString *bottomStr = [NSMutableString string];
             
             if ([[dicPhoneRecord objectForKey:@"calltype"] isEqualToString:@"来电"]) {
                 [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callin"]];
                 
                 cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
+                if (![(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"] containsString:cell.lblPhoneNumber.text]) {
+                    [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
+                    [bottomStr appendString:@"  "];
+                }
                 
                 if ([cell.lblCallTime.text isEqualToString:@"刚刚"]) {
                     NSLog(@"有了：%@",dicPhoneRecord);
                 }
-                
                 if ([[dicPhoneRecord objectForKey:@"status"] intValue]==0){  //如果未接听则显示红色
                     [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
                 }
-                
             }else{
                 [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callout"]];
                 
                 cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
-                
-                
+                if (![(NSString *)[dicPhoneRecord objectForKey:@"destnumber"] containsString:cell.lblPhoneNumber.text]) {
+                    [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
+                    [bottomStr appendString:@"  "];
+                }
             }
-            cell.lblPhoneType.text = [dicPhoneRecord objectForKey:@"location"];
-            
+            [bottomStr appendString:[dicPhoneRecord objectForKey:@"location"]];
+            cell.lblPhoneType.text = bottomStr;
             return cell;
         }
 
@@ -1512,38 +1587,97 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (self.phoneOperation==0) {
         if (self.isSearchStatu && self.lblPhoneNumber.text) {
             //通过点击联系人拨打电话
-            ContactModel *model;
+            id contacts;
             if ([self.searchLists count] > indexPath.row ) {
-                model = self.searchLists[indexPath.row];
+                contacts = self.searchLists[indexPath.row];
             }
             
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-            if (storyboard) {
-                
-                ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
-                if (contactsDetailViewController) {
+            if ([contacts isKindOfClass:[ContactModel class]]) {
+                ContactModel *model = (ContactModel *)contacts;
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+                if (storyboard) {
+                    
+                    ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
+                    if (contactsDetailViewController) {
                         NSLog(@"联系结果：%@",model);
-                    //重置状态
-                    self.callActionView.hidden = YES;
-                    
-                    self.phonePadView.inputedPhoneNumber = nil;
-                    self.lblPhoneNumber.text = nil;
-                    //    [self showOperation];
-                    self.lblPhoneNumber.hidden = YES;
-                    self.segmentType.hidden = NO;
-                    self.callView.hidden = YES;
-                    //清空搜索状态
-                    self.isSearchStatu = NO;
-                    [self.searchLists removeAllObjects];
-                    [self.tableView reloadData];
-                    
-                    contactsDetailViewController.contactMan = model.name;
-                    contactsDetailViewController.phoneNumbers = model.phoneNumber;
-                    contactsDetailViewController.contactHead = model.portrait;
-                    [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
-                    [self.navigationController pushViewController:contactsDetailViewController animated:YES];
+                        //重置状态
+                        self.callActionView.hidden = YES;
+                        
+                        self.phonePadView.inputedPhoneNumber = nil;
+                        self.lblPhoneNumber.text = nil;
+                        //    [self showOperation];
+                        self.lblPhoneNumber.hidden = YES;
+                        self.segmentType.hidden = NO;
+                        self.callView.hidden = YES;
+                        //清空搜索状态
+                        self.isSearchStatu = NO;
+                        [self.searchLists removeAllObjects];
+                        [self.tableView reloadData];
+                        
+                        contactsDetailViewController.contactMan = model.name;
+                        contactsDetailViewController.phoneNumbers = model.phoneNumber;
+                        contactsDetailViewController.contactHead = model.portrait;
+                        [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
+                        [self.navigationController pushViewController:contactsDetailViewController animated:YES];
+                    }
                 }
+            }else if ([contacts isKindOfClass:[NSDictionary class]]){
+                NSDictionary *dicCallRecord = (NSDictionary *)contacts;
+                
+                //电话记录，拨打电话
+                if (!self.callActionView){
+                    self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+                    
+                    [self.view addSubview:self.callActionView];
+                }
+                
+                __weak typeof(self) weakSelf = self;
+                
+                self.callActionView.cancelBlock = ^(){
+                    weakSelf.callActionView.hidden = YES;
+                };
+                
+                self.callActionView.actionBlock = ^(NSInteger callType){
+                    weakSelf.callActionView.hidden = YES;
+                    if (callType==1) {
+                        //网络电话
+                        //电话记录，拨打电话
+                        if (dicCallRecord) {
+                            if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+                                [weakSelf callNumber:[dicCallRecord objectForKey:@"hostnumber"]];
+                            } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+                                [weakSelf callNumber:[dicCallRecord objectForKey:@"destnumber"]];
+                            } else {
+                                //                HUDNormal(@"无法识别的电话方式")
+                                NSLog(@"无法识别的电话方式");
+                            }
+                            NSLog(@"%@", dicCallRecord[@"calltype"]);
+                        }
+                    }else if (callType==2){
+                        //手环电话
+                        if ([BlueToothDataManager shareManager].isRegisted) {
+                            //电话记录，拨打电话
+//                            NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+                            if (dicCallRecord) {
+                                if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+                                    [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"hostnumber"]];
+                                } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+                                    [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"destnumber"]];
+                                } else {
+                                    //                HUDNormal(@"无法识别的电话方式")
+                                    NSLog(@"无法识别的电话方式");
+                                }
+                                NSLog(@"%@", dicCallRecord[@"calltype"]);
+                            }
+                        } else {
+                            HUDNormal(@"手环内sim卡未注册或已掉线")
+                        }
+                    }
+                };
+                
+                self.callActionView.hidden = NO;
             }
+
         }else{
             //电话记录，拨打电话
             if (!self.callActionView){

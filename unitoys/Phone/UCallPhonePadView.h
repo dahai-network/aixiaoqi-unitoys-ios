@@ -10,6 +10,12 @@
 
 @interface UCallPhonePadView : UIView
 
+@property (nonatomic, copy) NSString *currentInputNum;
 
+@property (copy,nonatomic) NSString *inputedPhoneNumber;
+
+
+typedef void (^UCallInputCompletedBlock)(NSString *btnText,NSInteger btnTag);
+@property (nonatomic,copy)UCallInputCompletedBlock completeBlock;
 
 @end

@@ -7,7 +7,8 @@
 //
 
 #import "BaseViewController.h"
-#import "PhonePadView.h"
+//#import "PhonePadView.h"
+#import "UCallPhonePadView.h"
 #import "CallActionView.h"
 
 #import "PhoneOperationPad.h"
@@ -23,7 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnWriteMessage;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
-@property (weak, nonatomic) IBOutlet PhonePadView *phonePadView;
+@property (weak, nonatomic) IBOutlet UCallPhonePadView *phonePadView;
 
 @property (strong, nonatomic) CallActionView *callActionView;
 

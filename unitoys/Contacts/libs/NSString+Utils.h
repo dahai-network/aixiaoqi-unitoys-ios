@@ -17,5 +17,13 @@
  */
 - (NSString *)pinyin;
 
+//去除空格
+- (NSString *)removeSpace;
+
+//汉字转拼音头部首字母
+- (NSString *)pinyinHeader;
+
+//拼音转九宫格数字
+- (NSString *)pinyinToNumber;
 
 @end

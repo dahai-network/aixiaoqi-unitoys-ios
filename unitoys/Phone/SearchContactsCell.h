@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-@class ContactModel;
+//@class ContactModel;
 
 @interface SearchContactsCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneLabel;
 
-- (void)updateCellWithModel:(ContactModel *)model HightText:(NSString *)hightText;
+- (void)updateCellWithModel:(id)contactsData HightText:(NSString *)hightText;
 @end

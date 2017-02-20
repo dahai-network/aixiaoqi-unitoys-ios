@@ -14,7 +14,19 @@
 - (void)setName:(NSString<Optional> *)name{
     if (name) {
         _name=name;
-        _pinyin=_name.pinyin;
+        _pinyinSpace = _name.pinyin;
+        _pinyin=_pinyinSpace.removeSpace;
+        _pinyinHeader = _pinyinSpace.pinyinHeader;
+        _allPinyinNumber = _pinyin.pinyinToNumber;
+        _headerPinyinNumber = _pinyinHeader.pinyinToNumber;
+    }
+}
+
+- (void)setPhoneNumber:(NSString<Optional> *)phoneNumber
+{
+    if (phoneNumber) {
+        NSString *phoneNum = [[phoneNumber copy] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        _phoneNumber = [phoneNum stringByReplacingOccurrencesOfString:@" " withString:@""];
     }
 }
 

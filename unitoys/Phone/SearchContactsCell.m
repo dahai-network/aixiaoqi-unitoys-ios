@@ -18,22 +18,25 @@
     // Initialization code
 }
 
-- (void)updateCellWithModel:(ContactModel *)model HightText:(NSString *)hightText
+- (void)updateCellWithModel:(id)contactsData HightText:(NSString *)hightText
 {
-    if (!model || !hightText) {
-        return;
-    }
-    self.iconImageView.image = [UIImage imageNamed:model.portrait];
-    if (model.name) {
-        self.nameLabel.text = model.name;
-        NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:model.phoneNumber attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13], NSForegroundColorAttributeName : [UIColor lightGrayColor]}];
-        NSRange range = [model.phoneNumber rangeOfString:hightText];
-        if (range.length) {
-            [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+    if ([contactsData isKindOfClass:[ContactModel class]]) {
+        ContactModel *model = (ContactModel *)contactsData;
+        if (!model || !hightText) {
+            return;
         }
-        self.phoneLabel.attributedText = attriStr;
-    }else{
-        self.nameLabel.text = model.phoneNumber;
+        self.iconImageView.image = [UIImage imageNamed:model.portrait];
+        if (model.name) {
+            self.nameLabel.text = model.name;
+            NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:model.phoneNumber attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13], NSForegroundColorAttributeName : [UIColor lightGrayColor]}];
+            NSRange range = [model.phoneNumber rangeOfString:hightText];
+            if (range.length) {
+                [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+            }
+            self.phoneLabel.attributedText = attriStr;
+        }else{
+            self.nameLabel.text = model.phoneNumber;
+        }
     }
 }
 

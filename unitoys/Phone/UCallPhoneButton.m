@@ -46,20 +46,30 @@
     UILabel *topLabel = [[UILabel alloc] init];
     _topLabel = topLabel;
     topLabel.text = self.topTitle;
-    topLabel.textColor = [UIColor darkGrayColor];
-    topLabel.font = [UIFont systemFontOfSize:18];
+    topLabel.textColor = [UIColor blackColor];
+    topLabel.font = [UIFont systemFontOfSize:22];
     [topLabel sizeToFit];
     [self addSubview:topLabel];
     
     UILabel *bottomLabel = [[UILabel alloc] init];
     _bottomLabel = bottomLabel;
     bottomLabel.text = self.bottomTitle;
-    bottomLabel.textColor = UIColorFromRGB(0xd2d2d2);
-    bottomLabel.font = [UIFont systemFontOfSize:14];
+    bottomLabel.textColor = [UIColor blackColor];
+    bottomLabel.font = [UIFont systemFontOfSize:12];
     [bottomLabel sizeToFit];
     [self addSubview:bottomLabel];
 }
 
+- (void)setHighlighted:(BOOL)highlighted
+{
+    [super setHighlighted:highlighted];
+    if (highlighted) {
+        self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+    }else{
+        self.backgroundColor = [UIColor whiteColor];
+    }
+    
+}
 
 - (void)longPressAction:(UILongPressGestureRecognizer *)pressGestureRecognizer
 {
@@ -70,12 +80,13 @@
     }
 }
 
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    self.topLabel.bottom = self.centerY;
+    self.topLabel.bottom = self.height * 0.5;
     self.topLabel.centerX = self.width * 0.5;
-    self.bottomLabel.top = self.centerY + 2;
+    self.bottomLabel.top = self.height * 0.5 + 2;
     self.bottomLabel.centerX = self.topLabel.centerX;
 }
 
