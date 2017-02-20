@@ -214,20 +214,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             
             //当前不为搜索状态
             weakSelf.isSearchStatu = YES;
-            
             [weakSelf.segmentType setHidden:NO];
-            
             if (weakSelf.lblPhoneNumber) {
                 [weakSelf.lblPhoneNumber setHidden:YES];
             }
             
             if (weakSelf.callView.hidden==NO) {
-                
                 weakSelf.callView.hidden = YES;
             }
-            
-            
-            
         }
         
     };
@@ -294,13 +288,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             
             _arrMessageRecord = [responseObj objectForKey:@"data"];
-            [self.tableView reloadData];
-            
-            if (_arrMessageRecord.count>=20) {
-                self.tableView.mj_footer.hidden = NO;
-            }else{
-                self.tableView.mj_footer.hidden = YES;
+            if (self.phoneOperation==1) {
+                if (_arrMessageRecord.count>=20) {
+                    self.tableView.mj_footer.hidden = NO;
+                }else{
+                    self.tableView.mj_footer.hidden = YES;
+                }
             }
+            
+            [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -1366,7 +1362,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (self.callActionView)  self.callActionView.hidden = YES; //切换过程中隐藏电话拨号的弹出面板
     
     UISegmentedControl *seg = (UISegmentedControl *)sender;
-    
     self.phoneOperation = seg.selectedSegmentIndex;
     
     if (seg.selectedSegmentIndex==0) {
@@ -1381,9 +1376,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         [self.navigationController.tabBarItem setSelectedImage:[UIImage imageNamed:@"tel_numberpad_pushon"]];
         
         self.tableView.mj_header = nil;
-        
         self.tableView.mj_footer = nil;
-        
     }else{
         if(self.callView){
             [self.callView setHidden:YES];
@@ -1397,9 +1390,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //Call this Block When enter the refresh status automatically
             self.arrMessageRecord = nil;
             self.page = 1;
+            [self.tableView.mj_footer resetNoMoreData];
             [self loadMessage];
         }];
-    
+        
         //刷新尾部
         self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMessage)];
         //如果数据不够则隐藏
@@ -1420,7 +1414,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         [self.navigationController pushViewController:newMessageViewController animated:YES];
     }
 }
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -1660,7 +1653,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             
             //从服务器删除数据
-            [self deleteMessageWithPhoneNumber:dicMessageRecord[@"To"]];
+            if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
+                [self deleteMessageWithPhoneNumber:dicMessageRecord[@"Fm"]];
+            }else{
+                [self deleteMessageWithPhoneNumber:dicMessageRecord[@"To"]];
+            }
         }
     }
 }
@@ -1669,7 +1666,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 {
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: phoneNumber ,@"Tel",nil];
     [self getBasicHeader];
-    [SSNetworkRequest postRequest:apiSMSDeletesByTel params:params success:^(id responseObj) {
+    [SSNetworkRequest postRequest:apiDeletesByTel params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"删除单条短信成功");
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -1682,7 +1679,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         NSLog(@"删除单条短信异常：%@",[error description]);
     } headers:self.headers];
     
-//    [SSNetworkRequest getRequest:apiSMSDeletesByTel params:nil success:^(id responseObj) {
+//    [SSNetworkRequest getRequest:apiDeletesByTel params:nil success:^(id responseObj) {
 //        NSLog(@"有数据：%@",responseObj);
 //        if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //            

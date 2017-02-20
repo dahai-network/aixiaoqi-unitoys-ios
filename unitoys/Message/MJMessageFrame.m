@@ -81,14 +81,13 @@
     }else{
         containerX = screenW - padding - containerW;
     }
+    NSLog(@"%.2f", containerH);
     _containerViewF = CGRectMake(containerX, containerY, containerW, containerH);
     
     
     // 4.cell的高度
-//    CGFloat textMaxY = CGRectGetMaxY(_textF);
     CGFloat textMaxY = CGRectGetMaxY(_containerViewF);
-    CGFloat iconMaxY = CGRectGetMaxY(_iconF);
-    _cellHeight = MAX(textMaxY, iconMaxY) + padding;  //正文和头像的最大Y值的较大者加上间距就是cell的高度
+    _cellHeight = textMaxY + padding;  //正文和头像的最大Y值的较大者加上间距就是cell的高度
 }
 
 @end

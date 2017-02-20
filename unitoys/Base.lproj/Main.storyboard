@@ -1513,7 +1513,6 @@
                                     <constraint firstAttribute="trailing" secondItem="OcP-b4-OyY" secondAttribute="trailing" id="VPe-Nl-XVl"/>
                                     <constraint firstAttribute="trailing" secondItem="taA-Jy-a2u" secondAttribute="trailing" id="W8b-Bq-eNC"/>
                                     <constraint firstItem="OcP-b4-OyY" firstAttribute="leading" secondItem="FL3-hy-Wii" secondAttribute="leading" id="alL-IZ-Arr"/>
-                                    <constraint firstItem="OcP-b4-OyY" firstAttribute="centerX" secondItem="FL3-hy-Wii" secondAttribute="centerX" id="v02-EM-nCr"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="boolean" keyPath="touchesOusideAutoHide" value="YES"/>

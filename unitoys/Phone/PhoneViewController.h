@@ -13,6 +13,9 @@
 #import "PhoneOperationPad.h"
 
 #import "SipEngineUIDelegate.h"
+
+#import "MJRefresh.h"
+
 //btn_call_key.png
 @interface PhoneViewController : BaseViewController<SipEngineUICallDelegate,SipEngineUIRegistrationDelegate,UITableViewDelegate,UITableViewDataSource,UIAlertViewDelegate>
 
@@ -60,6 +63,8 @@
 - (void)unregister;
 
 - (void)switchNumberPad :(BOOL)hidden;
+
+- (void)loadMessage;
 
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentType;  //选择
 

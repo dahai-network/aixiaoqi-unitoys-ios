@@ -115,6 +115,24 @@
         contentLabel.numberOfLines = 0;
         [containerView addSubview:contentLabel];
         
+        UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] init];
+        indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+        [indicatorView sizeToFit];
+//        indicatorView.centerY = self.containerView.centerY;
+//        indicatorView.right = self.containerView.left - 5;
+        self.indicatorView = indicatorView;
+//        [indicatorView startAnimating];
+        [self.contentView addSubview:indicatorView];
+        
+        //发送失败
+        UIButton *failedButton = [[UIButton alloc] init];
+        [failedButton setImage:[UIImage imageNamed:@"sendMessage_faild"] forState:UIControlStateNormal];
+        [failedButton sizeToFit];
+        [failedButton addTarget:self action:@selector(repeatSendMessage:) forControlEvents:UIControlEventTouchUpInside];
+        failedButton.enabled = NO;
+        self.failedbutton = failedButton;
+        [self.contentView addSubview:failedButton];
+        
         // 4.设置cell的背景色
         self.backgroundColor = [UIColor clearColor];
         
@@ -156,51 +174,58 @@
     self.bgImageView.frame = self.containerView.bounds;
     self.contentLabel.frame = CGRectMake(messageFrame.contentEdge.left, messageFrame.contentEdge.top, messageFrame.containerViewF.size.width - messageFrame.contentEdge.left - messageFrame.contentEdge.right, messageFrame.containerViewF.size.height - messageFrame.contentEdge.top - messageFrame.contentEdge.bottom);
     if (message.type == MJMessageTypeMe) {
-        [self.bgImageView setImage:[UIImage resizableImage:@"msg_send"]];
+        [self.bgImageView setImage:[UIImage resizableImage:@"msg_send_new"]];
         [self.contentLabel setTextColor:[UIColor whiteColor]];
         
         switch (message.Status) {
             case MJMessageStatuProcessing:
             {
-                //正在加载
-                UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] init];
-                [indicatorView sizeToFit];
-                indicatorView.centerY = self.contentLabel.centerY;
-                indicatorView.right = self.contentLabel.left - 5;
-                self.indicatorView = indicatorView;
-                [indicatorView startAnimating];
-                [self addSubview:indicatorView];
+                if (!self.failedbutton.isHidden) {
+                    self.failedbutton.hidden = YES;
+                    self.failedbutton.enabled = NO;
+                }
+                self.indicatorView.centerY = self.containerView.centerY;
+                self.indicatorView.right = self.containerView.left - 5;
+                self.indicatorView.hidden = NO;
+                [self.indicatorView startAnimating];
             }
                 break;
             case MJMessageStatuError:
             {
-                //发送失败
-                UIButton *failedButton = [[UIButton alloc] init];
-                [failedButton setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
-                [failedButton sizeToFit];
-                [failedButton addTarget:self action:@selector(repeatSendMessage:) forControlEvents:UIControlEventTouchUpInside];
-                failedButton.centerY = self.contentLabel.centerY;
-                failedButton.right = self.contentLabel.left - 5;
-                self.failedbutton = failedButton;
-                [self addSubview:failedButton];
+                if (!self.indicatorView.isHidden) {
+                    self.indicatorView.hidden = YES;
+                    [self.indicatorView stopAnimating];
+                }
+                self.failedbutton.centerY = self.containerView.centerY;
+                self.failedbutton.right = self.containerView.left - 5;
+                self.failedbutton.hidden = NO;
+                self.failedbutton.enabled = YES;
             }
 
                 break;
             default:
                 //发送成功
-                if (self.indicatorView) {
-                    self.indicatorView.hidden = YES;
+                if (!self.indicatorView.isHidden) {
                     [self.indicatorView stopAnimating];
-                    [self.indicatorView removeFromSuperview];
+                    self.indicatorView.hidden = YES;
                 }
-                if (self.failedbutton) {
+                if (!self.failedbutton.isHidden) {
                     self.failedbutton.hidden = YES;
-                    [self.failedbutton removeFromSuperview];
+                    self.failedbutton.enabled = NO;
                 }
                 break;
         }
     }else{
-        [self.bgImageView setImage:[UIImage resizableImage1:@"msg_receive"]];
+        //发送成功
+        if (!self.indicatorView.isHidden) {
+            [self.indicatorView stopAnimating];
+            self.indicatorView.hidden = YES;
+        }
+        if (!self.failedbutton.isHidden) {
+            self.failedbutton.enabled = NO;
+            self.failedbutton.hidden = YES;
+        }
+        [self.bgImageView setImage:[UIImage resizableImage1:@"msg_receive_new"]];
         [self.contentLabel setTextColor:[UIColor blackColor]];
     }
     
@@ -220,6 +245,7 @@
 //重发短信
 - (void)repeatSendMessage:(UIButton *)button
 {
+    button.enabled = NO;
     if (_repeatSendMessageBlock) {
         _repeatSendMessageBlock(_messageFrame);
     }

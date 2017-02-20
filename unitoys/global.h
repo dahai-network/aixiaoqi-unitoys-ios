@@ -40,6 +40,8 @@
 
 #define kWeakSelf __weak typeof(self) weakSelf = self;
 
+#define kSystemVersionValue [[UIDevice currentDevice].systemVersion floatValue]
+
 //如果不使用签名则按partner、expires、sign三个参数直接作为URL参数，其他则Post或是Get根据需要写入
 //如果使用签名则按partner、expires、sign和TOKEN（登录后获得，12天失效）四个参数写进Header进行签名认证。其他则Post或是Get根据需要写入
 
@@ -193,10 +195,10 @@
 #define apiDeviceBracelet defaultHost@"api/DeviceBracelet/Get"
 
 //删除单个联系人短信
-#define apiSMSDeletesByTel  defaultHost@"api/SMS/DeletesByTel"
+#define apiDeletesByTel  defaultHost@"api/SMS/DeletesByTel"
 
 //短信发送错误-重试
-#define apiSMSSendRetryForError  defaultHost@"api/SMS/SendRetryForError"
+#define apiSendRetryForError  defaultHost@"api/SMS/SendRetryForError"
 
 //环形进度条密集度系数
 #define AnnularProgressBar @"60"

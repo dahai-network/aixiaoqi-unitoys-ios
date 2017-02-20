@@ -136,7 +136,7 @@
     // 监听size变化
     if (self.font)
     {
-        if (self.layoutFinished) // 更新约束或者大小
+        if (_layoutFinished) // 更新约束或者大小
         {
             CGFloat fitHeight = [self sizeThatFits:CGSizeMake(self.bounds.size.width, CGFLOAT_MAX)].height;
             if (fabs(fitHeight - self.bounds.size.height) < self.font.lineHeight * 0.5) // 变化量小于一个行距的0.5倍
@@ -162,6 +162,8 @@
             }
             self.heightConstraint.constant = fitHeight;
             
+            //ios10需要调用
+            [self setNeedsLayout];
             [self layoutIfNeeded];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"KTAutoHeightTextViewFontChange" object:nil];

@@ -13,4 +13,8 @@
 + (UIImage *)resizableImage:(NSString *)name;
 + (UIImage *)resizableImage1:(NSString *)name;
 
+
++ (UIImage *)clipImage:(UIImage *)image toRect:(CGSize)size;
++ (UIImage *)imageFromImage:(UIImage *)image inRect:(CGRect)rect;
++(UIImage*)image:(UIImage *)image scaleToSize:(CGSize)size;
 @end

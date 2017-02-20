@@ -25,6 +25,8 @@
 #import "BlueToothDataManager.h"
 #import "NSString+Extension.h"
 
+#import "PhoneViewController.h"
+
 // 引 JPush功能所需头 件
 #import "JPUSHService.h"
 // iOS10注册APNs所需头 件
@@ -779,8 +781,10 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         //发送短信成功
         if ([extras[@"Status"] isEqualToString:@"1"]) {
             [self addNotificationWithTitle:@"短信发送提醒" body:content userInfo:userInfo];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuChange" object:@"MessageStatu" userInfo:userInfo];
         } else if ([extras[@"Status"] isEqualToString:@"2"]) {
             [self addNotificationWithTitle:@"短信发送提醒" body:@"短信发送失败！" userInfo:userInfo];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuChange" object:@"MessageStatu" userInfo:userInfo];
         } else {
             NSLog(@"收到短信发送结果的推送，状态码有问题");
         }
@@ -799,7 +803,13 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     
     // 5s后提醒 iOS 10 以上支持
     JPushNotificationTrigger *trigger1 = [[JPushNotificationTrigger alloc] init];
-    trigger1.timeInterval = 0.5;
+    if (kSystemVersionValue < 10.0) {
+        trigger1.fireDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
+    }else{
+        trigger1.timeInterval = 0.5;
+    }
+    
+    
     //每小时重复 1 次 iOS 10 以上支持
 //    JPushNotificationTrigger *trigger2 = [[JPushNotificationTrigger alloc] init];
 //    trigger2.timeInterval = 3600;
@@ -1049,10 +1059,14 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
         // Required, iOS 7 Support
-        [JPUSHService handleRemoteNotification:userInfo];
-        completionHandler(UIBackgroundFetchResultNewData);
+    
+    [JPUSHService handleRemoteNotification:userInfo];
+    NSString *name = [self checkLinkNameWithPhoneStr:userInfo[@"Tel"]];
+    [self addNotificationWithTitle:[NSString stringWithFormat:@"收到%@发来的短信", name] body:userInfo[@"SMSContent"] userInfo:userInfo];
+    completionHandler(UIBackgroundFetchResultNewData);
+    
     NSLog(@" -- %@", userInfo);
-    }
+}
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
         // Required,For systems with less than or equal to iOS6
@@ -1071,11 +1085,48 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     
     // iOS 10 以下 Required
     [JPUSHService handleRemoteNotification:userInfo];
-    }
+}
 
-//- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-//    NSLog(@"收到通知了");
-//}
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    NSLog(@"收到通知了");
+//    UIViewController *currentVc = [self currentViewController];
+//    NSLog(@"%@", NSStringFromClass([[self currentViewController] class]));
+//    if ([NSStringFromClass([currentVc class]) isEqualToString:@"PhoneViewController"]) {
+//        PhoneViewController *phoneVc = (PhoneViewController *)currentVc;
+//        if (phoneVc.phoneOperation == 1) {
+//            phoneVc.arrMessageRecord = nil;
+//            phoneVc.page = 1;
+//            [phoneVc.tableView.mj_footer resetNoMoreData];
+//            [phoneVc loadMessage];
+//        }
+//    }else if ([NSStringFromClass([currentVc class]) isEqualToString:@"PhoneViewController"]){
+//        
+//    }
+//    NSLog(@"%@", NSStringFromClass([[self presentingVC] class]));
+}
+
+//获取当前屏幕显示的viewcontroller
+- (UIViewController *)currentViewController
+{
+    UIViewController *currentVc = nil;
+    UIViewController *rootVc = self.window.rootViewController;
+    do {
+        if ([rootVc isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nav = (UINavigationController *)rootVc;
+            UIViewController *vc = [nav.viewControllers lastObject];
+            currentVc = vc;
+            rootVc = vc.presentedViewController;
+            continue;
+        }else if ([rootVc isKindOfClass:[UITabBarController class]]){
+            UITabBarController *tabVc = (UITabBarController *)rootVc;
+            currentVc = tabVc;
+            rootVc = [tabVc.viewControllers objectAtIndex:tabVc.selectedIndex];
+            continue;
+        }
+    }while (rootVc != nil);
+    return currentVc;
+}
+
 
 #pragma mark -BuglyDelegate
 

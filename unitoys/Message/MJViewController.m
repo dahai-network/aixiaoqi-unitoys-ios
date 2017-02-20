@@ -53,7 +53,22 @@
     }];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KTAutoHeightTextViewFontChange" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KeyboardWillShowFinished" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow) name:@"KeyboardWillShowFinished" object:nil];
+    
+    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuFailed" object:@"MessageStatu" userInfo:userInfo];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
+}
+
+- (void)keyboardWillShow
+{
+    NSLog(@"更新inputContainerView");
+    NSLog(@"tableView---%@", NSStringFromCGRect(self.tableView.frame));
+    NSLog(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
+//    [self.tableView setNeedsLayout];
+//    [self.tableView layoutIfNeeded];
+    [self scrollTableViewToBottomWithAnimated:YES];
 }
 
 - (void)textViewFontChange
@@ -61,6 +76,7 @@
     NSLog(@"更新inputContainerView");
     NSLog(@"tableView---%@", NSStringFromCGRect(self.tableView.frame));
     NSLog(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
+    [self.tableView setNeedsLayout];
     [self.tableView layoutIfNeeded];
     [self scrollTableViewToBottomWithAnimated:NO];
 }
@@ -71,10 +87,30 @@
     self.navigationController.hidesBottomBarWhenPushed = NO;
 }
 
+- (void)sendMessageStatuChange:(NSNotification *)noti
+{
+    NSDictionary *userInfo = noti.userInfo;
+    NSDictionary *extras = [userInfo valueForKey:@"extras"];
+    NSString *smsId = [extras valueForKey:@"SMSID"];
+    __block MJMessageStatu statu = (MJMessageStatu)[[extras valueForKey:@"Status"] integerValue];
+    kWeakSelf
+    [_messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(MJMessageFrame *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([messageFrame.message.SMSID isEqualToString:smsId]) {
+            if (statu != messageFrame.message.Status) {
+                NSLog(@"短信状态改变");
+                messageFrame.message.Status = statu;
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                [weakSelf.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                *stop = YES;
+            }
+        }
+    }];
+    
+}
 
 - (void)loadMessages{
     if (_messageFrames == nil) {
-        __block NSMutableArray *dictArray = [[NSMutableArray alloc] init];
+        __block NSMutableArray *dictArray = [NSMutableArray array];
         
         
         self.checkToken = YES;
@@ -109,11 +145,11 @@
 //                }
                 
                 for (NSDictionary *dict in arrMessages){
-                    NSLog(@"%zd", [dict[@"Status"] integerValue]);
+                    NSLog(@"%@", dict[@"SMSID"] );
                     if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",[dict[@"Status"] stringValue], @"Status" ,[dict objectForKey:@"SMSID"],"SMSID",nil]];
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
                     } else {
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",[dict[@"Status"] stringValue], @"Status",[dict objectForKey:@"SMSID"],"SMSID", nil]];
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
                     }
                 }
                 
@@ -139,6 +175,7 @@
                 }
                 
                 _messageFrames = mfArray;
+                self.page = 1;
                 [self.tableView reloadData];
                 
                 //自动滚动到底部
@@ -196,10 +233,10 @@
                 
                 for (NSDictionary *dict in arrNewMessages){
                     if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",[dict valueForKey:@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],"SMSID",nil]];
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",[dict valueForKey:@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
                         
                     } else {
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", [dict valueForKey:@"Status"], @"Status",[dict objectForKey:@"SMSID"],"SMSID", nil]];
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", [dict valueForKey:@"Status"], @"Status",[dict objectForKey:@"SMSID"],@"SMSID", nil]];
                     }
                 }
                 
@@ -288,6 +325,7 @@
     // 2.给cell传递模型
     cell.messageFrame = self.messageFrames[indexPath.row];
     
+    // 长按菜单
     cell.longPressCellBlock = ^(NSString *content, UIView *longPressView){
         [weakSelf longPressActionWithContent:content longPressView:longPressView];
     };
@@ -319,7 +357,41 @@
 
 - (void)repeatSendMessage:(MJMessageFrame *)messageFrame
 {
+    self.checkToken = YES;
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:messageFrame.message.SMSID,@"SMSID", nil];
     
+    [self getBasicHeader];
+    NSLog(@"表演头：%@",self.headers);
+    [SSNetworkRequest postRequest:apiSendRetryForError params:params success:^(id responseObj) {
+        //
+        //KV来存放数组，所以要用枚举器来处理
+        /*
+         NSEnumerator *enumerator = [[responseObj objectForKey:@"data"] keyEnumerator];
+         id key;
+         while ((key = [enumerator nextObject])) {
+         [manager.requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
+         }*/
+        
+        NSLog(@"查询到的用户数据：%@",responseObj);
+        
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            _messageFrames = nil;
+            
+            [self loadMessages];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
+            
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            HUDNormal(responseObj[@"msg"])
+        }
+        
+    } failure:^(id dataObj, NSError *error) {
+        //
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
 }
 
 - (IBAction)sendMessage:(id)sender {
@@ -346,9 +418,6 @@
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 
-//                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"发送成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-//                HUDNormal(@"发送成功")
-                
                 self.txtSendText.text = @"";
                 
                 [self.txtSendText resignFirstResponder];
@@ -365,7 +434,6 @@
                 self.btnSend.enabled = YES;
             }else{
                 //数据请求失败
-//                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
                 HUDNormal(responseObj[@"msg"])
                 self.btnSend.enabled = YES;
             }

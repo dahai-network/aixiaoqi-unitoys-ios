@@ -16,8 +16,14 @@ typedef enum {
 typedef enum {
     MJMessageStatuProcessing = 0,   //正在处理
     MJMessageStatuSuccess = 1,      //处理成功
-    MJMessageStatuError = 2         //处理失败
+    MJMessageStatuError = 2       //处理失败
 } MJMessageStatu;
+
+//typedef NS_ENUM(NSUInteger, MJMessageStatu) {
+//    MJMessageStatuProcessing = 0,   //正在处理
+//    MJMessageStatuSuccess = 1,      //处理成功
+//    MJMessageStatuError = 2         //处理失败
+//};
 
 @interface MJMessage : NSObject
 
