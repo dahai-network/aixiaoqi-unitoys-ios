@@ -70,18 +70,23 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (NSArray *)searchPhoneRecords
 {
     if (!_searchPhoneRecords) {
-//        NSMutableArray *tempArray = [NSMutableArray array];
-//        [_arrPhoneRecord enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-//            for (NSDictionary *tempDict in tempArray) {
-//                if (!([[obj objectForKey:@""] isEqualToString:[tempDict objectForKey:@""]] && [[obj objectForKey:@""] isEqualToString:[tempDict objectForKey:@""]])) {
-//                    
-//                }
-//            }
-//        }];
+        NSMutableArray *tempArray = [NSMutableArray array];
+        [_arrPhoneRecord enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            BOOL isRepeat = NO;
+            for (NSDictionary *tempDict in tempArray) {
+                if (([[obj objectForKey:@"destnumber"] isEqualToString:[tempDict objectForKey:@"destnumber"]] && [[obj objectForKey:@"hostnumber"] isEqualToString:[tempDict objectForKey:@"hostnumber"]])) {
+                    isRepeat = YES;
+                    break;
+                }
+            }
+            if (!isRepeat) {
+                [tempArray addObject:obj];
+            }
+        }];
         
-//        _searchPhoneRecords = [tempArray copy];
+        _searchPhoneRecords = [tempArray copy];
         
-        _searchPhoneRecords = [_arrPhoneRecord copy];
+//        _searchPhoneRecords = [_arrPhoneRecord copy];
     }
     return _searchPhoneRecords;
 }
