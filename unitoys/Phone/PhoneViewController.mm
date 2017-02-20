@@ -70,6 +70,17 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (NSArray *)searchPhoneRecords
 {
     if (!_searchPhoneRecords) {
+//        NSMutableArray *tempArray = [NSMutableArray array];
+//        [_arrPhoneRecord enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//            for (NSDictionary *tempDict in tempArray) {
+//                if (!([[obj objectForKey:@""] isEqualToString:[tempDict objectForKey:@""]] && [[obj objectForKey:@""] isEqualToString:[tempDict objectForKey:@""]])) {
+//                    
+//                }
+//            }
+//        }];
+        
+//        _searchPhoneRecords = [tempArray copy];
+        
         _searchPhoneRecords = [_arrPhoneRecord copy];
     }
     return _searchPhoneRecords;
@@ -140,9 +151,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [super viewDidLoad];
     
     self.navigationItem.leftBarButtonItem = nil;
-    
     self.btnWriteMessage.hidden = YES;
-    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
@@ -189,30 +198,21 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         if (weakSelf.phonePadView.inputedPhoneNumber.length>0) {
             //当前为搜索状态
             weakSelf.isSearchStatu = YES;
-            
             [weakSelf.segmentType setHidden:YES];
-            
             if (weakSelf.lblPhoneNumber) {
                 [weakSelf.lblPhoneNumber setHidden:NO];
                 weakSelf.lblPhoneNumber.text = weakSelf.phonePadView.inputedPhoneNumber;
             } else {
                 UILabel *lblPhoneNumber = [[UILabel alloc] initWithFrame:weakSelf.navigationController.navigationBar.bounds];
-                
                 weakSelf.lblPhoneNumber = lblPhoneNumber;
-                
                 [weakSelf.lblPhoneNumber setTextAlignment:NSTextAlignmentCenter];
-                
                 [weakSelf.lblPhoneNumber setTextColor:[UIColor whiteColor]];
-                
                 [weakSelf.lblPhoneNumber setBackgroundColor:[UIColor clearColor]];
-                
                 weakSelf.lblPhoneNumber.text = weakSelf.phonePadView.inputedPhoneNumber;
-                
                 [weakSelf.navigationController.navigationBar addSubview:weakSelf.lblPhoneNumber];
             }
             
             //self.title = self.phonePadView.inputedPhoneNumber;
-            
             
             [weakSelf showOperation];
             
@@ -273,9 +273,28 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (_searchLists!= nil) {
         [_searchLists removeAllObjects];
     }
-    [self.searchLists addObjectsFromArray:[self.searchPhoneRecords filteredArrayUsingPredicate:recordsPredicate]];
+    
+    NSArray *filter = [self filterNumerWithSearchList:[self.searchPhoneRecords filteredArrayUsingPredicate:recordsPredicate] SearchText:searchText];
+    [self.searchLists addObjectsFromArray:filter];
     [self.searchLists addObjectsFromArray:[self.contactsLists filteredArrayUsingPredicate:contactsPredicate]];
     [self.tableView reloadData];
+}
+
+- (NSArray *)filterNumerWithSearchList:(NSArray *)searchLists SearchText:(NSString *)searchText
+{
+    NSMutableArray *tempArray = [NSMutableArray array];
+    for (NSDictionary *recordDict in searchLists) {
+        if ([[recordDict objectForKey:@"calltype"] isEqualToString:@"来电"]) {
+            if ([(NSString *)[recordDict objectForKey:@"hostnumber"] containsString:searchText]) {
+                [tempArray addObject:recordDict];
+            }
+        }else{
+            if ([(NSString *)[recordDict objectForKey:@"destnumber"] containsString:searchText]) {
+                [tempArray addObject:recordDict];
+            }
+        }
+    }
+    return tempArray;
 }
 
 - (void)loadMessage {

@@ -52,6 +52,7 @@
 		3C8CFA721E55AF4E0035A460 /* SearchContactsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA701E55AF4E0035A460 /* SearchContactsCell.m */; };
 		3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */; };
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
+		6E9A9613C7F0D7AB91676E3F /* Pods_unitoys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83EA514C2661E0596FD19FBF /* Pods_unitoys.framework */; };
 		7402B32E1E55967600DC73B9 /* UIBarButtonItem+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402B32D1E55967600DC73B9 /* UIBarButtonItem+Extension.m */; };
 		7402B3311E5597FF00DC73B9 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402B3301E5597FF00DC73B9 /* UIView+Extension.m */; };
 		740FD38F1E287F9E009413F1 /* euble_interface.c in Sources */ = {isa = PBXBuildFile; fileRef = 740FD3801E287F9E009413F1 /* euble_interface.c */; };
@@ -205,7 +206,6 @@
 		95FB44211DC82B9C00B81A0D /* AmountDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95FB44201DC82B9C00B81A0D /* AmountDetailViewController.m */; };
 		95FB44241DC82C0000B81A0D /* AmountDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 95FB44231DC82C0000B81A0D /* AmountDetailCell.m */; };
 		95FB44271DC8663800B81A0D /* navHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95FB44261DC8663800B81A0D /* navHomeViewController.m */; };
-		C232268A36A98ADCE01346D8 /* libPods-unitoys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80730534DF46B1BCFC6B0317 /* libPods-unitoys.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -309,7 +309,7 @@
 		74A91C621DF7E9A9002B4FCE /* headCollectionReusableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = headCollectionReusableView.h; sourceTree = "<group>"; };
 		74A91C631DF7E9A9002B4FCE /* headCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = headCollectionReusableView.m; sourceTree = "<group>"; };
 		74A91C641DF7E9A9002B4FCE /* headCollectionReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = headCollectionReusableView.xib; sourceTree = "<group>"; };
-		80730534DF46B1BCFC6B0317 /* libPods-unitoys.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-unitoys.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		83EA514C2661E0596FD19FBF /* Pods_unitoys.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_unitoys.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		950072B31DBF58D000C16088 /* PhoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneViewController.h; sourceTree = "<group>"; };
 		950072B41DBF58D000C16088 /* PhoneViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PhoneViewController.mm; sourceTree = "<group>"; };
 		950BC6151DBCE0640048CEAB /* OrderActivationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderActivationViewController.h; sourceTree = "<group>"; };
@@ -669,7 +669,7 @@
 				95CD33F51D9CE52F00EE5DD3 /* Foundation.framework in Frameworks */,
 				95938D581D9526E3008A0A21 /* Contacts.framework in Frameworks */,
 				95938D561D952621008A0A21 /* AddressBook.framework in Frameworks */,
-				C232268A36A98ADCE01346D8 /* libPods-unitoys.a in Frameworks */,
+				6E9A9613C7F0D7AB91676E3F /* Pods_unitoys.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,7 +711,7 @@
 				95CD33F41D9CE52E00EE5DD3 /* Foundation.framework */,
 				95938D571D9526E3008A0A21 /* Contacts.framework */,
 				95938D551D952621008A0A21 /* AddressBook.framework */,
-				80730534DF46B1BCFC6B0317 /* libPods-unitoys.a */,
+				83EA514C2661E0596FD19FBF /* Pods_unitoys.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1421,6 +1421,7 @@
 					95F337101D853255000B5461 = {
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = FEK3UWRVZY;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -1814,7 +1815,7 @@
 					"\"$(PROJECT_DIR)/unitoys/depands/Alipay\"",
 				);
 				INFOPLIST_FILE = unitoys/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1825,31 +1826,11 @@
 					"$(PROJECT_DIR)/unitoys/JPush",
 					"$(SRCROOT)/{JPush}",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-l\"AFNetworking\"",
-					"-l\"MBProgressHUD\"",
-					"-l\"MJExtension\"",
-					"-l\"MJRefresh\"",
-					"-l\"Reachability\"",
-					"-l\"SDCycleScrollView\"",
-					"-l\"SDWebImage\"",
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"ImageIO\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"'",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.aixiaoqi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "3b7df60a-60b6-4b21-84e0-7aa003c55747";
 				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170213;
+				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
 			};
 			name = Debug;
@@ -1890,7 +1871,7 @@
 					"\"$(PROJECT_DIR)/unitoys/depands/Alipay\"",
 				);
 				INFOPLIST_FILE = unitoys/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1901,31 +1882,11 @@
 					"$(PROJECT_DIR)/unitoys/JPush",
 					"$(SRCROOT)/{JPush}",
 				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-l\"AFNetworking\"",
-					"-l\"MBProgressHUD\"",
-					"-l\"MJExtension\"",
-					"-l\"MJRefresh\"",
-					"-l\"Reachability\"",
-					"-l\"SDCycleScrollView\"",
-					"-l\"SDWebImage\"",
-					"-framework",
-					"\"CoreGraphics\"",
-					"-framework",
-					"\"ImageIO\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"Security\"",
-					"-framework",
-					"\"SystemConfiguration\"'",
-				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.aixiaoqi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "3b7df60a-60b6-4b21-84e0-7aa003c55747";
 				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170213;
+				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
 			};
 			name = Release;
