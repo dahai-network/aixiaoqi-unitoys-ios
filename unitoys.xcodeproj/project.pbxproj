@@ -52,6 +52,8 @@
 		3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */; };
 		3C8CFA721E55AF4E0035A460 /* SearchContactsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA701E55AF4E0035A460 /* SearchContactsCell.m */; };
 		3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */; };
+		3CEA93931E5C537B00205C29 /* UNCallKitCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.m */; };
+		3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */; };
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
 		6E9A9613C7F0D7AB91676E3F /* Pods_unitoys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83EA514C2661E0596FD19FBF /* Pods_unitoys.framework */; };
 		7402B32E1E55967600DC73B9 /* UIBarButtonItem+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402B32D1E55967600DC73B9 /* UIBarButtonItem+Extension.m */; };
@@ -282,6 +284,10 @@
 		3C8CFA6F1E55AF4E0035A460 /* SearchContactsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchContactsCell.h; sourceTree = "<group>"; };
 		3C8CFA701E55AF4E0035A460 /* SearchContactsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchContactsCell.m; sourceTree = "<group>"; };
 		3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchContactsCell.xib; sourceTree = "<group>"; };
+		3CEA93911E5C537B00205C29 /* UNCallKitCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCallKitCenter.h; sourceTree = "<group>"; };
+		3CEA93921E5C537B00205C29 /* UNCallKitCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCallKitCenter.m; sourceTree = "<group>"; };
+		3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+UnExtension.h"; sourceTree = "<group>"; };
+		3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserActivity+UnExtension.m"; sourceTree = "<group>"; };
 		4593CF0952180069953F0247 /* Pods-unitoys.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unitoys.debug.xcconfig"; path = "Pods/Target Support Files/Pods-unitoys/Pods-unitoys.debug.xcconfig"; sourceTree = "<group>"; };
 		48EFF6451E37F27600874FC6 /* CallActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallActionView.h; sourceTree = "<group>"; };
 		48EFF6461E37F27600874FC6 /* CallActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallActionView.m; sourceTree = "<group>"; };
@@ -688,11 +694,15 @@
 			path = JPush;
 			sourceTree = "<group>";
 		};
-		3CEA938D1E5C4EA100205C29 /* CallKitTools */ = {
+		3CEA93901E5C537000205C29 /* CallKitTools */ = {
 			isa = PBXGroup;
 			children = (
+				3CEA93911E5C537B00205C29 /* UNCallKitCenter.h */,
+				3CEA93921E5C537B00205C29 /* UNCallKitCenter.m */,
+				3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */,
+				3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */,
 			);
-			name = CallKitTools;
+			path = CallKitTools;
 			sourceTree = "<group>";
 		};
 		430B1E9DC15699DC69140B1C /* Frameworks */ = {
@@ -1330,7 +1340,7 @@
 		95F337131D853256000B5461 /* unitoys */ = {
 			isa = PBXGroup;
 			children = (
-				3CEA938D1E5C4EA100205C29 /* CallKitTools */,
+				3CEA93901E5C537000205C29 /* CallKitTools */,
 				740FD37E1E287F9E009413F1 /* VSW */,
 				046BD6491E0B7DBC008A958A /* unitoys.entitlements */,
 				046BD63B1E0B79BB008A958A /* JPush */,
@@ -1631,6 +1641,7 @@
 				04472AB91E1CABD70042CEE1 /* ActivateGiftCardViewController.m in Sources */,
 				954D37EF1D8CD5A7002A8F46 /* RegisterViewController.m in Sources */,
 				95FB44211DC82B9C00B81A0D /* AmountDetailViewController.m in Sources */,
+				3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */,
 				0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */,
 				95B099171DC0DA6A00743877 /* SipEngineEventObserver.mm in Sources */,
 				740FD3941E287F9E009413F1 /* sim_com_preread.c in Sources */,
@@ -1677,6 +1688,7 @@
 				95938D501D93F093008A0A21 /* UIPlaceHolderTextView.m in Sources */,
 				95C575F41DA77AB200F459DF /* PhoneRecordCell.m in Sources */,
 				95F1ED5C1DE6BC6A002E9259 /* LineProgressView.m in Sources */,
+				3CEA93931E5C537B00205C29 /* UNCallKitCenter.m in Sources */,
 				95938D4D1D93EBF1008A0A21 /* ConerView.m in Sources */,
 				953B01F51D8BDA6C00EDF5ED /* SSNetworkRequest.m in Sources */,
 				740FD38F1E287F9E009413F1 /* euble_interface.c in Sources */,

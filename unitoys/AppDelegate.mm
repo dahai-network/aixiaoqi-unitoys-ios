@@ -27,6 +27,11 @@
 
 #import "PhoneViewController.h"
 
+//CallKit相关
+#import <CallKit/CallKit.h>
+#import "UNCallKitCenter.h"
+#import "NSUserActivity+UnExtension.h"
+
 // 引 JPush功能所需头 件
 #import "JPUSHService.h"
 // iOS10注册APNs所需头 件
@@ -60,6 +65,10 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    if (kSystemVersionValue >= 10.0) {
+        [[UNCallKitCenter sharedInstance] configurationCallProvider];
+    }
+    
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -1198,6 +1207,47 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
     return linkName;
 }
+
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
+{
+    NSLog(@"userActivity:%@", userActivity.description);
+    //应该在这里发起实际VoIP呼叫
+    
+    NSString * handle =userActivity.startCallHandle;
+    if(nil==handle) handle=@"286218985";
+    //    BOOL video = userActivity.video;
+    UNContact * contact = [[UNContact alloc] init];
+    contact.phoneNumber= handle;
+    //    contact.displayName=@"vivi wu";
+    contact.uniqueIdentifier=@"";
+    
+    if(nil == handle ){
+        NSLog(@"Could not determine start call handle from user activity:%@", userActivity);
+        return NO;
+    }else{
+        UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
+            NSUUID * callUUID=   [[UNCallKitCenter sharedInstance]reportIncomingCallWithContact:contact completion:^(NSError * _Nullable error)
+                                  {
+                                      if (error == nil) {
+                                          NSLog(@"%s success", __func__);
+                                      }else{
+                                          NSLog(@"arror %@", error);
+                                      }
+                                  }];
+            
+            NSLog(@"callUUID==%@", callUUID);
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
+        });
+        return YES;
+    }
+    return NO;
+}
+
+
 
 - (void)dealloc {
     // 关闭套接字

@@ -30,7 +30,13 @@
 #import "SearchContactsCell.h"
 
 
+#import "UNCallKitCenter.h"
 @interface PhoneViewController ()
+{
+    UNCallKitCenter *callCenter;
+}
+
+
 @property (nonatomic, strong)NSDictionary *userInfo;
 @property (nonatomic, strong)CallComingInViewController *callCominginVC;
 
@@ -773,6 +779,39 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+
+//电话拨打进来
+- (void)inComingCallWithCallKit
+{
+    NSString * number = @"10086";
+    if (!callCenter) {
+        callCenter=[UNCallKitCenter sharedInstance];
+    }
+    
+    UNContact * contact = [[UNContact alloc]init];
+    contact.phoneNumber= number;
+    contact.displayName=@"黄磊";
+    contact.uniqueIdentifier=@"";
+    
+    UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        NSUUID * callUUID=[[UNCallKitCenter sharedInstance] reportIncomingCallWithContact:contact completion:^(NSError * _Nullable error)
+                           {
+                               if (error == nil) {
+                                   NSLog(@"%s success", __func__);
+                               }else{
+                                   NSLog(@"arror %@", error);
+                               }
+                           }];
+        NSLog(@"callUUID==%@", callUUID);
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
+    });
+ 
+}
+
+
 -(void) OnNewCall:(CallDir)dir
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
@@ -785,9 +824,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         BOOL isCallKit = YES;
         if (kSystemVersionValue >= 10.0 && isCallKit) {
-            
-            
-            
+            [self inComingCallWithCallKit];
         }else{
             msg = [NSString stringWithFormat:@"新来电 %@",cid];
             //去掉“+”
