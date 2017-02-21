@@ -256,8 +256,6 @@
             //
             NSLog(@"啥都没：%@",[error description]);
             
-            
-            
         } headers:self.headers];
         
     }else{
@@ -476,22 +474,17 @@
         }else{
             //数据请求失败
             NSLog(@"数据请求失败");
-            
-           
-        
         }
-    
-    
-        
     } failure:^(id dataObj, NSError *error) {
         //
         NSLog(@"啥都没：%@",[error description]);
-
-        
-        
     } headers:self.headers];
+}
 
-
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [self.calendar removeWindow];
+    [super viewDidDisappear:animated];
 }
 
 @end

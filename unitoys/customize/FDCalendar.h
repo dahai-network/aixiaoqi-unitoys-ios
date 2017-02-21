@@ -23,6 +23,8 @@
 - (void)showCalendar;
 - (void)hiddenCalendar;
 
+- (void)removeWindow;
+
 @end
 
 @protocol FDCalendarDelegate <NSObject>

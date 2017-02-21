@@ -70,6 +70,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (NSArray *)searchPhoneRecords
 {
     if (!_searchPhoneRecords) {
+        //去除记录重复
         NSMutableArray *tempArray = [NSMutableArray array];
         [_arrPhoneRecord enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * _Nonnull stop) {
             BOOL isRepeat = NO;
@@ -495,20 +496,18 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
-- (BOOL)addPhoneRecord :(NSString *)hostcid :(NSString *)destcid :(NSDate *)calltime :(NSString *)calltype {
+- (BOOL)addPhoneRecordWithHostcid:(NSString *)hostcid Destcid:(NSString *)destcid Calltime:(NSDate *)calltime Calltype:(NSString *)calltype {
     
-//    NSMutableDictionary *dicPhoneRecord = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[self compareCurrentTime:calltime],@"calltime",calltype,@"calltype",[self numberFromCid:hostcid],@"hostnumber",[self numberFromCid:destcid],@"destnumber", nil];
+//    BOOL isCheckResult = YES;
+    
     NSMutableDictionary *dicPhoneRecord = [[NSMutableDictionary alloc] initWithObjectsAndKeys:calltime,@"calltime",calltype,@"calltype",[self numberFromCid:hostcid],@"hostnumber",[self numberFromCid:destcid],@"destnumber",@0,@"status", nil];  //时间写入记录时不需要转成字符
-    
+    [dicPhoneRecord setObject:@"未知" forKey:@"location"];
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"location" ofType:@"db"];
     
     FMDatabase *db = [FMDatabase databaseWithPath:path];
-    
     if (![db open]) {
-        
         NSLog(@"数据库打开失败！");
-        
     }else{
         NSString *number;
         if ([calltype isEqualToString:@"去电"]) {
@@ -516,29 +515,43 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         } else {
             number = [dicPhoneRecord objectForKey:@"hostnumber"];
         }
-        
-            
             //NSMutableDictionary *data = [[NSMutableDictionary alloc] initWithDictionary:dicPhoneRecord copyItems:YES];
+//        [dicPhoneRecord setObject:@"未知" forKey:@"location"];
+        if ([self isZeroStarted:number]) {
+            NSString *prefix;
+            if ([[number substringToIndex:2] isEqualToString:@"01"]) {
+                prefix = [number substringToIndex:3];
+            }else if ([[number substringToIndex:2] isEqualToString:@"02"]) {
+                prefix = [number substringToIndex:3];
+            } else {
+                prefix = [number substringToIndex:4];
+            }
             
-            [dicPhoneRecord setObject:@"未知" forKey:@"location"];
+            NSString *cityid;
+            NSString *provinceid;
             
-            //                    number = @"18805061112";
+            FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM number_%@ limit %d,1",@"0",[prefix intValue]-1]];
+            if ([rs next]) {
+                cityid = [NSString stringWithFormat:@"%d",[rs intForColumnIndex:0]];
+            }
+            rs = [db executeQuery:[NSString stringWithFormat:@"SELECT province_id FROM city where _id=%@",cityid]];
+            if ([rs next]) {
+                provinceid = [NSString stringWithFormat:@"%d",[rs intForColumnIndex:0]];
+            }
+            rs = [db executeQuery:[NSString stringWithFormat:@"SELECT province,city FROM province,city where _id=%@ and id=%@",cityid,provinceid]];
+            if ([rs next]) {
+                [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",[rs stringForColumn:@"province"],[rs stringForColumn:@"city"]] forKey:@"type"];
+            }
+        }else{
             
-            if ([self isZeroStarted:number]) {
-                
-                NSString *prefix;
-                if ([[number substringToIndex:2] isEqualToString:@"01"]) {
-                    prefix = [number substringToIndex:3];
-                }else if ([[number substringToIndex:2] isEqualToString:@"02"]) {
-                    prefix = [number substringToIndex:3];
-                } else {
-                    prefix = [number substringToIndex:4];
-                }
+            if ([number length]>=8) {
+                NSString *prefix = [number substringToIndex:3];
+                NSString *center = [number substringWithRange:{3,4}];
                 
                 NSString *cityid;
                 NSString *provinceid;
                 
-                FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM number_%@ limit %d,1",@"0",[prefix intValue]-1]];
+                FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM number_%@ limit %@,1",prefix,center]];
                 if ([rs next]) {
                     cityid = [NSString stringWithFormat:@"%d",[rs intForColumnIndex:0]];
                 }
@@ -550,50 +563,33 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 rs = [db executeQuery:[NSString stringWithFormat:@"SELECT province,city FROM province,city where _id=%@ and id=%@",cityid,provinceid]];
                 if ([rs next]) {
-                    [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",[rs stringForColumn:@"province"],[rs stringForColumn:@"city"]] forKey:@"type"];
+                    [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",[rs stringForColumn:@"province"],[rs stringForColumn:@"city"]] forKey:@"location"];
                 }
-                
-                
             }else{
-                
-                if ([number length]>=8) {
-//                    [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
-                    NSString *prefix = [number substringToIndex:3];
-                    NSString *center = [number substringWithRange:{3,4}];
-                    
-                    NSString *cityid;
-                    NSString *provinceid;
-                    
-                    FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM number_%@ limit %@,1",prefix,center]];
-                    if ([rs next]) {
-                        cityid = [NSString stringWithFormat:@"%d",[rs intForColumnIndex:0]];
-                    }
-                    
-                    rs = [db executeQuery:[NSString stringWithFormat:@"SELECT province_id FROM city where _id=%@",cityid]];
-                    if ([rs next]) {
-                        provinceid = [NSString stringWithFormat:@"%d",[rs intForColumnIndex:0]];
-                    }
-                    
-                    rs = [db executeQuery:[NSString stringWithFormat:@"SELECT province,city FROM province,city where _id=%@ and id=%@",cityid,provinceid]];
-                    if ([rs next]) {
-                        [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",[rs stringForColumn:@"province"],[rs stringForColumn:@"city"]] forKey:@"location"];
-                    }
-                    NSLog(@"%@",center,nil);
+                NSString *phoneStr = [self checkPhoneNumberIsMobile:number];
+                if (phoneStr) {
+                    [dicPhoneRecord setObject:phoneStr forKey:@"location"];
                 }
-                
             }
-            
-            
-            [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
+        }
         
+//        if ([[dicPhoneRecord objectForKey:@"location"] isEqualToString:@"未知"]) {
+//            isCheckResult = NO;
+//        }
+//        if (isCheckResult) {
+//            [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
+//            [self.tableView reloadData];
+//        }
+        
+        [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
         [self.tableView reloadData];
     }
     
+    //可通过判断是否为未知来进行网络请求归属地
+    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     path = [paths objectAtIndex:0];
-    
     path = [path stringByAppendingPathComponent:@"callrecord.db"];
-    
     db = [FMDatabase databaseWithPath:path];
     
     if (![db open]) {
@@ -604,7 +600,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         //监测数据库中我要需要的表是否已经存在
         NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord" ];
         FMResultSet *rs = [db executeQuery:existsSql];
-        
         if ([rs next]) {
             NSInteger count = [rs intForColumn:@"countNum"];
             NSLog(@"The table count: %li", count);
@@ -642,6 +637,23 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     return YES;
 }
 
+-(NSString *)checkPhoneNumberIsMobile:(NSString *)phoneNumber
+{
+    NSString *phoneStr;
+    if([phoneNumber isEqualToString:@"10000"] || [phoneNumber isEqualToString:@"10001"]){
+        phoneStr = @"中国电信";
+    }else if([phoneNumber isEqualToString:@"10010"] || [phoneNumber isEqualToString:@"10011"]){
+        phoneStr = @"中国联通";
+    }else if([phoneNumber isEqualToString:@"10086"]){
+        phoneStr = @"中国移动";
+    }else if([phoneNumber isEqualToString:@"10039"]){
+        phoneStr = @"分享通讯";
+    }else{
+        phoneStr = nil;
+    }
+    return phoneStr;
+}
+
 - (void)makeCallAction :(NSNotification *)notification {
     NSString *phoneNumber = notification.object;
     if (phoneNumber) {
@@ -661,9 +673,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     self.checkToken = YES;
     [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
         NSLog(@"有数据：%@",responseObj);
-        
-        
-        
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             
             self.maxPhoneCall = [[[responseObj objectForKey:@"data"]  objectForKey:@"maximumPhoneCallTime"] intValue];
@@ -711,10 +720,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             
             NSLog(@"当前扩音状态:%zd", self.speakerStatus);
-//            self.speakerStatus = !self.speakerStatus;
             theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
         }else if ([action isEqualToString:@"MuteSound"]){
-            self.muteStatus = !self.muteStatus;
+            if (notification.userInfo) {
+                if (notification.userInfo[@"isMuteon"]) {
+                    self.muteStatus = [notification.userInfo[@"isMuteon"] boolValue];
+                }
+            }
+//            self.muteStatus = !self.muteStatus;
             theSipEngine->MuteMic(self.muteStatus);
         }else if ([action isEqualToString:@"Answer"]){
             //选择最后一条，更新为
@@ -742,7 +755,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
             theSipEngine->AnswerCall();
             theSipEngine->StopRinging();
-            
         }else if ([action isEqualToString:@"Refuse"]){
             theSipEngine->TerminateCall();
         }
@@ -785,7 +797,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
         [self.navigationController presentViewController:self.callCominginVC animated:YES completion:nil];
         
-        [self addPhoneRecord:cid :[userdata objectForKey:@"Tel"] :[NSDate date] :@"来电"];
+        [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
         
         /*
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
@@ -795,7 +807,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }else{
         msg = [NSString stringWithFormat:@"新去电 %@",cid];
         
-        [self addPhoneRecord:[userdata objectForKey:@"Tel"] :cid :[NSDate date] :@"去电"];
+        [self addPhoneRecordWithHostcid:[userdata objectForKey:@"Tel"] Destcid:cid Calltime:[NSDate date] Calltype:@"去电"];
     }
     
     //    [mStatus setText:msg];
@@ -821,7 +833,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     //在接通时更新扩音状态
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
     theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
-    
+    theSipEngine->MuteMic(self.muteStatus);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在通话"];
 }
 
@@ -1180,19 +1192,21 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 {
     //电话记录，拨打电话
     if (!self.callActionView){
-        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
         
-        [self.view addSubview:self.callActionView];
+//        [self.view addSubview:self.callActionView];
     }
     
     __weak typeof(self) weakSelf = self;
     
     self.callActionView.cancelBlock = ^(){
-        weakSelf.callActionView.hidden = YES;
+
+        [weakSelf.callActionView hideActionView];
     };
     
     self.callActionView.actionBlock = ^(NSInteger callType){
-        weakSelf.callActionView.hidden = YES;
+
+        [weakSelf.callActionView hideActionView];
         
         weakSelf.phonePadView.inputedPhoneNumber = nil;
         weakSelf.lblPhoneNumber.text = nil;
@@ -1219,7 +1233,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
         }
     };
-    self.callActionView.hidden = NO;
+
+    [self.callActionView showActionView];
 }
 
 - (NSString *)formatPhoneNum:(NSString *)phone
@@ -1384,14 +1399,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     self.callView.isPadHidden = self.numberPadStatus;
     
-    //[self.tableView needsUpdateConstraints];
+//    [self.tableView needsUpdateConstraints];
     
 }
 
 
 - (IBAction)switchOperation:(id)sender {
     
-    if (self.callActionView)  self.callActionView.hidden = YES; //切换过程中隐藏电话拨号的弹出面板
+    if (self.callActionView)  [self.callActionView hideActionView]; //切换过程中隐藏电话拨号的弹出面板
     
     UISegmentedControl *seg = (UISegmentedControl *)sender;
     self.phoneOperation = seg.selectedSegmentIndex;
@@ -1489,7 +1504,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     NSString *phoneNum = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
                     
 //                    cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
-                    
                     if (![(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"] containsString:phoneNum]) {
                         [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
                         [bottomStr appendString:@"  "];
@@ -1516,11 +1530,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     NSString *phoneNum = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
                     
 //                    cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
-                    
                     if (![(NSString *)[dicPhoneRecord objectForKey:@"destnumber"] containsString:phoneNum]) {
-                        [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
+                        [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"destnumber"]];
                         [bottomStr appendString:@"  "];
-                        cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
+                        cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
                     }else{
                         NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:phoneNum attributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
                         NSRange range = [phoneNum rangeOfString:self.lblPhoneNumber.text];
@@ -1570,7 +1583,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
                 if (![(NSString *)[dicPhoneRecord objectForKey:@"destnumber"] containsString:cell.lblPhoneNumber.text]) {
-                    [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
+                    [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"destnumber"]];
                     [bottomStr appendString:@"  "];
                 }
             }
@@ -1581,7 +1594,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
     }else{
         MessageRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"MessageRecordCell"];
-        
         NSDictionary *dicMessageRecord = [self.arrMessageRecord objectAtIndex:indexPath.row];
         
         if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
@@ -1592,9 +1604,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         NSString *textStr = [NSString stringWithFormat:@"%@ >", [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]]];
         cell.lblMessageDate.text = textStr;
-        
         cell.lblContent.text = [dicMessageRecord objectForKey:@"SMSContent"];
-        
         return cell;
     }
 }
@@ -1625,7 +1635,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     if (contactsDetailViewController) {
                         NSLog(@"联系结果：%@",model);
                         //重置状态
-                        self.callActionView.hidden = YES;
+                        [self.callActionView hideActionView];
                         
                         self.phonePadView.inputedPhoneNumber = nil;
                         self.lblPhoneNumber.text = nil;
@@ -1650,19 +1660,19 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 //电话记录，拨打电话
                 if (!self.callActionView){
-                    self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
+                    self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
                     
-                    [self.view addSubview:self.callActionView];
+//                    [self.view addSubview:self.callActionView];
                 }
                 
                 __weak typeof(self) weakSelf = self;
                 
                 self.callActionView.cancelBlock = ^(){
-                    weakSelf.callActionView.hidden = YES;
+                    [weakSelf.callActionView hideActionView];
                 };
                 
                 self.callActionView.actionBlock = ^(NSInteger callType){
-                    weakSelf.callActionView.hidden = YES;
+                    [weakSelf.callActionView hideActionView];
                     if (callType==1) {
                         //网络电话
                         //电话记录，拨打电话
@@ -1699,26 +1709,24 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     }
                 };
                 
-                self.callActionView.hidden = NO;
+                [self.callActionView showActionView];
             }
 
         }else{
             //电话记录，拨打电话
             if (!self.callActionView){
-                self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-44)];
-                
-                [self.view addSubview:self.callActionView];
+                self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
             }
             
             
             __weak typeof(self) weakSelf = self;
             
             self.callActionView.cancelBlock = ^(){
-                weakSelf.callActionView.hidden = YES;
+                [weakSelf.callActionView hideActionView];
             };
             
             self.callActionView.actionBlock = ^(NSInteger callType){
-                weakSelf.callActionView.hidden = YES;
+                [weakSelf.callActionView hideActionView];
                 if (callType==1) {
                     //网络电话
                     //电话记录，拨打电话
@@ -1756,7 +1764,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 }
             };
             
-            self.callActionView.hidden = NO;
+
+            [self.callActionView showActionView];
         }
         
     } else {

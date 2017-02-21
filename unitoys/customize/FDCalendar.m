@@ -119,6 +119,14 @@ static NSDateFormatter *dateFormattor;
     [self.bgWindow setHidden:YES];
 }
 
+- (void)removeWindow
+{
+    if (_bgWindow) {
+        _bgWindow.hidden = YES;
+        _bgWindow= nil;
+    }
+}
+
 #pragma mark - Custom Accessors
 
 - (UIView *)backgroundView {
@@ -418,5 +426,7 @@ static NSDateFormatter *dateFormattor;
     self.date = date;
     [self setCurrentDate:self.date];
 }
+
+
 
 @end

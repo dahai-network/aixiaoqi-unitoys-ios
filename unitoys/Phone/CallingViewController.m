@@ -84,19 +84,19 @@
  */
 
 - (IBAction)muteCalling:(id)sender {
-    if (self.hadRing){
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
-        
-    }else{
-        self.isMute = !self.isMute;
-    }
-    
     if (_btnMuteStatus.tag==0) {
         [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteon"] forState:UIControlStateNormal];
         _btnMuteStatus.tag=1;
     } else {
         [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteoff"] forState:UIControlStateNormal];
         _btnMuteStatus.tag=0;
+    }
+    if (self.hadRing){
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound" userInfo:@{@"isMuteon" : @(_btnMuteStatus.tag)}];
+        
+    }else{
+        self.isMute = !self.isMute;
     }
 }
 

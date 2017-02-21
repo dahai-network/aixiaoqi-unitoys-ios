@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -13,11 +13,11 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="detailButton" indentationWidth="10" reuseIdentifier="PhoneRecordCell" rowHeight="72" id="KGk-i7-Jjw" customClass="PhoneRecordCell">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="72"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="PhoneRecordCell" rowHeight="72" id="KGk-i7-Jjw" customClass="PhoneRecordCell">
+            <rect key="frame" x="0.0" y="0.0" width="327" height="72"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="272" height="72"/>
+                <rect key="frame" x="0.0" y="0.0" width="327" height="72"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ePk-hH-671">
@@ -46,7 +46,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="16/06/06" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gec-C1-he0">
-                        <rect key="frame" x="163" y="25" width="115" height="21"/>
+                        <rect key="frame" x="165" y="25" width="149" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="qvr-F4-tI4"/>
                         </constraints>
@@ -55,7 +55,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u1b-H0-lJ2">
-                        <rect key="frame" x="37" y="71.5" width="286" height="0.5"/>
+                        <rect key="frame" x="37" y="71" width="282" height="1"/>
                         <color key="backgroundColor" red="0.82352941176470584" green="0.82352941176470584" blue="0.82352941176470584" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="0.5" id="ink-qj-9XK"/>
@@ -65,17 +65,17 @@
                 <constraints>
                     <constraint firstItem="8oi-Bi-erw" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="3" id="0MZ-qg-hKd"/>
                     <constraint firstItem="8oi-Bi-erw" firstAttribute="leading" secondItem="ePk-hH-671" secondAttribute="trailing" constant="7" id="4Dm-pR-kTq"/>
-                    <constraint firstItem="gec-C1-he0" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" constant="13" id="HtQ-Y5-1Rr"/>
+                    <constraint firstItem="gec-C1-he0" firstAttribute="leading" secondItem="8oi-Bi-erw" secondAttribute="trailing" constant="10" id="B5V-pa-JgW"/>
+                    <constraint firstAttribute="trailing" secondItem="gec-C1-he0" secondAttribute="trailing" constant="13" id="EKb-Ka-4zQ"/>
                     <constraint firstAttribute="bottom" secondItem="u1b-H0-lJ2" secondAttribute="bottom" id="KXe-Aa-rKt"/>
                     <constraint firstAttribute="bottomMargin" secondItem="QUg-Vf-jGn" secondAttribute="bottom" constant="3" id="NBs-Ij-zJD"/>
                     <constraint firstItem="QUg-Vf-jGn" firstAttribute="leading" secondItem="8oi-Bi-erw" secondAttribute="leading" id="dbl-nx-Ird"/>
-                    <constraint firstItem="gec-C1-he0" firstAttribute="leading" secondItem="8oi-Bi-erw" secondAttribute="trailing" constant="8" id="gLK-du-nnj"/>
                     <constraint firstItem="gec-C1-he0" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="hqw-sJ-xo3"/>
                     <constraint firstItem="ePk-hH-671" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" constant="2" id="hwb-TI-D5e"/>
-                    <constraint firstItem="gec-C1-he0" firstAttribute="leading" secondItem="QUg-Vf-jGn" secondAttribute="trailing" constant="8" id="n67-2r-mZK"/>
                     <constraint firstItem="u1b-H0-lJ2" firstAttribute="leading" secondItem="8oi-Bi-erw" secondAttribute="leading" id="p7W-80-UDs"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="u1b-H0-lJ2" secondAttribute="trailing" id="sPC-io-gjq"/>
                     <constraint firstItem="ePk-hH-671" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="v81-pX-YAC"/>
-                    <constraint firstItem="u1b-H0-lJ2" firstAttribute="trailing" secondItem="gec-C1-he0" secondAttribute="trailing" constant="45" id="vim-fo-Xfw"/>
+                    <constraint firstItem="gec-C1-he0" firstAttribute="leading" secondItem="QUg-Vf-jGn" secondAttribute="trailing" constant="10" id="w0i-7F-GtV"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
@@ -84,7 +84,7 @@
                 <outlet property="lblPhoneNumber" destination="8oi-Bi-erw" id="ss3-HK-wOa"/>
                 <outlet property="lblPhoneType" destination="QUg-Vf-jGn" id="gKX-c2-DVF"/>
             </connections>
-            <point key="canvasLocation" x="34" y="50"/>
+            <point key="canvasLocation" x="-84.5" y="49"/>
         </tableViewCell>
     </objects>
 </document>

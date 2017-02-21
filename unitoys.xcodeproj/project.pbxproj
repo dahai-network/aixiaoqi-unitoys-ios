@@ -157,7 +157,6 @@
 		95C575FC1DA77C1000F459DF /* MessageRecordCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 95C575FA1DA77C1000F459DF /* MessageRecordCell.m */; };
 		95C575FD1DA77C1000F459DF /* MessageRecordCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 95C575FB1DA77C1000F459DF /* MessageRecordCell.xib */; };
 		95C576001DA79FAE00F459DF /* TopLeftLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 95C575FF1DA79FAE00F459DF /* TopLeftLabel.m */; };
-		95C576021DA85F8F00F459DF /* https.cer in Resources */ = {isa = PBXBuildFile; fileRef = 95C576011DA85F8F00F459DF /* https.cer */; };
 		95CD33EC1D9CE4F300EE5DD3 /* base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD33D81D9CE4F300EE5DD3 /* base64.m */; };
 		95CD33ED1D9CE4F300EE5DD3 /* DataSigner.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD33DB1D9CE4F300EE5DD3 /* DataSigner.m */; };
 		95CD33EE1D9CE4F300EE5DD3 /* DataVerifier.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD33DD1D9CE4F300EE5DD3 /* DataVerifier.m */; };
@@ -476,7 +475,6 @@
 		95C575FB1DA77C1000F459DF /* MessageRecordCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessageRecordCell.xib; sourceTree = "<group>"; };
 		95C575FE1DA79FAE00F459DF /* TopLeftLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopLeftLabel.h; sourceTree = "<group>"; };
 		95C575FF1DA79FAE00F459DF /* TopLeftLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopLeftLabel.m; sourceTree = "<group>"; };
-		95C576011DA85F8F00F459DF /* https.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = https.cer; sourceTree = "<group>"; };
 		95CD338B1D9CE4F300EE5DD3 /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
 		95CD338C1D9CE4F300EE5DD3 /* asn1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1.h; sourceTree = "<group>"; };
 		95CD338D1D9CE4F300EE5DD3 /* asn1_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1_mac.h; sourceTree = "<group>"; };
@@ -1329,7 +1327,6 @@
 				046BD6491E0B7DBC008A958A /* unitoys.entitlements */,
 				046BD63B1E0B79BB008A958A /* JPush */,
 				953CF9CC1DCCDDD20001CE8E /* location.db */,
-				95C576011DA85F8F00F459DF /* https.cer */,
 				95F1ED5D1DE70BC1002E9259 /* Sport */,
 				95E918571DDC7EA4005DABC0 /* Setting */,
 				95E918531DDC7A97005DABC0 /* Device */,
@@ -1466,7 +1463,6 @@
 			files = (
 				950E791E1E02C0D8003AE0D5 /* Order.storyboard in Resources */,
 				955CCC311D90075D00BC8110 /* https.cer in Resources */,
-				95C576021DA85F8F00F459DF /* https.cer in Resources */,
 				950E79201E02C981003AE0D5 /* Phone.storyboard in Resources */,
 				953CF9CD1DCCDDD20001CE8E /* location.db in Resources */,
 				04EAB8BD1E2787F6000D3D13 /* AlarmListViewController.xib in Resources */,

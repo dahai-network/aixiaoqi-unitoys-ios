@@ -118,20 +118,22 @@
     
     
     if (!self.callActionView){
-        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
         
-        [self.view addSubview:self.callActionView];
+//        [self.view addSubview:self.callActionView];
     }
     
     
     __weak typeof(self) weakSelf = self;
     
     self.callActionView.cancelBlock = ^(){
-        weakSelf.callActionView.hidden = YES;
+//        weakSelf.callActionView.hidden = YES;
+        [weakSelf.callActionView hideActionView];
     };
     
     self.callActionView.actionBlock = ^(NSInteger callType){
-        weakSelf.callActionView.hidden = YES;
+//        weakSelf.callActionView.hidden = YES;
+        [weakSelf.callActionView hideActionView];
         if (callType==1) {
             //网络电话
             //电话记录，拨打电话
@@ -150,7 +152,8 @@
         }
     };
     
-    self.callActionView.hidden = NO;
+//    self.callActionView.hidden = NO;
+    [self.callActionView showActionView];
     
 }
 

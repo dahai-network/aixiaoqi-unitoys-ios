@@ -21,4 +21,9 @@ typedef void (^CallActionBlock)(NSInteger callType);
 typedef void (^CallCancelBlock)();
 @property (nonatomic,copy)CallCancelBlock cancelBlock;
 
+- (void)showActionView;
+- (void)hideActionView;
+
+- (void)dismissView;
+
 @end

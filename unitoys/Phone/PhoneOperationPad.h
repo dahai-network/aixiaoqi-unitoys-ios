@@ -13,7 +13,7 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *btnSwitchNumberPad;
 @property (weak, nonatomic) IBOutlet UIButton *btnDelNumber;
-@property (nonatomic, strong) CallActionView *callActionView;
+//@property (nonatomic, strong) CallActionView *callActionView;
 
 @property (readwrite) BOOL isPadHidden;
 
