@@ -269,7 +269,13 @@
     self.checkToken = YES;
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
-    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:@"1", @"Version", nil];
+    NSString *versionStr;
+    if ([BlueToothDataManager shareManager].versionNumber) {
+        versionStr= [BlueToothDataManager shareManager].versionNumber;
+    } else {
+        versionStr = @"1";
+    }
+    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:versionStr, @"Version", nil];
     [SSNetworkRequest getRequest:apiDeviceBraceletOTA params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"空中升级的请求结果 -- %@", responseObj);
@@ -316,7 +322,11 @@
             }
         }
         if (indexPath.row == 1) {
-            [self otaDownload];
+            if ([BlueToothDataManager shareManager].isConnected) {
+                [self otaDownload];
+            } else {
+                HUDNormal(@"未连接手环")
+            }
         }
     }
 }

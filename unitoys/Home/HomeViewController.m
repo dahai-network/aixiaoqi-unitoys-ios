@@ -24,12 +24,17 @@
 
 #import "QuickSettingViewController.h"
 #import <iOSDFULibrary/iOSDFULibrary-Swift.h>
+#import "TTRangeSlider.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
 @interface HomeViewController ()<DFUServiceDelegate,LoggerDelegate,DFUProgressDelegate>
 @property (nonatomic, strong) DFUServiceController *myController;
 @property (nonatomic, strong) NSFileHandle *writeHandle;
+@property (nonatomic, strong)UIWindow *progressWindow;
+@property (nonatomic, strong)TTRangeSlider *progressView;
+@property (nonatomic, strong)UILabel *titleLabel;
+@property (nonatomic, strong)UILabel *progressNumberLabel;
 
 @end
 
@@ -329,6 +334,7 @@
 #pragma mark - 空中升级
 - (void)oatUpdataAction:(NSNotification *)sender {
     [self sendConnectingInstructWithData:[self checkOATDFU]];
+    [self showProgress];
     NSURL *downloadURL = [NSURL URLWithString:sender.object];
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:downloadURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         //下载完成之后的回调
@@ -348,12 +354,12 @@
         // 关闭文件
         [self.writeHandle closeFile];
         self.writeHandle = nil;
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
+        self.progressNumberLabel.text = @"正在重启蓝牙";
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
             
-            //        NSURL *fileURL = [NSURL fileURLWithPath:filepath];
-            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
+            NSURL *fileURL = [NSURL fileURLWithPath:filepath];
+//            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
             DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
             DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:self.mgr target:self.peripheral];
             [initiator withFirmwareFile:selectedFirmware];
@@ -382,6 +388,11 @@
      */
     //    DFUState dfuStateType = (DFUState)state;
     NSLog(@"显示升级状态 --> %ld", (long)state);
+    if (state == 6&&self.progressWindow) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.progressWindow = nil;
+        });
+    }
 }
 
 - (void)didErrorOccur:(enum DFUError)error withMessage:(NSString *)message {
@@ -391,6 +402,17 @@
 - (void)onUploadProgress:(NSInteger)part totalParts:(NSInteger)totalParts progress:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
     //进度
     NSLog(@"dfuProgressChangedFor: %ld%% (part %ld/%ld).speed:%f bps, Avg speed:%f bps", (long)progress, (long)part, (long)totalParts, currentSpeedBytesPerSecond, avgSpeedBytesPerSecond);
+    self.progressNumberLabel.text = [NSString stringWithFormat:@"%ld%%", (long)progress];
+    if (self.progressView.hidden) {
+        self.progressView.hidden = NO;
+    }
+    self.progressView.selectedMinimum = (float)progress/100;
+//    NSLog(@"当前百分比%f", (float)progress/100);
+    if (progress == 100) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.progressNumberLabel.text = @"升级成功";
+        });
+    }
 }
 
 - (void)logWith:(enum LogLevel)level message:(NSString *)message {
@@ -403,6 +425,53 @@
      LogLevelError = 20,
      */
     NSLog(@"升级步骤显示 --> %ld, %@", (long)level, message);
+}
+
+- (void)showProgress {
+    if (!self.progressWindow) {
+        self.progressWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.progressWindow.windowLevel = UIWindowLevelStatusBar+1;
+        self.progressWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+        
+        UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2)-100, ([UIScreen mainScreen].bounds.size.height/2)-75, 200, 150)];
+        littleView.backgroundColor = [UIColor whiteColor];
+        littleView.layer.masksToBounds = YES;
+        littleView.layer.cornerRadius = 10;
+        [self.progressWindow addSubview:littleView];
+        
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth(littleView.frame)-20, 21)];
+        self.titleLabel.text = @"空中升级";
+        //        self.titleLabel.backgroundColor = [UIColor yellowColor];
+        self.titleLabel.textAlignment = NSTextAlignmentCenter;
+        [littleView addSubview:self.titleLabel];
+        
+        self.progressNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, littleView.frame.size.height/2-30, CGRectGetWidth(littleView.frame)-20, 60)];
+        self.progressNumberLabel.textAlignment = NSTextAlignmentCenter;
+        self.progressNumberLabel.font = [UIFont systemFontOfSize:25];
+        //        self.progressNumberLabel.backgroundColor = [UIColor redColor];
+        self.progressNumberLabel.text = @"正在下载升级文件";
+        [littleView addSubview:self.progressNumberLabel];
+        
+        self.progressView = [[TTRangeSlider alloc] initWithFrame:CGRectMake(10, littleView.frame.size.height-30, CGRectGetWidth(littleView.frame)-20, 20)];
+        self.progressView.hidden = YES;
+        self.progressView.minValue = 0;
+        self.progressView.maxValue = 1;
+        self.progressView.selectedMinimum = 0;
+        self.progressView.selectedMaximum = 1;
+        self.progressView.handleImage = nil;
+        self.progressView.handleDiameter = 0;
+        self.progressView.minLabelFont = [UIFont systemFontOfSize:0];
+        self.progressView.maxLabelFont = [UIFont systemFontOfSize:0];
+        self.progressView.selectedHandleDiameterMultiplier = 1;
+        self.progressView.tintColorBetweenHandles = [UIColor redColor];
+        self.progressView.lineHeight = 3;
+        self.progressView.enabled = NO;
+        //设置进度条颜色
+        self.progressView.tintColor = [UIColor yellowColor];
+        [littleView addSubview:self.progressView];
+        
+        [self.progressWindow makeKeyAndVisible];
+    }
 }
 
 #pragma mark - VSW相关
