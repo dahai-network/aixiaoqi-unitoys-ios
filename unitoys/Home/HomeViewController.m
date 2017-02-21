@@ -392,11 +392,18 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.progressWindow = nil;
         });
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self checkBindedDeviceFromNet];
+        });
     }
 }
 
 - (void)didErrorOccur:(enum DFUError)error withMessage:(NSString *)message {
     NSLog(@"ERROR %ld:%@", (long)error, message);
+    self.progressNumberLabel.text = @"升级失败";
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.progressWindow = nil;
+    });
 }
 
 - (void)onUploadProgress:(NSInteger)part totalParts:(NSInteger)totalParts progress:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
@@ -429,9 +436,11 @@
 
 - (void)showProgress {
     if (!self.progressWindow) {
-        self.progressWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//        self.progressWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.progressWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 20, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-20)];
         self.progressWindow.windowLevel = UIWindowLevelStatusBar+1;
         self.progressWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+//        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
         
         UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2)-100, ([UIScreen mainScreen].bounds.size.height/2)-75, 200, 150)];
         littleView.backgroundColor = [UIColor whiteColor];
@@ -1573,7 +1582,7 @@
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(BLESCANTIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         if (![BlueToothDataManager shareManager].isConnected) {
                             if (![BlueToothDataManager shareManager].isShowAlert) {
-                                HUDNormal(@"没有搜索到可连接的设备")
+//                                HUDNormal(@"没有搜索到可连接的设备")
                             }
                             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
                             [self.mgr stopScan];
@@ -2696,15 +2705,16 @@
 
 #pragma mark 告诉蓝牙是苹果设备指令
 - (NSData *)tellBLEIsAppleDevice {
-    Byte reg[6];
-    //    0xAA 0x01 0x04 0x01 0xAE
-    reg[0]=0xAA;
-    reg[1]=0x01;
-    reg[2]=0x04;
-    reg[3]=0x01;
-    reg[4]=0xAE;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
+    Byte reg[7];
+    //    0x88 0x80 0x03 0x02 0x00 0x01
+    reg[0]=0x88;
+    reg[1]=0x80;
+    reg[2]=0x03;
+    reg[3]=0x02;
+    reg[4]=0x00;
+    reg[5]=0x01;
+    reg[6]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]^reg[5]);
+    NSData *data=[NSData dataWithBytes:reg length:7];
     return data;
 }
 
