@@ -688,6 +688,13 @@
 			path = JPush;
 			sourceTree = "<group>";
 		};
+		3CEA938D1E5C4EA100205C29 /* CallKitTools */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = CallKitTools;
+			sourceTree = "<group>";
+		};
 		430B1E9DC15699DC69140B1C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1323,6 +1330,7 @@
 		95F337131D853256000B5461 /* unitoys */ = {
 			isa = PBXGroup;
 			children = (
+				3CEA938D1E5C4EA100205C29 /* CallKitTools */,
 				740FD37E1E287F9E009413F1 /* VSW */,
 				046BD6491E0B7DBC008A958A /* unitoys.entitlements */,
 				046BD63B1E0B79BB008A958A /* JPush */,

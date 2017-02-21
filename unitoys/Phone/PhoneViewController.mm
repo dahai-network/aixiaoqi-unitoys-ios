@@ -782,22 +782,30 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     
     if (dir == CallIncoming){
-        msg = [NSString stringWithFormat:@"新来电 %@",cid];
-        //去掉“+”
-        if ([cid containsString:@"+"]) {
-            newcid = [cid stringByReplacingOccurrencesOfString:@"+" withString:@""];
-            cid = newcid;
-        }
-        //去掉86
-        if ([[cid substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
-            newcid = [cid substringFromIndex:2];
-            cid = newcid;
-        }
-        self.callCominginVC = [[CallComingInViewController alloc] init];
-        self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
-        [self.navigationController presentViewController:self.callCominginVC animated:YES completion:nil];
         
-        [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
+        BOOL isCallKit = YES;
+        if (kSystemVersionValue >= 10.0 && isCallKit) {
+            
+            
+            
+        }else{
+            msg = [NSString stringWithFormat:@"新来电 %@",cid];
+            //去掉“+”
+            if ([cid containsString:@"+"]) {
+                newcid = [cid stringByReplacingOccurrencesOfString:@"+" withString:@""];
+                cid = newcid;
+            }
+            //去掉86
+            if ([[cid substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
+                newcid = [cid substringFromIndex:2];
+                cid = newcid;
+            }
+            self.callCominginVC = [[CallComingInViewController alloc] init];
+            self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
+            [self.navigationController presentViewController:self.callCominginVC animated:YES completion:nil];
+            
+            [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
+        }
         
         /*
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
@@ -809,7 +817,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         [self addPhoneRecordWithHostcid:[userdata objectForKey:@"Tel"] Destcid:cid Calltime:[NSDate date] Calltype:@"去电"];
     }
-    
     //    [mStatus setText:msg];
 }
 

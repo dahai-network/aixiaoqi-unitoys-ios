@@ -43,6 +43,7 @@
     UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithCustomView:rightButton];
     self.navigationItem.rightBarButtonItem = right;
     
+    self.tableView.allowsSelectionDuringEditing = YES;
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -81,9 +82,11 @@
 - (void)leftButtonClick {
     if (self.isEditing) {
         //设置不可编辑
+        self.isEditing = NO;
+        [self.tableView reloadData];
         [self.tableView setEditing:NO animated:YES];
         [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
-        self.isEditing = NO;
+
     } else {
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -105,24 +108,32 @@
         cell=[[[NSBundle mainBundle] loadNibNamed:@"AlarmListTableViewCell" owner:nil options:nil] firstObject];
     }
     if (self.isEditing) {
-        cell.userInteractionEnabled = YES;
-//        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+        cell.swOffOrOn.hidden = YES;
     } else {
-        cell.userInteractionEnabled = NO;
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.swOffOrOn.hidden = NO;
     }
+    cell.editingAccessoryType = UITableViewCellAccessoryDisclosureIndicator;
     NSDictionary *dic = self.listArr[indexPath.row];
     cell.lblTimeNoon.text = dic[@"noon"];
     cell.lblTimeDetail.text = dic[@"time"];
     cell.lblDescription.text = dic[@"repetition"];
-    [cell.swOffOrOn setOn:YES];
+//    [cell.swOffOrOn setOn:YES];
     return cell;
 }
 
 #pragma mark 选中cell,查看动态
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // 取消cell的选中效果
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+//    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    if (self.isEditing) {
+        [self.tableView setEditing:NO animated:YES];
+        [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
+        self.isEditing = NO;
+        UIViewController *vc = [[UIViewController alloc] init];
+        vc.view.backgroundColor = [UIColor blueColor];
+        vc.title = [NSString stringWithFormat:@"row==%zd", indexPath.row];
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
 
 #pragma mark 指定哪些可以进行编辑
