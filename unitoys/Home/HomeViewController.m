@@ -28,6 +28,41 @@
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
+//app发送给蓝牙
+typedef enum : NSUInteger {
+    BLESystemReset,//系统复位
+    BLETellBLEIsApple,//app发送手机系统给蓝牙
+    BLEIsNotifi,//是否是能通知
+    BLETurnoverTime,//更新时间
+    BLESystemBaseInfo,//系统基本信息请求
+    BLECkeckToBound,//请求绑定
+    BLEIsBoundSuccess,//是否绑定成功
+    BLERemoveBound,//解除绑定
+    BLEUpdataFromOTA,//空中升级
+    BLECheckElectricQuantity,//请求电量
+    BLESearchDevice,//查找手环
+    BLEIsUpHands,//是否是能抬手功能
+    BLECheckHistoryStep,//请求历史步数
+    BLESetAlarmClock,//设置闹钟
+    BLEUpElectricToCard,//对卡上电
+    BLEDownElectricToCard,//对卡断电
+    BLECardData,//卡数据
+} APPSENDTOBLE;
+
+//蓝牙发送给app
+typedef enum : NSUInteger {
+    APPSystemBaseInfo,//系统基本信息
+    APPElectricQuantity,//电量
+    APPChargeElectricStatue,//充电状态
+    APPAgreeToBind,//同意绑定
+    APPRealTimeCountStep,//实时计步
+    APPHistoryStep,//历史计步
+    APPAnswerUpElectricToCard,//对卡上电回应
+    APPAnswerDownElectricToCard,//对卡断电回应
+    APPAnswerSIMData,//SIM数据回应
+    APPLastChargeElectricTime,//上次充电时间
+} BLESENDTOAPP;
+
 @interface HomeViewController ()<DFUServiceDelegate,LoggerDelegate,DFUProgressDelegate>
 @property (nonatomic, strong) DFUServiceController *myController;
 @property (nonatomic, strong) NSFileHandle *writeHandle;
@@ -190,17 +225,17 @@
 
 #pragma mark 对卡上电
 - (void)updataToCard {
-    [self sendConnectingInstructWithData:[self phoneCardToUpelectrifyWithReturn]];
+    [self phoneCardToUpeLectrify:@"03"];
 }
 
 #pragma mark 对卡断电
 - (void)downElectToCard {
-    [self sendConnectingInstructWithData:[self phoneCardToOutage]];
+    [self phoneCardToOutageNew];
 }
 
 #pragma mark 查找手环
 - (void)searchMyBluetooth {
-    [self sendConnectingInstructWithData:[self sendDateToSearchMyBluetooth]];
+    [self sendMessageToBLEWithType:BLESearchDevice validData:nil];
 }
 
 - (void)unBindSuccess {
@@ -315,25 +350,10 @@
     }
 }
 
-#pragma mark 空中升级指令
-- (NSData *)checkOATDFU {
-    Byte reg[7];
-    //    0x88 0x80 0x03 0x0A 0x00 0xB1
-    reg[0]=0x88;
-    reg[1]=0x80;
-    reg[2]=0x03;
-    reg[3]=0x0A;
-    reg[4]=0x00;
-    reg[5]=0xB1;
-    reg[6]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]^reg[5]);
-    NSData *data=[NSData dataWithBytes:reg length:7];
-    return data;
-}
-
 
 #pragma mark - 空中升级
 - (void)oatUpdataAction:(NSNotification *)sender {
-    [self sendConnectingInstructWithData:[self checkOATDFU]];
+    [self sendMessageToBLEWithType:BLEUpdataFromOTA validData:@"b1"];
     [self showProgress];
     NSURL *downloadURL = [NSURL URLWithString:sender.object];
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:downloadURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
@@ -436,11 +456,9 @@
 
 - (void)showProgress {
     if (!self.progressWindow) {
-//        self.progressWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.progressWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 20, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-20)];
         self.progressWindow.windowLevel = UIWindowLevelStatusBar+1;
         self.progressWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
-//        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
         
         UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2)-100, ([UIScreen mainScreen].bounds.size.height/2)-75, 200, 150)];
         littleView.backgroundColor = [UIColor whiteColor];
@@ -450,14 +468,12 @@
         
         self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth(littleView.frame)-20, 21)];
         self.titleLabel.text = @"空中升级";
-        //        self.titleLabel.backgroundColor = [UIColor yellowColor];
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         [littleView addSubview:self.titleLabel];
         
         self.progressNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, littleView.frame.size.height/2-30, CGRectGetWidth(littleView.frame)-20, 60)];
         self.progressNumberLabel.textAlignment = NSTextAlignmentCenter;
         self.progressNumberLabel.font = [UIFont systemFontOfSize:25];
-        //        self.progressNumberLabel.backgroundColor = [UIColor redColor];
         self.progressNumberLabel.text = @"正在下载升级文件";
         [littleView addSubview:self.progressNumberLabel];
         
@@ -519,47 +535,137 @@
 }
 
 - (void)senderNewMessageToBLE:(NSNotification *)sender {
-    NSString *firstStr = sender.object;
-    NSString *totalNumber = [NSString stringWithFormat:@"%lu", (firstStr.length/2)/14 + 1];
-    NSLog(@"总包数 -> %@", totalNumber);
-    for (int i = 1; i <= [totalNumber intValue]; i++) {
-        NSString *tempStr;//后面拼接的字节
-        NSString *currentNumStr;//数据包编号
-        NSString *validStrLength;//有效字节长度
-        NSString *packetTotalNum;//数据包总个数
-        if (i == [totalNumber intValue]) {
-            tempStr = [firstStr substringFromIndex:14 * 2 * (i-1)];
-        } else {
-            tempStr = [firstStr substringWithRange:NSMakeRange(14 * 2 * (i-1), 14*2)];
-        }
-        currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i]];
-        validStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)firstStr.length/2]];
-        packetTotalNum = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)[totalNumber intValue]]];
-        NSString *totalStr = [NSString stringWithFormat:@"aada%@%@%@%@", validStrLength, packetTotalNum, currentNumStr, tempStr];
-        NSLog(@"最终发送的包内容 -> %@", totalStr);
-        [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
-    }
+    NSString *tempStr = sender.object;
+    [self sendMessageToBLEWithType:BLECardData validData:tempStr];
 }
 
-- (void)senderNewStringMessageToBLE:(NSString *)sender {
-    NSString *firstStr = sender;
-    NSString *totalNumber = [NSString stringWithFormat:@"%lu", (firstStr.length/2)/14 + 1];
-    NSLog(@"总包数 -> %@", totalNumber);
-    for (int i = 1; i <= [totalNumber intValue]; i++) {
-        NSString *tempStr;//后面拼接的字节
-        NSString *currentNumStr;//数据包编号
-        NSString *validStrLength;//有效字节长度
-        NSString *packetTotalNum;//数据包总个数
-        if (i == [totalNumber intValue]) {
-            tempStr = [firstStr substringFromIndex:14 * 2 * (i-1)];
+#pragma mark 新协议发送数据包的方法
+- (void)sendMessageToBLEWithType:(APPSENDTOBLE)type validData:(NSString *)validData {
+    NSString *firstStr;
+    NSString *typeStr;
+    NSString *validStrLength;
+    NSString *totalStr;
+    if (validData) {
+        firstStr = validData;
+    }
+    switch (type) {
+        case BLESystemReset:
+            //系统复位
+            typeStr = @"0100";
+            break;
+        case BLETellBLEIsApple:
+            //app发送手机系统给蓝牙
+            typeStr = @"0200";
+            break;
+        case BLEIsNotifi:
+            //是否是能通知
+            typeStr = @"0300";
+            break;
+        case BLETurnoverTime:
+            //更新时间
+            typeStr = @"0500";
+            break;
+        case BLESystemBaseInfo:
+            //系统基本信息请求
+            typeStr = @"0600";
+            break;
+        case BLECkeckToBound:
+            //请求绑定
+            typeStr = @"0700";
+            break;
+        case BLEIsBoundSuccess:
+            //是否绑定成功
+            typeStr = @"0800";
+            break;
+        case BLERemoveBound:
+            //解除绑定
+            typeStr = @"0900";
+            break;
+        case BLEUpdataFromOTA:
+            //空中升级
+            typeStr = @"0A00";
+            break;
+        case BLECheckElectricQuantity:
+            //请求电量
+            typeStr = @"0B00";
+            break;
+        case BLESearchDevice:
+            //查找手环
+            typeStr = @"0C00";
+            break;
+        case BLEIsUpHands:
+            //是否是能抬手功能
+            typeStr = @"0D00";
+            break;
+        case BLECheckHistoryStep:
+            //请求历史步数
+            typeStr = @"0E00";
+            break;
+        case BLESetAlarmClock:
+            //设置闹钟
+            typeStr = @"0F00";
+            break;
+        case BLEUpElectricToCard:
+            //对卡上电
+            typeStr = @"1000";
+            break;
+        case BLEDownElectricToCard:
+            //对卡断电
+            typeStr = @"1100";
+            break;
+        case BLECardData:
+            //卡数据
+            typeStr = @"1200";
+            break;
+            
+        default:
+            break;
+    }
+    if (validData) {
+        //有有效data
+        if (firstStr.length/2 <= 15) {
+            validStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)(firstStr.length+typeStr.length)/2]];
+            totalStr = [NSString stringWithFormat:@"8880%@%@%@", validStrLength, typeStr, firstStr];
+            NSLog(@"只有一个包，最终发送的包内容 -> %@", totalStr);
+            [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
         } else {
-            tempStr = [firstStr substringWithRange:NSMakeRange(14 * 2 * (i-1), 14*2)];
+            NSString *totalNumber = [NSString stringWithFormat:@"%lu", ((firstStr.length - 15*2)/2)/17 + 2];
+            for (int i = 0; i < [totalNumber integerValue]; i++) {
+                NSString *tempStr;//后面拼接的字节
+                NSString *currentNumStr;//数据包编号
+                NSString *currentStrLength;//当前数据长度
+                if (i == 0) {
+                    //第一个
+                    currentStrLength = [self hexStringFromString:@"17"];
+                    tempStr = [firstStr substringWithRange:NSMakeRange(0, 34 - 4)];//减去类型的两个字节
+                    totalStr = [NSString stringWithFormat:@"8800%@%@%@", currentStrLength, typeStr, tempStr];
+                    NSLog(@"多包第一个，最终发送的包内容 -> %@", totalStr);
+                    [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
+                } else if (i == [totalNumber integerValue] - 1) {
+                    //最后一个
+                    currentStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)((firstStr.length-15*2)-(i-1)*(17*2))/2]];
+                    currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i + 128]];//加上0x80
+                    tempStr = [firstStr substringFromIndex:15*2 + 17*2*(i - 1)];
+                    totalStr = [NSString stringWithFormat:@"88%@%@%@", currentNumStr, currentStrLength, tempStr];
+                    NSLog(@"多包最后一个，最终发送的包内容 -> %@", totalStr);
+                    [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
+                } else {
+                    //中间的
+                    currentStrLength = [self hexStringFromString:@"17"];
+                    tempStr = [firstStr substringWithRange:NSMakeRange(15*2+17*2*(i-1), 17*2)];
+                    currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i]];
+                    totalStr = [NSString stringWithFormat:@"88%@%@%@", currentNumStr, currentStrLength, tempStr];
+                    NSLog(@"多包中间的，最终发送的包内容 -> %@", totalStr);
+                    [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
+                }
+            }
         }
-        currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i]];
-        validStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)firstStr.length/2]];
-        packetTotalNum = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)[totalNumber intValue]]];
-        NSString *totalStr = [NSString stringWithFormat:@"aada%@%@%@%@", validStrLength, packetTotalNum, currentNumStr, tempStr];
-        NSLog(@"最终发送的包内容 -> %@", totalStr);
+        
+    } else {
+        //无有效data
+        validStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)(typeStr.length)/2]];
+        totalStr = [NSString stringWithFormat:@"8880%@%@", validStrLength, typeStr];
+        NSLog(@"无有效data，最终发送的包内容 -> %@", totalStr);
         [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
     }
 }
@@ -651,8 +757,8 @@
             NSLog(@"%@", responseObj);
             //上电
             //对卡上电
-            [self sendConnectingInstructWithData:[self phoneCardToUpelectrifyWithReturn]];
-            [self senderNewStringMessageToBLE:responseObj[@"data"][@"Data"]];
+            [self phoneCardToUpeLectrify:@"03"];
+            [self sendMessageToBLEWithType:BLECardData validData:responseObj[@"data"][@"Data"]];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -1304,16 +1410,10 @@
                 //数据请求失败
                 NSLog(@"请求失败：%@", responseObj[@"msg"]);
                 HUDNormal(responseObj[@"msg"])
-                //断开蓝牙
-//                [BlueToothDataManager shareManager].isAccordBreak = YES;
-//                [self.mgr cancelPeripheralConnection:self.peripheral];
             }
         } failure:^(id dataObj, NSError *error) {
             //
             NSLog(@"啥都没：%@",[error description]);
-            //断开蓝牙
-//            [BlueToothDataManager shareManager].isAccordBreak = YES;
-//            [self.mgr cancelPeripheralConnection:self.peripheral];
         } headers:self.headers];
     } else {
         NSLog(@"绑定蓝牙接口出问题 -- %s:%d", __func__, __LINE__);
@@ -1521,7 +1621,11 @@
 - (void)checkPastStep {
     if ([BlueToothDataManager shareManager].isBounded) {
         //请求历史步数
-        [self sendConnectingInstructWithData:[self checkPastStepNumber]];
+        [self.todays removeAllObjects];
+        [self.yesterdays removeAllObjects];
+        [self.berforeYesterdays removeAllObjects];
+        [self.threeDaysAgo removeAllObjects];
+        [self sendMessageToBLEWithType:BLECheckHistoryStep validData:nil];
     } else {
         [self showAlertWithMessage:@"请先绑定设备"];
     }
@@ -1531,7 +1635,8 @@
 - (void)checkCurrentStep {
     if ([BlueToothDataManager shareManager].isBounded) {
         //请求当前步数
-        [self sendConnectingInstructWithData:[self checkCurrentStepNumber]];
+//        [self sendConnectingInstructWithData:[self checkCurrentStepNumber]];
+        NSLog(@"暂时没有请求当前步数的命令");
     } else {
         [self showAlertWithMessage:@"请先绑定设备"];
     }
@@ -1539,7 +1644,7 @@
 
 #pragma mark 对卡上电
 - (void)upLoadToCard {
-    [self sendConnectingInstructWithData:[self phoneCardToUpeLectrify]];
+    [self phoneCardToUpeLectrify:@"02"];
 }
 
 //- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral{
@@ -1671,17 +1776,9 @@
                 nameStr = peripheral.name;
             }
             if (imeiLowStr&&[MYDEVICENAME containsString:nameStr.lowercaseString]) {
-                //旧版本不带mac地址的
-                if (advertisementData[@"kCBAdvDataManufacturerData"] && [[self conventMACAddressFromNetWithStr:[NSString stringWithFormat:@"%@", advertisementData[@"kCBAdvDataManufacturerData"]]] isEqualToString:imeiLowStr]) {
-                    self.peripheral = peripheral;
-                    [self.mgr connectPeripheral:self.peripheral options:nil];
-                    [self.macAddressDict setObject:[NSString stringWithFormat:@"%@", advertisementData[@"kCBAdvDataManufacturerData"]] forKey:peripheral.identifier];
-                    [self.RSSIDict setObject:RSSI forKey:peripheral.identifier];
-                    [BlueToothDataManager shareManager].deviceMacAddress = imeiLowStr;
-                }
                 //新版本带mac地址的
-                if (peripheral.name.length > 7) {
-                    NSString *macStr = [peripheral.name substringFromIndex:7];
+                if (peripheral.name.length > 8) {
+                    NSString *macStr = [peripheral.name substringFromIndex:8];
                     if ([macStr.lowercaseString isEqualToString:imeiLowStr]) {
                         self.peripheral = peripheral;
                         [self.mgr connectPeripheral:self.peripheral options:nil];
@@ -1695,16 +1792,9 @@
                     NSLog(@"mac地址没有广播");
                 }
             } else {
-                //旧版本不带mac地址的
-                if (advertisementData[@"kCBAdvDataManufacturerData"] && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
-                    [self.peripherals addObject:peripheral];
-                    NSLog(@"不带mac地址 -- uuid = %@ name = %@ 信号强度是：%@ mac地址是：%@", peripheral.identifier, peripheral.name, RSSI, advertisementData[@"kCBAdvDataManufacturerData"]);
-                    [self.macAddressDict setObject:[NSString stringWithFormat:@"%@", advertisementData[@"kCBAdvDataManufacturerData"]] forKey:peripheral.identifier];
-                    [self.RSSIDict setObject:RSSI forKey:peripheral.identifier];
-                }
                 //新版本带mac地址的
-                if (peripheral.name.length > 7 && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
-                    NSString *macStr = [peripheral.name substringFromIndex:7];
+                if (peripheral.name.length > 8 && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
+                    NSString *macStr = [peripheral.name substringFromIndex:8];
                     
                     [self.peripherals addObject:peripheral];
                     NSLog(@"带mac地址 -- uuid = %@ name = %@ 信号强度是：%@ mac地址是：%@", peripheral.identifier, peripheral.name, RSSI, macStr.lowercaseString);
@@ -1738,8 +1828,8 @@
                     peripheral.delegate = self;
                     self.peripheral = peripheral;
                     [self.mgr connectPeripheral:self.peripheral options:nil];
-                    if (peripheral.name.length > 7) {
-                        [BlueToothDataManager shareManager].deviceMacAddress = [peripheral.name substringFromIndex:7].lowercaseString;
+                    if (peripheral.name.length > 8) {
+                        [BlueToothDataManager shareManager].deviceMacAddress = [peripheral.name substringFromIndex:8].lowercaseString;
                     }
                 }
             }
@@ -1869,9 +1959,6 @@
             NSLog(@"这是写特属性特征");
             self.characteristic = characteristic;
             [self.peripheral setNotifyValue:YES forCharacteristic:characteristic];
-            //发送连接指令
-//            [self sendConnectingInstructWithData:[self connectBao]];
-//            [BlueToothDataManager shareManager].isConnected = NO;
         } else if ([[characteristic.UUID UUIDString] isEqual:UUIDFORSERVICE1CHARACTERISTICTONOTIF]) {
             NSLog(@"这是第一个通知属性的特征");
             self.notifyCharacteristic = characteristic;
@@ -1889,20 +1976,16 @@
     }
     [BlueToothDataManager shareManager].isConnected = YES;
     //告诉蓝牙是苹果设备
-    [self sendConnectingInstructWithData:[self tellBLEIsAppleDevice]];
-    //判断是否有卡
-    [self sendConnectingInstructWithData:[self isHaveCard]];
+    [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
+    //同步时间
+    [self checkNowTime];
+    //请求基本信息
+    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+    //请求电量
+    [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
+    //对卡上电
+    [self phoneCardToUpeLectrify:@"01"];
     [self refreshBLEStatue];
-    //请求固件版本号
-    [self sendConnectingInstructWithData:[self checkDeviceVersionNumber]];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([BlueToothDataManager shareManager].isBounded) {
-            //同步时间
-            [self checkNowTime];
-            //请求电量
-            [self sendConnectingInstructWithData:[self checkElectricQuantity]];
-        }
-    });
 }
 
 #pragma mark 更新蓝牙状态
@@ -1953,363 +2036,242 @@
     
 }
 
+
+#pragma mark 注册失败
+- (void)registFailAction {
+    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
+    if ([BlueToothDataManager shareManager].isNeedToResert) {
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:@"注册失败，是否复位？" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            [BlueToothDataManager shareManager].isNeedToResert = NO;
+        }];
+        UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            [BlueToothDataManager shareManager].isNeedToResert = YES;
+            //发送复位请求
+            [self sendConnectingInstructWithData:[self resettingInstruct]];
+            [BlueToothDataManager shareManager].isReseted = YES;
+            [BlueToothDataManager shareManager].isBounded = NO;
+            //重新连接
+            [self checkBindedDeviceFromNet];
+        }];
+        [alertVC addAction:cancelAction];
+        [alertVC addAction:certailAction];
+        [self presentViewController:alertVC animated:YES completion:nil];
+    }
+}
+
 #pragma mark 当接收到蓝牙设备发送来的数据包时就会调用此方法
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     if (error) {
-        
         NSLog(@"Error discovering characteristics: %@", [error localizedDescription]);
         return;
     }
     NSLog(@"接收到蓝牙发送过来的数据value --> %@",characteristic.value);
     
-    
 #pragma mark 把接收到的数据进行截取
     NSString *str = [NSString stringWithFormat:@"%@",characteristic.value];
-    NSLog(@"%@", str);
-    //判断是否绑定成功
-    if (str.length>8&&[[str substringWithRange:NSMakeRange(1, 8)]isEqualToString:@"bbeeeebb"]) {
-        //调用解析总包数方法
-        if ([self SetBoundingData:characteristic.value]) {
-            NSLog(@"绑定成功了");
-            //调用绑定设备接口
-            [self bindBoundDevice];
-            if ([BlueToothDataManager shareManager].isBounded) {
-                if ([BlueToothDataManager shareManager].isReseted) {
-                    // 读取缓存数据
-                    NSUserDefaults *resetData = [NSUserDefaults standardUserDefaults];
-                    NSMutableDictionary *info = [resetData objectForKey:@"resetStepData"];
-                    NSData *stepData = info[@"stepDataForReset"];
-                    //发送重置之后的数据
-                    [self sendConnectingInstructWithData:stepData];
-                }
+    if ([str containsString:@"<"]) {
+        str = [str stringByReplacingOccurrencesOfString:@"<" withString:@""];
+    }
+    if ([str containsString:@">"]) {
+        str = [str stringByReplacingOccurrencesOfString:@">" withString:@""];
+    }
+    if ([str containsString:@" "]) {
+        str = [str stringByReplacingOccurrencesOfString:@" " withString:@""];
+    }
+    NSString *contentStr;
+    NSString *versionNumber;
+    if ([[str substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"55"]) {
+        //新协议的标志
+        NSString *typeStr = [str substringWithRange:NSMakeRange(2, 2)];
+        if ([typeStr isEqualToString:@"00"] || [typeStr isEqualToString:@"80"]) {
+            self.dataPackegType = [self convertRangeStringToIntWithString:str rangeLoc:6 rangeLen:2];
+            if (str.length > 10) {
+                contentStr = [str substringFromIndex:10];
+                NSLog(@"接收到的有效data -- %@", contentStr);
             }
         } else {
-            NSLog(@"绑定失败");
-        }
-    }
-    //判断接收到的固件版本号
-    if (str.length > 8 &&[[str substringWithRange:NSMakeRange(1, 4)] isEqualToString:@"bb0a"]) {
-        int versionNumber = [self convertRangeStringToIntWithString:str rangeLoc:5 rangeLen:2];
-        NSLog(@"版本号:%d", versionNumber);
-        [BlueToothDataManager shareManager].versionNumber = [NSString stringWithFormat:@"%d", versionNumber];
-    }
-    //判断接收到的电量
-    if (str.length > 10 && [[str substringWithRange:NSMakeRange(1, 6)] isEqualToString:@"bb0404"]) {
-        if ([self checkFiveLenthData:characteristic.value]) {
-            int electricQuantity = [self convertRangeStringToIntWithString:str rangeLoc:7 rangeLen:2];
-            NSLog(@"当前电量为：%d%%", electricQuantity);
-            [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantity];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
-        }
-    }
-    //判断接收到的充电状态数据 00:没有充电 01:正在充电 02:充满电了
-    if (str.length > 10 && [[str substringWithRange:NSMakeRange(1, 6)] isEqualToString:@"bb0504"]) {
-        if ([self checkFiveLenthData:characteristic.value]) {
-            int chargingState = [self convertRangeStringToIntWithString:str rangeLoc:7 rangeLen:2];
-            NSLog(@"当前充电状态为：%d", chargingState);
-            [BlueToothDataManager shareManager].chargingState = chargingState;
-            switch (chargingState) {
-                case 0:
-                    NSLog(@"没有充电");
-                    break;
-                case 1:
-                    NSLog(@"正在充电");
-                    break;
-                case 2:
-                    NSLog(@"充满电了");
-                    break;
-                default:
-                    NSLog(@"充电状态数据出错了");
-                    break;
+            if (str.length > 6) {
+                contentStr = [str substringFromIndex:6];
+                NSLog(@"接收到的有效data -- %@", contentStr);
             }
         }
-    }
-    //判断上次充电时间数据 BB 09 08  10 0A 0A 0F 0E AB
-    if (str.length > 18 && [[str substringWithRange:NSMakeRange(1, 6)] isEqualToString:@"bb0908"]) {
-        if ([self checkNineLenthData:characteristic.value]) {
-            int lastChargeYear = [self convertRangeStringToIntWithString:str rangeLoc:7 rangeLen:2];
-            int lastChargeMonth = [self convertRangeStringToIntWithString:str rangeLoc:10 rangeLen:2];
-            int lastChargeDay = [self convertRangeStringToIntWithString:str rangeLoc:12 rangeLen:2];
-            int lastChargeHour = [self convertRangeStringToIntWithString:str rangeLoc:14 rangeLen:2];
-            int lastChargeMin = [self convertRangeStringToIntWithString:str rangeLoc:16 rangeLen:2];
-            NSString *timeStr = [NSString stringWithFormat:@"20%d年%d月%d日%d时%d分", lastChargeYear, lastChargeMonth, lastChargeDay, lastChargeHour, lastChargeMin];
-            NSLog(@"上次充电时间为：20%d年%d月%d日%d时%d分", lastChargeYear, lastChargeMonth, lastChargeDay, lastChargeHour, lastChargeMin);
-//            NSMutableDictionary *info = [NSMutableDictionary new];
-//            [info setObject:[NSString stringWithFormat:@"%d", lastChargeYear] forKey:@"year"];
-//            [info setObject:[NSString stringWithFormat:@"%d", lastChargeMonth] forKey:@"month"];
-//            [info setObject:[NSString stringWithFormat:@"%d", lastChargeDay] forKey:@"day"];
-//            [info setObject:[NSString stringWithFormat:@"%d", lastChargeHour] forKey:@"hour"];
-//            [info setObject:[NSString stringWithFormat:@"%d", lastChargeMin] forKey:@"min"];
-            [BlueToothDataManager shareManager].lastChargTime = timeStr;
-        }
-    }
-    //判断当前步数数据 0xBB, 0x01, 0x05, 0xO7, 0xD0, 0x68 ，07和D0是步数数据
-    if (str.length > 12 && [[str substringWithRange:NSMakeRange(1, 6)] isEqualToString:@"bb0105"]) {
-        if ([self checkSixLenthData:characteristic.value]) {
-            int currentStepNumber1 = [self convertRangeStringToIntWithString:str rangeLoc:7 rangeLen:2];
-            int currentStepNumber2 = [self convertRangeStringToIntWithString:str rangeLoc:10 rangeLen:2];
-            int totalNumber = currentStepNumber1 * 256 + currentStepNumber2;
-            NSLog(@"当前步数为：%d", totalNumber);
-            [BlueToothDataManager shareManager].currentStep = [NSString stringWithFormat:@"%d", totalNumber];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"stepChanged" object:@"toSport"];
-        }
-    }
-    //判断历史计步数据 0xBB, 0x03, 0x17, 0x00（哪天）, 0x00（时段）, 0x00。。。步数
-    if (str.length > 36 && [[str substringWithRange:NSMakeRange(1, 6)] isEqualToString:@"bb0317"]) {
-        //校验
-        /*
-         if ([self checkEighteenLenthData:characteristic.value]) {
-         switch ([self convertRangeStringToIntWithString:str rangeLoc:7 rangeLen:2]) {
-         case 0:
-         NSLog(@"当天的数据");
-         break;
-         case 1:
-         NSLog(@"昨天的数据");
-         break;
-         case 2:
-         NSLog(@"前天的数据");
-         break;
-         case 3:
-         NSLog(@"3天之前的数据");
-         break;
-         
-         default:
-         NSLog(@"步数数据不对啊");
-         break;
-         }
-         }
-         */
-        //未校验
-        switch ([self convertRangeStringToIntWithString:str rangeLoc:7 rangeLen:2]) {
-            case 0:
-                NSLog(@"当天的数据");
-                //解析时段数据
-                [self resolvingOnedayDataWithString:str dayNumber:0];
-                break;
+        switch (self.dataPackegType) {
             case 1:
-                NSLog(@"昨天的数据");
-                [self resolvingOnedayDataWithString:str dayNumber:1];
+                //系统基本信息
+                NSLog(@"接收到系统基本信息数据");
+                //版本号
+                int versionNumber1 = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
+                int versionNumber2 = [self convertRangeStringToIntWithString:contentStr rangeLoc:2 rangeLen:2];
+                versionNumber = [NSString stringWithFormat:@"%d.%d", versionNumber1, versionNumber2];
+                NSLog(@"版本号:%@", versionNumber);
+                [BlueToothDataManager shareManager].versionNumber = versionNumber;
+                //电量
+                int electricQuantity = [self convertRangeStringToIntWithString:contentStr rangeLoc:4 rangeLen:2];
+                NSLog(@"当前电量为：%d%%", electricQuantity);
+                [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantity];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
                 break;
             case 2:
-                NSLog(@"前天的数据");
-                [self resolvingOnedayDataWithString:str dayNumber:2];
+                //电量
+                NSLog(@"接收到电量数据");
+                int electricQuantityNew = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
+                NSLog(@"当前电量为：%d%%", electricQuantityNew);
+                [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantityNew];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
                 break;
             case 3:
-                NSLog(@"3天之前的数据");
-                [self resolvingOnedayDataWithString:str dayNumber:3];
+                //充电状态
+                NSLog(@"接收到充电状态数据");
                 break;
-                
-            default:
-                NSLog(@"步数数据不对啊");
+            case 4:
+                //同意绑定
+                NSLog(@"接收到同意绑定数据");
                 break;
-        }
-        if (self.todays.count == 24 && self.yesterdays.count == 24 && self.berforeYesterdays.count == 24 && self.threeDaysAgo.count == 6) {
-            //上传历史步数
-            [self updataForStep];
-        }
-    }
-    //判断是否有卡回应数据
-    if (str.length > 10 && [[str substringWithRange:NSMakeRange(1, 8)] isEqualToString:@"bb332211"]) {
-        if ([[str substringWithRange:NSMakeRange(10, 2)] isEqualToString:@"bb"]) {
-            NSLog(@"有卡");
-            [BlueToothDataManager shareManager].isHaveCard = YES;
-            //更新蓝牙状态
-            [self refreshBLEStatue];
-            //判断卡类型
-            [self checkCardType];
-            
-        } else {
-            NSLog(@"最后两位不正确 -- %s%d", __func__, __LINE__);
-        }
-    }
-    
-    //判断对卡上电失败回应数据
-    if (str.length > 10 && ([[str substringWithRange:NSMakeRange(1, 8)] isEqualToString:@"bb445566"] || [[str substringWithRange:NSMakeRange(1, 8)] isEqualToString:@"bb778899"])) {
-        if ([[str substringWithRange:NSMakeRange(10, 2)] isEqualToString:@"bb"]) {
-            NSLog(@"对卡上电失败");
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
-            if ([BlueToothDataManager shareManager].isNeedToResert) {
-                UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:@"注册失败，是否复位？" preferredStyle:UIAlertControllerStyleAlert];
-                UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-                    [BlueToothDataManager shareManager].isNeedToResert = NO;
-                }];
-                UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    [BlueToothDataManager shareManager].isNeedToResert = YES;
-                    //发送复位请求
-                    [self sendConnectingInstructWithData:[self resettingInstruct]];
-                    //            self.isReseted = YES;
-                    //            self.isBoundingSuccess = NO;
-                    //            self.relieveBoundButton.enabled = NO;
-                    [BlueToothDataManager shareManager].isReseted = YES;
-                    [BlueToothDataManager shareManager].isBounded = NO;
-                    //重新连接
-                    [self checkBindedDeviceFromNet];
-                }];
-                [alertVC addAction:cancelAction];
-                [alertVC addAction:certailAction];
-                [self presentViewController:alertVC animated:YES completion:nil];
-            }
-        } else {
-            NSLog(@"最后两位不正确 -- %s%d", __func__, __LINE__);
-        }
-    }
-    //接收到对卡上电成功之后返回的数据包
-    if (str.length > 38 && [[str substringWithRange:NSMakeRange(1, 4)] isEqualToString:@"bbdb"]) {
-        if ([BlueToothDataManager shareManager].bleStatueForCard == 0) {
-            //默认状态，查询卡类型
-            NSString *subString1 = [str substringWithRange:NSMakeRange(12, 6)];
-            NSString *subString2 = [str substringWithRange:NSMakeRange(19, 8)];
-            NSString *subString3 = [str substringWithRange:NSMakeRange(28, 8)];
-            NSString *subString4 = [str substringWithRange:NSMakeRange(37, 6)];
-            NSString *totalString = [NSString stringWithFormat:@"%@%@%@%@", subString1, subString2, subString3, subString4];
-            NSLog(@"totalString -- %@", totalString);
-            if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f17"]) {
-                [self sendMessageToBLEFromeStr:@"a0a40000022f02"];
-            } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f0f"]) {
-                //A0B000000A
-                [self sendMessageToBLEFromeStr:@"a0b000000a"];
-            } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"]) {
-                //对卡断电
-                [self sendConnectingInstructWithData:[self phoneCardToOutage]];
-                //是大王卡
-                NSLog(@"是大王卡");
-                [BlueToothDataManager shareManager].isActivityCard = YES;
-                [BlueToothDataManager shareManager].bleStatueForCard = 1;
-                [BlueToothDataManager shareManager].operatorType = @"2";
-            } else {
-                //对卡断电
-                [self sendConnectingInstructWithData:[self phoneCardToOutage]];
-                NSLog(@"不是大王卡");
-                //判断是否有指定套餐，并创建连接
-                [BlueToothDataManager shareManager].bleStatueForCard = 2;
-                if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [self checkUserIsExistAppointPackage];
-                    });
-                } else {
-                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+            case 5:
+                //实时计步
+                NSLog(@"接收到实时计步数据");
+                break;
+            case 6:
+                //历史步数
+                NSLog(@"接收到历史计步数据");
+                break;
+            case 7:
+                //回应上电
+                if ([contentStr isEqualToString:@"01"]) {
+                    NSLog(@"对卡上电1成功，有卡");
+                    [BlueToothDataManager shareManager].isHaveCard = YES;
+                    //更新蓝牙状态
+                    [self refreshBLEStatue];
+                    //判断卡类型
+                    [self checkCardType];
+                } else if ([contentStr isEqualToString:@"11"]) {
+                    NSLog(@"对卡上电1失败");
+                    [self registFailAction];
+                } else if ([contentStr isEqualToString:@"02"]) {
+                    NSLog(@"对卡上电2成功");
+                } else if ([contentStr isEqualToString:@"12"]) {
+                    NSLog(@"对卡上电2失败");
+                    [self registFailAction];
+                } else if ([contentStr isEqualToString:@"03"]) {
+                    NSLog(@"对卡上电3成功");
+                }else if ([contentStr isEqualToString:@"13"]) {
+                    NSLog(@"对卡上电3失败");
+                    [self registFailAction];
                 }
-            }
-        } else if ([BlueToothDataManager shareManager].bleStatueForCard == 1) {
-            if ([BlueToothDataManager shareManager].isActivityCard) {
-                //激活大王卡的步骤
-                NSLog(@"接收到激活大王卡的数据 -- %@", str);
-                NSString *subString1 = [str substringWithRange:NSMakeRange(12, 6)];
-                NSString *subString2 = [str substringWithRange:NSMakeRange(19, 8)];
-                NSString *subString3 = [str substringWithRange:NSMakeRange(28, 8)];
-                NSString *subString4 = [str substringWithRange:NSMakeRange(37, 6)];
-                NSString *totalString = [NSString stringWithFormat:@"%@%@%@%@", subString1, subString2, subString3, subString4];
-                NSLog(@"totalString -- %@", totalString);
-                if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f17"]) {
-                    [self sendMessageToBLEFromeStr:@"a0a40000022f02"];
-                } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f0f"]) {
-                    //A0B000000A
-                    [self sendMessageToBLEFromeStr:@"a0b000000a"];
-                } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"]) {
-                    //对卡断电
-                    [self sendConnectingInstructWithData:[self phoneCardToOutage]];
-                    self.bigKingCardNumber = [totalString substringWithRange:NSMakeRange(4, 16)];
-                    [self checkQueueOrderData];
-                } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9000"]) {
-                    //对卡断电
-                    [self sendConnectingInstructWithData:[self phoneCardToOutage]];
-                    [self activitySuccess];
-                } else {
-                    //对卡断电
-                    [self sendConnectingInstructWithData:[self phoneCardToOutage]];
-                    NSLog(@"返回数据有问题");
-                    HUDStop;
-                    HUDNormal(@"激活失败")
-                    [self paySuccess];
-                }
-            }else {
-                NSLog(@"激活大王卡状态有问题");
-            }
-        } else if ([BlueToothDataManager shareManager].bleStatueForCard == 2) {
-            //注册手机卡状态
-            //注册电话卡的步骤
-            /*NSLog(@"对卡上电成功之后的数据包%@", receivedMessage);*/
-            NSString *subString1 = [str substringWithRange:NSMakeRange(12, 6)];
-            NSString *subString2 = [str substringWithRange:NSMakeRange(19, 8)];
-            NSString *subString3 = [str substringWithRange:NSMakeRange(28, 8)];
-            NSString *subString4 = [str substringWithRange:NSMakeRange(37, 6)];
-            NSString *totalString = [NSString stringWithFormat:@"%@%@%@%@", subString1, subString2, subString3, subString4];
-            [self.dataPacketArray addObject:totalString];
-            //数据长度
-            NSString *dataStrLength = [NSString stringWithFormat:@"%lu", strtoul([[str substringWithRange:NSMakeRange(5, 2)] UTF8String], 0, 16)];
-            //数据总包数
-            NSString *dataTotalNumber = [NSString stringWithFormat:@"%lu", strtoul([[str substringWithRange:NSMakeRange(7, 2)] UTF8String], 0, 16)];
-            //数据当前包数
-            NSString *dataCurrentNumber = [NSString stringWithFormat:@"%lu", strtoul([[str substringWithRange:NSMakeRange(10, 2)] UTF8String], 0, 16)];
-            if ([dataTotalNumber isEqualToString:dataCurrentNumber]) {
-                NSString *tempStr;
-                if (self.dataPacketArray.count) {
-                    if (self.dataPacketArray.count == 1) {
-                        self.totalString = self.dataPacketArray[0];
+                break;
+            case 8:
+                //回应断电
+                NSLog(@"对卡断电成功");
+                break;
+            case 9:
+                //回应SIM数据
+                NSLog(@"sim卡相关数据");
+                if ([BlueToothDataManager shareManager].bleStatueForCard == 0) {
+                    //默认状态，查询卡类型
+                    NSString *totalString = contentStr;
+                    NSLog(@"totalString -- %@", totalString);
+                    if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f17"]) {
+                        [self sendMessageToBLEWithType:BLECardData validData:@"a0a40000022f02"];
+                    } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f0f"]) {
+                        //A0B000000A
+                        [self sendMessageToBLEWithType:BLECardData validData:@"a0b000000a"];
+                    } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"]) {
+                        //对卡断电
+                        [self phoneCardToOutageNew];
+                        //是大王卡
+                        NSLog(@"是大王卡");
+                        [BlueToothDataManager shareManager].isActivityCard = YES;
+                        [BlueToothDataManager shareManager].bleStatueForCard = 1;
+                        [BlueToothDataManager shareManager].operatorType = @"2";
                     } else {
-                        for (int i = 0; i < self.dataPacketArray.count; i++) {
-                            if (i == 0) {
-                                tempStr = self.dataPacketArray[0];
-                            } else {
-                                self.totalString = [NSString stringWithFormat:@"%@%@", tempStr, self.dataPacketArray[i]];
-                                tempStr = self.totalString;
-                            }
+                        //对卡断电
+                        [self phoneCardToOutageNew];
+                        NSLog(@"不是大王卡");
+                        //判断是否有指定套餐，并创建连接
+                        [BlueToothDataManager shareManager].bleStatueForCard = 2;
+                        if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                [self checkUserIsExistAppointPackage];
+                            });
+                        } else {
+                            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
                         }
                     }
-                    if ([dataTotalNumber intValue] >= 19 && [dataStrLength intValue] < 253) {
-                        int newLength = [dataStrLength intValue] + 255;
-                        dataStrLength = [NSString stringWithFormat:@"%d", newLength];
+                } else if ([BlueToothDataManager shareManager].bleStatueForCard == 1) {
+                    if ([BlueToothDataManager shareManager].isActivityCard) {
+                        //激活大王卡的步骤
+                        NSLog(@"接收到激活大王卡的数据 -- %@", str);
+                        NSString *totalString = contentStr;
+                        NSLog(@"totalString -- %@", totalString);
+                        if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f17"]) {
+                            [self sendMessageToBLEWithType:BLECardData validData:@"a0a40000022f02"];
+                        } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f0f"]) {
+                            //A0B000000A
+                            [self sendMessageToBLEWithType:BLECardData validData:@"a0b000000a"];
+                        } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"]) {
+                            //对卡断电
+                            [self phoneCardToOutageNew];
+                            self.bigKingCardNumber = [totalString substringWithRange:NSMakeRange(4, 16)];
+                            [self checkQueueOrderData];
+                        } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9000"]) {
+                            //对卡断电
+                            [self phoneCardToOutageNew];
+                            [self activitySuccess];
+                        } else {
+                            //对卡断电
+                            [self phoneCardToOutageNew];
+                            NSLog(@"返回数据有问题");
+                            HUDStop;
+                            HUDNormal(@"激活失败")
+                            [self paySuccess];
+                        }
+                    }else {
+                        NSLog(@"激活大王卡状态有问题");
                     }
-                    NSString *newStr;
-                    if ([dataStrLength intValue] * 2<=self.totalString.length) {
-                        newStr = [self.totalString substringWithRange:NSMakeRange(0, [dataStrLength intValue] * 2)];
-                    } else {
-                        NSLog(@"newStr出问题了");
+                } else if ([BlueToothDataManager shareManager].bleStatueForCard == 2) {
+                    //注册手机卡状态
+                    //注册电话卡的步骤
+                    NSString *totalString = contentStr;
+                    [self.dataPacketArray addObject:totalString];
+                    //总包数
+                    NSString *totalDataNumber;
+                    //数据当前包数
+                    NSString *dataCurrentNumber = [NSString stringWithFormat:@"%lu", strtoul([[str substringWithRange:NSMakeRange(2, 2)] UTF8String], 0, 16)+1];
+                    if ([dataCurrentNumber intValue] >= 128) {
+                        totalDataNumber = [NSString stringWithFormat:@"%d", [dataCurrentNumber intValue] - 128];
+                        NSString *tempStr;
+                        if (self.dataPacketArray.count) {
+                            if (self.dataPacketArray.count == 1) {
+                                self.totalString = self.dataPacketArray[0];
+                            } else {
+                                for (int i = 0; i < self.dataPacketArray.count; i++) {
+                                    if (i == 0) {
+                                        tempStr = self.dataPacketArray[0];
+                                    } else {
+                                        self.totalString = [NSString stringWithFormat:@"%@%@", tempStr, self.dataPacketArray[i]];
+                                        tempStr = self.totalString;
+                                    }
+                                }
+                            }
+                            NSLog(@"最终发送的数据包字符为：%@", self.totalString);
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
+                            [self.dataPacketArray removeAllObjects];
+                            self.totalString = nil;
+                        }
                     }
-                    NSLog(@"最终发送的数据包字符为：%@", newStr);
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:newStr];
-                    [self.dataPacketArray removeAllObjects];
-                    self.totalString = nil;
+                } else {
+                    //状态有问题
+                    NSLog(@"状态有问题");
                 }
-            }
-        } else {
-            //状态有问题
-            NSLog(@"状态有问题");
+                break;
+            case 10:
+                //上一次充电时间
+                break;
+            default:
+                NSLog(@"不能识别的类别");
+                break;
         }
-    }
-    //判断断电回应数据
-    //未校验
-    if (str.length > 10 && [[str substringWithRange:NSMakeRange(1, 8)] isEqualToString:@"bbdc0401"]) {
-        NSLog(@"对卡断电成功");
-    }
-    //校验
-    /*
-     if (str.length > 10 && [[str substringWithRange:NSMakeRange(1, 10)] isEqualToString:@"bbdc040162"]) {
-     if ([self checkFiveLenthData:characteristic.value]) {
-     NSLog(@"对卡断电成功");
-     }
-     }
-     */
-    //读卡不成功回应数据
-    if (str.length > 10 && [[str substringWithRange:NSMakeRange(1, 8)] isEqualToString:@"bb112233"]) {
-        if ([[str substringWithRange:NSMakeRange(10, 2)] isEqualToString:@"bb"]) {
-            HUDNormal(@"您的手环还未插入电话卡")
-            [BlueToothDataManager shareManager].isHaveCard = NO;
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
-        } else {
-            NSLog(@"最后两位不正确 -- %s%d", __func__, __LINE__);
-        }
-    }
-    //判断发送复位请求之后接收的步数数据
-    if (str.length > 14 &&[[str substringWithRange:NSMakeRange(1, 4)] isEqualToString:@"aaff"]) {
-        NSLog(@"收到复位前的步数了：%@", characteristic.value);
-        NSData *stepData = characteristic.value;
-        //把复位前的步数存储到本地
-        NSMutableDictionary *info = [NSMutableDictionary new];
-        [info setValue:stepData forKey:@"stepDataForReset"];
-        NSUserDefaults *resetData = [NSUserDefaults standardUserDefaults];
-        [resetData setObject:info forKey:@"resetStepData"];
-        [[NSUserDefaults standardUserDefaults] synchronize];//同步
     }
 }
 
@@ -2333,14 +2295,13 @@
     
     NSArray * arrWeek=[NSArray arrayWithObjects:@"07",@"01",@"02",@"03",@"04",@"05",@"06", nil];
     NSString *weekString = [NSString stringWithFormat:@"%@",[arrWeek objectAtIndex:[comps weekday] - 1]];
-    //    NSString *a = [NSString stringWithFormat:@"%d", year];
     NSString *yearString = [[NSString stringWithFormat:@"%d", year] substringFromIndex:2];
     NSString *monthString = [NSString stringWithFormat:@"%d", month];
     NSString *dayString = [NSString stringWithFormat:@"%d", day];
     NSString *hourString = [NSString stringWithFormat:@"%d", hour];
     NSString *minString = [NSString stringWithFormat:@"%d", min];
     NSString *secString = [NSString stringWithFormat:@"%d", sec];
-        NSLog(@"十进制：%@ %d %d %@ %d %d %d", yearString, month, day, weekString, hour, min, sec);
+    NSLog(@"十进制：%@ %d %d %@ %d %d %d", yearString, month, day, weekString, hour, min, sec);
     NSString *hexYear = [self hexStringFromString:yearString];
     NSString *hexMonth = [self hexStringFromString:monthString];
     NSString *hexDay = [self hexStringFromString:dayString];
@@ -2348,15 +2309,8 @@
     NSString *hexHour = [self hexStringFromString:hourString];
     NSString *hexMin = [self hexStringFromString:minString];
     NSString *hexSec = [self hexStringFromString:secString];
-    //    NSLog(@"十六进制：%@ %@ %@ %@ %@ %@ %@", hexYear, hexMonth, hexDay, hexWeek, hexHour, hexMin, hexSec);
     
-    //获取检验位
-    NSMutableArray *array1 = [NSMutableArray arrayWithObjects:@"AA", @"02", @"0A", hexYear, hexMonth, hexDay, hexWeek, hexHour, hexMin, hexSec, nil];
-    NSString *checkString = [self check_sum:array1];
-    //    NSLog(@"时间校验码：%@", hexCheckString);
-    
-    //发送时间指令
-    [self sendConnectingInstructWithData:[self sendInfoToCheckTimeWithYear:yearString month:monthString day:dayString week:weekString hour:hourString min:minString sec:secString checkString:checkString]];
+    [self sendMessageToBLEWithType:BLETurnoverTime validData:[NSString stringWithFormat:@"%@%@%@%@%@%@%@", hexYear, hexMonth, hexDay, hexHour, hexMin, hexSec, hexWeek]];
 }
 
 #pragma mark 获取闹钟的设置
@@ -2382,138 +2336,6 @@
 }
 
 #pragma mark ------------发送的数据包------------
-#pragma mark 发送时间同步,输入十进制的数据
-- (NSData *)sendInfoToCheckTimeWithYear:(NSString *)year month:(NSString *)month day:(NSString *)day week:(NSString *)week hour:(NSString *)hour min:(NSString *)min sec:(NSString *)sec checkString:(NSString *)checkString {
-    Byte reg[12];
-    //    0xAA 0x02 0x0A ....
-    reg[0]=0xAA;
-    reg[1]=0x02;
-    reg[2]=0x0A;
-    reg[3]=[self strEndMinute:year];
-    reg[4]=[self strEndMinute:month];
-    reg[5]=[self strEndMinute:day];
-    reg[6]=[self strEndMinute:week];
-    reg[7]=[self strEndMinute:hour];
-    reg[8]=[self strEndMinute:min];
-    reg[9]=[self strEndMinute:sec];
-    reg[10]=[self strEndMinute:checkString];
-    reg[11]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]^reg[5]^reg[6]^reg[7]^reg[8]^reg[9]^reg[10]);
-    NSData *data=[NSData dataWithBytes:reg length:12];
-    return data;
-}
-
-#pragma mark APP请求连接设备指令
-//- (NSData *)connectBao {
-//    Byte reg[6];
-//    //    0xAA 0x06 0x04 0x01 0xA9
-//    reg[0]=0xAA;
-//    reg[1]=0x06;
-//    reg[2]=0x04;
-//    reg[3]=0x01;
-//    reg[4]=0xA9;
-//    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-//    NSData *data=[NSData dataWithBytes:reg length:6];
-//    //发送指令之前使标识符为NO
-//    [BlueToothDataManager shareManager].isConnected = NO;
-//    return data;
-//}
-
-#pragma mark 连接成功之后向设备发送第一条指令
-//- (NSData *)TheFirstInstructAfterConnectd {
-//    Byte reg[7];
-//    //    0xAA 0xBB 0xCC 0xDD 0xEE 0xFF
-//    reg[0]=0xAA;
-//    reg[1]=0xBB;
-//    reg[2]=0xCC;
-//    reg[3]=0xDD;
-//    reg[4]=0xEE;
-//    reg[5]=0xFF;
-//    reg[6]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]^reg[5]);
-//    NSData *data=[NSData dataWithBytes:reg length:7];
-//    return data;
-//}
-
-#pragma mark 发送请求固件版本号指令
-- (NSData *)checkDeviceVersionNumber {
-    Byte reg[5];
-    //    0xAA 0x0A 0x01 0xA1
-    reg[0]=0xAA;
-    reg[1]=0x0A;
-    reg[2]=0x01;
-    reg[3]=0xA1;
-    reg[4]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]);
-    NSData *data=[NSData dataWithBytes:reg length:5];
-    return data;
-}
-
-#pragma mark 绑定设备
-//- (NSData *)boundingDevice {
-//    Byte reg[5];
-//    //    0xAA 0xEE 0xEE 0xAA
-//    reg[0]=0xAA;
-//    reg[1]=0xEE;
-//    reg[2]=0xEE;
-//    reg[3]=0xAA;
-//    reg[4]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]);
-//    NSData *data=[NSData dataWithBytes:reg length:5];
-//    return data;
-//}
-
-#pragma mark 绑定成功与否 发送指令 01 ：绑定成功 00：不同意绑定
-//- (NSData *)boundingDeviceAnswer:(NSString *)answer {
-//    Byte reg[6];
-//    //    0xAA 0xDD 0x01 0xDD 0xAA
-//    reg[0]=0xAA;
-//    reg[1]=0xDD;
-//    reg[2]=[self strEndMinute:answer];
-//    reg[3]=0xDD;
-//    reg[4]=0xAA;
-//    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-//    NSData *data=[NSData dataWithBytes:reg length:6];
-//    return data;
-//}
-
-#pragma mark 解除绑定指令
-//- (NSData *)relieveBound {
-//    Byte reg[6];
-//    //    0xAA 0xAB 0xCD 0xEF 0xAA
-//    reg[0]=0xAA;
-//    reg[1]=0xAB;
-//    reg[2]=0xCD;
-//    reg[3]=0xEF;
-//    reg[4]=0xAA;
-//    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-//    NSData *data=[NSData dataWithBytes:reg length:6];
-//    
-//    //存储到本地
-//    NSMutableDictionary *info = [NSMutableDictionary new];
-//    if ([self.uuidArray containsObject:[self.peripheral.identifier UUIDString]]) {
-//        NSLog(@"已加入进来过");
-//        [self.uuidArray removeObject:[self.peripheral.identifier UUIDString]];
-//    } else {
-//        NSLog(@"根本就不包含这个设备");
-//    }
-//    [info setValue:self.uuidArray forKey:@"UUIDArray"];
-//    NSUserDefaults *boundedUuid = [NSUserDefaults standardUserDefaults];
-//    [boundedUuid setObject:info forKey:@"boundedDevices"];
-//    [[NSUserDefaults standardUserDefaults] synchronize];//同步
-//    
-//    return data;
-//}
-
-#pragma mark 请求电量指令
-- (NSData *)checkElectricQuantity {
-    Byte reg[6];
-    //    0xAA 0x0B 0x04 0x01 0xA4
-    reg[0]=0xAA;
-    reg[1]=0x0B;
-    reg[2]=0x04;
-    reg[3]=0x01;
-    reg[4]=0xA4;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    return data;
-}
 
 #pragma mark 获取空卡序列号第一步
 - (void)checkEmptyCardSerialNumberFirst:(NSNotification *)sender {
@@ -2521,72 +2343,29 @@
     if ([BlueToothDataManager shareManager].bleStatueForCard == 1) {
         [BlueToothDataManager shareManager].isActivityCard = YES;
     }
-//    HUDNoStop1(@"正在激活...")
-    [self sendConnectingInstructWithData:[self phoneCardToUpelectrifyWithReturn]];
+    [self phoneCardToUpeLectrify:@"03"];
     //    A0A4000002 3F00
-    [self sendMessageToBLEFromeStr:@"a0a40000023f00"];
+    [self sendMessageToBLEWithType:BLECardData validData:@"a0a40000023f00"];
 }
 
 #pragma mark 判断卡类型第一步
 - (void)checkCardType {
-    [self sendMessageToBLEFromeStr:@"a0a40000023f00"];
-}
-
-#pragma mark 激活时获取空卡序列号用
-- (void)sendMessageToBLEFromeStr:(NSString *)string {
-    NSString *firstStr = string;
-    NSString *totalNumber = [NSString stringWithFormat:@"%lu", (firstStr.length/2)/14 + 1];
-    NSLog(@"总包数 -> %@", totalNumber);
-    for (int i = 1; i <= [totalNumber intValue]; i++) {
-        NSString *tempStr;//后面拼接的字节
-        NSString *currentNumStr;//数据包编号
-        NSString *validStrLength;//有效字节长度
-        NSString *packetTotalNum;//数据包总个数
-        if (i == [totalNumber intValue]) {
-            tempStr = [firstStr substringFromIndex:14 * 2 * (i-1)];
-        } else {
-            tempStr = [firstStr substringWithRange:NSMakeRange(14 * 2 * (i-1), 14*2)];
-        }
-        currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i]];
-        validStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)firstStr.length/2]];
-        packetTotalNum = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)[totalNumber intValue]]];
-        NSString *totalStr = [NSString stringWithFormat:@"aada%@%@%@%@", validStrLength, packetTotalNum, currentNumStr, tempStr];
-        NSLog(@"最终发送的包内容 -> %@", totalStr);
-        [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
-    }
+    [self sendMessageToBLEWithType:BLECardData validData:@"a0a40000023f00"];
 }
 
 #pragma mark 查询实时步数指令(实时步数)
-- (NSData *)checkCurrentStepNumber {
-    //0xAA, 0x01, 0x04, 0xO1, 0xAE
-    Byte reg[6];
-    reg[0]=0xAA;
-    reg[1]=0x01;
-    reg[2]=0x04;
-    reg[3]=0x01;
-    reg[4]=0xAE;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    return data;
-}
-
-#pragma mark 查询历史计步指令
-- (NSData *)checkPastStepNumber {
-    //0xAA, 0x03, 0x04, 0x01, 0xAC
-    Byte reg[6];
-    reg[0]=0xAA;
-    reg[1]=0x03;
-    reg[2]=0x04;
-    reg[3]=0x01;
-    reg[4]=0xAC;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    [self.todays removeAllObjects];
-    [self.yesterdays removeAllObjects];
-    [self.berforeYesterdays removeAllObjects];
-    [self.threeDaysAgo removeAllObjects];
-    return data;
-}
+//- (NSData *)checkCurrentStepNumber {
+//    //0xAA, 0x01, 0x04, 0xO1, 0xAE
+//    Byte reg[6];
+//    reg[0]=0xAA;
+//    reg[1]=0x01;
+//    reg[2]=0x04;
+//    reg[3]=0x01;
+//    reg[4]=0xAE;
+//    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
+//    NSData *data=[NSData dataWithBytes:reg length:6];
+//    return data;
+//}
 
 #pragma mark 删除所有步数指令
 - (NSData *)deleteAllStepNumber {
@@ -2645,91 +2424,14 @@
     return data;
 }
 
-#pragma mark 对卡上电指令（无返回命令）
-- (NSData *)phoneCardToUpelectrifyWithReturn {
-    Byte reg[6];
-    //    0xAA 0xDB 0x04 0x03 0x76
-    reg[0]=0xAA;
-    reg[1]=0xDB;
-    reg[2]=0x04;
-    reg[3]=0x03;
-    reg[4]=0x76;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    NSLog(@"第三种上电指令");
-    return data;
-}
-
-#pragma mark 对卡上电指令（有返回命令）
-- (NSData *)phoneCardToUpeLectrify {
-    Byte reg[6];
-    //    0xAA 0xDB 0x04 0x02 0x77
-    reg[0]=0xAA;
-    reg[1]=0xDB;
-    reg[2]=0x04;
-    reg[3]=0x02;
-    reg[4]=0x77;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    NSLog(@"第二种上电指令");
-    return data;
-}
-
-#pragma mark 判断是否有卡
-- (NSData *)isHaveCard {
-    Byte reg[6];
-    //    0xAA 0xDB 0x04 0x01 0x74
-    reg[0]=0xAA;
-    reg[1]=0xDB;
-    reg[2]=0x04;
-    reg[3]=0x01;
-    reg[4]=0x74;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    return data;
+#pragma mark 对卡上电指令（新协议）
+- (void)phoneCardToUpeLectrify:(NSString *)type {
+    [self sendMessageToBLEWithType:BLEUpElectricToCard validData:type];
 }
 
 #pragma mark 对卡断电指令
-- (NSData *)phoneCardToOutage {
-    Byte reg[6];
-    //    0xAA 0xDC 0x04 0x01 0x73
-    reg[0]=0xAA;
-    reg[1]=0xDC;
-    reg[2]=0x04;
-    reg[3]=0x01;
-    reg[4]=0x73;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    return data;
-}
-
-#pragma mark 告诉蓝牙是苹果设备指令
-- (NSData *)tellBLEIsAppleDevice {
-    Byte reg[7];
-    //    0x88 0x80 0x03 0x02 0x00 0x01
-    reg[0]=0x88;
-    reg[1]=0x80;
-    reg[2]=0x03;
-    reg[3]=0x02;
-    reg[4]=0x00;
-    reg[5]=0x01;
-    reg[6]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]^reg[5]);
-    NSData *data=[NSData dataWithBytes:reg length:7];
-    return data;
-}
-
-#pragma mark 查找手环
-- (NSData *)sendDateToSearchMyBluetooth {
-    Byte reg[6];
-    //    0xAA 0x06 0x04 0x01 0xA9
-    reg[0]=0xAA;
-    reg[1]=0x06;
-    reg[2]=0x04;
-    reg[3]=0x01;
-    reg[4]=0xA9;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    return data;
+- (void)phoneCardToOutageNew {
+    [self sendMessageToBLEWithType:BLEDownElectricToCard validData:nil];
 }
 
 #pragma mark 复位请求指令
@@ -2744,105 +2446,6 @@
     reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
     NSData *data=[NSData dataWithBytes:reg length:6];
     return data;
-}
-
-#pragma mark ------------接收的数据包------------
-#pragma mark 四位校验，接收到绑定答复的数据包/接收到固件版本号的数据包，数据校验
-- (BOOL)SetBoundingData:(NSData *)data
-{
-    //    0xBB 0xEE 0xEE 0xBB
-    Byte *testByte = (Byte *)[data bytes];
-    if (data.length == 4) {
-        //收到数据之后，要异或校验，看数据是否完整以及正确
-        if (testByte[4]==(testByte[0]^testByte[1]^testByte[2]^testByte[3]))
-        {
-            NSLog(@"数据完整且正确");
-            return YES;
-        } else {
-            NSLog(@"数据不对");
-            return NO;
-        }
-    } else {
-        NSLog(@"数据长度不对");
-        return NO;
-    }
-}
-
-#pragma mark 五位长度数据包校验:电量数据包、充电状态数据包
-- (BOOL)checkFiveLenthData:(NSData *)data {
-    //    0xBB 0x04 0x04 0x** 0x**
-    Byte *testByte = (Byte *)[data bytes];
-    if (data.length == 5) {
-        //收到数据之后，要异或校验，看数据是否完整以及正确
-        if (testByte[5]==(testByte[0]^testByte[1]^testByte[2]^testByte[3]^testByte[4]))
-        {
-            NSLog(@"数据完整且正确");
-            return YES;
-        } else {
-            NSLog(@"数据不对");
-            return NO;
-        }
-    } else {
-        NSLog(@"数据长度不对");
-        return NO;
-    }
-}
-
-#pragma mark 六位长度数据包校验：当前步数数据包
-- (BOOL)checkSixLenthData:(NSData *)data {
-    Byte *testByte = (Byte *)[data bytes];
-    if (data.length == 6) {
-        //收到数据之后，要异或校验，看数据是否完整以及正确
-        if (testByte[6]==(testByte[0]^testByte[1]^testByte[2]^testByte[3]^testByte[4]^testByte[5]))
-        {
-            NSLog(@"数据完整且正确");
-            return YES;
-        } else {
-            NSLog(@"数据不对");
-            return NO;
-        }
-    } else {
-        NSLog(@"数据长度不对");
-        return NO;
-    }
-}
-
-#pragma mark 九位长度数据包校验：充电时间数据包
-- (BOOL)checkNineLenthData:(NSData *)data {
-    Byte *testByte = (Byte *)[data bytes];
-    if (data.length == 9) {
-        //收到数据之后，要异或校验，看数据是否完整以及正确
-        if (testByte[9]==(testByte[0]^testByte[1]^testByte[2]^testByte[3]^testByte[4]^testByte[5]^testByte[6]^testByte[7]^testByte[8]))
-        {
-            NSLog(@"数据完整且正确");
-            return YES;
-        } else {
-            NSLog(@"数据不对");
-            return NO;
-        }
-    } else {
-        NSLog(@"数据长度不对");
-        return NO;
-    }
-}
-
-#pragma mark 十八位长度数据包校验：历史计步数据包
-- (BOOL)checkEighteenLenthData:(NSData *)data {
-    Byte *testByte = (Byte *)[data bytes];
-    if (data.length == 18) {
-        //收到数据之后，要异或校验，看数据是否完整以及正确
-        if (testByte[18]==(testByte[0]^testByte[1]^testByte[2]^testByte[3]^testByte[4]^testByte[5]^testByte[6]^testByte[7]^testByte[8]^testByte[9]^testByte[10]^testByte[11]^testByte[12]^testByte[13]^testByte[14]^testByte[15]^testByte[16]^testByte[17]))
-        {
-            NSLog(@"数据完整且正确");
-            return YES;
-        } else {
-            NSLog(@"数据不对");
-            return NO;
-        }
-    } else {
-        NSLog(@"数据长度不对");
-        return NO;
-    }
 }
 
 #pragma mark ------------其他------------

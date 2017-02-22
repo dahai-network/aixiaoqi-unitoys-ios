@@ -112,6 +112,9 @@
 @property (nonatomic, strong)NSTimer *timer;
 @property (nonatomic, assign)int time;
 
+//记录接收到包的类型
+@property (nonatomic, assign) int dataPackegType;
+
 @property (weak, nonatomic) IBOutlet UIView *sportView;
 
 - (IBAction)viewAllOrders:(id)sender;
