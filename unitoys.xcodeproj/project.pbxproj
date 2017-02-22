@@ -52,7 +52,9 @@
 		3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */; };
 		3C8CFA721E55AF4E0035A460 /* SearchContactsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA701E55AF4E0035A460 /* SearchContactsCell.m */; };
 		3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */; };
-		3CEA93931E5C537B00205C29 /* UNCallKitCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.m */; };
+		3C8E77981E5D280600C4833E /* UNDefines.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E77971E5D280600C4833E /* UNDefines.m */; };
+		3C8E779A1E5D40F400C4833E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8E77991E5D40F400C4833E /* CallKit.framework */; };
+		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
 		3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */; };
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
 		6E9A9613C7F0D7AB91676E3F /* Pods_unitoys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83EA514C2661E0596FD19FBF /* Pods_unitoys.framework */; };
@@ -284,8 +286,11 @@
 		3C8CFA6F1E55AF4E0035A460 /* SearchContactsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchContactsCell.h; sourceTree = "<group>"; };
 		3C8CFA701E55AF4E0035A460 /* SearchContactsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchContactsCell.m; sourceTree = "<group>"; };
 		3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchContactsCell.xib; sourceTree = "<group>"; };
+		3C8E77961E5D280600C4833E /* UNDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDefines.h; sourceTree = "<group>"; };
+		3C8E77971E5D280600C4833E /* UNDefines.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDefines.m; sourceTree = "<group>"; };
+		3C8E77991E5D40F400C4833E /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
 		3CEA93911E5C537B00205C29 /* UNCallKitCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCallKitCenter.h; sourceTree = "<group>"; };
-		3CEA93921E5C537B00205C29 /* UNCallKitCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCallKitCenter.m; sourceTree = "<group>"; };
+		3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UNCallKitCenter.mm; sourceTree = "<group>"; };
 		3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+UnExtension.h"; sourceTree = "<group>"; };
 		3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserActivity+UnExtension.m"; sourceTree = "<group>"; };
 		4593CF0952180069953F0247 /* Pods-unitoys.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unitoys.debug.xcconfig"; path = "Pods/Target Support Files/Pods-unitoys/Pods-unitoys.debug.xcconfig"; sourceTree = "<group>"; };
@@ -648,6 +653,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C8E779A1E5D40F400C4833E /* CallKit.framework in Frameworks */,
 				046BD6481E0B7C5F008A958A /* CFNetwork.framework in Frameworks */,
 				046BD6461E0B7C3F008A958A /* CoreFoundation.framework in Frameworks */,
 				046BD6441E0B7AAC008A958A /* UserNotifications.framework in Frameworks */,
@@ -694,11 +700,20 @@
 			path = JPush;
 			sourceTree = "<group>";
 		};
+		3C8E77921E5D27A200C4833E /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				3C8E77961E5D280600C4833E /* UNDefines.h */,
+				3C8E77971E5D280600C4833E /* UNDefines.m */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
 		3CEA93901E5C537000205C29 /* CallKitTools */ = {
 			isa = PBXGroup;
 			children = (
 				3CEA93911E5C537B00205C29 /* UNCallKitCenter.h */,
-				3CEA93921E5C537B00205C29 /* UNCallKitCenter.m */,
+				3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */,
 				3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */,
 				3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */,
 			);
@@ -708,6 +723,7 @@
 		430B1E9DC15699DC69140B1C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3C8E77991E5D40F400C4833E /* CallKit.framework */,
 				046BD6471E0B7C5F008A958A /* CFNetwork.framework */,
 				046BD6451E0B7C3F008A958A /* CoreFoundation.framework */,
 				046BD6431E0B7AAC008A958A /* UserNotifications.framework */,
@@ -1360,6 +1376,7 @@
 				95334A661D8A89B9002C1CFB /* depands */,
 				95334A671D8A89B9002C1CFB /* network */,
 				95334A681D8A89B9002C1CFB /* Resource */,
+				3C8E77921E5D27A200C4833E /* Tools */,
 				95F337171D853256000B5461 /* AppDelegate.h */,
 				95F337181D853256000B5461 /* AppDelegate.mm */,
 				0436F9561E1E3DDC00A57E67 /* BGLogation.h */,
@@ -1682,13 +1699,14 @@
 				0436C3651E1F90460033A8F1 /* CommunicatePackageTableViewCell.m in Sources */,
 				04EAB8BC1E2787F6000D3D13 /* AlarmListViewController.m in Sources */,
 				740FD3931E287F9E009413F1 /* sim_com_interface.c in Sources */,
+				3C8E77981E5D280600C4833E /* UNDefines.m in Sources */,
 				954A87D51D98BBA700570843 /* JSONKeyMapper.m in Sources */,
 				950072B51DBF58D000C16088 /* PhoneViewController.mm in Sources */,
 				95CD34151D9D1D3B00EE5DD3 /* OrderCell.m in Sources */,
 				95938D501D93F093008A0A21 /* UIPlaceHolderTextView.m in Sources */,
 				95C575F41DA77AB200F459DF /* PhoneRecordCell.m in Sources */,
 				95F1ED5C1DE6BC6A002E9259 /* LineProgressView.m in Sources */,
-				3CEA93931E5C537B00205C29 /* UNCallKitCenter.m in Sources */,
+				3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */,
 				95938D4D1D93EBF1008A0A21 /* ConerView.m in Sources */,
 				953B01F51D8BDA6C00EDF5ED /* SSNetworkRequest.m in Sources */,
 				740FD38F1E287F9E009413F1 /* euble_interface.c in Sources */,
@@ -1833,6 +1851,8 @@
 					"$(PROJECT_DIR)/unitoys/depands/Weipay",
 				);
 				GCC_INPUT_FILETYPE = automatic;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"<Multiple",
 					"values>",
@@ -1875,6 +1895,8 @@
 					"$(PROJECT_DIR)/unitoys/depands/Weipay",
 				);
 				GCC_INPUT_FILETYPE = automatic;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"<Multiple",
 					"values>",

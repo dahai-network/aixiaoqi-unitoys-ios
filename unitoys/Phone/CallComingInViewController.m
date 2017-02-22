@@ -26,6 +26,15 @@
     // Do any additional setup after loading the view from its nib.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
     self.lbTime.text = @"新来电";
+    
+    if (self.isPresentInCallKit) {
+        self.connectView.hidden = YES;
+        CGPoint center = self.refuseView.center;
+        center.x = [UIScreen mainScreen].bounds.size.width/2;
+        self.refuseView.center = center;
+        self.isNeedToRefresh = YES;
+        [self acceptCallFromCallKit];
+    }
 }
 
 #pragma mark 拒绝按钮点击事件
@@ -57,10 +66,26 @@
     });
 }
 
+//从callKit弹出通话界面
+- (void)acceptCallFromCallKit
+{
+    self.refuseLabel.text = @"挂断";
+    self.muteOffButton.hidden = NO;
+    self.handfreeOffButton.hidden = NO;
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Answer"];
+    //开始计时
+    self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self refuseViewAnimations];
+//        self.isNeedToRefresh = YES;
+//    });
+}
+
 #pragma mark 静音按钮点击事件
 - (IBAction)muteOffButtonClickAction:(UIButton *)sender {
 //    HUDNormal(@"静音")
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
     
     if (_btnMuteStatus.tag==0) {
         [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteon"] forState:UIControlStateNormal];
@@ -69,12 +94,13 @@
         [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteoff"] forState:UIControlStateNormal];
         _btnMuteStatus.tag=0;
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound" userInfo:@{@"isMuteon" : @(_btnMuteStatus.tag)}];
 }
 
 #pragma mark 扩音按钮点击事件
 - (IBAction)handfreeOffButtonClickAction:(UIButton *)sender {
 //    HUDNormal(@"扩音")
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
     
     if (_btnSpeakerStatus.tag==0) {
         [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeon"] forState:UIControlStateNormal];
@@ -83,6 +109,9 @@
         [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeoff"] forState:UIControlStateNormal];
         _btnSpeakerStatus.tag=0;
     }
+    
+    //解决通话前设置扩音无效问题
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound" userInfo:@{@"isHandfreeon" : @(_btnSpeakerStatus.tag)}];
 }
 
 - (void)displayTime {

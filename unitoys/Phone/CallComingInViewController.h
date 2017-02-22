@@ -10,6 +10,9 @@
 
 @interface CallComingInViewController : BaseViewController
 @property (nonatomic, copy) NSString *nameStr;
+
+@property (nonatomic, assign) BOOL isPresentInCallKit;
+
 @property (weak, nonatomic) IBOutlet UILabel *lbName;//电话号码栏
 @property (weak, nonatomic) IBOutlet UILabel *lbTime;//通话时长栏
 
@@ -19,4 +22,6 @@
 @property (readwrite) int callSeconds;   //通话时间
 @property (readwrite) NSTimer *callTimer;
 
+
+- (void)acceptCallFromCallKit;
 @end

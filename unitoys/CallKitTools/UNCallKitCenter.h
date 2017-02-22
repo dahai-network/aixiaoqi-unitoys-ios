@@ -46,7 +46,10 @@ typedef void(^UNCallKitActionNotificationBlock)(CXCallAction *action, UNCallActi
 @property (nonatomic, strong) dispatch_queue_t completionQueue; // Default to mainQueue
 @property (nonatomic, copy) NSUUID *currentCallUUID;
 
+
 + (UNCallKitCenter *)sharedInstance;
+
+@property (nonatomic, copy) UNCallKitActionNotificationBlock actionNotificationBlock;
 
 - (void)configurationCallProvider;
 
@@ -54,11 +57,12 @@ typedef void(^UNCallKitActionNotificationBlock)(CXCallAction *action, UNCallActi
 
 -(void)requestTransaction:(CXTransaction *)transaction;
 
-- (void)updateCall:(NSUUID *)callUUID state:(UNCallState)state;
+- (void)updateCall:(NSUUID * _Nullable)callUUID state:(UNCallState)state;
 
-- (void)mute:(BOOL)mute callUUID:(NSUUID *)callUUID completion:(UNCallKitCenterCompletion)completion;
-- (void)hold:(BOOL)hold callUUID:(NSUUID *)callUUID completion:(UNCallKitCenterCompletion)completion;
-- (void)endCall:(NSUUID *)callUUID completion:(UNCallKitCenterCompletion)completion;
+- (void)mute:(BOOL)mute callUUID:(NSUUID * _Nullable)callUUID completion:(UNCallKitCenterCompletion)completion;
+- (void)hold:(BOOL)hold callUUID:(NSUUID * _Nullable)callUUID completion:(UNCallKitCenterCompletion)completion;
+- (void)endCall:(NSUUID * _Nullable)callUUID completion:(UNCallKitCenterCompletion)completion;
+
 
 @end
 

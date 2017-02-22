@@ -697,7 +697,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     } headers:self.headers];
 }
 
-- (void)callingAction :(NSNotification *)notification {
+- (void)callingAction:(NSNotification *)notification {
     if (notification.object) {
         NSString *action = notification.object;
         
@@ -708,14 +708,18 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             if(theSipEngine->InCalling())
             theSipEngine->TerminateCall();
             
+            //挂断系统的通话界面
+            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
+                [[UNCallKitCenter sharedInstance]  endCall:nil completion:^(NSError * _Nullable error) {
+                    
+                }];
+            }
             
             self.callStopTime = [NSDate date];
             
             self.hostHungup = @"source";
             
 //            [self endingCallOut];
-            
-            
             
         }else if ([action isEqualToString:@"SwitchSound"]){
             //保存扩音状态,在未接通时修改扩音状态无效,因此保存此状态,在接通时更新.
@@ -726,15 +730,34 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             
             NSLog(@"当前扩音状态:%zd", self.speakerStatus);
-            theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
+            //对系统的通话界面进行扩音
+            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
+                [[UNCallKitCenter sharedInstance]  hold:self.speakerStatus callUUID:nil completion:^(NSError * _Nullable error) {
+                    
+                }];
+            }else{
+                theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
+            }
+            
+            
         }else if ([action isEqualToString:@"MuteSound"]){
             if (notification.userInfo) {
                 if (notification.userInfo[@"isMuteon"]) {
                     self.muteStatus = [notification.userInfo[@"isMuteon"] boolValue];
                 }
             }
+            
+            //对系统的通话界面进行无声
+            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
+                [[UNCallKitCenter sharedInstance]  mute:self.muteStatus callUUID:nil completion:^(NSError * _Nullable error) {
+                    
+                }];
+            }else{
+                theSipEngine->MuteMic(self.muteStatus);
+            }
+            
 //            self.muteStatus = !self.muteStatus;
-            theSipEngine->MuteMic(self.muteStatus);
+//            theSipEngine->MuteMic(self.muteStatus);
         }else if ([action isEqualToString:@"Answer"]){
             //选择最后一条，更新为
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -781,17 +804,16 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 
 //电话拨打进来
-- (void)inComingCallWithCallKit
+- (void)InComingCallWithCallKitName:(NSString *)name PhoneNumber:(NSString *)phoneNumber
 {
-    NSString * number = @"10086";
     if (!callCenter) {
         callCenter=[UNCallKitCenter sharedInstance];
     }
     
     UNContact * contact = [[UNContact alloc]init];
-    contact.phoneNumber= number;
-    contact.displayName=@"黄磊";
-    contact.uniqueIdentifier=@"";
+    contact.phoneNumber= phoneNumber;
+    contact.displayName= name;
+    contact.uniqueIdentifier= @"";
     
     UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
     
@@ -808,6 +830,74 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         NSLog(@"callUUID==%@", callUUID);
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
     });
+    
+    kWeakSelf
+    callCenter.actionNotificationBlock = ^(CXCallAction *action, UNCallActionType actionType){
+//        if (actionType == UNCallActionTypeAnswer) {
+//            weakSelf.callCominginVC = [[CallComingInViewController alloc] init];
+//            weakSelf.callCominginVC.nameStr = [weakSelf checkLinkNameWithPhoneStr:name];
+//            weakSelf.callCominginVC.isPresentInCallKit = YES;
+//            [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:YES completion:nil];
+//        }
+        switch (actionType) {
+            case UNCallActionTypeAnswer:
+            {
+                weakSelf.callCominginVC = [[CallComingInViewController alloc] init];
+                weakSelf.callCominginVC.nameStr = [weakSelf checkLinkNameWithPhoneStr:name];
+                weakSelf.callCominginVC.isPresentInCallKit = YES;
+                [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:NO completion:^{
+//                    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+//                    theSipEngine->AnswerCall();
+//                    theSipEngine->StopRinging();
+                    
+//                    NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
+//                    [weakSelf callingAction:noti];
+                }];
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
+                        [weakSelf callingAction:noti];
+                });
+                
+//                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+//                theSipEngine->AnswerCall();
+//                theSipEngine->StopRinging();
+                
+//                NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
+//                [weakSelf callingAction:noti];
+            }
+                break;
+            case UNCallActionTypeEnd:
+            {
+                //对APP通话进行挂断操作
+            }
+                break;
+            case UNCallActionTypeMute:
+            {
+                //对APP通话进行无声操作
+                if ([action isKindOfClass:[CXSetMutedCallAction class]]) {
+                    CXSetMutedCallAction *muteAction = (CXSetMutedCallAction *)action;
+                    //发送是否无声的操作
+                    
+                }
+
+            }
+                break;
+            case UNCallActionTypeHeld:
+            {
+                //对APP通话进行扩音操作
+                if ([action isKindOfClass:[CXSetHeldCallAction class]]) {
+                    CXSetHeldCallAction *heldAction = (CXSetHeldCallAction *)action;
+                    //发送是否扩音的操作
+                    
+                }
+            }
+                break;
+            default:
+                break;
+        }
+        
+    };
  
 }
 
@@ -820,23 +910,34 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     
+    
     if (dir == CallIncoming){
+        msg = [NSString stringWithFormat:@"新来电 %@",cid];
+        //去掉“+”
+        if ([cid containsString:@"+"]) {
+            newcid = [cid stringByReplacingOccurrencesOfString:@"+" withString:@""];
+            cid = newcid;
+        }
+        //去掉86
+        if ([[cid substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
+            newcid = [cid substringFromIndex:2];
+            cid = newcid;
+        }
         
-        BOOL isCallKit = YES;
-        if (kSystemVersionValue >= 10.0 && isCallKit) {
-            [self inComingCallWithCallKit];
+        if (kSystemVersionValue >= 10.0 && isUseCallKit) {
+            [self InComingCallWithCallKitName:[self checkLinkNameWithPhoneStr:cid] PhoneNumber:cid];
         }else{
-            msg = [NSString stringWithFormat:@"新来电 %@",cid];
-            //去掉“+”
-            if ([cid containsString:@"+"]) {
-                newcid = [cid stringByReplacingOccurrencesOfString:@"+" withString:@""];
-                cid = newcid;
-            }
-            //去掉86
-            if ([[cid substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
-                newcid = [cid substringFromIndex:2];
-                cid = newcid;
-            }
+//            msg = [NSString stringWithFormat:@"新来电 %@",cid];
+//            //去掉“+”
+//            if ([cid containsString:@"+"]) {
+//                newcid = [cid stringByReplacingOccurrencesOfString:@"+" withString:@""];
+//                cid = newcid;
+//            }
+//            //去掉86
+//            if ([[cid substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
+//                newcid = [cid substringFromIndex:2];
+//                cid = newcid;
+//            }
             self.callCominginVC = [[CallComingInViewController alloc] init];
             self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
             [self.navigationController presentViewController:self.callCominginVC animated:YES completion:nil];
@@ -1611,7 +1712,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callin"]];
                 
                 cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
-                if (![(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"] containsString:cell.lblPhoneNumber.text]) {
+                if (![(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"] containsString:cell.lblPhoneNumber.text] && ![(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"] isEqualToString:@"anonymous"]) {
                     [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
                     [bottomStr appendString:@"  "];
                 }

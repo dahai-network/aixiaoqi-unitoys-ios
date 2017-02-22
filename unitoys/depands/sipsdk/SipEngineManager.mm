@@ -313,7 +313,12 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
             alarm.alertAction = NSLocalizedString(@"Answer",@"");
         }
         alarm.alertBody = alertBody;
-        alarm.soundName = @"appleCallComing.wav";
+        if (kSystemVersionValue >= 10.0 && isUseCallKit) {
+            
+        }else{
+            alarm.soundName = @"appleCallComing.wav";
+        }
+//        alarm.soundName = @"appleCallComing.wav";
         alarm.hasAction = YES;
 //        alarm.soundName = @"default.wav";
         NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:

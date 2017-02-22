@@ -1,6 +1,7 @@
 #import "SipEngineEventObserver.h"
 #import "SipEngineManager.h"
 
+
 SipEventObserver::SipEventObserver(SipEngineManager *sip_engine_manager){
 	sip_engine_manager_ = sip_engine_manager;
 }
@@ -64,7 +65,14 @@ void SipEventObserver::OnNewCall(CallDir dir, const char *peer_caller, bool is_v
             [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
         }else{
            /*前台模式，播放声音或震动*/
-            startRing();
+            //大于10.0通过系统调用
+            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
+                
+            }else{
+                startRing();
+            }
+            
+//            startRing();
 //            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
             if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
                 startVibrate();

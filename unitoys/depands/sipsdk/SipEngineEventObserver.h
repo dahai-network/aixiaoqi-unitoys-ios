@@ -2,6 +2,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 
+#import "global.h"
+
 class SipEngine;
 @class SipEngineManager;
 
