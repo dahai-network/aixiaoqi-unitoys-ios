@@ -24,4 +24,7 @@
 
 
 - (void)acceptCallFromCallKit;
+- (void)setUpMuteButtonStatu:(BOOL)isMute;
+- (void)setUpSpeakerButtonStatus:(BOOL)isSpeaker;
+- (void)endCallPhone;
 @end

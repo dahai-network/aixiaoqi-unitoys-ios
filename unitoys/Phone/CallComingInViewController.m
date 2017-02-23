@@ -82,6 +82,31 @@
 //    });
 }
 
+- (void)setUpMuteButtonStatu:(BOOL)isMute
+{
+    if (isMute) {
+        [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteon"] forState:UIControlStateNormal];
+    }else{
+        [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteoff"] forState:UIControlStateNormal];
+    }
+}
+- (void)setUpSpeakerButtonStatus:(BOOL)isSpeaker
+{
+    if (isSpeaker) {
+        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeon"] forState:UIControlStateNormal];
+    }else{
+        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeoff"] forState:UIControlStateNormal];
+    }
+}
+- (void)endCallPhone
+{
+    if (self.callTimer) {
+        [self.callTimer setFireDate:[NSDate distantFuture]];
+    }
+    
+    [self dismissViewControllerAnimated:NO completion:nil];
+}
+
 #pragma mark 静音按钮点击事件
 - (IBAction)muteOffButtonClickAction:(UIButton *)sender {
 //    HUDNormal(@"静音")

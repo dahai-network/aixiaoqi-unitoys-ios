@@ -730,14 +730,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             
             NSLog(@"当前扩音状态:%zd", self.speakerStatus);
+            //扩音操作系统会自动进行状态更改,这里不需要设置,否则会出现无声
             //对系统的通话界面进行扩音
-            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
-                [[UNCallKitCenter sharedInstance]  hold:self.speakerStatus callUUID:nil completion:^(NSError * _Nullable error) {
-                    
-                }];
-            }else{
+//            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
+//                [[UNCallKitCenter sharedInstance]  hold:self.speakerStatus callUUID:nil completion:^(NSError * _Nullable error) {
+//                    
+//                }];
+//            }else{
                 theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
-            }
+//            }
             
             
         }else if ([action isEqualToString:@"MuteSound"]){
@@ -833,12 +834,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     kWeakSelf
     callCenter.actionNotificationBlock = ^(CXCallAction *action, UNCallActionType actionType){
-//        if (actionType == UNCallActionTypeAnswer) {
-//            weakSelf.callCominginVC = [[CallComingInViewController alloc] init];
-//            weakSelf.callCominginVC.nameStr = [weakSelf checkLinkNameWithPhoneStr:name];
-//            weakSelf.callCominginVC.isPresentInCallKit = YES;
-//            [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:YES completion:nil];
-//        }
         switch (actionType) {
             case UNCallActionTypeAnswer:
             {
@@ -846,12 +841,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 weakSelf.callCominginVC.nameStr = [weakSelf checkLinkNameWithPhoneStr:name];
                 weakSelf.callCominginVC.isPresentInCallKit = YES;
                 [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:NO completion:^{
-//                    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-//                    theSipEngine->AnswerCall();
-//                    theSipEngine->StopRinging();
-                    
-//                    NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
-//                    [weakSelf callingAction:noti];
                 }];
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -862,14 +851,19 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
 //                theSipEngine->AnswerCall();
 //                theSipEngine->StopRinging();
-                
-//                NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
-//                [weakSelf callingAction:noti];
             }
                 break;
             case UNCallActionTypeEnd:
             {
                 //对APP通话进行挂断操作
+                if (weakSelf.callCominginVC) {
+                    [weakSelf.callCominginVC endCallPhone];
+                }
+                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+                if(theSipEngine->InCalling())
+                    theSipEngine->TerminateCall();
+                weakSelf.callStopTime = [NSDate date];
+                weakSelf.hostHungup = @"source";
             }
                 break;
             case UNCallActionTypeMute:
@@ -878,7 +872,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 if ([action isKindOfClass:[CXSetMutedCallAction class]]) {
                     CXSetMutedCallAction *muteAction = (CXSetMutedCallAction *)action;
                     //发送是否无声的操作
-                    
+                    if (weakSelf.callCominginVC) {
+                        weakSelf.muteStatus = muteAction.isMuted;
+                        [weakSelf.callCominginVC setUpMuteButtonStatu:muteAction.isMuted];
+                    }
                 }
 
             }
@@ -889,7 +886,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 if ([action isKindOfClass:[CXSetHeldCallAction class]]) {
                     CXSetHeldCallAction *heldAction = (CXSetHeldCallAction *)action;
                     //发送是否扩音的操作
-                    
+                    if (weakSelf.callCominginVC) {
+                        weakSelf.speakerStatus = heldAction.isOnHold;
+                        [weakSelf.callCominginVC setUpSpeakerButtonStatus:heldAction.isOnHold];
+                    }
                 }
             }
                 break;

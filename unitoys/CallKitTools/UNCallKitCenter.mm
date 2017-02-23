@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import "SipEngineManager.h"
+#import <PushKit/PushKit.h>
 
 @implementation CXTransaction (UnExt)
 
@@ -30,7 +31,6 @@
 @interface UNCallKitCenter ()<CXProviderDelegate>
 
 @property (nonatomic, strong) CXCallController *callController;
-//@property (nonatomic, copy) UNCallKitActionNotificationBlock actionNotificationBlock;
 
 @property (nonatomic, assign) BOOL isSendMute;
 @property (nonatomic, assign) BOOL isSendHeld;
@@ -64,10 +64,6 @@
 //    [self.provider setDelegate:self queue:self.completionQueue ? self.completionQueue : dispatch_get_main_queue()];
     [self.provider setDelegate:self queue:dispatch_get_main_queue()];
     self.callController = [[CXCallController alloc] initWithQueue:dispatch_get_main_queue()];
-    
-//    self.actionNotificationBlock = ^(CXCallAction *action, UNCallActionType actionType){
-//        
-//    };
 }
 
 - (void)setCompletionQueue:(dispatch_queue_t)completionQueue {
@@ -93,8 +89,7 @@
 //    callUpdate.supportsUngrouping = NO;
 //    callUpdate.supportsHolding = NO;
 
-    NSError *error = nil;
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
     
     //通知系统有来电
     [self.provider reportNewIncomingCallWithUUID:callUUID update:callUpdate completion:completion];
@@ -124,8 +119,6 @@
     }
     self.isSendMute = YES;
     CXSetMutedCallAction *action = [[CXSetMutedCallAction alloc] initWithCallUUID:callUUID muted:mute];
-    //    action.muted = mute;
-    
     [self.callController requestTransaction:[CXTransaction transactionWithActions:@[action]] completion:completion];
 }
 
@@ -145,7 +138,6 @@
     self.isSendHeld = YES;
     
     CXSetHeldCallAction *action = [[CXSetHeldCallAction alloc] initWithCallUUID:callUUID onHold: hold];
-    //    action.onHold = hold;
     [self.callController requestTransaction:[CXTransaction transactionWithActions:@[action]] completion:completion];
 }
 
@@ -165,13 +157,9 @@
     [self.callController requestTransaction:[CXTransaction transactionWithActions:@[action]] completion:completion];
 }
 
-
-
-
 //无论何种操作都需要 话务控制器 去 提交请求 给系统
 -(void)requestTransaction:(CXTransaction *)transaction
 {
-    //    [_callController requestTransaction:transaction completion:completion];
     [_callController requestTransaction:transaction completion:^( NSError *_Nullable error){
         if (error !=nil) {
             NSLog(@"Error requesting transaction: %@", error);
@@ -223,24 +211,15 @@
 
 - (void)providerDidReset:(CXProvider *)provider{
     NSLog(@"providerDidReset---%s", __func__);
-    //    CallAudio *audio = [CallAudio sharedCallAudio];
-    //    [audio stopAudio];
     //执行停止音频操作
 }
 
-/// Called when the provider has been fully created and is ready to send actions and receive updates
 //系统监听已经开始,程序创建时就会被调用
 - (void)providerDidBegin:(CXProvider *)provider
 {
     NSLog(@"providerDidBegin---%s", __func__);
 }
 
-/// Called whenever a new transaction should be executed. Return whether or not the transaction was handled:
-///
-/// - NO: the transaction was not handled indicating that the perform*CallAction methods should be called sequentially for each action in the transaction
-/// - YES: the transaction was handled and the perform*CallAction methods should not be called sequentially
-///
-/// If the method is not implemented, NO is assumed.
 - (BOOL)provider:(CXProvider *)provider executeTransaction:(CXTransaction *)transaction
 {
     NSLog(@"executeTransaction---%s", __func__);
@@ -252,7 +231,7 @@
     NSLog(@"performStartCallAction---%s", __func__);
     if (self.actionNotificationBlock) {
         self.actionNotificationBlock(action, UNCallActionTypeStart);
-    } //destination
+    }
     if (action.handle.value) {
         [action fulfill];
     } else {
@@ -263,41 +242,16 @@
 //用户点击接受通话
 - (void)provider:(CXProvider *)provider performAnswerCallAction:(nonnull CXAnswerCallAction *)action {
     NSLog(@"performAnswerCallAction---%s", __func__);
-//    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-//    NSError *err;
-//    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:&err];
-//    if (err) {
-//        NSLog(@"error setting audio category %@",err);
-//    }
-//    [[AVAudioSession sharedInstance] setMode:AVAudioSessionModeVoiceChat error:&err];
-//    if (err) {
-//        NSLog(@"error setting audio Mode %@",err);
-//    }
-//    double sampleRate = 44100.0;
-//    [audioSession setPreferredSampleRate:sampleRate error:&err];
-//    if (err) {
-//        NSLog(@"Error %ld, %@",(long)err.code, err.localizedDescription);
-//    }
-//    
-//    NSTimeInterval bufferDuration = .005;
-//    [audioSession setPreferredIOBufferDuration:bufferDuration error:&err];
-//    if (err) {
-//        NSLog(@"Error %ld, %@",(long)err.code, err.localizedDescription);
-//    }
-    
-    
+
     if (self.actionNotificationBlock) {
         self.actionNotificationBlock(action, UNCallActionTypeAnswer);
     }
-//    self.answerAction = action;
     [action fulfill];
 }
 
 //用户挂断接听
 - (void)provider:(CXProvider *)provider performEndCallAction:(nonnull CXEndCallAction *)action {
     NSLog(@"performEndCallAction---%s", __func__);
-    //被对方挂断或在应用内挂断电话,可以调用此方法告诉系统挂断原因
-//    [provider reportCallWithUUID:action.callUUID endedAtDate:[NSDate date] reason:CXCallEndedReasonUnanswered];
     
     if (self.isEndCall) {
         self.isEndCall = NO;
@@ -306,20 +260,17 @@
             self.actionNotificationBlock(action, UNCallActionTypeEnd);
         }
     }
-    
+    [self updateCall:action.callUUID state:UNCallStateEnded];
     [action fulfill];
 }
 
 - (void)provider:(CXProvider *)provider performSetHeldCallAction:(nonnull CXSetHeldCallAction *)action {
     NSLog(@"performSetHeldCallAction----%s", __func__);
-    //为了防止APP与系统互相操作
-    if (self.isSendHeld) {
-        self.isSendHeld = NO;
-    }else{
-        if (self.actionNotificationBlock) {
-            self.actionNotificationBlock(action, UNCallActionTypeHeld);
-        }
+    //此Block只更改APP按钮状态
+    if (self.actionNotificationBlock) {
+        self.actionNotificationBlock(action, UNCallActionTypeHeld);
     }
+
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
     theSipEngine->MuteSpk(action.onHold);
     [action fulfill];
@@ -347,43 +298,17 @@
 
 - (void)provider:(CXProvider *)provider performPlayDTMFCallAction:(CXPlayDTMFCallAction *)action{
     NSLog(@"performPlayDTMFCallAction---%s", __func__);
-    
-    //    if (call == nil) {
-    //        [action fail];
-    //    }else{
-    //        if (action.digits) {
-    //            NSLog(@"action.digits : %@", action.digits);
-    //            [call digitsForDTMF:action.digits];
-    //        }
-    //        [action fulfill];
-    //    }
 }
-
-
-/// Called when an action was not performed in time and has been inherently failed. Depending on the action, this timeout may also force the call to end. An action that has already timed out should not be fulfilled or failed by the provider delegate
-//timeout to end
 
 //超时时调用
 - (void)provider:(CXProvider *)provider timedOutPerformingAction:(CXAction *)action{
     NSLog(@"timedOutPerformingAction---%s", __func__);
-    /// Called when an action was not performed in time and has been inherently failed. Depending on the action, this timeout may also force the call to end. An action that has already timed out should not be fulfilled or failed by the provider delegate
 }
 
 
-
-/// Called when the provider's audio session activation state changes.
 //此处进行通话处理
-//
 - (void)provider:(CXProvider *)provider didActivateAudioSession:(AVAudioSession *)audioSession{
     NSLog(@"didActivateAudioSession---%s", __func__);
-    //发送接通通知
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Answer"];
-//    if (self.answerAction) {
-//        if (self.actionNotificationBlock) {
-//            self.actionNotificationBlock(self.answerAction, UNCallActionTypeAnswer);
-//        }
-//    }
-    
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
     theSipEngine->MuteMic(NO);
 }
