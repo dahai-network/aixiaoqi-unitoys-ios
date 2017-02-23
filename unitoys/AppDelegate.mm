@@ -857,8 +857,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     NSLog(@"url1=%@",url);
     
     return [WXApi handleOpenURL:url delegate:self];
-    
-   
 }
 
 
@@ -1145,8 +1143,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [Bugly reportException:exception];  //直接上报异常
     
     return @"Test User attachment";
-    
-
 }
 
 - (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr {
@@ -1215,11 +1211,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //    //应该在这里发起实际VoIP呼叫
 //    
 //    NSString * handle =userActivity.startCallHandle;
-//    if(nil==handle) handle=@"286218985";
 //    //    BOOL video = userActivity.video;
 //    UNContact * contact = [[UNContact alloc] init];
 //    contact.phoneNumber= handle;
-//    //    contact.displayName=@"vivi wu";
 //    contact.uniqueIdentifier=@"";
 //    
 //    if(nil == handle ){
@@ -1229,16 +1223,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //        UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
 //        
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            
-//            NSUUID * callUUID=   [[UNCallKitCenter sharedInstance]reportIncomingCallWithContact:contact completion:^(NSError * _Nullable error)
-//                                  {
-//                                      if (error == nil) {
-//                                          NSLog(@"%s success", __func__);
-//                                      }else{
-//                                          NSLog(@"arror %@", error);
-//                                      }
-//                                  }];
-//            
+//            NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
+//                
+//            }];
 //            NSLog(@"callUUID==%@", callUUID);
 //            [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
 //        });

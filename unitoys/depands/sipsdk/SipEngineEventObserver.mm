@@ -58,33 +58,34 @@ void SipEventObserver::OnRegistrationState(RegistrationState code,RegistrationEr
 void SipEventObserver::OnNewCall(CallDir dir, const char *peer_caller, bool is_video_call){
 	
 	if (dir == CallIncoming) {
-        if ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)] 
-            && [UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
+        //当系统为10.0以上时,不作操作,由系统处理
+        if (kSystemVersionValue >= 10.0 && isUseCallKit) {
             
-           /*程序在后台使用通知中心提示来电*/
-            [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
         }else{
-           /*前台模式，播放声音或震动*/
-            //大于10.0通过系统调用
-            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
-                
+            if ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)]
+                && [UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
+                /*程序在后台使用通知中心提示来电*/
+                [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
             }else{
+                /*前台模式，播放声音或震动*/
+                //大于10.0通过系统调用
                 startRing();
                 if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
                     startVibrate();
                 } else {
                     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
                 }
+                
+                //            startRing();
+                //            if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
+                //                startVibrate();
+                //            } else {
+                //                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                //            }
+                
+                //            [sip_engine_manager_ sound];//iOS 10会崩溃
+
             }
-            
-//            startRing();
-//            if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
-//                startVibrate();
-//            } else {
-//                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-//            }
-            
-//            [sip_engine_manager_ sound];//iOS 10会崩溃
         }
 	}
     

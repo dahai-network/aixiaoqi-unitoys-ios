@@ -17,6 +17,8 @@
 
 @interface RechargeViewController ()<UITextFieldDelegate, UITableViewDelegate>
 
+@property (nonatomic, strong) UIButton *currentSelectButton;
+
 @end
 
 @implementation RechargeViewController
@@ -34,6 +36,7 @@
     self.arrValues = [[NSArray alloc] initWithObjects:_btn20,_btn50,_btn100,_btn300,_btn500, nil];
     
     self.btnSelected = _btn20;
+    self.currentSelectButton = self.btnAlipay;
     
     UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:@"绑定充值卡" style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
     self.navigationItem.rightBarButtonItem = right;
@@ -238,6 +241,7 @@
     }
 }
 
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ([alertView.message isEqualToString:@"你当前订单已支付完成！"]) {
         [self.navigationController popViewControllerAnimated:YES];
@@ -261,18 +265,26 @@
 }
 */
 
-- (IBAction)switchPayment:(id)sender {
-    if (_btnWeipay.tag==1) {
-        self.btnAlipay.tag=1;
-        [self.btnAlipay setImage:[UIImage imageNamed:@"order_checked"] forState:UIControlStateNormal];
-        self.btnWeipay.tag=0;
-        [self.btnWeipay setImage:[UIImage imageNamed:@"order_uncheck"] forState:UIControlStateNormal];
-    } else {
-        self.btnWeipay.tag=1;
-        [self.btnWeipay setImage:[UIImage imageNamed:@"order_checked"] forState:UIControlStateNormal];
-        self.btnAlipay.tag=0;
-        [self.btnAlipay setImage:[UIImage imageNamed:@"order_uncheck"] forState:UIControlStateNormal];
+- (IBAction)switchPayment:(UIButton *)sender {
+
+    if (sender == self.currentSelectButton) {
+        return;
     }
+    [self.currentSelectButton setImage:[UIImage imageNamed:@"order_uncheck"] forState:UIControlStateNormal];
+    [sender setImage:[UIImage imageNamed:@"order_checked"] forState:UIControlStateNormal];
+    self.currentSelectButton = sender;
+    
+//    if (_btnWeipay.tag==1) {
+//        self.btnAlipay.tag=1;
+//        [self.btnAlipay setImage:[UIImage imageNamed:@"order_checked"] forState:UIControlStateNormal];
+//        self.btnWeipay.tag=0;
+//        [self.btnWeipay setImage:[UIImage imageNamed:@"order_uncheck"] forState:UIControlStateNormal];
+//    } else {
+//        self.btnWeipay.tag=1;
+//        [self.btnWeipay setImage:[UIImage imageNamed:@"order_checked"] forState:UIControlStateNormal];
+//        self.btnAlipay.tag=0;
+//        [self.btnAlipay setImage:[UIImage imageNamed:@"order_uncheck"] forState:UIControlStateNormal];
+//    }
 }
 
 - (IBAction)payment:(id)sender {
@@ -281,7 +293,7 @@
     //
     
     NSString *paymentMethod;
-    if (self.btnAlipay.tag==1) {
+    if (self.btnAlipay == self.currentSelectButton) {
         paymentMethod = @"1";
     }else{
         paymentMethod = @"2";
@@ -318,7 +330,8 @@
             self.orderNumber = [[[responseObj objectForKey:@"data"] objectForKey:@"payment"] objectForKey:@"PaymentNum"];
             self.orderAmount =[NSString stringWithFormat:@"%.2f", [[[[responseObj objectForKey:@"data"] objectForKey:@"payment"] objectForKey:@"Amount"] floatValue]];
             
-            if (self.btnAlipay.tag==1) {
+            if (self.btnAlipay == self.currentSelectButton) {
+                
                 [self alipay];
             }else{
                 if ([self isWXAppInstalled]) {
@@ -343,6 +356,7 @@
     
     
 }
+
 
 - (void)weipay{
     self.checkToken = YES;

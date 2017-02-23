@@ -59,7 +59,7 @@
     config.supportsVideo = NO;
     config.maximumCallsPerCallGroup = 1;
     config.supportedHandleTypes = [NSSet setWithObjects:[NSNumber numberWithInteger:CXHandleTypePhoneNumber], nil];
-    config.iconTemplateImageData = UIImagePNGRepresentation([UIImage imageNamed:@"logo_callKit@2x.png"]);
+    config.iconTemplateImageData = UIImagePNGRepresentation([UIImage imageNamed:@"logo_callKit"]);
     self.provider = [[CXProvider alloc] initWithConfiguration:config];
 //    [self.provider setDelegate:self queue:self.completionQueue ? self.completionQueue : dispatch_get_main_queue()];
     [self.provider setDelegate:self queue:dispatch_get_main_queue()];
@@ -95,6 +95,29 @@
     [self.provider reportNewIncomingCallWithUUID:callUUID update:callUpdate completion:completion];
     [self.provider reportCallWithUUID:_currentCallUUID updated:callUpdate];
     return callUUID;
+}
+
+//- (NSUUID *)reportOutgoingCallWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion
+//{
+//    CXHandle* handle=[[CXHandle alloc]initWithType:CXHandleTypePhoneNumber value:contact.phoneNumber];
+//    _currentCallUUID = [NSUUID UUID];
+//    CXStartCallAction *action = [[CXStartCallAction alloc] initWithCallUUID:_callUUID handle: handle];
+//    action.contactIdentifier = [contact uniqueIdentifier];
+//    
+//    CXTransaction * transaction = [CXTransaction transactionWithActions:@[action]];
+//    
+//    [self requestTransaction:transaction];
+//    return _callUUID;
+//}
+
+- (NSUUID *)startRequestCalllWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion
+{
+    CXHandle* handle=[[CXHandle alloc]initWithType:CXHandleTypePhoneNumber value:contact.phoneNumber];
+    _currentCallUUID = [NSUUID UUID];
+    CXStartCallAction *startCallAction = [[CXStartCallAction alloc] initWithCallUUID:_currentCallUUID handle:handle];
+    startCallAction.video = NO;
+    [self.callController requestTransaction:[CXTransaction transactionWithActions:@[startCallAction]] completion:completion];
+    return _currentCallUUID;
 }
 
 
@@ -170,19 +193,6 @@
     }];
 }
 
-
-//- (NSUUID *)reportOutgoingCallWithContact:(XWContact *)contact completion:(XWCallKitCenterCompletion)completion
-//{
-//    CXHandle* handle=[[CXHandle alloc]initWithType:CXHandleTypePhoneNumber value:contact.phoneNumber];
-//    _callUUID = [NSUUID UUID];
-//    CXStartCallAction *action = [[CXStartCallAction alloc] initWithCallUUID:_callUUID handle: handle];
-//    action.contactIdentifier = [contact uniqueIdentifier];
-//
-//    CXTransaction * transaction = [CXTransaction transactionWithActions:@[action]];
-//
-//    [self requestTransaction:transaction];
-//    return _callUUID;
-//}
 
 - (void)updateCall:(NSUUID *)callUUID state:(UNCallState)state
 {

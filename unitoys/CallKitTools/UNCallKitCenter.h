@@ -55,6 +55,8 @@ typedef void(^UNCallKitActionNotificationBlock)(CXCallAction *action, UNCallActi
 
 - (NSUUID *)reportIncomingCallWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion;
 
+- (NSUUID *)startRequestCalllWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion;
+
 -(void)requestTransaction:(CXTransaction *)transaction;
 
 - (void)updateCall:(NSUUID * _Nullable)callUUID state:(UNCallState)state;

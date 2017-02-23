@@ -393,6 +393,7 @@ withDateFormat:(NSString *)format
     return linkName;
 }
 
+
 - (BOOL)isWXAppInstalled
 {
     // 1.判断是否安装微信

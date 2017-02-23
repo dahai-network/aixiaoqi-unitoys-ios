@@ -361,7 +361,6 @@
 }
 
 - (void)loadNewHead{
-    NSLog(@"什么鬼");
     UIActionSheet *choiceSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                              delegate:self
                                                     cancelButtonTitle:@"取消"
@@ -421,20 +420,20 @@
         }
     }
     
-    /////////开始证书认证
+//    /////////开始证书认证
+//    
+//    NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"https" ofType:@"cer"];
+//    NSData * certData =[NSData dataWithContentsOfFile:cerPath];
+//    //    NSSet * certSet = [[NSSet alloc] initWithObjects:certData, nil];
+//    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
+//    // 是否允许,NO-- 不允许无效的证书
+//    [securityPolicy setAllowInvalidCertificates:YES];
+//    // 设置证书
+//    [securityPolicy setPinnedCertificates:@[certData]];
+//    
+//    manager.securityPolicy = securityPolicy;
+//    /////////结束证书认证
     
-    NSString *cerPath = [[NSBundle mainBundle] pathForResource:@"https" ofType:@"cer"];
-    NSData * certData =[NSData dataWithContentsOfFile:cerPath];
-    //    NSSet * certSet = [[NSSet alloc] initWithObjects:certData, nil];
-    AFSecurityPolicy *securityPolicy = [AFSecurityPolicy policyWithPinningMode:AFSSLPinningModeCertificate];
-    // 是否允许,NO-- 不允许无效的证书
-    [securityPolicy setAllowInvalidCertificates:YES];
-    // 设置证书
-    [securityPolicy setPinnedCertificates:@[certData]];
-    //    [securityPolicy setPinnedCertificates:<#(NSArray * _Nullable)#>]
-    
-    manager.securityPolicy = securityPolicy;
-    /////////结束证书认证
     
     [manager POST:apiModifyUserHead parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         NSData *imageData =UIImageJPEGRepresentation(img,0.3);
@@ -449,23 +448,61 @@
                                     name:@"file"
                                 fileName:fileName
                                 mimeType:@"image/jpeg"];
-    
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        //上传成功
-        NSLog(@"上传成功:%@",responseObject);
+    } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
-        [self.dicInfo setObject:[[responseObject objectForKey:@"data"] objectForKey:@"UserHead"] forKey:@"UserHead"];
-        
-        [[NSUserDefaults standardUserDefaults] setObject:self.dicInfo forKey:@"userData"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"NeedRefreshInfo" object:nil];
-        
-        
+        if ([[responseObject objectForKey:@"status"] intValue]==1) {
+            //上传成功
+            NSLog(@"上传成功:%@",responseObject);
+            
+            [self.dicInfo setObject:[[responseObject objectForKey:@"data"] objectForKey:@"UserHead"] forKey:@"UserHead"];
+            
+            [[NSUserDefaults standardUserDefaults] setObject:self.dicInfo forKey:@"userData"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NeedRefreshInfo" object:nil];
+        }else if ([[responseObject objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else if ([[responseObject objectForKey:@"status"] intValue]==1028){
+            HUDNormal(@"缓存失败,请检查图片是否过大")
+        }else{
+            HUDNormal(responseObject[@"msg"])
+        }
+
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         //上传失败
         NSLog(@"上传失败:%@",[error description]);
     }];
+    
+//    [manager POST:apiModifyUserHead parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+//        NSData *imageData =UIImageJPEGRepresentation(img,0.3);
+//        
+//        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+//        formatter.dateFormat =@"yyyyMMddHHmmss";
+//        NSString *str = [formatter stringFromDate:[NSDate date]];
+//        NSString *fileName = [NSString stringWithFormat:@"%@.jpg", str];
+//        
+//        //上传的参数(上传图片，以文件流的格式)
+//        [formData appendPartWithFileData:imageData
+//                                    name:@"file"
+//                                fileName:fileName
+//                                mimeType:@"image/jpeg"];
+//    
+//    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+//        //上传成功
+//        NSLog(@"上传成功:%@",responseObject);
+//        
+//        [self.dicInfo setObject:[[responseObject objectForKey:@"data"] objectForKey:@"UserHead"] forKey:@"UserHead"];
+//        
+//        [[NSUserDefaults standardUserDefaults] setObject:self.dicInfo forKey:@"userData"];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"NeedRefreshInfo" object:nil];
+//        
+//        
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//        //上传失败
+//        NSLog(@"上传失败:%@",[error description]);
+//    }];
     /*
     NSURLSessionDataTask *task = [manager POST:apiModifyUserHead parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> _Nonnull formData) {
         
