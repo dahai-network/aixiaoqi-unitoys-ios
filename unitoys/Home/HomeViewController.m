@@ -1778,7 +1778,7 @@ typedef enum : NSUInteger {
             if (imeiLowStr&&[MYDEVICENAME containsString:nameStr.lowercaseString]) {
                 //新版本带mac地址的
                 if (peripheral.name.length > 8) {
-                    NSString *macStr = [peripheral.name substringFromIndex:8];
+                    NSString *macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:8]];
                     if ([macStr.lowercaseString isEqualToString:imeiLowStr]) {
                         self.peripheral = peripheral;
                         [self.mgr connectPeripheral:self.peripheral options:nil];
@@ -1794,7 +1794,7 @@ typedef enum : NSUInteger {
             } else {
                 //新版本带mac地址的
                 if (peripheral.name.length > 8 && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
-                    NSString *macStr = [peripheral.name substringFromIndex:8];
+                    NSString *macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:8]];
                     
                     [self.peripherals addObject:peripheral];
                     NSLog(@"带mac地址 -- uuid = %@ name = %@ 信号强度是：%@ mac地址是：%@", peripheral.identifier, peripheral.name, RSSI, macStr.lowercaseString);
@@ -1829,7 +1829,7 @@ typedef enum : NSUInteger {
                     self.peripheral = peripheral;
                     [self.mgr connectPeripheral:self.peripheral options:nil];
                     if (peripheral.name.length > 8) {
-                        [BlueToothDataManager shareManager].deviceMacAddress = [peripheral.name substringFromIndex:8].lowercaseString;
+                        [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:8].lowercaseString];
                     }
                 }
             }
@@ -2618,13 +2618,13 @@ typedef enum : NSUInteger {
 
 #pragma mark 转换蓝牙设备（未连接）的mac地址
 - (NSString *)conventMACAddressFromNetWithStr:(NSString *)str {
-    if (str.length > 17) {
-        NSString *string1 = [str substringWithRange:NSMakeRange(5, 2)];
-        NSString *string2 = [str substringWithRange:NSMakeRange(7, 2)];
-        NSString *string3 = [str substringWithRange:NSMakeRange(10, 2)];
-        NSString *string4 = [str substringWithRange:NSMakeRange(12, 2)];
-        NSString *string5 = [str substringWithRange:NSMakeRange(14, 2)];
-        NSString *string6 = [str substringWithRange:NSMakeRange(16, 2)];
+    if (str.length >= 12) {
+        NSString *string1 = [str substringWithRange:NSMakeRange(0, 2)];
+        NSString *string2 = [str substringWithRange:NSMakeRange(2, 2)];
+        NSString *string3 = [str substringWithRange:NSMakeRange(4, 2)];
+        NSString *string4 = [str substringWithRange:NSMakeRange(6, 2)];
+        NSString *string5 = [str substringWithRange:NSMakeRange(8, 2)];
+        NSString *string6 = [str substringWithRange:NSMakeRange(10, 2)];
         NSString *string = [NSString stringWithFormat:@"%@:%@:%@:%@:%@:%@", string1, string2, string3, string4, string5, string6];
         NSString *lowStr = string.lowercaseString;
         NSLog(@"mac地址：%@", lowStr);
