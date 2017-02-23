@@ -59,7 +59,7 @@
     config.supportsVideo = NO;
     config.maximumCallsPerCallGroup = 1;
     config.supportedHandleTypes = [NSSet setWithObjects:[NSNumber numberWithInteger:CXHandleTypePhoneNumber], nil];
-    config.iconTemplateImageData = UIImagePNGRepresentation([UIImage imageNamed:@"logo"]);
+    config.iconTemplateImageData = UIImagePNGRepresentation([UIImage imageNamed:@"logo_callKit@2x.png"]);
     self.provider = [[CXProvider alloc] initWithConfiguration:config];
 //    [self.provider setDelegate:self queue:self.completionQueue ? self.completionQueue : dispatch_get_main_queue()];
     [self.provider setDelegate:self queue:dispatch_get_main_queue()];
@@ -137,8 +137,9 @@
     }
     self.isSendHeld = YES;
     
-    CXSetHeldCallAction *action = [[CXSetHeldCallAction alloc] initWithCallUUID:callUUID onHold: hold];
-    [self.callController requestTransaction:[CXTransaction transactionWithActions:@[action]] completion:completion];
+    //此Block只更改APP按钮状态
+//    CXSetHeldCallAction *action = [[CXSetHeldCallAction alloc] initWithCallUUID:callUUID onHold: hold];
+//    [self.callController requestTransaction:[CXTransaction transactionWithActions:@[action]] completion:completion];
 }
 
 - (void)endCall:(NSUUID *)callUUID completion:(UNCallKitCenterCompletion)completion {
@@ -264,16 +265,17 @@
     [action fulfill];
 }
 
+//暂停通话
 - (void)provider:(CXProvider *)provider performSetHeldCallAction:(nonnull CXSetHeldCallAction *)action {
     NSLog(@"performSetHeldCallAction----%s", __func__);
-    //此Block只更改APP按钮状态
-    if (self.actionNotificationBlock) {
-        self.actionNotificationBlock(action, UNCallActionTypeHeld);
-    }
-
-    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-    theSipEngine->MuteSpk(action.onHold);
-    [action fulfill];
+//    //此Block只更改APP按钮状态
+//    if (self.actionNotificationBlock) {
+//        self.actionNotificationBlock(action, UNCallActionTypeHeld);
+//    }
+//
+//    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+//    theSipEngine->MuteSpk(action.onHold);
+//    [action fulfill];
 }
 
 //点击系统通话界面会触发此回调
@@ -291,20 +293,18 @@
     [action fulfill];
 }
 
-//group
+//群组电话
 - (void)provider:(CXProvider *)provider performSetGroupCallAction:(CXSetGroupCallAction *)action{
     NSLog(@"performSetGroupCallAction---%s", __func__);
 }
-
+//双频多音功能
 - (void)provider:(CXProvider *)provider performPlayDTMFCallAction:(CXPlayDTMFCallAction *)action{
     NSLog(@"performPlayDTMFCallAction---%s", __func__);
 }
-
 //超时时调用
 - (void)provider:(CXProvider *)provider timedOutPerformingAction:(CXAction *)action{
     NSLog(@"timedOutPerformingAction---%s", __func__);
 }
-
 
 //此处进行通话处理
 - (void)provider:(CXProvider *)provider didActivateAudioSession:(AVAudioSession *)audioSession{

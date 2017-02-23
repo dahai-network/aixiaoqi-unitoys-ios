@@ -47,6 +47,9 @@
 		04EAB8C11E2788DB000D3D13 /* AlarmListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EAB8BF1E2788DB000D3D13 /* AlarmListTableViewCell.m */; };
 		04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EAB8C01E2788DB000D3D13 /* AlarmListTableViewCell.xib */; };
 		3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */; };
+		3C52B1F41E5E8CC1001E67C4 /* logo_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F21E5E8CC1001E67C4 /* logo_icon@2x.png */; };
+		3C52B1F51E5E8CC1001E67C4 /* logo_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F31E5E8CC1001E67C4 /* logo_icon@3x.png */; };
+		3C52B1F71E5E93B4001E67C4 /* logo_callKit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F61E5E93B4001E67C4 /* logo_callKit@2x.png */; };
 		3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */; };
 		3C8CFA6B1E55988B0035A460 /* UCallPhoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6A1E55988B0035A460 /* UCallPhoneButton.m */; };
 		3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */; };
@@ -277,6 +280,9 @@
 		04EAB8C01E2788DB000D3D13 /* AlarmListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlarmListTableViewCell.xib; sourceTree = "<group>"; };
 		3C116DF61E56CD90006C0641 /* CustomRefreshMessageHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomRefreshMessageHeader.h; sourceTree = "<group>"; };
 		3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshMessageHeader.m; sourceTree = "<group>"; };
+		3C52B1F21E5E8CC1001E67C4 /* logo_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_icon@2x.png"; sourceTree = "<group>"; };
+		3C52B1F31E5E8CC1001E67C4 /* logo_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_icon@3x.png"; sourceTree = "<group>"; };
+		3C52B1F61E5E93B4001E67C4 /* logo_callKit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_callKit@2x.png"; sourceTree = "<group>"; };
 		3C8CFA661E5597D10035A460 /* UCallPhonePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhonePadView.h; sourceTree = "<group>"; };
 		3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCallPhonePadView.m; sourceTree = "<group>"; };
 		3C8CFA691E55988B0035A460 /* UCallPhoneButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhoneButton.h; sourceTree = "<group>"; };
@@ -698,6 +704,16 @@
 				046BD63E1E0B79BB008A958A /* JPUSHService.h */,
 			);
 			path = JPush;
+			sourceTree = "<group>";
+		};
+		3C52B1F11E5E8C87001E67C4 /* Picture */ = {
+			isa = PBXGroup;
+			children = (
+				3C52B1F61E5E93B4001E67C4 /* logo_callKit@2x.png */,
+				3C52B1F21E5E8CC1001E67C4 /* logo_icon@2x.png */,
+				3C52B1F31E5E8CC1001E67C4 /* logo_icon@3x.png */,
+			);
+			path = Picture;
 			sourceTree = "<group>";
 		};
 		3C8E77921E5D27A200C4833E /* Tools */ = {
@@ -1377,6 +1393,7 @@
 				95334A671D8A89B9002C1CFB /* network */,
 				95334A681D8A89B9002C1CFB /* Resource */,
 				3C8E77921E5D27A200C4833E /* Tools */,
+				3C52B1F11E5E8C87001E67C4 /* Picture */,
 				95F337171D853256000B5461 /* AppDelegate.h */,
 				95F337181D853256000B5461 /* AppDelegate.mm */,
 				0436F9561E1E3DDC00A57E67 /* BGLogation.h */,
@@ -1507,11 +1524,13 @@
 				043965C51E07DF9D00B67989 /* IsBoundingViewController.xib in Resources */,
 				9562EE9B1DD31B7B00E10C98 /* AlipaySDK.bundle in Resources */,
 				0436C36B1E1FA2D60033A8F1 /* CommunicateDetailViewController.xib in Resources */,
+				3C52B1F71E5E93B4001E67C4 /* logo_callKit@2x.png in Resources */,
 				950E791C1E02BC48003AE0D5 /* Package.storyboard in Resources */,
 				740FD3961E287F9E009413F1 /* simcom in Resources */,
 				04472ABA1E1CABD70042CEE1 /* ActivateGiftCardViewController.xib in Resources */,
 				952B2B071DC22D75006A7C69 /* messages.plist in Resources */,
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
+				3C52B1F51E5E8CC1001E67C4 /* logo_icon@3x.png in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
 				950E79221E02CDB5003AE0D5 /* Device.storyboard in Resources */,
 				952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */,
@@ -1526,6 +1545,7 @@
 				04DA1B981E12958C00C50904 /* CallComingInViewController.xib in Resources */,
 				04472AB51E1CA5F60042CEE1 /* BindGiftBagCardViewController.xib in Resources */,
 				0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */,
+				3C52B1F41E5E8CC1001E67C4 /* logo_icon@2x.png in Resources */,
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
 				95F337221D853256000B5461 /* Main.storyboard in Resources */,
 				043965CA1E07E18C00B67989 /* BindChargeCardViewController.xib in Resources */,

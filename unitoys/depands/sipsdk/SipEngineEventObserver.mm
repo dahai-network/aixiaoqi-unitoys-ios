@@ -70,15 +70,20 @@ void SipEventObserver::OnNewCall(CallDir dir, const char *peer_caller, bool is_v
                 
             }else{
                 startRing();
+                if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
+                    startVibrate();
+                } else {
+                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                }
             }
             
 //            startRing();
-//            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-            if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
-                startVibrate();
-            } else {
-                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-            }
+//            if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
+//                startVibrate();
+//            } else {
+//                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+//            }
+            
 //            [sip_engine_manager_ sound];//iOS 10会崩溃
         }
 	}

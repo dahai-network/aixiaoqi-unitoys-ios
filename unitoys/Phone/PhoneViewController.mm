@@ -703,7 +703,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
         if ([action isEqualToString:@"Hungup"]) {
-            //
             
             if(theSipEngine->InCalling())
             theSipEngine->TerminateCall();
@@ -711,12 +710,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //挂断系统的通话界面
             if (kSystemVersionValue >= 10.0 && isUseCallKit) {
                 [[UNCallKitCenter sharedInstance]  endCall:nil completion:^(NSError * _Nullable error) {
-                    
                 }];
             }
             
             self.callStopTime = [NSDate date];
-            
             self.hostHungup = @"source";
             
 //            [self endingCallOut];
@@ -730,16 +727,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             
             NSLog(@"当前扩音状态:%zd", self.speakerStatus);
-            //扩音操作系统会自动进行状态更改,这里不需要设置,否则会出现无声
-            //对系统的通话界面进行扩音
-//            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
-//                [[UNCallKitCenter sharedInstance]  hold:self.speakerStatus callUUID:nil completion:^(NSError * _Nullable error) {
-//                    
-//                }];
-//            }else{
-                theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
-//            }
-            
+            //系统扩音状态会自动更新,无法对系统扩音进行操作,因此不做处理
+            theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
             
         }else if ([action isEqualToString:@"MuteSound"]){
             if (notification.userInfo) {
@@ -882,15 +871,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 break;
             case UNCallActionTypeHeld:
             {
-                //对APP通话进行扩音操作
-                if ([action isKindOfClass:[CXSetHeldCallAction class]]) {
-                    CXSetHeldCallAction *heldAction = (CXSetHeldCallAction *)action;
-                    //发送是否扩音的操作
-                    if (weakSelf.callCominginVC) {
-                        weakSelf.speakerStatus = heldAction.isOnHold;
-                        [weakSelf.callCominginVC setUpSpeakerButtonStatus:heldAction.isOnHold];
-                    }
-                }
+                
             }
                 break;
             default:
