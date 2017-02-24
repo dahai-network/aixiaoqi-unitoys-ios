@@ -126,7 +126,7 @@ typedef enum : NSUInteger {
 
 - (NSMutableArray *)dataPacketArray {
     if (!_dataPacketArray) {
-        self.dataPacketArray = [NSMutableArray array];
+        _dataPacketArray = [NSMutableArray array];
     }
     return _dataPacketArray;
 }
@@ -828,6 +828,8 @@ typedef enum : NSUInteger {
     }else{
         //非首次访问通讯录
         NSArray *contacts = [self fetchContactWithAddressBook:addressBook];
+        CFRelease(addressBook);
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             //----------------主线程 更新 UI-----------------
             _contactsDataArr = contacts;
@@ -881,7 +883,6 @@ typedef enum : NSUInteger {
                     NSLog(@"通讯录没有号码");
                 }
             }
-            
         }
         return contacts;
     }else{//无权限访问
@@ -982,7 +983,7 @@ typedef enum : NSUInteger {
 }
 
 - (NSString *)checkNameWithNumber:(NSString *)number {
-    ContactModel *tempModel = [[ContactModel alloc] init];
+    ContactModel *tempModel;
     NSString *linkName = number;
     for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
         tempModel = model;
@@ -2260,7 +2261,9 @@ typedef enum : NSUInteger {
                     //注册手机卡状态
                     //注册电话卡的步骤
                     NSString *totalString = contentStr;
-                    [self.dataPacketArray addObject:totalString];
+                    if (totalString) {
+                        [self.dataPacketArray addObject:totalString];
+                    }
                     //总包数
                     NSString *totalDataNumber;
                     //数据当前包数
@@ -2305,13 +2308,11 @@ typedef enum : NSUInteger {
 #pragma mark 获取当前时间
 - (void)checkNowTime {
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDate *now;
-    NSDateComponents *comps = [[NSDateComponents alloc] init];
     NSInteger unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekdayCalendarUnit |
     NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
     
-    now=[NSDate date];
-    comps = [calendar components:unitFlags fromDate:[NSDate date]];
+//    NSDate *now=[NSDate date];
+    NSDateComponents *comps = [calendar components:unitFlags fromDate:[NSDate date]];
     int year=[comps year];
     int week = [comps weekday];
     int month = [comps month];

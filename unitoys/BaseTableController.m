@@ -25,9 +25,9 @@
     self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"btn_back"] imageWithRenderingMode:/*去除渲染效果*/UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(leftButtonAction)];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    
-}
+//- (void)viewWillAppear:(BOOL)animated {
+//    
+//}
 
 - (void)leftButtonAction {
     [self.navigationController popViewControllerAnimated:YES];
@@ -142,8 +142,8 @@
     self.headers = [[NSMutableDictionary alloc] init];
     [self.headers setObject:@"2006808" forKey:@"partner"];
     
-    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSInteger a=[dat timeIntervalSince1970];
+//    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+//    NSInteger a=[dat timeIntervalSince1970];
 //    NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
     NSString *timestemp = @"1471316792";
     

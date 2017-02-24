@@ -31,6 +31,9 @@
 #import "UNCallKitCenter.h"
 #import <SSZipArchive/SSZipArchive.h>
 
+//#import "JSONModel.h"
+#import <MJExtension/MJExtension.h>
+
 @interface PhoneViewController ()
 {
     UNCallKitCenter *callCenter;
@@ -78,16 +81,19 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (!_searchPhoneRecords) {
         //去除记录重复
         NSMutableArray *tempArray = [NSMutableArray array];
-        [_arrPhoneRecord enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            BOOL isRepeat = NO;
-            for (NSDictionary *tempDict in tempArray) {
-                if (([[obj objectForKey:@"destnumber"] isEqualToString:[tempDict objectForKey:@"destnumber"]] && [[obj objectForKey:@"hostnumber"] isEqualToString:[tempDict objectForKey:@"hostnumber"]])) {
-                    isRepeat = YES;
-                    break;
-                }
-            }
-            if (!isRepeat) {
-                [tempArray addObject:obj];
+        [_arrPhoneRecord enumerateObjectsUsingBlock:^(NSArray *objArray, NSUInteger idx, BOOL * _Nonnull stop) {
+//            BOOL isRepeat = NO;
+//            for (NSDictionary *tempDict in tempArray) {
+//                if (([[obj objectForKey:@"destnumber"] isEqualToString:[tempDict objectForKey:@"destnumber"]] && [[obj objectForKey:@"hostnumber"] isEqualToString:[tempDict objectForKey:@"hostnumber"]])) {
+//                    isRepeat = YES;
+//                    break;
+//                }
+//            }
+//            if (!isRepeat) {
+//                [tempArray addObject:obj];
+//            }
+            if (objArray.count) {
+                [tempArray addObject:objArray[0]];
             }
         }];
         
@@ -443,14 +449,88 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 
+//- (void)loadPhoneRecord {
+//    self.checkToken = YES;
+//    
+//    [self getBasicHeader];
+//    
+//    _arrPhoneRecord = [[NSMutableArray alloc] init];
+//    
+//    
+//    //Home目录
+//    //NSString *homeDirectory = NSHomeDirectory();
+//    
+//    //Document目录
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//    NSString *path = [paths objectAtIndex:0];
+//    
+//    path = [path stringByAppendingPathComponent:@"callrecord.db"];
+//    
+//    FMDatabase *db = [FMDatabase databaseWithPath:path];
+//    
+//    if (![db open]) {
+//        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+//        return;
+//        
+//    }else{
+//        //监测数据库中我要需要的表是否已经存在
+//        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord" ];
+//        FMResultSet *rs = [db executeQuery:existsSql];
+//        
+//        if ([rs next]) {
+//            NSInteger count = [rs intForColumn:@"countNum"];
+//            NSLog(@"The table count: %li", count);
+//            if (count == 1) {
+//                NSLog(@"log_keepers table is existed.");
+//                NSString *dataSql = @"select * from CallRecord";
+//                FMResultSet *rs = [db executeQuery:dataSql];
+//                
+//                if ([rs columnCount]==5) { //缺少status字段
+//                    NSLog(@"添加数据库字段");
+//                    [db executeUpdate:@"ALTER TABLE CallRecord ADD COLUMN status Integer"];
+//                    NSString *dataSql = @"select * from CallRecord";
+//                    rs = [db executeQuery:dataSql];
+//                }
+//                
+//                while ([rs next]) {
+//                    //添加数据到arrPhoneCallRecord
+//                    NSDictionary *dicCallRecord = [[NSDictionary alloc] initWithObjectsAndKeys:[rs stringForColumn:@"hostnumber"],@"hostnumber",[rs stringForColumn:@"destnumber"],@"destnumber",[self convertDate:[rs stringForColumn:@"calltime"]],@"calltime",[rs stringForColumn:@"calltype"],@"calltype",[rs stringForColumn:@"location"],@"location",[rs stringForColumn:@"status"],@"status",nil];
+//                    
+//                    [self.arrPhoneRecord insertObject:dicCallRecord atIndex:0];
+//                }
+//                return;
+//            }
+//            
+//            NSLog(@"log_keepers is not existed.");
+//            //创建表
+//            //[membersDB executeUpdate:@"CREATE TABLE PersonList (Name text, Age integer, Sex integer,Phone text, Address text, Photo blob)"];
+//            [db executeUpdate:@"CREATE TABLE CallRecord (hostnumber Text, destnumber Text, calltime TimeStamp, calltype Text, location Text, status Integer)"];
+//        }else{
+//            //加载数据到列表
+//            
+//            NSString *dataSql = @"select * from CallRecord";
+//            FMResultSet *rs = [db executeQuery:dataSql];
+//            
+//            while ([rs next]) {
+//                //添加数据到arrPhoneCallRecord
+//                NSDictionary *dicCallRecord = [[NSDictionary alloc] initWithObjectsAndKeys:[rs stringForColumn:@"hostnumber"],@"hostnumber",[rs stringForColumn:@"destnumber"],@"destnumber",[self convertDate:[rs stringForColumn:@"calltime"]],@"calltime",[rs stringForColumn:@"calltype"],@"calltype",[rs stringForColumn:@"location"],@"location",[rs stringForColumn:@"status"],@"status",nil];
+//                
+//                [self.arrPhoneRecord insertObject:dicCallRecord atIndex:0];
+//            }
+//        }
+//        [rs close];
+//    }
+//
+//    [self.tableView reloadData];
+//}
+
+
 - (void)loadPhoneRecord {
     self.checkToken = YES;
     
     [self getBasicHeader];
     
     _arrPhoneRecord = [[NSMutableArray alloc] init];
-    
-    
     //Home目录
     //NSString *homeDirectory = NSHomeDirectory();
     
@@ -461,7 +541,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     path = [path stringByAppendingPathComponent:@"callrecord.db"];
     
     FMDatabase *db = [FMDatabase databaseWithPath:path];
-    
     if (![db open]) {
         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
         return;
@@ -476,51 +555,62 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             NSLog(@"The table count: %li", count);
             if (count == 1) {
                 NSLog(@"log_keepers table is existed.");
-                NSString *dataSql = @"select * from CallRecord";
+                NSString *dataSql = @"select * from CallRecord order by calltime asc";
                 FMResultSet *rs = [db executeQuery:dataSql];
                 
-                if ([rs columnCount]==5) { //缺少status字段
-                    NSLog(@"添加数据库字段");
-                    [db executeUpdate:@"ALTER TABLE CallRecord ADD COLUMN status Integer"];
-                    NSString *dataSql = @"select * from CallRecord";
-                    rs = [db executeQuery:dataSql];
-                }
+//                if ([rs columnCount]==5) { //缺少status字段
+//                    NSLog(@"添加数据库字段");
+//                    [db executeUpdate:@"ALTER TABLE CallRecord ADD COLUMN status Integer"];
+//                    NSString *dataSql = @"select * from CallRecord";
+//                    rs = [db executeQuery:dataSql];
+//                }
                 
                 while ([rs next]) {
                     //添加数据到arrPhoneCallRecord
-                    NSDictionary *dicCallRecord = [[NSDictionary alloc] initWithObjectsAndKeys:[rs stringForColumn:@"hostnumber"],@"hostnumber",[rs stringForColumn:@"destnumber"],@"destnumber",[self convertDate:[rs stringForColumn:@"calltime"]],@"calltime",[rs stringForColumn:@"calltype"],@"calltype",[rs stringForColumn:@"location"],@"location",[rs stringForColumn:@"status"],@"status",nil];
-                    
-                    [self.arrPhoneRecord insertObject:dicCallRecord atIndex:0];
+//                    (datas, calltime, dataid)
+                    NSString *jsonStr1 = [rs stringForColumn:@"datas"];
+                    NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
+                    NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
+//                    NSDictionary *dicCallRecord = [[NSDictionary alloc] initWithObjectsAndKeys:[rs stringForColumn:@"hostnumber"],@"hostnumber",[rs stringForColumn:@"destnumber"],@"destnumber",[self convertDate:[rs stringForColumn:@"calltime"]],@"calltime",[rs stringForColumn:@"calltype"],@"calltype",[rs stringForColumn:@"location"],@"location",[rs stringForColumn:@"status"],@"status",nil];
+                    [self.arrPhoneRecord insertObject:dataArray atIndex:0];
                 }
-                return;
+//                return;
             }
             
             NSLog(@"log_keepers is not existed.");
             //创建表
             //[membersDB executeUpdate:@"CREATE TABLE PersonList (Name text, Age integer, Sex integer,Phone text, Address text, Photo blob)"];
-            [db executeUpdate:@"CREATE TABLE CallRecord (hostnumber Text, destnumber Text, calltime TimeStamp, calltype Text, location Text, status Integer)"];
+//            [db executeUpdate:@"CREATE TABLE CallRecord (hostnumber Text, destnumber Text, calltime TimeStamp, calltype Text, location Text, status Integer)"];
+            
+//            [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
         }else{
             //加载数据到列表
             
-            NSString *dataSql = @"select * from CallRecord";
+            NSString *dataSql = @"select * from CallRecord order by calltime asc";
             FMResultSet *rs = [db executeQuery:dataSql];
             
             while ([rs next]) {
                 //添加数据到arrPhoneCallRecord
-                NSDictionary *dicCallRecord = [[NSDictionary alloc] initWithObjectsAndKeys:[rs stringForColumn:@"hostnumber"],@"hostnumber",[rs stringForColumn:@"destnumber"],@"destnumber",[self convertDate:[rs stringForColumn:@"calltime"]],@"calltime",[rs stringForColumn:@"calltype"],@"calltype",[rs stringForColumn:@"location"],@"location",[rs stringForColumn:@"status"],@"status",nil];
+//                NSDictionary *dicCallRecord = [[NSDictionary alloc] initWithObjectsAndKeys:[rs stringForColumn:@"hostnumber"],@"hostnumber",[rs stringForColumn:@"destnumber"],@"destnumber",[self convertDate:[rs stringForColumn:@"calltime"]],@"calltime",[rs stringForColumn:@"calltype"],@"calltype",[rs stringForColumn:@"location"],@"location",[rs stringForColumn:@"status"],@"status",nil];
+//                
+//                [self.arrPhoneRecord insertObject:dicCallRecord atIndex:0];
                 
-                [self.arrPhoneRecord insertObject:dicCallRecord atIndex:0];
+                NSString *jsonStr1 = [rs stringForColumn:@"datas"];
+                NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
+                NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
+                //                    NSDictionary *dicCallRecord = [[NSDictionary alloc] initWithObjectsAndKeys:[rs stringForColumn:@"hostnumber"],@"hostnumber",[rs stringForColumn:@"destnumber"],@"destnumber",[self convertDate:[rs stringForColumn:@"calltime"]],@"calltime",[rs stringForColumn:@"calltype"],@"calltype",[rs stringForColumn:@"location"],@"location",[rs stringForColumn:@"status"],@"status",nil];
+                [self.arrPhoneRecord insertObject:dataArray atIndex:0];
             }
         }
         [rs close];
     }
-
+    
     [self.tableView reloadData];
 }
 
+
 - (NSString *)numberFromCid :(NSString *)cid {
     //原本考虑正则，但规则比较简单
-    
     if (([[cid substringToIndex:3] isEqualToString:@"981"])&&[cid rangeOfString:@"#"].length) {
         return [cid substringWithRange:NSMakeRange(3, [cid rangeOfString:@"#"].location-3)];
     } else if ([[cid substringToIndex:3] isEqualToString:@"986"]) {
@@ -533,8 +623,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 
 - (BOOL)addPhoneRecordWithHostcid:(NSString *)hostcid Destcid:(NSString *)destcid Calltime:(NSDate *)calltime Calltype:(NSString *)calltype {
+    //status,来电是否接听
+    NSTimeInterval a = [calltime timeIntervalSince1970];
+    NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
+//    NSTimeInterval callTimeNumber = [calltime timeIntervalSince1970];
     
-    NSMutableDictionary *dicPhoneRecord = [[NSMutableDictionary alloc] initWithObjectsAndKeys:calltime,@"calltime",calltype,@"calltype",[self numberFromCid:hostcid],@"hostnumber",[self numberFromCid:destcid],@"destnumber",@0,@"status", nil];  //时间写入记录时不需要转成字符
+    NSMutableDictionary *dicPhoneRecord = [[NSMutableDictionary alloc] initWithObjectsAndKeys:timestemp,@"calltime",calltype,@"calltype",[self numberFromCid:hostcid],@"hostnumber",[self numberFromCid:destcid],@"destnumber",@0,@"status", nil];  //时间写入记录时不需要转成字符
     [dicPhoneRecord setObject:@"未知" forKey:@"location"];
     
     NSString *localPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
@@ -585,7 +679,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 }
             }
             [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",provinceName,cityName] forKey:@"location"];
-            
+            [rs close];
         }else{
             
             if ([number length]>=8) {
@@ -607,16 +701,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 if ([rs next]) {
                     provinceName = [rs stringForColumn:@"name"];
                 }
-                
                 if (cityid.length) {
                     rs = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM City where id='%@'",cityid]];
                     if ([rs next]) {
                         cityName = [rs stringForColumn:@"name"];
                     }
                 }
-
                 [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",provinceName,cityName] forKey:@"location"];
-
+                
+                [rs close];
             }else{
                 NSString *phoneStr = [self checkPhoneNumberIsMobile:number];
                 if (phoneStr) {
@@ -625,11 +718,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
         }
         
-        [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
-        [self.tableView reloadData];
+        //不在此时插入数据
+//        [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
+//        [self.tableView reloadData];
     }
     
-    //可通过判断是否为未知来进行网络请求归属地
+//    [self insertSqlData:dicPhoneRecord];
+    
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     path = [paths objectAtIndex:0];
@@ -641,45 +736,126 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         return FALSE;
         
     }else{
-        //监测数据库中我要需要的表是否已经存在
-        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord" ];
-        FMResultSet *rs = [db executeQuery:existsSql];
-        if ([rs next]) {
-            NSInteger count = [rs intForColumn:@"countNum"];
-            NSLog(@"The table count: %li", count);
-            if (count == 1) {
-                NSLog(@"log_keepers table is existed.");
-                //添加记录
-                NSInteger a=[calltime timeIntervalSince1970];
-                NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
-                BOOL success = [db executeUpdate:@"INSERT INTO CallRecord (hostnumber, destnumber, calltime, calltype, location, status) VALUES (?, ?, ?, ?, ?, ?)", [dicPhoneRecord objectForKey:@"hostnumber"], [dicPhoneRecord objectForKey:@"destnumber"], timestemp,[dicPhoneRecord objectForKey:@"calltype"],[dicPhoneRecord objectForKey:@"location"],[dicPhoneRecord objectForKey:@"status"]];
-                
-                if (!success) {
-                    NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
-                }
-                //return TRUE;
-            }
-            
-            NSLog(@"log_keepers is not existed.");
-            //创建表
-            //[membersDB executeUpdate:@"CREATE TABLE PersonList (Name text, Age integer, Sex integer,Phone text, Address text, Photo blob)"];
-            [db executeUpdate:@"CREATE TABLE CallRecord (hostnumber Text, destnumber Text, calltime TimeStamp, calltype text, location Text, status Integer)"];
-        }else{
-            //添加记录
-            NSInteger a=[calltime timeIntervalSince1970];
-            NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
-            BOOL success = [db executeUpdate:@"INSERT INTO CallRecord (hostnumber, destnumber, calltime, calltype, location, status) VALUES (?, ?, ?, ?, ?, ?)", [dicPhoneRecord objectForKey:@"hostnumber"], [dicPhoneRecord objectForKey:@"destnumber"], timestemp,[dicPhoneRecord objectForKey:@"calltype"],[dicPhoneRecord objectForKey:@"location"],[dicPhoneRecord objectForKey:@"status"]];
-            
-            if (!success) {
-                NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
-            }
-            
-        }
-        
-        [rs close];
+        [self insertSqlData:dicPhoneRecord dataBase:db Calltime:timestemp];
     }
     return YES;
 }
+
+- (void)insertSqlData:(NSDictionary *)dicPhoneRecord dataBase:(FMDatabase *)db Calltime:(NSString *)calltime
+{
+    NSMutableString *dataId = [NSMutableString string];
+    [dataId appendString:[dicPhoneRecord objectForKey:@"hostnumber"]];
+    [dataId appendString:[dicPhoneRecord objectForKey:@"destnumber"]];
+    [dataId appendString:[dicPhoneRecord objectForKey:@"calltype"]];
+//    NSTimeInterval a = [calltime timeIntervalSince1970];
+//    NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
+    NSMutableArray *muteArray = [NSMutableArray array];
+    [muteArray addObject:dicPhoneRecord];
+    //监测数据库中我要需要的表是否已经存在
+    NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord"];
+    FMResultSet *rs = [db executeQuery:existsSql];
+    if ([rs next]) {
+        NSInteger count = [rs intForColumn:@"countNum"];
+        NSLog(@"The table count: %zd", count);
+        if (count == 1) {
+            NSLog(@"log_keepers table is existed.");
+            //添加记录
+
+            //查询是否包含数据
+            
+            rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM CallRecord where dataid='%@'",dataId]];
+            if ([rs next]) {
+                //如果能打开说明已存在,获取数据
+                NSString *jsonStr1 = [rs stringForColumn:@"datas"];
+                NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
+                NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
+                muteArray = [NSMutableArray arrayWithArray:dataArray];
+                [muteArray insertObject:dicPhoneRecord atIndex:0];
+                
+                NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
+                NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
+
+               BOOL isSuccess = [db executeUpdate:[NSString stringWithFormat:@"UPDATE CallRecord SET datas='%@',calltime='%@' where dataid ='%@'", jsonStr2, calltime, dataId]];
+                if (!isSuccess) {
+                    NSLog(@"更新通话记录失败！%@",dicPhoneRecord);
+                }
+            }else{
+                NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:muteArray options:NSJSONWritingPrettyPrinted error:nil];
+                NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
+                BOOL isSuccess = [db executeUpdate:@"INSERT INTO CallRecord (datas, calltime, dataid) VALUES (?, ?, ?)", jsonStr2, calltime, dataId];
+                if (!isSuccess) {
+                    NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
+                }
+            }
+            
+//            BOOL success = [db executeUpdate:@"INSERT INTO CallRecord (hostnumber, destnumber, calltime, calltype, location, status) VALUES (?, ?, ?, ?, ?, ?)", [dicPhoneRecord objectForKey:@"hostnumber"], [dicPhoneRecord objectForKey:@"destnumber"], timestemp,[dicPhoneRecord objectForKey:@"calltype"],[dicPhoneRecord objectForKey:@"location"],[dicPhoneRecord objectForKey:@"status"]];
+//            if (!success) {
+//                NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
+//            }
+            //return TRUE;
+        }
+        NSLog(@"log_keepers is not existed.");
+        //创建表
+        //[membersDB executeUpdate:@"CREATE TABLE PersonList (Name text, Age integer, Sex integer,Phone text, Address text, Photo blob)"];
+        
+        [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
+    }else{
+        //添加记录
+//        NSInteger a=[calltime timeIntervalSince1970];
+//        NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
+//        BOOL success = [db executeUpdate:@"INSERT INTO CallRecord (datas, calltime, dataid) VALUES (?, ?, ?)", [dicPhoneRecord objectForKey:@"hostnumber"], [dicPhoneRecord objectForKey:@"destnumber"], timestemp,[dicPhoneRecord objectForKey:@"calltype"],[dicPhoneRecord objectForKey:@"location"],[dicPhoneRecord objectForKey:@"status"]];
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        BOOL isSuccess = [db executeUpdate:@"INSERT INTO CallRecord (datas, calltime, dataid) VALUES (?, ?, ?)", jsonStr, calltime, dataId];
+        
+        if (!isSuccess) {
+            NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
+        }
+    }
+    [rs close];
+    
+    [self loadPhoneRecord];
+}
+
+//- (void)insertSqlData:(NSDictionary *)dicPhoneRecord dataBase:(FMDatabase *)db Calltime:(NSDate *)calltime
+//{
+//    //监测数据库中我要需要的表是否已经存在
+//    NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord" ];
+//    FMResultSet *rs = [db executeQuery:existsSql];
+//    if ([rs next]) {
+//        NSInteger count = [rs intForColumn:@"countNum"];
+//        NSLog(@"The table count: %zd", count);
+//        if (count == 1) {
+//            NSLog(@"log_keepers table is existed.");
+//            //添加记录
+//            NSInteger a=[calltime timeIntervalSince1970];
+//            NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
+//            BOOL success = [db executeUpdate:@"INSERT INTO CallRecord (hostnumber, destnumber, calltime, calltype, location, status) VALUES (?, ?, ?, ?, ?, ?)", [dicPhoneRecord objectForKey:@"hostnumber"], [dicPhoneRecord objectForKey:@"destnumber"], timestemp,[dicPhoneRecord objectForKey:@"calltype"],[dicPhoneRecord objectForKey:@"location"],[dicPhoneRecord objectForKey:@"status"]];
+//            if (!success) {
+//                NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
+//            }
+//            //return TRUE;
+//        }
+//        NSLog(@"log_keepers is not existed.");
+//        //创建表
+//        //[membersDB executeUpdate:@"CREATE TABLE PersonList (Name text, Age integer, Sex integer,Phone text, Address text, Photo blob)"];
+//        [db executeUpdate:@"CREATE TABLE CallRecord (hostnumber Text, destnumber Text, calltime TimeStamp, calltype text, location Text, status Integer)"];
+//    }else{
+//        //添加记录
+//        NSInteger a=[calltime timeIntervalSince1970];
+//        NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
+//        BOOL success = [db executeUpdate:@"INSERT INTO CallRecord (hostnumber, destnumber, calltime, calltype, location, status) VALUES (?, ?, ?, ?, ?, ?)", [dicPhoneRecord objectForKey:@"hostnumber"], [dicPhoneRecord objectForKey:@"destnumber"], timestemp,[dicPhoneRecord objectForKey:@"calltype"],[dicPhoneRecord objectForKey:@"location"],[dicPhoneRecord objectForKey:@"status"]];
+//        
+//        if (!success) {
+//            NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
+//        }
+//    }
+//    [rs close];
+//
+//}
+
+
+
 
 
 
@@ -884,7 +1060,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
         if ([action isEqualToString:@"Hungup"]) {
-            
+            self.speakerStatus = NO;
             if(theSipEngine->InCalling())
             theSipEngine->TerminateCall();
             
@@ -944,7 +1120,30 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime desc limit 0,1"];// order by calltime desc"];
                 
                 if ([rs next]) {
-                    [db executeUpdate:@"update CallRecord set status=1 where calltime=?",[rs stringForColumn:@"calltime"]];
+                    
+                    //如果能打开说明已存在,获取数据
+                    NSString *jsonStr1 = [rs stringForColumn:@"datas"];
+                    NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
+                    NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
+                    NSMutableArray *muteArray = [NSMutableArray arrayWithArray:dataArray];
+                    NSDictionary *dictRecord;
+                    if (dataArray.count) {
+                        dictRecord = dataArray.firstObject;
+                    }
+//                    dictRecord[@"status"] = @1;
+                    [dictRecord setValue:@1 forKey:@"status"];
+                    [muteArray replaceObjectAtIndex:0 withObject:dictRecord];
+                    
+                    NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
+                    NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
+//                    [NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]
+                    [db executeUpdate:[NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]];
+//                    BOOL isSuccess = [db executeUpdate:@"UPDATE CallRecord set datas='%@' calltime='%@' where dataid ='%@'", jsonStr2, timestemp, dataId];
+//                    if (!isSuccess) {
+//                        NSLog(@"更新通话记录失败！%@",dicPhoneRecord);
+//                    }
+                    
+//                    [db executeUpdate:@"update CallRecord set status=1 where calltime=?",[rs stringForColumn:@"calltime"]];
 
                 }
                 
@@ -1066,13 +1265,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnNewCall:(CallDir)dir
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
-    NSString *msg = @"";
+//    NSString *msg = @"";
     NSString *newcid;
     
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     
     if (dir == CallIncoming){
-        msg = [NSString stringWithFormat:@"新来电 %@",cid];
+//        msg = [NSString stringWithFormat:@"新来电 %@",cid];
         //去掉“+”
         if ([cid containsString:@"+"]) {
             newcid = [cid stringByReplacingOccurrencesOfString:@"+" withString:@""];
@@ -1086,7 +1285,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         if (kSystemVersionValue >= 10.0 && isUseCallKit) {
             [self InComingCallWithCallKitName:[self checkLinkNameWithPhoneStr:cid] PhoneNumber:cid];
-            [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
         }else{
 //            msg = [NSString stringWithFormat:@"新来电 %@",cid];
 //            //去掉“+”
@@ -1103,16 +1301,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
             [self.navigationController presentViewController:self.callCominginVC animated:YES completion:nil];
             
-            [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
         }
+        [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
         
         /*
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
         theSipEngine->start*/
         //[mBtnDial setTitle:@"接听" forState:UIControlStateNormal];
     }else{
-        msg = [NSString stringWithFormat:@"新去电 %@",cid];
-        
+//        msg = [NSString stringWithFormat:@"新去电 %@",cid];
         [self addPhoneRecordWithHostcid:[userdata objectForKey:@"Tel"] Destcid:cid Calltime:[NSDate date] Calltype:@"去电"];
     }
     //    [mStatus setText:msg];
@@ -1187,6 +1384,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     [self loadPhoneRecord];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"通话结束"];
+    self.speakerStatus = NO;
     /*
     //移除来电页面
     if (self.callCominginVC) {
@@ -1796,7 +1994,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }else{
                 PhoneRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"PhoneRecordCell"];
                 NSDictionary *dicPhoneRecord = (NSDictionary *)model;
-                cell.lblCallTime.text = [self compareCurrentTime:[dicPhoneRecord objectForKey:@"calltime"]];
+                cell.lblCallTime.text = [self compareCurrentTimeString:[dicPhoneRecord objectForKey:@"calltime"]];
 //                cell.lblPhoneType.text = [dicPhoneRecord objectForKey:@"type"];
                 [cell.lblPhoneNumber setTextColor:[UIColor blackColor]];
                 NSMutableString *bottomStr = [NSMutableString string];
@@ -1857,8 +2055,17 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
         }else{
             PhoneRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"PhoneRecordCell"];
-            NSDictionary *dicPhoneRecord = [self.arrPhoneRecord objectAtIndex:indexPath.row];
-            cell.lblCallTime.text = [self compareCurrentTime:[dicPhoneRecord objectForKey:@"calltime"]];
+            NSArray *records = [self.arrPhoneRecord objectAtIndex:indexPath.row];
+            NSDictionary *dicPhoneRecord;
+            if (records.count) {
+                dicPhoneRecord = records[0];
+            }
+            NSString *phoneCount;
+            if (records.count > 1) {
+                phoneCount = [NSString stringWithFormat:@" (%zd)", records.count];
+            }
+//            NSDictionary *dicPhoneRecord = [self.arrPhoneRecord objectAtIndex:indexPath.row];
+            cell.lblCallTime.text = [self compareCurrentTimeString:[dicPhoneRecord objectForKey:@"calltime"]];
             cell.lblPhoneType.text = [dicPhoneRecord objectForKey:@"type"];
             [cell.lblPhoneNumber setTextColor:[UIColor blackColor]];
             
@@ -1866,8 +2073,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             
             if ([[dicPhoneRecord objectForKey:@"calltype"] isEqualToString:@"来电"]) {
                 [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callin"]];
+                NSString *phoneStr = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
+                if (phoneCount) {
+                    phoneStr = [phoneStr stringByAppendingString:[NSString stringWithFormat:@"%@", phoneCount]];
+                }
                 
-                cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
+                cell.lblPhoneNumber.text = phoneStr;
                 if (![(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"] containsString:cell.lblPhoneNumber.text] && ![(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"] isEqualToString:@"anonymous"]) {
                     [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"hostnumber"]];
                     [bottomStr appendString:@"  "];
@@ -1881,8 +2092,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 }
             }else{
                 [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callout"]];
-                
-                cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
+                NSString *phoneStr = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
+                if (phoneCount) {
+                    phoneStr = [phoneStr stringByAppendingString:[NSString stringWithFormat:@"%@", phoneCount]];
+                }
+                cell.lblPhoneNumber.text = phoneStr;
                 if (![(NSString *)[dicPhoneRecord objectForKey:@"destnumber"] containsString:cell.lblPhoneNumber.text]) {
                     [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"destnumber"]];
                     [bottomStr appendString:@"  "];
@@ -2031,7 +2245,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 if (callType==1) {
                     //网络电话
                     //电话记录，拨打电话
-                    NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+//                    NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+                    NSArray *records = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+                    NSDictionary *dicCallRecord;
+                    if (records.count) {
+                        dicCallRecord = records[0];
+                    }
                     if (dicCallRecord) {
                         if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
                             [weakSelf callNumber:[dicCallRecord objectForKey:@"hostnumber"]];
@@ -2047,7 +2266,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     //手环电话
                     if ([BlueToothDataManager shareManager].isRegisted) {
                         //电话记录，拨打电话
-                        NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+//                        NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+                        NSArray *records = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+                        NSDictionary *dicCallRecord;
+                        if (records.count) {
+                            dicCallRecord = records[0];
+                        }
                         if (dicCallRecord) {
                             if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
                                 [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"hostnumber"]];

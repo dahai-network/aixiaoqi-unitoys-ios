@@ -282,7 +282,7 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
             from = newFrom;
         }
         //转换成备注
-        ContactModel *tempModel = [[ContactModel alloc] init];
+        ContactModel *tempModel;
         for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
             tempModel = model;
             if ([model.phoneNumber containsString:@"-"]) {

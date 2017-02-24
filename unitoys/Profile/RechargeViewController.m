@@ -83,7 +83,7 @@
             if (single == '.') {
                 if(!isHaveDian)//text中还没有小数点
                 {
-                    isHaveDian = YES;
+//                    isHaveDian = YES;
                     return YES;
                     
                 }else{

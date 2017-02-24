@@ -111,8 +111,8 @@
     self.headers = [[NSMutableDictionary alloc] init];
     [self.headers setObject:@"2006808" forKey:@"partner"];
     
-    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSInteger a=[dat timeIntervalSince1970];
+//    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+//    NSInteger a=[dat timeIntervalSince1970];
 //    NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
     NSString *timestemp = @"1471316792";
     
@@ -137,8 +137,8 @@
     
     [self.params setObject:@"2006808" forKey:@"partner"];
     
-    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSInteger a=[dat timeIntervalSince1970];
+//    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+//    NSInteger a=[dat timeIntervalSince1970];
 //    NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
     
     NSString *timestemp = @"1471316792";
@@ -214,6 +214,13 @@
     NSDate* date = [NSDate dateWithTimeIntervalSince1970:[timeString doubleValue]/ 1000.0];
     NSString* dateString = [formatter stringFromDate:date];
     return dateString;
+}
+
+- (NSString *)compareCurrentTimeString:(NSString *)compareDateString
+{
+    NSTimeInterval second = compareDateString.longLongValue;
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:second];
+    return [self compareCurrentTime:date];
 }
 
 -(NSString *) compareCurrentTime:(NSDate*) compareDate
@@ -366,7 +373,7 @@
 }
 
 - (NSString *)checkNameWithNumber:(NSString *)number {
-    ContactModel *tempModel = [[ContactModel alloc] init];
+    ContactModel *tempModel;
     NSString *linkName = number;
     for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
         tempModel = model;

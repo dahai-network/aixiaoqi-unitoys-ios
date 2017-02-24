@@ -13,7 +13,7 @@
 @implementation LoginViewController
 
 - (void)viewDidLoad {
-    
+    [super viewDidLoad];
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     self.edtUserName.text = [userDefaults objectForKey:@"KEY_USER_NAME"];

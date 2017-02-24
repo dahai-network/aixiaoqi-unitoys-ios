@@ -148,17 +148,17 @@
 //扩音
 - (void)hold:(BOOL)hold callUUID:(NSUUID *)callUUID completion:(UNCallKitCenterCompletion)completion
 {
-    if (!callUUID) {
-        if (!_currentCallUUID) {
-            return;
-        }
-        callUUID = _currentCallUUID;
-    }
+//    if (!callUUID) {
+//        if (!_currentCallUUID) {
+//            return;
+//        }
+//        callUUID = _currentCallUUID;
+//    }
     
-    if (self.isSendHeld) {
-        return;
-    }
-    self.isSendHeld = YES;
+//    if (self.isSendHeld) {
+//        return;
+//    }
+//    self.isSendHeld = YES;
     
     //此Block只更改APP按钮状态
 //    CXSetHeldCallAction *action = [[CXSetHeldCallAction alloc] initWithCallUUID:callUUID onHold: hold];

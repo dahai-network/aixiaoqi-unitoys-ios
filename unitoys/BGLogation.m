@@ -20,7 +20,7 @@
 //初始化
 -(instancetype)init
 {
-    if(self == [super init])
+    if(self = [super init])
     {
         //
         _bgTask = [BGTask shareBGTask];

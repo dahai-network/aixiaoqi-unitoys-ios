@@ -182,7 +182,7 @@
     NSString *convertTime;
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *date = [[NSDate alloc] init];
+    NSDate *date;
     
     switch (self.pickerType) {
         case 1:

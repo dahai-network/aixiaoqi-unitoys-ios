@@ -94,6 +94,8 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
     [self refreshSStepDataWithNoti:nil];
     [self.lpvPercent needsUpdateConstraints];
     if ([BlueToothDataManager shareManager].isBounded) {
@@ -202,11 +204,11 @@
                 
                 if (arr) {
                     /*if ([arr count]>0)*/ {  //先请求是否有可用日期数据
-                        NSDate *date = [NSDate date];
-                        NSTimeZone *zone = [NSTimeZone systemTimeZone];
-                        NSInteger interval = [zone secondsFromGMTForDate: date];
-                        NSDate *localeDate = [date  dateByAddingTimeInterval: interval];
-                        localeDate = date;
+//                        NSDate *date = [NSDate date];
+//                        NSTimeZone *zone = [NSTimeZone systemTimeZone];
+//                        NSInteger interval = [zone secondsFromGMTForDate: date];
+                        NSDate *localeDate = [NSDate date];
+//                        localeDate = date;
                         
                         FDCalendar *calendar = [[FDCalendar alloc] initWithCurrentDate:localeDate delegate:self disableDate:arr];
                         CGRect frame = calendar.frame;
@@ -453,7 +455,7 @@
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"查询到的记录的运动日期：%@",responseObj);
-            NSArray *arr = responseObj[@"data"];
+//            NSArray *arr = responseObj[@"data"];
        
             
             

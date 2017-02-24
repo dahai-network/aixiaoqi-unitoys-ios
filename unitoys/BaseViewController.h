@@ -65,6 +65,8 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 -(void)setExtraCellLineHidden: (UITableView *)tableView;
 
+- (NSString *)compareCurrentTimeString:(NSString *)compareDateString;
+
 -(NSString *) compareCurrentTime:(NSDate*) compareDate;
 
 -(NSString *) formatTime:(NSDate*) formatDate;

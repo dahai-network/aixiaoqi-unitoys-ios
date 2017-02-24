@@ -714,8 +714,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     
     [params setObject:@"2006808" forKey:@"partner"];
     
-    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSInteger a=[dat timeIntervalSince1970];
+//    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+//    NSInteger a=[dat timeIntervalSince1970];
     //    NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
     NSString *timestemp = @"1471316792";
     
@@ -1179,7 +1179,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 }
 
 - (NSString *)checkNameWithNumber:(NSString *)number {
-    ContactModel *tempModel = [[ContactModel alloc] init];
+    ContactModel *tempModel;
     NSString *linkName = number;
     for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
         tempModel = model;

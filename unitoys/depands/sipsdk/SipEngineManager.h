@@ -59,7 +59,7 @@ typedef enum ScheduleNotificationType{
 	SCNetworkReachabilityContext proxyReachabilityContext;
 	SCNetworkReachabilityRef proxyReachability;
     
-    AVAudioPlayer  *ringPlayer;
+//    AVAudioPlayer *ringPlayer;
 	NSTimer *mIterateTimer;
     
 //    id<SipEngineUICallDelegate> callDelegate;

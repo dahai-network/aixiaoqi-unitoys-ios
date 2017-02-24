@@ -46,6 +46,7 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     [BlueToothDataManager shareManager].isShowAlert = NO;
     if (self.isback) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];

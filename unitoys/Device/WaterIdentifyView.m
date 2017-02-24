@@ -132,7 +132,7 @@
         //前浪绘制
         frontY = a * sin( x / 180 * M_PI + 4 * b / M_PI ) * amplitude + currentLinePointY;
         
-        CGFloat frontCircleY = frontY;
+        CGFloat frontCircleY;
         if (currentLinePointY < radius) {
             frontCircleY = radius - sqrt(pow(radius, 2) - pow((radius - x), 2));
             if (frontY < frontCircleY) {
@@ -155,7 +155,7 @@
         
         //后波浪绘制
         backY = a * cos( x / 180 * M_PI + 3 * b / M_PI ) * amplitude + currentLinePointY;
-        CGFloat backCircleY = backY;
+        CGFloat backCircleY;
         if (currentLinePointY < radius) {
             backCircleY = radius - sqrt(pow(radius, 2) - pow((radius - x), 2));
             if (backY < backCircleY) {
