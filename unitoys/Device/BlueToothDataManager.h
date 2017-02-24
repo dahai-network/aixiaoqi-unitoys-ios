@@ -41,7 +41,6 @@
 @property (nonatomic, assign) BOOL isShowHud;//激活大王卡的时候是否显示hud
 @property (nonatomic, assign) BOOL isShowAlert;//是否显示重试的提示，为1的时候不会显示首页的那个提示语而显示搜索页面的提示语
 @property (nonatomic, assign) int bleStatueForCard;//蓝牙发送消息的状态，默认0：默认状态 1：激活大王卡状态 2：注册手机卡状态
-@property (nonatomic, assign) BOOL isBeingUpload;//是否正在进行空中升级
 @property (nonatomic, assign) BOOL isConnectedPairedDevice;//是否连接已配对的设备
 //@property (nonatomic, assign) int blutoothStatue;//蓝牙状态 0:蓝牙未开 1:蓝牙已开启但未连接 2: 蓝牙已连接但未绑定 3:蓝牙已绑定设备但未插卡 4:设备已插卡
 

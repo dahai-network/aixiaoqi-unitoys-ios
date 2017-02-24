@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblStatue;
 @property (weak, nonatomic) IBOutlet UIImageView *imgStatueImage;
 @property (weak, nonatomic) IBOutlet UIButton *relieveBoundButton;
+@property (nonatomic, strong)NSTimer *timer;
 
 @end
 
@@ -26,32 +27,34 @@
     
     if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
         self.lblStatue.text = @"信号强";
-        self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
+//        self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
     }
     if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted) {
         //正在注册
         NSString *senderStr = [BlueToothDataManager shareManager].stepNumber;
         [self countAndShowPercentage:senderStr];
+        //开启动画
+        [self startTimerAction];
     }
     
-    if (![BlueToothDataManager shareManager].isBounded) {
-        [self dj_alertAction:self alertTitle:nil actionTitle:@"去绑定" message:@"您还没有绑定设备，是否要绑定？" alertAction:^{
-            if ([BlueToothDataManager shareManager].isOpened) {
-                IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
-                [self.navigationController pushViewController:isBoundVC animated:YES];
-                //绑定设备
-                if ([BlueToothDataManager shareManager].isConnected) {
-                    //点击绑定设备
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
-                } else {
-                    //未连接设备，先扫描连接
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
-                }
-            } else {
-                HUDNormal(@"请先开启蓝牙")
-            }
-        }];
-    }
+//    if (![BlueToothDataManager shareManager].isBounded) {
+//        [self dj_alertAction:self alertTitle:nil actionTitle:@"去绑定" message:@"您还没有绑定设备，是否要绑定？" alertAction:^{
+//            if ([BlueToothDataManager shareManager].isOpened) {
+//                IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
+//                [self.navigationController pushViewController:isBoundVC animated:YES];
+//                //绑定设备
+//                if ([BlueToothDataManager shareManager].isConnected) {
+//                    //点击绑定设备
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
+//                } else {
+//                    //未连接设备，先扫描连接
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
+//                }
+//            } else {
+//                HUDNormal(@"请先开启蓝牙")
+//            }
+//        }];
+//    }
     
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addElectricQue) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
@@ -60,6 +63,31 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bleStatueChanged:) name:@"homeStatueChanged" object:nil];//连接成功或者失败
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cardNumberNotTrueActionForBind:) name:@"cardNumberNotTrue" object:nil];//号码有问题专用
     // Do any additional setup after loading the view.
+}
+
+#pragma mark 计时器
+- (void)startTimerAction {
+    
+    if (!self.timer) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(startAnimation) userInfo:nil repeats:YES];
+        //如果不添加下面这条语句，在UITableView拖动的时候，会阻塞定时器的调用
+        [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
+    } else {
+        [self.timer setFireDate:[NSDate distantPast]];
+    }
+}
+
+- (void)startAnimation {
+//    进行Layer层旋转的
+//    后面的字符串是固定名字，读取系统的文件信息
+    CABasicAnimation *base = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+    base.duration = 1;
+//    起始的角度
+    base.fromValue = @(0);
+//    终止的角度
+    base.toValue = @(M_PI_2 * 2);
+//    将这个动画添加到layer上
+    [self.imgStatueImage.layer addAnimation:base forKey:@"base"];
 }
 
 - (void)countAndShowPercentage:(NSString *)senderStr {
@@ -94,11 +122,17 @@
 - (void)changeStatueAction:(NSNotification *)sender {
     if (![BlueToothDataManager shareManager].isRegisted) {
         NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
+        if ([senderStr intValue] == 1) {
+            [self startTimerAction];
+        }
         [self countAndShowPercentage:senderStr];
     } else {
         NSLog(@"注册成功的时候处理");
         self.lblStatue.text = @"信号强";
-        self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
+        if (self.timer) {
+            [self.timer setFireDate:[NSDate distantFuture]];
+        }
+//        self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
     }
 }
 
@@ -107,16 +141,22 @@
         NSString *statueStr = [NSString stringWithFormat:@"%@", sender.object];
         if ([statueStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
             self.lblStatue.text = @"信号强";
-            self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
+            if (self.timer) {
+                [self.timer setFireDate:[NSDate distantFuture]];
+            }
+//            self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
         } else {
-            self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
+//            self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
         }
     }
 }
 
 - (void)cardNumberNotTrueActionForBind:(NSNotification *)sender {
     self.lblStatue.text = @"无信号";
-    self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
+    if (self.timer) {
+        [self.timer setFireDate:[NSDate distantFuture]];
+    }
+//    self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
 }
 
 - (void)disConnectToDevice {
@@ -124,6 +164,13 @@
         self.customView.hidden = YES;
     }
     self.hintLabel.text = @"还没有连接设备，点击连接";
+    self.versionNumber.hidden = YES;
+    self.macAddress.hidden = YES;
+    self.lblStatue.text = @"无信号";
+    if (self.timer) {
+        [self.timer setFireDate:[NSDate distantFuture]];
+    }
+//    self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
 }
 
 #pragma mark 加载电量图形
@@ -248,7 +295,10 @@
                 self.macAddress.hidden = YES;
                 self.hintLabel.text = @"还没有连接设备，点击连接";
                 self.lblStatue.text = @"无信号";
-                self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
+                if (self.timer) {
+                    [self.timer setFireDate:[NSDate distantFuture]];
+                }
+//                self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -313,6 +363,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        HUDNormal(@"刷新")
+    }
     if (indexPath.section == 1) {
         if (indexPath.row == 0) {
             if ([BlueToothDataManager shareManager].isConnected) {

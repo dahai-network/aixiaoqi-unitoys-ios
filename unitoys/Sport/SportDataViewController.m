@@ -46,24 +46,24 @@
     
     self.currentDate = [NSDate dateWithTimeIntervalSinceNow:0];
     [self checkdayStepData];
-    if (![BlueToothDataManager shareManager].isBounded) {
-        [self dj_alertAction:self alertTitle:nil actionTitle:@"去绑定" message:@"您还没有绑定设备，是否要绑定？" alertAction:^{
-            if ([BlueToothDataManager shareManager].isOpened) {
-                IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
-                [self.navigationController pushViewController:isBoundVC animated:YES];
-                //绑定设备
-                if ([BlueToothDataManager shareManager].isConnected) {
-                    //点击绑定设备
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
-                } else {
-                    //未连接设备，先扫描连接
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
-                }
-            } else {
-                HUDNormal(@"请先开启蓝牙")
-            }
-        }];
-    }
+//    if (![BlueToothDataManager shareManager].isBounded) {
+//        [self dj_alertAction:self alertTitle:nil actionTitle:@"去绑定" message:@"您还没有绑定设备，是否要绑定？" alertAction:^{
+//            if ([BlueToothDataManager shareManager].isOpened) {
+//                IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
+//                [self.navigationController pushViewController:isBoundVC animated:YES];
+//                //绑定设备
+//                if ([BlueToothDataManager shareManager].isConnected) {
+//                    //点击绑定设备
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
+//                } else {
+//                    //未连接设备，先扫描连接
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
+//                }
+//            } else {
+//                HUDNormal(@"请先开启蓝牙")
+//            }
+//        }];
+//    }
     
     [BlueToothDataManager shareManager].movingTarget = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"MovingTarget"];
     
