@@ -115,6 +115,9 @@
 //记录接收到包的类型
 @property (nonatomic, assign) int dataPackegType;
 
+//已连接的配对设备
+@property (nonatomic, strong) NSArray *pairedArr;
+
 @property (weak, nonatomic) IBOutlet UIView *sportView;
 
 - (IBAction)viewAllOrders:(id)sender;
