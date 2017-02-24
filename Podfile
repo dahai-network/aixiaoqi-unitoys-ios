@@ -27,6 +27,7 @@ target "unitoys" do
     pod 'FMDB', '~> 2.5'
     pod 'Bugly'
     pod 'CocoaAsyncSocket', '~> 7.5.1'
+    pod 'SSZipArchive'
     use_frameworks!
     pod 'iOSDFULibrary', '~> 2.1.6'
 

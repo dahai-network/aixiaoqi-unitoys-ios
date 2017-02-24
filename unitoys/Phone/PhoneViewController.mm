@@ -26,12 +26,11 @@
 #import "CallComingInViewController.h"
 #import "VSWManager.h"
 #import "BlueToothDataManager.h"
-
 #import "SearchContactsCell.h"
 
 #import "UNCallKitCenter.h"
+#import <SSZipArchive/SSZipArchive.h>
 
-#import <iOSDFULibrary/iOSDFULibrary-Swift.h>
 @interface PhoneViewController ()
 {
     UNCallKitCenter *callCenter;
@@ -160,8 +159,41 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+- (void)unZipNumberPhoneDB
+{
+    // 取得沙盒目录
+    NSString *localPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    // 要检查的文件目录
+    NSString *dbPath = [localPath  stringByAppendingPathComponent:@"number_location.db"];
+    NSString *zipPath = [[NSBundle mainBundle] pathForResource:@"number_location" ofType:@"zip"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    //判断是否有数据库文件
+    if (![fileManager fileExistsAtPath:dbPath]) {
+        NSLog(@"数据库文件不存在");
+        //判断是否有解压文件
+        if ([fileManager fileExistsAtPath:zipPath]) {
+            NSLog(@"解压文件存在");
+            //解压文件
+            if ([SSZipArchive unzipFileAtPath:zipPath toDestination:localPath overwrite:YES password:nil error:nil]) {
+//                NSError *error = nil;
+//                BOOL isDelete = [fileManager removeItemAtPath:zipPath error:&error];
+//                if (isDelete) {
+//                    NSLog(@"删除成功");
+//                }else{
+//                    NSLog(@"删除失败");
+//                }
+            }else{
+                NSLog(@"解压失败");
+            }
+        }
+    }
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //解压联系人数据库
+    [self unZipNumberPhoneDB];
     
     self.navigationItem.leftBarButtonItem = nil;
     self.btnWriteMessage.hidden = YES;
@@ -479,15 +511,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 [self.arrPhoneRecord insertObject:dicCallRecord atIndex:0];
             }
-            
-            
         }
-        
         [rs close];
     }
-    //            [[NSBundle mainBundle] pathForResource:@"https" ofType:@"cer"];
-    
-    
+
     [self.tableView reloadData];
 }
 
@@ -510,8 +537,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSMutableDictionary *dicPhoneRecord = [[NSMutableDictionary alloc] initWithObjectsAndKeys:calltime,@"calltime",calltype,@"calltype",[self numberFromCid:hostcid],@"hostnumber",[self numberFromCid:destcid],@"destnumber",@0,@"status", nil];  //时间写入记录时不需要转成字符
     [dicPhoneRecord setObject:@"未知" forKey:@"location"];
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"number_location" ofType:@"db"];
-    
+    NSString *localPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    // 要检查的文件目录
+    NSString *path = [localPath  stringByAppendingPathComponent:@"number_location.db"];
     FMDatabase *db = [FMDatabase databaseWithPath:path];
     if (![db open]) {
         NSLog(@"数据库打开失败！");
@@ -526,16 +554,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         if ([self isZeroStarted:number]) {
             NSString *prefix;
             if ([[number substringToIndex:2] isEqualToString:@"01"]) {
-//                prefix = [number substringToIndex:3];
                 prefix = [number substringWithRange:NSMakeRange(1, 2)];
             }else if ([[number substringToIndex:2] isEqualToString:@"02"]) {
-//                prefix = [number substringToIndex:3];
                 prefix = [number substringWithRange:NSMakeRange(1, 2)];
             }else if ([[number substringToIndex:2] isEqualToString:@"00"]) {
-                prefix = [number substringToIndex:5];
                 prefix = [number substringWithRange:NSMakeRange(1, 4)];
             }else {
-//                prefix = [number substringToIndex:4];
                 prefix = [number substringWithRange:NSMakeRange(1, 3)];
             }
             
@@ -562,18 +586,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",provinceName,cityName] forKey:@"location"];
             
-            
-//            if ([rs next]) {
-//                cityid = [NSString stringWithFormat:@"%d",[rs intForColumnIndex:0]];
-//            }
-//            rs = [db executeQuery:[NSString stringWithFormat:@"SELECT province_id FROM city where _id=%@",cityid]];
-//            if ([rs next]) {
-//                provinceid = [NSString stringWithFormat:@"%d",[rs intForColumnIndex:0]];
-//            }
-//            rs = [db executeQuery:[NSString stringWithFormat:@"SELECT province,city FROM province,city where _id=%@ and id=%@",cityid,provinceid]];
-//            if ([rs next]) {
-//                [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",[rs stringForColumn:@"province"],[rs stringForColumn:@"city"]] forKey:@"type"];
-//            }
         }else{
             
             if ([number length]>=8) {
@@ -604,11 +616,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 }
 
                 [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",provinceName,cityName] forKey:@"location"];
-                
-//                rs = [db executeQuery:[NSString stringWithFormat:@"SELECT province,city FROM province,city where _id=%@ and id=%@",cityid,provinceid]];
-//                if ([rs next]) {
-//                    [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",[rs stringForColumn:@"province"],[rs stringForColumn:@"city"]] forKey:@"location"];
-//                }
+
             }else{
                 NSString *phoneStr = [self checkPhoneNumberIsMobile:number];
                 if (phoneStr) {
@@ -2094,6 +2102,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 {
     if (self.phoneOperation == 1) {
         return YES;
+    }else if(!self.isSearchStatu && !self.lblPhoneNumber.text){
+        return YES;
     }else{
         return NO;
     }
@@ -2119,6 +2129,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [self deleteMessageWithPhoneNumber:dicMessageRecord[@"To"]];
             }
         }
+    }else if(!self.isSearchStatu && !self.lblPhoneNumber.text){
+        //删除本地数据库数据
+        
     }
 }
 

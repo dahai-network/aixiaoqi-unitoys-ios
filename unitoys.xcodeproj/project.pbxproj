@@ -50,7 +50,7 @@
 		3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F81E5EB65B001E67C4 /* logo_call.png */; };
 		3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */; };
 		3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */; };
-		3C52B2011E5EF207001E67C4 /* number_location.db in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B2001E5EF207001E67C4 /* number_location.db */; };
+		3C52B2031E5EF87A001E67C4 /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B2021E5EF87A001E67C4 /* number_location.zip */; };
 		3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */; };
 		3C8CFA6B1E55988B0035A460 /* UCallPhoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6A1E55988B0035A460 /* UCallPhoneButton.m */; };
 		3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */; };
@@ -283,7 +283,7 @@
 		3C52B1F81E5EB65B001E67C4 /* logo_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_call.png; sourceTree = "<group>"; };
 		3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_callKit.png; sourceTree = "<group>"; };
 		3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_callKit@2x.png"; sourceTree = "<group>"; };
-		3C52B2001E5EF207001E67C4 /* number_location.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = number_location.db; sourceTree = "<group>"; };
+		3C52B2021E5EF87A001E67C4 /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
 		3C8CFA661E5597D10035A460 /* UCallPhonePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhonePadView.h; sourceTree = "<group>"; };
 		3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCallPhonePadView.m; sourceTree = "<group>"; };
 		3C8CFA691E55988B0035A460 /* UCallPhoneButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhoneButton.h; sourceTree = "<group>"; };
@@ -1427,7 +1427,7 @@
 		95F337141D853256000B5461 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				3C52B2001E5EF207001E67C4 /* number_location.db */,
+				3C52B2021E5EF87A001E67C4 /* number_location.zip */,
 				95F337151D853256000B5461 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -1516,7 +1516,6 @@
 				950E791E1E02C0D8003AE0D5 /* Order.storyboard in Resources */,
 				955CCC311D90075D00BC8110 /* https.cer in Resources */,
 				950E79201E02C981003AE0D5 /* Phone.storyboard in Resources */,
-				3C52B2011E5EF207001E67C4 /* number_location.db in Resources */,
 				04EAB8BD1E2787F6000D3D13 /* AlarmListViewController.xib in Resources */,
 				0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */,
 				74A91C661DF7E9A9002B4FCE /* headCollectionReusableView.xib in Resources */,
@@ -1547,6 +1546,7 @@
 				04472AB51E1CA5F60042CEE1 /* BindGiftBagCardViewController.xib in Resources */,
 				0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */,
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
+				3C52B2031E5EF87A001E67C4 /* number_location.zip in Resources */,
 				95F337221D853256000B5461 /* Main.storyboard in Resources */,
 				043965CA1E07E18C00B67989 /* BindChargeCardViewController.xib in Resources */,
 			);
