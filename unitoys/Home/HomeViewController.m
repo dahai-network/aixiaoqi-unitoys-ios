@@ -413,7 +413,11 @@ typedef enum : NSUInteger {
             self.progressWindow = nil;
         });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self checkBindedDeviceFromNet];
+            if (self.peripheral != nil) {
+                [self.mgr cancelPeripheralConnection:self.peripheral];
+                [BlueToothDataManager shareManager].isTcpConnected = NO;
+                [self checkBindedDeviceFromNet];
+            }
         });
     }
 }
@@ -1647,21 +1651,6 @@ typedef enum : NSUInteger {
     [self phoneCardToUpeLectrify:@"02"];
 }
 
-//- (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral{
-//    switch (peripheral.state) {
-//        case CBPeripheralManagerStatePoweredOn: {
-//            NSLog(@"蓝牙开启且可用");
-////            HUDNormal(@"蓝牙开启且可用")
-//        }
-//            break;
-//        default:
-//            NSLog(@"蓝牙不可用");
-////            HUDNormal(@"蓝牙不可用")
-//            break;
-//    }
-//    
-//}
-
 #pragma mark 扫描连接外设
 - (void)scanAndConnectDevice {
     if (self.peripherals.count) {
@@ -1818,27 +1807,29 @@ typedef enum : NSUInteger {
         [BlueToothDataManager shareManager].isOpened = YES;
         //连接中
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
-        
-        //已经被系统或者其他APP连接上的设备数组
-        NSArray *arr = [self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]];
-        if(arr.count>0) {
-            for (CBPeripheral* peripheral in arr) {
-                NSString *nameStr = [peripheral.name substringWithRange:NSMakeRange(0, 7)];
-                if (peripheral != nil && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
-                    peripheral.delegate = self;
-                    self.peripheral = peripheral;
-                    [self.mgr connectPeripheral:self.peripheral options:nil];
-                    if (peripheral.name.length > 8) {
-                        [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:8].lowercaseString];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //已经被系统或者其他APP连接上的设备数组
+            NSArray *arr = [self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]];
+            if(arr.count>0) {
+                NSLog(@"连接的配对设备 - %@", arr);
+                for (CBPeripheral* peripheral in arr) {
+                    NSString *nameStr = [peripheral.name substringWithRange:NSMakeRange(0, 7)];
+                    if (peripheral != nil && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
+                        peripheral.delegate = self;
+                        self.peripheral = peripheral;
+                        [self.mgr connectPeripheral:self.peripheral options:nil];
+                        if (peripheral.name.length > 8) {
+                            [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:8].lowercaseString];
+                        }
                     }
                 }
+            } else {
+                [self.mgr scanForPeripheralsWithServices:nil options:nil];
             }
-        } else {
-            [self.mgr scanForPeripheralsWithServices:nil options:nil];
-        }
+        });
     } else {
         NSLog(@"蓝牙设备关着");
-        [self.mgr stopScan];
+//        [self.mgr stopScan];
         //蓝牙未开
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_BLNOTOPEN];
         if (![BlueToothDataManager shareManager].isOpened) {
@@ -1872,6 +1863,10 @@ typedef enum : NSUInteger {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [peripheral discoverServices:nil];
     });
+}
+
+- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    NSLog(@"连接失败 - %@", error);
 }
 
 #pragma mark 跟某个外设失去连接
@@ -2146,8 +2141,8 @@ typedef enum : NSUInteger {
                     //判断卡类型
                     [self checkCardType];
                 } else if ([contentStr isEqualToString:@"11"]) {
-                    NSLog(@"对卡上电1失败");
-                    [self registFailAction];
+                    NSLog(@"对卡上电1失败,没有卡");
+                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
                 } else if ([contentStr isEqualToString:@"02"]) {
                     NSLog(@"对卡上电2成功");
                 } else if ([contentStr isEqualToString:@"12"]) {
