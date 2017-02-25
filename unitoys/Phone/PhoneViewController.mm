@@ -274,7 +274,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }else{
             
             //当前不为搜索状态
-            weakSelf.isSearchStatu = YES;
+            weakSelf.isSearchStatu = NO;
             [weakSelf.segmentType setHidden:NO];
             if (weakSelf.lblPhoneNumber) {
                 [weakSelf.lblPhoneNumber setHidden:YES];
@@ -538,13 +538,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *path = [paths objectAtIndex:0];
     
-    path = [path stringByAppendingPathComponent:@"callrecord.db"];
-    
+//    path = [path stringByAppendingPathComponent:@"callrecord.db"];
+    path = [path stringByAppendingPathComponent:@"callrecord2.db"];
     FMDatabase *db = [FMDatabase databaseWithPath:path];
     if (![db open]) {
         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
         return;
-        
     }else{
         //监测数据库中我要需要的表是否已经存在
         NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord" ];
@@ -603,6 +602,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
         }
         [rs close];
+        [db close];
     }
     
     [self.tableView reloadData];
@@ -647,15 +647,26 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
         if ([self isZeroStarted:number]) {
             NSString *prefix;
-            if ([[number substringToIndex:2] isEqualToString:@"01"]) {
-                prefix = [number substringWithRange:NSMakeRange(1, 2)];
-            }else if ([[number substringToIndex:2] isEqualToString:@"02"]) {
-                prefix = [number substringWithRange:NSMakeRange(1, 2)];
-            }else if ([[number substringToIndex:2] isEqualToString:@"00"]) {
-                prefix = [number substringWithRange:NSMakeRange(1, 4)];
-            }else {
-                prefix = [number substringWithRange:NSMakeRange(1, 3)];
+            if (number.length >= 3) {
+                if ([[number substringToIndex:2] isEqualToString:@"01"]) {
+                    prefix = [number substringWithRange:NSMakeRange(1, 2)];
+                }else if ([[number substringToIndex:2] isEqualToString:@"02"]) {
+                    prefix = [number substringWithRange:NSMakeRange(1, 2)];
+                }else if ([[number substringToIndex:2] isEqualToString:@"00"]) {
+                    if (number.length >= 5) {
+                        prefix = [number substringWithRange:NSMakeRange(1, 4)];
+                    }
+                }else {
+                    if (number.length >= 4) {
+                        prefix = [number substringWithRange:NSMakeRange(1, 3)];
+                    }else{
+                        prefix = number;
+                    }
+                }
+            }else{
+                prefix = number;
             }
+
             
             NSString *cityid;
             NSString *provinceid;
@@ -721,6 +732,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         //不在此时插入数据
 //        [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
 //        [self.tableView reloadData];
+        [db close];
     }
     
 //    [self insertSqlData:dicPhoneRecord];
@@ -728,7 +740,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     path = [paths objectAtIndex:0];
-    path = [path stringByAppendingPathComponent:@"callrecord.db"];
+//    path = [path stringByAppendingPathComponent:@"callrecord.db"];
+    path = [path stringByAppendingPathComponent:@"callrecord2.db"];
     db = [FMDatabase databaseWithPath:path];
     
     if (![db open]) {
@@ -813,7 +826,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
     }
     [rs close];
-    
+    [db close];
     [self loadPhoneRecord];
 }
 
@@ -1109,7 +1122,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
             NSString *path = [paths objectAtIndex:0];
             
-            path = [path stringByAppendingPathComponent:@"callrecord.db"];
+//            path = [path stringByAppendingPathComponent:@"callrecord.db"];
+            path = [path stringByAppendingPathComponent:@"callrecord2.db"];
             
             FMDatabase *db = [FMDatabase databaseWithPath:path];
             
@@ -1144,7 +1158,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //                    }
                     
 //                    [db executeUpdate:@"update CallRecord set status=1 where calltime=?",[rs stringForColumn:@"calltime"]];
-
+                    [rs close];
+                    [db close];
                 }
                 
             }
@@ -1617,7 +1632,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     [weakSelf.segmentType setHidden:NO];
                     
                     if (weakSelf.lblPhoneNumber) {
-                        weakSelf.lblPhoneNumber.text = weakSelf.phonePadView.inputedPhoneNumber;
+                        weakSelf.lblPhoneNumber.text = nil;
                         [weakSelf.lblPhoneNumber setHidden:YES];
                     }
                     
@@ -1631,6 +1646,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 if (weakSelf.phonePadView.inputedPhoneNumber.length) {
                     //搜索电话并展示
                     [weakSelf searchInfoWithString:weakSelf.lblPhoneNumber.text];
+                    weakSelf.isSearchStatu = YES;
                     [weakSelf.tableView reloadData];
                 }else{
                     weakSelf.isSearchStatu = NO;
@@ -2112,9 +2128,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         NSDictionary *dicMessageRecord = [self.arrMessageRecord objectAtIndex:indexPath.row];
         
         if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
-            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"Fm"]];
+//            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"Fm"]];
+            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"Fm"]];
         } else {
-            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"To"]];
+//            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"To"]];
+            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"To"]];
         }
         
         NSString *textStr = [NSString stringWithFormat:@"%@ >", [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]]];
@@ -2307,10 +2325,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
             if (MJViewController) {
                 if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
-                    MJViewController.title = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"Fm"]];
+                    MJViewController.title = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"Fm"]];
                     MJViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
                 } else {
-                    MJViewController.title = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"To"]];
+                    MJViewController.title = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"To"]];
                     MJViewController.toTelephone = [dicMessageRecord objectForKey:@"To"];
                 }
                 MJViewController.hidesBottomBarWhenPushed = YES;
@@ -2355,8 +2373,37 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
     }else if(!self.isSearchStatu && !self.lblPhoneNumber.text){
         //删除本地数据库数据
-        
+        [self deleteDatabaseWithIndex:indexPath tableView:tableView];
     }
+}
+
+- (void)deleteDatabaseWithIndex:(NSIndexPath *)indexPath tableView:(UITableView *)tableView
+{
+    NSArray *records = [self.arrPhoneRecord objectAtIndex:indexPath.row];
+    NSDictionary *dicPhoneRecord;
+    if (records.count) {
+        dicPhoneRecord = records[0];
+    }else{
+        return;
+    }
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [paths objectAtIndex:0];
+    
+//    path = [path stringByAppendingPathComponent:@"callrecord.db"];
+    path = [path stringByAppendingPathComponent:@"callrecord2.db"];
+    FMDatabase *db = [FMDatabase databaseWithPath:path];
+    if (![db open]) {
+        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"删除通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+    }else{
+        BOOL isDeleteSuccess =[db executeUpdate:@"DELETE FROM CallRecord WHERE calltime = ?",[dicPhoneRecord objectForKey:@"calltime"]];
+        if (isDeleteSuccess) {
+            [self.arrPhoneRecord removeObjectAtIndex:indexPath.row];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        [db close];
+    }
+
 }
 
 - (void)deleteMessageWithPhoneNumber:(NSString *)phoneNumber

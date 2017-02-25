@@ -339,9 +339,10 @@
     return NO;
 }
 
-- (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr {
+//短信不显示组名
+- (NSString *)checkLinkNameWithPhoneStrNoGroupName:(NSString *)phoneStr
+{
     NSString *linkName;
-    NSString *tempStr;
     if ([phoneStr containsString:@"-"]) {
         NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
         phoneStr = newStr;
@@ -354,20 +355,92 @@
         NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"+86" withString:@""];
         phoneStr = newStr;
     }
+    if ([phoneStr containsString:@"#"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@","]) {
+        NSArray *arr = [phoneStr componentsSeparatedByString:@","];
+        for (NSString *str in arr) {
+            NSString *string;
+            string = [self checkNameWithNumberNoGroupName:str];
+            if (linkName) {
+                linkName = [NSString stringWithFormat:@"%@,%@", linkName, string];
+            } else {
+                linkName = string;
+            }
+        }
+    } else {
+        linkName = [self checkNameWithNumberNoGroupName:phoneStr];
+        return linkName;
+    }
+    return linkName;
+
+}
+
+- (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr {
+    NSString *linkName;
+    if ([phoneStr containsString:@"-"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@" "]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@"+86"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@"#"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        phoneStr = newStr;
+    }
     if ([phoneStr containsString:@","]) {
         NSArray *arr = [phoneStr componentsSeparatedByString:@","];
         for (NSString *str in arr) {
             NSString *string;
             string = [self checkNameWithNumber:str];
-            if (tempStr) {
-                linkName = [NSString stringWithFormat:@"%@,%@", tempStr, string];
+            if (linkName) {
+                linkName = [NSString stringWithFormat:@"%@,%@", linkName, string];
             } else {
-                tempStr = string;
+                linkName = string;
             }
         }
     } else {
         linkName = [self checkNameWithNumber:phoneStr];
         return linkName;
+    }
+    return linkName;
+}
+
+//短信不显示组名
+- (NSString *)checkNameWithNumberNoGroupName:(NSString *)number
+{
+    ContactModel *tempModel;
+    NSString *linkName = number;
+    for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
+        tempModel = model;
+        if ([model.phoneNumber containsString:@"-"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@" "]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
+        }
+        if ([model.phoneNumber containsString:@"+86"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@"#"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        }
+        if ([number isEqualToString:[NSString stringWithFormat:@"%@", tempModel.phoneNumber]]) {
+            linkName = tempModel.name;
+            return linkName;
+        }
+        if ([number isEqualToString:@"anonymous"]) {
+            linkName = @"未知";
+            return linkName;
+        }
     }
     return linkName;
 }
@@ -385,6 +458,18 @@
         }
         if ([model.phoneNumber containsString:@"+86"]) {
             tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@"#"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@","]) {
+            NSArray *phoneArr = [model.phoneNumber componentsSeparatedByString:@","];
+            for (NSString *phoneStr in phoneArr) {
+                if ([number isEqualToString:phoneStr]) {
+                    linkName = tempModel.name;
+                    break;
+                }
+            }
         }
         if ([number isEqualToString:[NSString stringWithFormat:@"%@", tempModel.phoneNumber]]) {
             linkName = tempModel.name;

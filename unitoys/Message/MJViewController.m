@@ -36,6 +36,8 @@
     self.tableView.allowsSelection = NO; // 不允许选中
     self.tableView.dataSource = self;  //新增
     self.tableView.delegate = self; //控制器成为代理
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"详细信息" style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
 
     [self loadMessages];
     
@@ -59,6 +61,11 @@
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuFailed" object:@"MessageStatu" userInfo:userInfo];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
+}
+
+- (void)rightBarButtonAction
+{
+    
 }
 
 - (void)keyboardWillShow

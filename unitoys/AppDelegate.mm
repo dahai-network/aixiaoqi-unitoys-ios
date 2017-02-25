@@ -31,6 +31,7 @@
 #import <CallKit/CallKit.h>
 #import "UNCallKitCenter.h"
 #import "NSUserActivity+UnExtension.h"
+#import <FMDB/FMDB.h>
 
 // 引 JPush功能所需头 件
 #import "JPUSHService.h"
@@ -68,7 +69,9 @@
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
     }
-    
+
+    //存储版本号
+    [self checkCurrentVersion];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -154,6 +157,82 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeTCP) name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];//解绑之后关闭tcp
     // Override point for customization after application launch.
     return YES;
+}
+
+- (void)checkCurrentVersion
+{
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"kCurrentVersionValue"]) {
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"kCurrentVersionValue"] floatValue] != kSystemVersionValue) {
+            //清空数据
+            [self clearCacheData];
+            //存储当前版本号
+            [[NSUserDefaults standardUserDefaults] setObject:@(kSystemVersionValue) forKey:@"kCurrentVersionValue"];
+        }
+    }else{
+        //清空数据
+         [self clearCacheData];
+        [[NSUserDefaults standardUserDefaults] setObject:@(kSystemVersionValue) forKey:@"kCurrentVersionValue"];
+    }
+    
+}
+
+//清空数据
+- (void)clearCacheData
+{
+    //清除数据库
+    [self checkDatabase];
+}
+
+- (void)checkDatabase
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [paths objectAtIndex:0];
+//    path = [path stringByAppendingPathComponent:@"callrecord.db"];
+    path = [path stringByAppendingPathComponent:@"callrecord2.db"];
+//    BOOL success;
+//    NSError *error;
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    // delete the old db.
+    if (![fileManager fileExistsAtPath:path])
+    {
+        FMDatabase *db = [FMDatabase databaseWithPath:path];
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord"];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                NSLog(@"The table count: %zd", count);
+                if (count == 0) {
+                    [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
+                }
+                [rs close];
+            }
+            [db close];
+        }
+//        FMDatabase *db = [FMDatabase databaseWithPath:path];
+//        [db close];
+//        success = [fileManager removeItemAtPath:path error:&error];
+//        if (!success) {
+//            NSLog(@"Failed to delete old database file with message '%@'", [error localizedDescription]);
+//        }else{
+//        //创建表
+//            if ([db open]) {
+//                NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord"];
+//                FMResultSet *rs = [db executeQuery:existsSql];
+//                if ([rs next]) {
+//                    NSInteger count = [rs intForColumn:@"countNum"];
+//                    NSLog(@"The table count: %zd", count);
+//                    if (count == 0) {
+//                        [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
+//                    }
+//                    [rs close];
+//                }
+//                [db close];
+//            }
+//        }
+    }
 }
 
 - (void)closeTCP {
@@ -420,6 +499,9 @@
         NSString *callPortStr = [string substringFromIndex:44];
         NSString *newString = [NSString stringFromHexString:callPortStr];
         NSLog(@"截取到的电话端口 -- %@", newString);
+        if ([newString isEqualToString:@"n Failed"]) {
+            return;
+        }
         NSString *cutStr = [newString substringFromIndex:[newString rangeOfString:@"_"].location+1];
         cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
         NSLog(@"最终的电话端口 -- %@", cutStr);

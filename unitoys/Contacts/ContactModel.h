@@ -18,7 +18,7 @@
 //@property (nonatomic,strong) NSString <Ignore>*pinyin;//拼音
 @property (nonatomic,copy) NSString <Optional>*phoneNumber;
 
-@property (nonatomic,copy) NSArray <Optional> *phoneNumbers;
+//@property (nonatomic,copy) NSArray <Optional> *phoneNumbers;
 
 @property (nonatomic,copy) NSString <Optional>*allPinyinNumber;//全拼音转九宫格键盘数字
 @property (nonatomic,copy) NSString <Optional>*headerPinyinNumber;//首字拼音转九宫格键盘数字

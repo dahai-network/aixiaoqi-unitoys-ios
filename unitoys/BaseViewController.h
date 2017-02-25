@@ -89,6 +89,9 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 - (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr;
 
+//短信不显示组名
+- (NSString *)checkLinkNameWithPhoneStrNoGroupName:(NSString *)phoneStr;
+
 - (BOOL)isWXAppInstalled;//判断是否安装指定版本的微信
 
 - (NSString *)convertDateWithString:(NSString *)dateString;

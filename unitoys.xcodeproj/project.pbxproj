@@ -58,6 +58,8 @@
 		3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */; };
 		3C8E77981E5D280600C4833E /* UNDefines.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E77971E5D280600C4833E /* UNDefines.m */; };
 		3C8E779A1E5D40F400C4833E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8E77991E5D40F400C4833E /* CallKit.framework */; };
+		3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */; };
+		3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
 		3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */; };
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
@@ -296,6 +298,10 @@
 		3C8E77961E5D280600C4833E /* UNDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDefines.h; sourceTree = "<group>"; };
 		3C8E77971E5D280600C4833E /* UNDefines.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDefines.m; sourceTree = "<group>"; };
 		3C8E77991E5D40F400C4833E /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
+		3CE117481E616B8F008D5976 /* AddTouchAreaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTouchAreaButton.h; sourceTree = "<group>"; };
+		3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTouchAreaButton.m; sourceTree = "<group>"; };
+		3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageContactsInfoController.h; sourceTree = "<group>"; };
+		3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageContactsInfoController.m; sourceTree = "<group>"; };
 		3CEA93911E5C537B00205C29 /* UNCallKitCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCallKitCenter.h; sourceTree = "<group>"; };
 		3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UNCallKitCenter.mm; sourceTree = "<group>"; };
 		3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+UnExtension.h"; sourceTree = "<group>"; };
@@ -874,6 +880,8 @@
 				3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */,
 				3C116DF61E56CD90006C0641 /* CustomRefreshMessageHeader.h */,
 				3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */,
+				3CE117481E616B8F008D5976 /* AddTouchAreaButton.h */,
+				3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -1013,6 +1021,8 @@
 				3C8CFA6F1E55AF4E0035A460 /* SearchContactsCell.h */,
 				3C8CFA701E55AF4E0035A460 /* SearchContactsCell.m */,
 				3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */,
+				3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */,
+				3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */,
 			);
 			path = Phone;
 			sourceTree = "<group>";
@@ -1703,6 +1713,7 @@
 				3C8CFA721E55AF4E0035A460 /* SearchContactsCell.m in Sources */,
 				954A87AA1D98B6E800570843 /* ContactModel.m in Sources */,
 				955CCC3C1D90D55C00BC8110 /* AboutViewController.m in Sources */,
+				3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */,
 				043965C91E07E18C00B67989 /* BindChargeCardViewController.m in Sources */,
 				95E918561DDC7AA8005DABC0 /* BindDeviceViewController.m in Sources */,
 				95CD33F31D9CE4F300EE5DD3 /* RSADataVerifier.m in Sources */,
@@ -1715,6 +1726,7 @@
 				95CD33F11D9CE4F300EE5DD3 /* openssl_wrapper.m in Sources */,
 				740FD39F1E28B674009413F1 /* VSWManager.m in Sources */,
 				95938D4A1D93E522008A0A21 /* FeedbackViewController.m in Sources */,
+				3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */,
 				95DD7FE61DAA4C1F006E1B0D /* KTAutoHeightTextView.m in Sources */,
 				0436C3651E1F90460033A8F1 /* CommunicatePackageTableViewCell.m in Sources */,
 				04EAB8BC1E2787F6000D3D13 /* AlarmListViewController.m in Sources */,
