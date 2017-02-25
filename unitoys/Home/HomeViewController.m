@@ -204,6 +204,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notToConnectedAndStopScan) name:@"stopScanBLE" object:@"stopScanBLE"];//停止扫描
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cardNumberNotTrueAction:) name:@"cardNumberNotTrue" object:nil];//号码有问题专用
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(oatUpdataAction:) name:@"OTAAction" object:nil];//空中升级
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshStatueToCard) name:@"refreshStatueToCard" object:@"refreshStatueToCard"];//刷新卡状态
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
     
@@ -221,6 +222,13 @@ typedef enum : NSUInteger {
     } else {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange:) name:@"addressBookChanged" object:@"addressBookChanged"];
     }
+}
+
+#pragma mark 刷新卡状态
+- (void)refreshStatueToCard {
+    [BlueToothDataManager shareManager].bleStatueForCard = 0;
+    //对卡上电
+    [self phoneCardToUpeLectrify:@"01"];
 }
 
 #pragma mark 对卡上电
@@ -289,6 +297,7 @@ typedef enum : NSUInteger {
     BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
     if (bindDeviceViewController) {
         self.tabBarController.tabBar.hidden = YES;
+        bindDeviceViewController.hintStrFirst = self.leftButton.titleLabel.text;
         [self.navigationController pushViewController:bindDeviceViewController animated:YES];
     }
 }
@@ -304,6 +313,7 @@ typedef enum : NSUInteger {
 #pragma mark 设置按钮的文字和图片
 - (void)setButtonImageAndTitleWithTitle:(NSString *)title {
     [self.leftButton setTitle:title forState:UIControlStateNormal];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:title];
     if ([title isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
         //蓝牙未开
         [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_BLNOTOPEN] forState:UIControlStateNormal];
@@ -328,6 +338,9 @@ typedef enum : NSUInteger {
     } else if ([title isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         //信号强
         [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_SIGNALSTRONG] forState:UIControlStateNormal];
+    } else if ([title isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
+        //爱小器卡
+        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_AIXIAOQICARD] forState:UIControlStateNormal];
     } else {
         NSLog(@"蓝牙状态有问题");
     }
@@ -1014,6 +1027,7 @@ typedef enum : NSUInteger {
     BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
     if (bindDeviceViewController) {
         self.tabBarController.tabBar.hidden = YES;
+        bindDeviceViewController.hintStrFirst = self.leftButton.titleLabel.text;
         [self.navigationController pushViewController:bindDeviceViewController animated:YES];
     }
 }
@@ -1336,8 +1350,6 @@ typedef enum : NSUInteger {
 }
 
 - (void)loadBasicConfig {
-    //    self.AdView.imageURLStringsGroup = [responseObj objectForKey:@"data"];
-    
     [SSNetworkRequest getRequest:apiGetBasicConfig params:nil success:^(id responseObj){
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -1360,6 +1372,44 @@ typedef enum : NSUInteger {
         
     } headers:nil];
     self.AdView.delegate = self;
+}
+
+#pragma mark 获取手环注册状态
+- (void)checkRegistStatue {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    NSLog(@"表头：%@",self.headers);
+    [SSNetworkRequest getRequest:apiGetRegStatus params:nil success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"手环注册状态 -- %@", responseObj[@"data"][@"RegStatus"]);
+            if ([responseObj[@"data"][@"RegStatus"] intValue] == 1) {
+                //注册成功
+                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+            } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
+                //未注册成功
+                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
+                //注册卡
+                if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [self checkUserIsExistAppointPackage];
+                    });
+                } else {
+                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                }
+            } else {
+                NSLog(@"注册状态有问题");
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            HUDNormal(responseObj[@"msg"])
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(@"网络貌似有问题")
+        //
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
 }
 
 #pragma mark 热门套餐
@@ -2212,18 +2262,26 @@ typedef enum : NSUInteger {
                         [BlueToothDataManager shareManager].isActivityCard = YES;
                         [BlueToothDataManager shareManager].bleStatueForCard = 1;
                         [BlueToothDataManager shareManager].operatorType = @"2";
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_AIXIAOQICARD];
                     } else {
                         //对卡断电
                         [self phoneCardToOutageNew];
                         NSLog(@"不是大王卡");
                         //判断是否有指定套餐，并创建连接
                         [BlueToothDataManager shareManager].bleStatueForCard = 2;
-                        if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
-                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                [self checkUserIsExistAppointPackage];
-                            });
+                        if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+                            //查询tcp连接状态
+                            [self checkRegistStatue];
+                            [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                         } else {
-                            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                            //注册卡
+                            if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                    [self checkUserIsExistAppointPackage];
+                                });
+                            } else {
+                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                            }
                         }
                     }
                 } else if ([BlueToothDataManager shareManager].bleStatueForCard == 1) {
@@ -2681,6 +2739,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"cardNumberNotTrue" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"OTAAction" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"refreshStatueToCard" object:@"refreshStatueToCard"];
     
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {

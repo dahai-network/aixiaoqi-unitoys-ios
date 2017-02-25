@@ -201,6 +201,9 @@
 //使用签名，空中升级
 #define apiDeviceBraceletOTA defaultHost@"api/DeviceBracelet/OTA"
 
+//使用签名，获取手环设备注册状态
+#define apiGetRegStatus defaultHost@"api/DeviceBracelet/GetRegStatus"
+
 //删除单个联系人短信
 #define apiDeletesByTel  defaultHost@"api/SMS/DeletesByTel"
 
@@ -267,6 +270,10 @@
 //信号强
 #define HOMESTATUETITLE_SIGNALSTRONG @"信号强"
 #define HOMESTATUE_SIGNALSTRONG @"homeStatue_signalStrong"
+//爱小器卡
+#define HOMESTATUETITLE_AIXIAOQICARD @"爱小器卡"
+#define HOMESTATUE_AIXIAOQICARD @"homeStatue_noSignal"
+
 
 #pragma mark 运营商类型
 //电信
