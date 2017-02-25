@@ -1178,6 +1178,7 @@
                         </connections>
                     </tableView>
                     <connections>
+                        <outlet property="activityOrderButton" destination="WC0-eD-H29" id="dVe-R6-oRC"/>
                         <outlet property="lblActivationDate" destination="c78-Fg-uYX" id="9Kz-5x-Yt8"/>
                         <outlet property="lblDeviceStatus" destination="S1b-jC-RCb" id="HUo-K0-VZd"/>
                         <outlet property="lblExprieDays" destination="ten-HV-zkI" id="0gI-YP-HQQ"/>

@@ -14,6 +14,7 @@
 @property (nonatomic, strong)UILabel *titleLabel;
 @property (nonatomic, strong)UIView *valueView;
 @property (nonatomic, copy)NSString *selectedDateString;
+@property (weak, nonatomic) IBOutlet UIButton *activityOrderButton;
 
 @end
 
@@ -145,15 +146,19 @@
                     //                [self actionSuccessLocal];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+                    [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
                 }else{
                     //数据请求失败
                     //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
                     HUDNormal(responseObj[@"msg"])
+                    [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
                 }
                 
             } failure:^(id dataObj, NSError *error) {
                 //
                 NSLog(@"啥都没：%@",[error description]);
+                HUDNormal(@"激活失败")
+                [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
             } headers:self.headers];
         } else {
             HUDNormal(@"请插入爱小器卡")
@@ -173,6 +178,7 @@
     if ([[responseObj objectForKey:@"status"] intValue]==1) {
             //套餐激活完成
             HUDNormal(@"激活成功")
+        self.activityOrderButton.hidden = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderSuccess" object:@"actionOrderSuccess"];
             [self.navigationController popViewControllerAnimated:YES];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -180,10 +186,13 @@
         }else{
             //数据请求失败
             HUDNormal(responseObj[@"msg"])
+            [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
         }
     } failure:^(id dataObj, NSError *error) {
         //
         NSLog(@"啥都没：%@",[error description]);
+        HUDNormal(@"激活失败")
+        [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
     } headers:self.headers];
 }
 

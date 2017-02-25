@@ -34,6 +34,7 @@
     self.tableView.estimatedRowHeight = 44.0f;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     [self cehckOrderInfo];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cehckOrderInfo) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];
     // Do any additional setup after loading the view from its nib.
 }
 
