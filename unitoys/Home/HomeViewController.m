@@ -25,6 +25,10 @@
 #import "QuickSettingViewController.h"
 #import <iOSDFULibrary/iOSDFULibrary-Swift.h>
 #import "TTRangeSlider.h"
+#import "OrderListViewController.h"
+#import "CommunicatePackageViewController.h"
+
+//#import "AbroadMessageController.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
@@ -154,12 +158,27 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].isNeedToResert = YES;
     [BlueToothDataManager shareManager].currentStep = @"0";
     
-    UITapGestureRecognizer *tapQuickSetting = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(quickSetting)];
-    [self.ivQuickSetting addGestureRecognizer:tapQuickSetting];
+    //快捷设置
+//    UITapGestureRecognizer *tapQuickSetting = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(quickSetting)];
+//    [self.ivQuickSetting addGestureRecognizer:tapQuickSetting];
     
     //设备按钮添加手势
-    UITapGestureRecognizer *tapDevices = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(devicesAction)];
-    [self.ivDevices addGestureRecognizer:tapDevices];
+//    UITapGestureRecognizer *tapDevices = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(devicesAction)];
+//    [self.ivDevices addGestureRecognizer:tapDevices];
+    
+    //境外通讯
+    UITapGestureRecognizer *abroadMessage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(abroadMessageAction)];
+    [self.ivQuickSetting addGestureRecognizer:abroadMessage];
+    
+    //双卡双待
+    UITapGestureRecognizer *doubleCards = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleCardsAction)];
+    [self.ivDevices addGestureRecognizer:doubleCards];
+    
+    //通话套餐
+    UITapGestureRecognizer *phonePackage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(phonePackageAction)];
+    [self.ivTutorial addGestureRecognizer:phonePackage];
+    
+    //运动数据
     UITapGestureRecognizer *tapSport = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToSport)];
     [self.sportView addGestureRecognizer:tapSport];
     
@@ -1068,6 +1087,42 @@ typedef enum : NSUInteger {
     } headers:self.headers];
 }
 
+- (void)abroadMessageAction
+{
+    NSLog(@"境外通讯");
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+    if (storyboard) {
+        self.tabBarController.tabBar.hidden = YES;
+        UIViewController *orderListViewController = [storyboard instantiateViewControllerWithIdentifier:@"orderListViewController"];
+        OrderListViewController *orderListVc = (OrderListViewController *)orderListViewController;
+        orderListVc.isAbroadMessage = YES;
+        if (orderListVc) {
+            [self.navigationController pushViewController:orderListVc animated:YES];
+        }
+    }
+}
+
+- (void)doubleCardsAction
+{
+    NSLog(@"双卡双待");
+    
+    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    BrowserViewController *browserViewController = [mainStory instantiateViewControllerWithIdentifier:@"browserViewController"];
+    if (browserViewController) {
+        browserViewController.loadUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"dualSimStandbyTutorialUrl"];
+        browserViewController.titleStr = @"双卡双待使用教程";
+        [self.navigationController pushViewController:browserViewController animated:YES];
+    }
+}
+
+- (void)phonePackageAction
+{
+    NSLog(@"通话套餐");
+    CommunicatePackageViewController *communicateVC = [[CommunicatePackageViewController alloc] init];
+    [self.navigationController pushViewController:communicateVC animated:YES];
+}
+
+
 - (void)quickSetting {
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
     QuickSettingViewController *quickSettingViewController = [mainStory instantiateViewControllerWithIdentifier:@"quickSettingViewController"];
@@ -1356,6 +1411,10 @@ typedef enum : NSUInteger {
             [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
             [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
             [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
+            //双卡双待教程
+            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
+            //出国前教程
+            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
             [[NSUserDefaults standardUserDefaults] synchronize];
         
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){

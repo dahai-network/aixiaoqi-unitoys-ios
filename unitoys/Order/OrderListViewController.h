@@ -13,4 +13,7 @@
 
 @property (strong,nonatomic) NSMutableArray *arrOrderData;
 
+//是否为境外套餐
+@property (nonatomic, assign) BOOL isAbroadMessage;
+
 @end

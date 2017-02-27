@@ -16,6 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     
     self.collectionView.backgroundColor = [UIColor whiteColor];
     
@@ -47,10 +48,7 @@
         //
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
-    
-
 }
-
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath

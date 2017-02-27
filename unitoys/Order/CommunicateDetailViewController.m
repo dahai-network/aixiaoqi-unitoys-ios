@@ -23,9 +23,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.title = @"套餐详情";
+    
     self.communicateDetailInfo = [[NSDictionary alloc] init];
     self.tableView.tableFooterView = self.footView;
-    self.title = @"套餐详情";
     
     //cell高度自适应
     self.tableView.estimatedRowHeight = 44.0f;

@@ -9,8 +9,10 @@
 #import "ActivateGiftCardViewController.h"
 #import "ActivateGiftCardTableViewCell.h"
 #import "OrderActivationViewController.h"
+#import "PackageDetailViewController.h"
+#import "AbroadPackageExplainController.h"
 
-@interface ActivateGiftCardViewController ()
+@interface ActivateGiftCardViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *footView;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong)ActivateGiftCardTableViewCell *firstCell;
@@ -20,23 +22,40 @@
 @property (weak, nonatomic) IBOutlet UIButton *activateButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
 
+@property (nonatomic, copy) NSString *packageId;
+@property (nonatomic, copy) NSString *packageName;
+
+//是否支持4G
+@property (nonatomic, assign) NSNumber *IsSupport4G;
+//是否需要APN
+@property (nonatomic, assign) NSNumber *IsApn;
 @end
 
 @implementation ActivateGiftCardViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    if (self.isAbroadMessage) {
+        self.title = @"已购套餐详情";
+        [self setRightButton:@"使用教程"];
+    }else{
+        self.title = @"套餐详情";
+    }
+    
     self.packageCategory = 4;
     self.dicOrderDetail = [[NSDictionary alloc] init];
-    self.title = @"套餐详情";
+
     self.tableView.tableFooterView = self.footView;
     //cell高度自适应
     self.tableView.estimatedRowHeight = 44.0f;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.allowsSelection = YES;
     [self cehckOrderInfo];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cehckOrderInfo) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];
     // Do any additional setup after loading the view from its nib.
 }
+
 
 #pragma mark 获取大王卡信息
 - (void)cehckOrderInfo {
@@ -51,6 +70,10 @@
             self.dicOrderDetail = [responseObj objectForKey:@"data"];
             self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
             setImage(self.firstCell.imgOrderView, [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"LogoPic"])
+            self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
+            self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
+            self.IsSupport4G = responseObj[@"data"][@"list"][@"PackageIsSupport4G"];
+            self.IsApn = responseObj[@"data"][@"list"][@"PackageIsApn"];
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
             self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
             [self.tableView reloadData];
@@ -66,10 +89,22 @@
     } headers:self.headers];
 }
 
+- (void)rightButtonClick
+{
+    if (self.isAbroadMessage) {
+        NSLog(@"使用教程");
+        AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
+        abroadVc.isSupport4G = [self.IsSupport4G boolValue];
+        abroadVc.isApn = [self.IsApn boolValue];
+        [self .navigationController pushViewController:abroadVc animated:YES];
+    }
+}
+
 #pragma mark - tableView代理方法
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     return 15;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
     return 0.01;
 }
@@ -148,6 +183,11 @@
             self.firstCell = [tableView dequeueReusableCellWithIdentifier:identifier1];
             if (!self.firstCell) {
                 self.firstCell=[[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil] firstObject];
+            }
+            if (self.isAbroadMessage) {
+                self.firstCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            }else{
+                self.firstCell.accessoryType = UITableViewCellAccessoryNone;
             }
             return self.firstCell;
             break;
@@ -253,6 +293,25 @@
             }
             return self.secondCell;
             break;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    if (self.isAbroadMessage) {
+        if (indexPath.section == 0) {
+            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+            PackageDetailViewController *packageDetailViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageDetailViewController"];
+            if (packageDetailViewController) {
+                packageDetailViewController.isAbroadMessage = YES;
+                packageDetailViewController.idPackage = self.packageId;
+                packageDetailViewController.currentTitle = self.packageName;
+                packageDetailViewController.isSupport4G = [self.IsSupport4G boolValue];
+                packageDetailViewController.isApn = [self.IsApn boolValue];
+                [self.navigationController pushViewController:packageDetailViewController animated:YES];
+            }
+        }
     }
 }
 
@@ -389,9 +448,6 @@
         }else{
             HUDNormal(responseObj[@"msg"])
         }
-        
-        
-        
     } failure:^(id dataObj, NSError *error) {
         //
         NSLog(@"啥都没：%@",[error description]);

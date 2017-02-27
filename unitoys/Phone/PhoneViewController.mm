@@ -1130,8 +1130,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             if (![db open]) {
                 [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
             }else{
-//                FMResultSet *rs = [db executeQuery:@"select top 1 calltime from CallRecord"];// order by calltime desc"];
-                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime desc limit 0,1"];// order by calltime desc"];
+                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
                 
                 if ([rs next]) {
                     
@@ -1140,17 +1139,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
                     NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
                     NSMutableArray *muteArray = [NSMutableArray arrayWithArray:dataArray];
-                    NSDictionary *dictRecord;
+                    NSMutableDictionary *dictRecord;
                     if (dataArray.count) {
-                        dictRecord = dataArray.firstObject;
+                        dictRecord = [NSMutableDictionary dictionaryWithDictionary:dataArray.firstObject];
                     }
-//                    dictRecord[@"status"] = @1;
-                    [dictRecord setValue:@1 forKey:@"status"];
+                    [dictRecord setObject:@1 forKey:@"status"];
                     [muteArray replaceObjectAtIndex:0 withObject:dictRecord];
                     
                     NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
                     NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
-//                    [NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]
                     [db executeUpdate:[NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]];
 //                    BOOL isSuccess = [db executeUpdate:@"UPDATE CallRecord set datas='%@' calltime='%@' where dataid ='%@'", jsonStr2, timestemp, dataId];
 //                    if (!isSuccess) {

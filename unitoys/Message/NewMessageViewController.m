@@ -476,6 +476,8 @@
                  [self.txtSendText resignFirstResponder];
                  _messageFrames = nil;
                  
+                 //隐藏发送textfield
+                 
                  [self loadMessages];
                 self.btnSend.enabled = YES;
              
@@ -734,7 +736,6 @@
         }else {
             linkmans = [NSString stringWithFormat:@"%@ %@",linkmans,[dicNumber objectForKey:@"linkman"]];
         }
-
     }
     return linkmans;
 }

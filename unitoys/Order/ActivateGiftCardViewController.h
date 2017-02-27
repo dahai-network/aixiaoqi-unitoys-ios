@@ -12,4 +12,5 @@
 @property (nonatomic, copy) NSString *idOrder;
 @property (nonatomic, assign) int packageCategory;
 
+@property (nonatomic, assign) BOOL isAbroadMessage;
 @end

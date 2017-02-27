@@ -12,6 +12,12 @@
 
 @property (readwrite) NSString *idPackage;
 
+@property (nonatomic, assign) BOOL isAbroadMessage;
+@property (nonatomic, copy) NSString *currentTitle;
+
+@property (nonatomic,assign) BOOL isSupport4G;
+@property (nonatomic,assign) BOOL isApn;
+
 @property (weak, nonatomic) IBOutlet UIImageView *ivPic;
 @property (weak, nonatomic) IBOutlet UILabel *lblPackageName;
 @property (weak, nonatomic) IBOutlet UILabel *lblPrice;
@@ -23,5 +29,6 @@
 @property (readwrite) NSDictionary *dicPackage;
 
 - (IBAction)buyPackage:(id)sender;
+
 
 @end

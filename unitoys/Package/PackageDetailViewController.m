@@ -8,11 +8,19 @@
 
 #import "PackageDetailViewController.h"
 #import "OrderCommitViewController.h"
+#import "AbroadPackageExplainController.h"
 
 @implementation PackageDetailViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    if (self.isAbroadMessage) {
+//        self.title = self.currentTitle;
+        [self setRightButton:@"使用教程"];
+    }else{
+        self.title = @"套餐详情";
+    }
     
     self.tableView.estimatedRowHeight = 10;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -39,6 +47,10 @@
             [self.tableView reloadData];
 //            [self.tableView needsUpdateConstraints];
             
+            if (self.isAbroadMessage) {
+                self.title = responseObj[@"data"][@"list"][@"CountryName"];
+            }
+            
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -54,6 +66,17 @@
     } headers:self.headers];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(payConfrim) name:@"BuyConfrim" object:nil];
+}
+
+- (void)rightButtonClick
+{
+    if (self.isAbroadMessage) {
+        NSLog(@"使用教程");
+        AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
+        abroadVc.isSupport4G = self.isSupport4G;
+        abroadVc.isApn = self.isApn;
+        [self .navigationController pushViewController:abroadVc animated:YES];
+    }
 }
 
 - (void)payConfrim {

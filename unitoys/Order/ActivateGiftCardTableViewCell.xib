@@ -15,11 +15,11 @@
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivateGiftCardFirst" rowHeight="82" id="KGk-i7-Jjw" userLabel="ActivateGiftCardFirst" customClass="ActivateGiftCardTableViewCell">
             <rect key="frame" x="0.0" y="0.0" width="375" height="82"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="375" height="81"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YgH-Gy-17X">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YgH-Gy-17X">
                         <rect key="frame" x="82" y="15" width="283" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="etO-xr-bd5"/>
@@ -28,13 +28,13 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CDm-yD-PgJ">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CDm-yD-PgJ">
                         <rect key="frame" x="82" y="46" width="283" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <color key="textColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="41K-7j-9DV">
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="41K-7j-9DV">
                         <rect key="frame" x="10" y="10" width="62" height="62"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="62" id="iUM-a8-XOT"/>
@@ -61,7 +61,7 @@
             </connections>
             <point key="canvasLocation" x="-4.5" y="-166"/>
         </tableViewCell>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivateGiftCardSecond" id="NT9-xs-1ro" userLabel="ActivateGiftCardSecond" customClass="ActivateGiftCardTableViewCell">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ActivateGiftCardSecond" id="NT9-xs-1ro" userLabel="ActivateGiftCardSecond" customClass="ActivateGiftCardTableViewCell">
             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NT9-xs-1ro" id="Jg1-6O-REo">
@@ -99,9 +99,9 @@
                 <outlet property="lblContent" destination="dbn-KL-Z8v" id="wtk-Bo-udP"/>
                 <outlet property="lblContentName" destination="IRa-NU-p4N" id="RBk-2k-sy7"/>
             </connections>
-            <point key="canvasLocation" x="-3" y="0.0"/>
+            <point key="canvasLocation" x="-3.5" y="0.0"/>
         </tableViewCell>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ActivateGiftCardThird" rowHeight="128" id="odV-fP-btX" userLabel="ActivateGiftCardThird" customClass="ActivateGiftCardTableViewCell">
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ActivateGiftCardThird" rowHeight="128" id="odV-fP-btX" userLabel="ActivateGiftCardThird" customClass="ActivateGiftCardTableViewCell">
             <rect key="frame" x="0.0" y="0.0" width="375" height="128"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="odV-fP-btX" id="aSL-Qc-v85">
