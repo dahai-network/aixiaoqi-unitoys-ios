@@ -8,6 +8,7 @@
 
 #import "AbroadExplainController.h"
 #import "ExplainDetailsChildController.h"
+#import "BlueToothDataManager.h"
 
 @interface AbroadExplainController ()<UIScrollViewDelegate>
 
@@ -205,12 +206,23 @@
 
 - (void)apnSettingAction
 {
-    NSLog(@"apnSettingAction");
+    //访问描述文件
+    NSString *textURL = [NSString stringWithFormat:@"http://localhost:%@/aixiaoqi.mobileconfig", [BlueToothDataManager shareManager].localServicePort];
+    NSURL *cleanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@", textURL]];
+    NSLog(@"访问的连接为 -- %@", cleanURL);
+    [[UIApplication sharedApplication] openURL:cleanURL];
+    NSDictionary *info = @{@"title": @"访问"};
+    [[UIApplication sharedApplication] openURL:cleanURL options:info completionHandler:nil];
 }
 
 - (void)gotoSystemSettingAction
 {
-    NSLog(@"gotoSystemSettingAction");
+    //打开app设置界面
+//    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    //打开描述文件界面
+//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=ManagedConfigurationList"]];
+    //打开系统设置界面
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=Network "]];
 }
 
 

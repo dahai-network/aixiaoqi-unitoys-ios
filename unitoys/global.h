@@ -224,6 +224,9 @@
 #define PORT 4567
 //#define TCPPORT 20016
 
+//本地服务器
+#define webPath [[NSBundle mainBundle] pathForResource:@"CertificateFiles" ofType:nil]
+
 //IP地址
 #define SERVERIP @"127.0.0.1"
 //#define SERVER "192.168.1.145"

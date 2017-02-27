@@ -188,7 +188,6 @@
                 [self.navigationController pushViewController:settingViewController animated:YES];
             }
         }
-    
     }
 }
 
