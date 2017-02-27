@@ -51,6 +51,27 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark-----设置右边按钮
+-(void)setRightButton:(id)rightButton{
+    NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
+    textAttrs[NSForegroundColorAttributeName] = [UIColor whiteColor];
+    textAttrs[NSFontAttributeName] = [UIFont systemFontOfSize:16.5];
+    if ([rightButton isKindOfClass:[UIImage class]]) {
+        self.navigationItem.rightBarButtonItem=[UIBarButtonItem itemWithTarget:self action:@selector(rightButtonClick) image:rightButton highImage:rightButton];
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttrs forState:UIControlStateNormal];
+    }
+    if ([rightButton isKindOfClass:[NSString class]]) {
+        self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc]initWithTitle:rightButton style:UIBarButtonItemStylePlain target:self action:@selector(rightButtonClick)];
+        [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttrs forState:UIControlStateNormal];
+    }
+}
+
+#pragma mark-----点击右按钮出发事情
+-(void)rightButtonClick{
+    
+    
+}
+
 - (UIStatusBarStyle)preferredStatusBarStyle
 
 {

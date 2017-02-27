@@ -81,6 +81,9 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 -(void)leftButtonClick;
 
+-(void)setRightButton:(id)rightButton;
+-(void)rightButtonClick;
+
 - (void)dj_alertAction:(UIViewController *)controller alertTitle:(NSString *)alertTitle actionTitle:(NSString *)actionTitle message:(NSString *)message alertAction:(void (^)())alertAction;
 
 - (void)dj_alertAction:(UIViewController *)controller alertTitle:(NSString *)alertTitle leftActionTitle:(NSString *)leftActionTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message leftAlertAction:(void (^)())leftAlertAction rightAlertAction:(void (^)())rightAlertAction;
