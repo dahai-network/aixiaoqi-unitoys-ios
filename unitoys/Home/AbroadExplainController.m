@@ -222,7 +222,7 @@
     //打开描述文件界面
 //    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=ManagedConfigurationList"]];
     //打开系统设置界面
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=Network "]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]];
 }
 
 
