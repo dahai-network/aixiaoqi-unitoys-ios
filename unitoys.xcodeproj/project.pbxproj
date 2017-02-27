@@ -103,6 +103,7 @@
 		3CC3E0C51E6412B200A62F8C /* CallPackageListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0C31E6412B200A62F8C /* CallPackageListCell.m */; };
 		3CC3E0C61E6412B200A62F8C /* CallPackageListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CC3E0C41E6412B200A62F8C /* CallPackageListCell.xib */; };
 		3CC3E0CB1E6415C000A62F8C /* CallPackageDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0C91E6415C000A62F8C /* CallPackageDetailsController.m */; };
+		3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */; };
 		3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */; };
 		3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
@@ -423,6 +424,8 @@
 		3CC3E0C41E6412B200A62F8C /* CallPackageListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CallPackageListCell.xib; sourceTree = "<group>"; };
 		3CC3E0C81E6415C000A62F8C /* CallPackageDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallPackageDetailsController.h; sourceTree = "<group>"; };
 		3CC3E0C91E6415C000A62F8C /* CallPackageDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallPackageDetailsController.m; sourceTree = "<group>"; };
+		3CC3E0CD1E64346700A62F8C /* AbroadPackageDescView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageDescView.h; sourceTree = "<group>"; };
+		3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadPackageDescView.m; sourceTree = "<group>"; };
 		3CE117481E616B8F008D5976 /* AddTouchAreaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTouchAreaButton.h; sourceTree = "<group>"; };
 		3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTouchAreaButton.m; sourceTree = "<group>"; };
 		3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageContactsInfoController.h; sourceTree = "<group>"; };
@@ -1413,6 +1416,8 @@
 				3CC3E0C41E6412B200A62F8C /* CallPackageListCell.xib */,
 				3CC3E0C81E6415C000A62F8C /* CallPackageDetailsController.h */,
 				3CC3E0C91E6415C000A62F8C /* CallPackageDetailsController.m */,
+				3CC3E0CD1E64346700A62F8C /* AbroadPackageDescView.h */,
+				3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -2068,6 +2073,7 @@
 				04F7279E1E641CE4002EB54C /* DDTTYLogger.m in Sources */,
 				04F727A01E641CE4002EB54C /* DispatchQueueLogFormatter.m in Sources */,
 				04EAB8BC1E2787F6000D3D13 /* AlarmListViewController.m in Sources */,
+				3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */,
 				3CC3E0BD1E63FB9100A62F8C /* ExplainDetailsChildController.m in Sources */,
 				740FD3931E287F9E009413F1 /* sim_com_interface.c in Sources */,
 				3C8E77981E5D280600C4833E /* UNDefines.m in Sources */,
