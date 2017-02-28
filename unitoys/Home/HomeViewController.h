@@ -36,21 +36,21 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *ivLogoPic1;
 @property (weak, nonatomic) IBOutlet UILabel *lblFlow1;
-@property (weak, nonatomic) IBOutlet UILabel *lblTotalPrice1;
+//@property (weak, nonatomic) IBOutlet UILabel *lblTotalPrice1;
 @property (weak, nonatomic) IBOutlet UILabel *lblExpireDays1;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnOrderStatus1;
 
 @property (weak, nonatomic) IBOutlet UIImageView *ivLogoPic2;
 @property (weak, nonatomic) IBOutlet UILabel *lblFlow2;
-@property (weak, nonatomic) IBOutlet UILabel *lblTotalPrice2;
+//@property (weak, nonatomic) IBOutlet UILabel *lblTotalPrice2;
 @property (weak, nonatomic) IBOutlet UILabel *lblExpireDays2;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnOrderStatus2;
 
 @property (weak, nonatomic) IBOutlet UIImageView *ivLogoPic3;
 @property (weak, nonatomic) IBOutlet UILabel *lblFlow3;
-@property (weak, nonatomic) IBOutlet UILabel *lblTotalPrice3;
+//@property (weak, nonatomic) IBOutlet UILabel *lblTotalPrice3;
 @property (weak, nonatomic) IBOutlet UILabel *lblExpireDays3;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnOrderStatus3;

@@ -1214,15 +1214,15 @@ typedef enum : NSUInteger {
 }
 
 - (void)viewOrders {
-    self.lblTotalPrice1.font = [UIFont systemFontOfSize:17 weight:2];
-    self.lblTotalPrice2.font = [UIFont systemFontOfSize:17 weight:2];
-    self.lblTotalPrice3.font = [UIFont systemFontOfSize:17 weight:2];
+//    self.lblTotalPrice1.font = [UIFont systemFontOfSize:17 weight:2];
+//    self.lblTotalPrice2.font = [UIFont systemFontOfSize:17 weight:2];
+//    self.lblTotalPrice3.font = [UIFont systemFontOfSize:17 weight:2];
     if (self.arrOrderList.count==0) {
         //
         [self.lblOrderHint setHidden:NO];
         [self.ivLogoPic1 setHidden:YES];
         [self.lblFlow1 setHidden:YES];
-        [self.lblTotalPrice1 setHidden:YES];
+//        [self.lblTotalPrice1 setHidden:YES];
         [self.lblExpireDays1 setHidden:YES];
         [self.btnOrderStatus1 setHidden:YES];
         
@@ -1230,8 +1230,8 @@ typedef enum : NSUInteger {
     } else {
         [self.lblOrderHint setHidden:YES];
         [self.ivLogoPic1 setHidden:NO];
-//        [self.lblFlow1 setHidden:NO];
-        [self.lblTotalPrice1 setHidden:NO];
+        [self.lblFlow1 setHidden:NO];
+//        [self.lblTotalPrice1 setHidden:NO];
         [self.lblExpireDays1 setHidden:NO];
         [self.btnOrderStatus1 setHidden:NO];
         
@@ -1240,7 +1240,7 @@ typedef enum : NSUInteger {
             self.ivLogoPic1.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
             self.lblFlow1.text = [dicOrder objectForKey:@"PackageName"];
             self.lblExpireDays1.text = [dicOrder objectForKey:@"ExpireDays"];
-            self.lblTotalPrice1.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
+//            self.lblTotalPrice1.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
             if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
                 NSLog(@"未支付");
             }else{
@@ -1284,7 +1284,7 @@ typedef enum : NSUInteger {
             self.ivLogoPic2.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
             self.lblFlow2.text = [dicOrder objectForKey:@"PackageName"];
             self.lblExpireDays2.text = [dicOrder objectForKey:@"ExpireDays"];
-            self.lblTotalPrice2.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
+//            self.lblTotalPrice2.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
             if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
                 NSLog(@"未支付");
             }else{
@@ -1330,7 +1330,7 @@ typedef enum : NSUInteger {
             self.ivLogoPic3.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
             self.lblFlow3.text = [dicOrder objectForKey:@"PackageName"];
             self.lblExpireDays3.text = [dicOrder objectForKey:@"ExpireDays"];
-            self.lblTotalPrice3.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
+//            self.lblTotalPrice3.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
             if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
                 NSLog(@"未支付");
             }else{

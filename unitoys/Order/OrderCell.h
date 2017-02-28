@@ -12,7 +12,7 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *ivLogoPic;
 @property (weak, nonatomic) IBOutlet UILabel *lblFlow;
-@property (weak, nonatomic) IBOutlet UILabel *lblTotalPrice;
+//@property (weak, nonatomic) IBOutlet UILabel *lblTotalPrice;
 @property (weak, nonatomic) IBOutlet UILabel *lblExpireDays;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnOrderStatus;

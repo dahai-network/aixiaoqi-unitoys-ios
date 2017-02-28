@@ -233,7 +233,7 @@
             CGSize realSize;
             CGSize imageSize = image.size;
             CGFloat imageViewWidthMax = kScreenWidthValue - 40;
-            CGFloat imageViewHeightMax = kScreenHeightValue - 170 - 60 - 44 + (70 - explainDetailsVc.imageTopMargin.constant);
+            CGFloat imageViewHeightMax = kScreenHeightValue - 170 - 49 + (70 - explainDetailsVc.imageTopMargin.constant);
             CGFloat imageScale = (CGFloat)imageSize.width / imageSize.height;
             CGFloat imageViewScale = (CGFloat)imageViewWidthMax / imageViewHeightMax;
             

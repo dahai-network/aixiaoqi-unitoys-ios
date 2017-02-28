@@ -165,8 +165,8 @@
     [cell.ivLogoPic sd_setImageWithURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]];
     cell.lblFlow.text = [dicOrder objectForKey:@"PackageName"];//[NSString stringWithFormat:@"流量:%dMB",[[dicOrder objectForKey:@"Flow"] intValue]/1024];
     cell.lblExpireDays.text = [dicOrder objectForKey:@"ExpireDays"];
-    cell.lblTotalPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
-    cell.lblTotalPrice.font = [UIFont systemFontOfSize:15 weight:2];
+//    cell.lblTotalPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
+//    cell.lblTotalPrice.font = [UIFont systemFontOfSize:15 weight:2];
     if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
         NSLog(@"未支付");
     }else{
