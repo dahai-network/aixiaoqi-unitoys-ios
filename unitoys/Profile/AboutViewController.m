@@ -195,17 +195,24 @@
     view.tintColor = [UIColor colorWithRed:234/255.0 green:236/255.0 blue:240/255.0 alpha:1];
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-//    return 10;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    //有闹钟时注销此方法
+    if (section == 3 || section == 2) {
+        return 0.01;
+    } else {
+        return 10;
+    }
+    //有闹钟时打开此方法
+//    if (section == 3) {
+//        return 0.01;
+//    } else {
+//        return 10;
+//    }
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        return 0;
-    }else{
-        return 10;
-    }
+    return 0.01;
 }
 
 #pragma mark -- Table
@@ -238,8 +245,10 @@
             return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
         
     }else if(indexPath.section==2){
-        
-        return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
+        //有闹钟时打开此行
+//        return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
+        //有闹钟时注销此行
+        return 0;
         
     }else if(indexPath.section==3){
         

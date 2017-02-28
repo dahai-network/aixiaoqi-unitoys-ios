@@ -306,7 +306,7 @@
                 self.versionNumber.hidden = YES;
                 self.macAddress.hidden = YES;
                 self.hintLabel.text = @"还没有连接设备，点击连接";
-                self.lblStatue.text = @"无信号";
+                self.lblStatue.text = @"未连接";
                 if (self.timer) {
                     [self.timer setFireDate:[NSDate distantFuture]];
                 }
