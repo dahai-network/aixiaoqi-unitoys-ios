@@ -285,16 +285,25 @@
     NSString *textURL = [NSString stringWithFormat:@"http://localhost:%@/aixiaoqi.mobileconfig", [BlueToothDataManager shareManager].localServicePort];
     NSURL *cleanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@", textURL]];
     NSLog(@"访问的连接为 -- %@", cleanURL);
-    [[UIApplication sharedApplication] openURL:cleanURL];
-    NSDictionary *info = @{@"title": @"访问"};
-    [[UIApplication sharedApplication] openURL:cleanURL options:info completionHandler:nil];
+    if (kSystemVersionValue >= 10.0) {
+        NSDictionary *info = @{@"title": @"访问"};
+        [[UIApplication sharedApplication] openURL:cleanURL options:info completionHandler:nil];
+    }else{
+        [[UIApplication sharedApplication] openURL:cleanURL];
+    }
+    
 }
 
 - (void)apnDeleteAction
 {
     //删除APN
     //打开描述文件界面
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=ManagedConfigurationList"]];
+    if (kSystemVersionValue >= 10.0) {
+        NSDictionary *info = @{@"title": @"访问"};
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=ManagedConfigurationList"] options:info completionHandler:nil];
+    }else{
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=ManagedConfigurationList"]];
+    }
 }
 
 - (void)gotoSystemSettingAction

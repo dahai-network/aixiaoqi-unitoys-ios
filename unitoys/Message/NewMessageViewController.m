@@ -309,14 +309,12 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            HUDNormal(@"数据请求失败")
             [self.tableView.mj_header endRefreshing];
         }
         
     } failure:^(id dataObj, NSError *error) {
         //        [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_header endRefreshing];
-        HUDNormal(@"网络异常")
     } headers:self.headers];
     
 }
@@ -402,7 +400,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            HUDNormal(responseObj[@"msg"])
+            HUDNormalTop(responseObj[@"msg"])
         }
         
     } failure:^(id dataObj, NSError *error) {
@@ -487,11 +485,11 @@
              }else{
              //数据请求失败
         //     [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-                 HUDNormal(responseObj[@"msg"])
+                 HUDNormalTop(responseObj[@"msg"])
                  self.btnSend.enabled = YES;
              }
          } failure:^(id dataObj, NSError *error) {
-             HUDNormal(@"网络请求出错")
+             HUDNormalTop(@"网络请求出错")
             self.btnSend.enabled = YES;
          } headers:self.headers];
      }
@@ -500,7 +498,6 @@
 - (IBAction)editedLinkman:(id)sender {
     
     NSLog(@"编辑结束");
-    
     //开始验证文本框中的联系人与数据是否匹配，不匹配则更新
     [self pairLinkman];
     

@@ -12,6 +12,7 @@
 #import "MJMessageCell.h"
 //#import "MJRefresh.h"
 #import "CustomRefreshMessageHeader.h"
+#import "MessagePhoneDetailController.h"
 
 @interface MJViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -65,7 +66,9 @@
 
 - (void)rightBarButtonAction
 {
-    
+    MessagePhoneDetailController *detailVc = [[MessagePhoneDetailController alloc] init];
+    detailVc.toPhoneStr = self.toTelephone;
+    [self.navigationController pushViewController:detailVc animated:YES];
 }
 
 - (void)keyboardWillShow
@@ -192,18 +195,16 @@
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
-                //数据请求失败
             }
             
             NSLog(@"查询到的消息数据：%@",responseObj);
             
             
         } failure:^(id dataObj, NSError *error) {
-            HUDNormal(@"网络请求出错")
+            HUDNormalTop(@"网络请求出错")
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
         
-        /*[NSArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"messages.plist" ofType:nil]];*/
     }
 }
 
@@ -290,14 +291,14 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            HUDNormal(@"数据请求失败")
+            HUDNormalTop(@"数据请求失败")
             [self.tableView.mj_header endRefreshing];
         }
         
     } failure:^(id dataObj, NSError *error) {
         //        [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_header endRefreshing];
-        HUDNormal(@"网络异常")
+        HUDNormalTop(@"网络异常")
     } headers:self.headers];
 
 }
@@ -392,7 +393,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            HUDNormal(responseObj[@"msg"])
+            HUDNormalTop(responseObj[@"msg"])
         }
         
     } failure:^(id dataObj, NSError *error) {
@@ -412,21 +413,10 @@
         [self getBasicHeader];
         NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest postRequest:apiSMSSend params:params success:^(id responseObj) {
-            //
-            //KV来存放数组，所以要用枚举器来处理
-            /*
-             NSEnumerator *enumerator = [[responseObj objectForKey:@"data"] keyEnumerator];
-             id key;
-             while ((key = [enumerator nextObject])) {
-             [manager.requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
-             }*/
-            
             NSLog(@"查询到的用户数据：%@",responseObj);
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                
                 self.txtSendText.text = @"";
-                
                 [self.txtSendText resignFirstResponder];
                 
                 _messageFrames = nil;
@@ -441,12 +431,12 @@
                 self.btnSend.enabled = YES;
             }else{
                 //数据请求失败
-                HUDNormal(responseObj[@"msg"])
+                HUDNormalTop(responseObj[@"msg"])
                 self.btnSend.enabled = YES;
             }
             
         } failure:^(id dataObj, NSError *error) {
-            //
+            HUDNormalTop(@"网络请求出错")
             NSLog(@"啥都没：%@",[error description]);
             self.btnSend.enabled = YES;
         } headers:self.headers];

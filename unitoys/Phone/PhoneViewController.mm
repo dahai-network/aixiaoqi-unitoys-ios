@@ -1130,6 +1130,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             if (![db open]) {
                 [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
             }else{
+                //查找出错
                 FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
                 
                 if ([rs next]) {
@@ -2100,8 +2101,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 if ([cell.lblCallTime.text isEqualToString:@"刚刚"]) {
                     NSLog(@"有了：%@",dicPhoneRecord);
                 }
-                if ([[dicPhoneRecord objectForKey:@"status"] intValue]==0){  //如果未接听则显示红色
+                if ([[dicPhoneRecord objectForKey:@"status"] intValue] == 0){  //如果未接听则显示红色
                     [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
+                }else{
+                    [cell.lblPhoneNumber setTextColor:[UIColor blackColor]];
                 }
             }else{
                 [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callout"]];

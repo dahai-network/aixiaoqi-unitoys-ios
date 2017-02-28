@@ -29,6 +29,19 @@ hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
 }
 
 /**
+ *  HUD顶部自动隐藏
+ *
+ */
+#define HUDNormalTop(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
+hud.mode = MBProgressHUDModeText;\
+hud.minShowTime=1;\
+hud.detailsLabelText= msg;\
+hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
+hud.yOffset =  -70;\
+[hud hide:YES afterDelay:1];\
+}
+
+/**
  *  HUD不自动隐藏最小时间为0
  *
  */

@@ -23,8 +23,6 @@
 @property (nonatomic, assign) NSInteger colCount;
 @property (nonatomic, assign) NSInteger rowCount;
 @property (nonatomic, assign) CGFloat margin;
-//@property (nonatomic, assign) CGFloat buttonW;
-//@property (nonatomic, assign) CGFloat buttonH;
 
 @end
 

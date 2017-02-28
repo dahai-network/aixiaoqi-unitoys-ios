@@ -64,7 +64,22 @@
 //    [self.provider setDelegate:self queue:self.completionQueue ? self.completionQueue : dispatch_get_main_queue()];
     [self.provider setDelegate:self queue:dispatch_get_main_queue()];
     self.callController = [[CXCallController alloc] initWithQueue:dispatch_get_main_queue()];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
 }
+
+- (void)getCallingMessage :(NSNotification *)notification {
+    if (notification.object) {
+        NSString *notiText = notification.object;
+        if([notiText isEqualToString:@"通话结束"]){
+            //关掉当前
+            [self endCall:_currentCallUUID completion:^(NSError * _Nullable error) {
+                NSLog(@"挂断通话");
+            }];
+        }
+    }
+}
+
 
 - (void)setCompletionQueue:(dispatch_queue_t)completionQueue {
     _completionQueue = completionQueue;
@@ -325,9 +340,12 @@
 
 - (void)provider:(CXProvider *)provider didDeactivateAudioSession:(AVAudioSession *)audioSession{
     NSLog(@"didDeactivateAudioSession---%s", __func__);
-    
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 
 @end

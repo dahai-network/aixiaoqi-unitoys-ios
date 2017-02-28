@@ -106,6 +106,11 @@
 		3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */; };
 		3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */; };
 		3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */; };
+		3CCA72D51E65716200931B20 /* MessagePhoneDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72D41E65716200931B20 /* MessagePhoneDetailController.m */; };
+		3CCA72D91E65754000931B20 /* MessagePhoneDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72D71E65754000931B20 /* MessagePhoneDetailCell.m */; };
+		3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D81E65754000931B20 /* MessagePhoneDetailCell.xib */; };
+		3CCA72DE1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */; };
+		3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */; };
 		3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */; };
 		3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
@@ -431,6 +436,14 @@
 		3CCA72CE1E65458900931B20 /* AbroadPackageExplainCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageExplainCell.h; sourceTree = "<group>"; };
 		3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadPackageExplainCell.m; sourceTree = "<group>"; };
 		3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AbroadPackageExplainCell.xib; sourceTree = "<group>"; };
+		3CCA72D31E65716200931B20 /* MessagePhoneDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailController.h; sourceTree = "<group>"; };
+		3CCA72D41E65716200931B20 /* MessagePhoneDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailController.m; sourceTree = "<group>"; };
+		3CCA72D61E65754000931B20 /* MessagePhoneDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailCell.h; sourceTree = "<group>"; };
+		3CCA72D71E65754000931B20 /* MessagePhoneDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailCell.m; sourceTree = "<group>"; };
+		3CCA72D81E65754000931B20 /* MessagePhoneDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessagePhoneDetailCell.xib; sourceTree = "<group>"; };
+		3CCA72DB1E6576E300931B20 /* MessagePhoneDetailHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailHeaderCell.h; sourceTree = "<group>"; };
+		3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailHeaderCell.m; sourceTree = "<group>"; };
+		3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessagePhoneDetailHeaderCell.xib; sourceTree = "<group>"; };
 		3CE117481E616B8F008D5976 /* AddTouchAreaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTouchAreaButton.h; sourceTree = "<group>"; };
 		3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTouchAreaButton.m; sourceTree = "<group>"; };
 		3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageContactsInfoController.h; sourceTree = "<group>"; };
@@ -1098,6 +1111,14 @@
 				952B2B041DC22A3C006A7C69 /* MJMessageFrame.m */,
 				9562EEA11DD3672F00E10C98 /* NewMessageViewController.h */,
 				9562EEA21DD3672F00E10C98 /* NewMessageViewController.m */,
+				3CCA72D31E65716200931B20 /* MessagePhoneDetailController.h */,
+				3CCA72D41E65716200931B20 /* MessagePhoneDetailController.m */,
+				3CCA72D61E65754000931B20 /* MessagePhoneDetailCell.h */,
+				3CCA72D71E65754000931B20 /* MessagePhoneDetailCell.m */,
+				3CCA72D81E65754000931B20 /* MessagePhoneDetailCell.xib */,
+				3CCA72DB1E6576E300931B20 /* MessagePhoneDetailHeaderCell.h */,
+				3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */,
+				3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */,
 			);
 			path = Message;
 			sourceTree = "<group>";
@@ -1861,9 +1882,11 @@
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
 				04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
+				3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */,
 				950E79221E02CDB5003AE0D5 /* Device.storyboard in Resources */,
 				3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */,
 				952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */,
+				3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */,
 				3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */,
 				04F727971E641CE4002EB54C /* About.txt in Resources */,
 				954A87E21D9A0DA400570843 /* PhonePadView.xib in Resources */,
@@ -1976,6 +1999,7 @@
 				953CF9D01DCCF16A0001CE8E /* PaySuccessViewController.m in Sources */,
 				954A87DC1D99136300570843 /* BrowserViewController.m in Sources */,
 				3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */,
+				3CCA72DE1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m in Sources */,
 				952B2B021DC229E0006A7C69 /* MJMessage.m in Sources */,
 				95938D411D93ABF0008A0A21 /* PackageDetailViewController.m in Sources */,
 				95BAED651D87A5D4005A6402 /* BaseViewController.m in Sources */,
@@ -2091,6 +2115,7 @@
 				950072B51DBF58D000C16088 /* PhoneViewController.mm in Sources */,
 				04F727AE1E641CE4002EB54C /* HTTPDynamicFileResponse.m in Sources */,
 				04F727B01E641CE4002EB54C /* HTTPFileResponse.m in Sources */,
+				3CCA72D91E65754000931B20 /* MessagePhoneDetailCell.m in Sources */,
 				95CD34151D9D1D3B00EE5DD3 /* OrderCell.m in Sources */,
 				95938D501D93F093008A0A21 /* UIPlaceHolderTextView.m in Sources */,
 				95C575F41DA77AB200F459DF /* PhoneRecordCell.m in Sources */,
@@ -2098,6 +2123,7 @@
 				04F727AD1E641CE4002EB54C /* HTTPDataResponse.m in Sources */,
 				3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */,
 				95938D4D1D93EBF1008A0A21 /* ConerView.m in Sources */,
+				3CCA72D51E65716200931B20 /* MessagePhoneDetailController.m in Sources */,
 				953B01F51D8BDA6C00EDF5ED /* SSNetworkRequest.m in Sources */,
 				04F727A81E641CE4002EB54C /* HTTPServer.m in Sources */,
 				740FD38F1E287F9E009413F1 /* euble_interface.c in Sources */,
