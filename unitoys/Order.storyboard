@@ -361,20 +361,20 @@
         <scene sceneID="KSf-72-PW7">
             <objects>
                 <tableViewController storyboardIdentifier="orderListViewController" title="订单列表" id="MKn-Db-Vxx" customClass="OrderListViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="28" sectionFooterHeight="28" id="Ddx-4h-8eY">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" id="Ddx-4h-8eY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="OrderCell" rowHeight="50" id="56O-zn-CZ7" customClass="OrderCell">
-                                <rect key="frame" x="0.0" y="28" width="375" height="50"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="OrderCell" rowHeight="60" id="56O-zn-CZ7" customClass="OrderCell">
+                                <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="56O-zn-CZ7" id="LDZ-XG-ob0">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="59.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QCW-OB-OQN">
-                                            <rect key="frame" x="158" y="5" width="209" height="21"/>
+                                            <rect key="frame" x="158" y="7" width="209" height="21"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="￥00元" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KUi-ra-vYz">
                                                     <rect key="frame" x="0.0" y="-2" width="71" height="25"/>
@@ -408,14 +408,14 @@
                                             </constraints>
                                         </view>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SQ2-zm-Lpg">
-                                            <rect key="frame" x="16" y="6" width="38" height="38"/>
+                                            <rect key="frame" x="16" y="11" width="38" height="38"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="38" id="OB0-Ce-tA1"/>
                                                 <constraint firstAttribute="height" constant="38" id="m5j-YE-BgK"/>
                                             </constraints>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="流量：---MB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m8W-fM-55c">
-                                            <rect key="frame" x="64" y="5" width="89" height="21"/>
+                                            <rect key="frame" x="64" y="7" width="89" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="ydi-WP-eHW"/>
                                             </constraints>
@@ -424,7 +424,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="有效期：--天" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hXN-8g-gHr">
-                                            <rect key="frame" x="64" y="23.5" width="301" height="21"/>
+                                            <rect key="frame" x="64" y="33.5" width="301" height="21"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="bOL-5K-Cjj"/>
                                             </constraints>
@@ -434,16 +434,16 @@
                                         </label>
                                     </subviews>
                                     <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="hXN-8g-gHr" secondAttribute="bottom" constant="5" id="0jr-9J-bQ8"/>
                                         <constraint firstItem="SQ2-zm-Lpg" firstAttribute="centerY" secondItem="LDZ-XG-ob0" secondAttribute="centerY" id="6qQ-v2-yJW"/>
                                         <constraint firstItem="SQ2-zm-Lpg" firstAttribute="leading" secondItem="LDZ-XG-ob0" secondAttribute="leadingMargin" constant="8" id="9QN-qH-lEa"/>
                                         <constraint firstItem="QCW-OB-OQN" firstAttribute="leading" secondItem="m8W-fM-55c" secondAttribute="trailing" constant="5" id="FLd-G9-2dK"/>
                                         <constraint firstItem="QCW-OB-OQN" firstAttribute="height" secondItem="m8W-fM-55c" secondAttribute="height" id="MuO-0V-Slk"/>
-                                        <constraint firstItem="m8W-fM-55c" firstAttribute="top" secondItem="LDZ-XG-ob0" secondAttribute="topMargin" constant="-3" id="NDY-hu-w4N"/>
                                         <constraint firstAttribute="trailing" secondItem="QCW-OB-OQN" secondAttribute="trailing" constant="8" id="RhI-hn-Ztj"/>
                                         <constraint firstItem="m8W-fM-55c" firstAttribute="leading" secondItem="SQ2-zm-Lpg" secondAttribute="trailing" constant="10" id="TET-79-2A2"/>
-                                        <constraint firstAttribute="bottomMargin" secondItem="hXN-8g-gHr" secondAttribute="bottom" constant="-3" id="cDf-G8-CK3"/>
                                         <constraint firstAttribute="trailing" secondItem="hXN-8g-gHr" secondAttribute="trailing" constant="10" id="hYF-1H-x17"/>
                                         <constraint firstItem="QCW-OB-OQN" firstAttribute="top" secondItem="m8W-fM-55c" secondAttribute="top" id="lhK-5g-UAo"/>
+                                        <constraint firstItem="m8W-fM-55c" firstAttribute="top" secondItem="LDZ-XG-ob0" secondAttribute="top" constant="7" id="p0l-R5-6B6"/>
                                         <constraint firstItem="hXN-8g-gHr" firstAttribute="leading" secondItem="m8W-fM-55c" secondAttribute="leading" id="r0f-ua-O3F"/>
                                     </constraints>
                                 </tableViewCellContentView>

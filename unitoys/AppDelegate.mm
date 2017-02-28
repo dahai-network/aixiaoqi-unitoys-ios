@@ -220,10 +220,7 @@
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *path = [paths objectAtIndex:0];
-//    path = [path stringByAppendingPathComponent:@"callrecord.db"];
     path = [path stringByAppendingPathComponent:@"callrecord2.db"];
-//    BOOL success;
-//    NSError *error;
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -244,27 +241,6 @@
             }
             [db close];
         }
-//        FMDatabase *db = [FMDatabase databaseWithPath:path];
-//        [db close];
-//        success = [fileManager removeItemAtPath:path error:&error];
-//        if (!success) {
-//            NSLog(@"Failed to delete old database file with message '%@'", [error localizedDescription]);
-//        }else{
-//        //创建表
-//            if ([db open]) {
-//                NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", @"CallRecord"];
-//                FMResultSet *rs = [db executeQuery:existsSql];
-//                if ([rs next]) {
-//                    NSInteger count = [rs intForColumn:@"countNum"];
-//                    NSLog(@"The table count: %zd", count);
-//                    if (count == 0) {
-//                        [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
-//                    }
-//                    [rs close];
-//                }
-//                [db close];
-//            }
-//        }
     }
 }
 

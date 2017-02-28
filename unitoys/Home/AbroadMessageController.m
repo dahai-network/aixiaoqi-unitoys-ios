@@ -58,7 +58,6 @@
         }else{
             //数据请求失败
         }
-        
         NSLog(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         //

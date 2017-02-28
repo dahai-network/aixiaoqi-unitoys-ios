@@ -10,8 +10,8 @@
 #import "UIView+Utils.h"
 #import "global.h"
 
-#define leftMargin 30
-#define viewHeight 300
+#define leftMargin (50.0/375) * [UIScreen mainScreen].bounds.size.width
+#define viewHeight 270
 
 @interface AbroadPackageDescView ()
 
@@ -29,7 +29,7 @@
 {
     if (!_bgWindow) {
         _bgWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _bgWindow.windowLevel = UIWindowLevelStatusBar;
+        _bgWindow.windowLevel = UIWindowLevelAlert;
         _bgWindow.backgroundColor = [UIColor clearColor];
         _bgWindow.hidden = NO;
     }
@@ -57,7 +57,7 @@
     self.alpha = 0;
     self.frame = self.bgWindow.bounds;
     UIView *presentView = [[UIView alloc] initWithFrame:CGRectMake(leftMargin, 0, self.bgWindow.width - 2 * leftMargin, viewHeight)];
-    presentView.layer.borderWidth = 0.5;
+    presentView.layer.borderWidth = 1.0;
     presentView.layer.borderColor = UIColorFromRGB(0xd5d5d5).CGColor;
     presentView.centerY = self.bgWindow.height * 0.5;
     [self addSubview:presentView];
@@ -99,9 +99,9 @@
     descLabel.centerX = presentView.width * 0.5;
     [presentView addSubview:descLabel];
     
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.7 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.alpha = 1;
-    }];
+    } completion:nil];
 }
 
 - (void)dismissWindow

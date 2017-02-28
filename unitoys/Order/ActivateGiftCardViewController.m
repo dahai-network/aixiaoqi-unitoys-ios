@@ -38,10 +38,10 @@
     
     if (self.isAbroadMessage) {
         self.title = @"已购套餐详情";
-        [self setRightButton:@"使用教程"];
     }else{
         self.title = @"套餐详情";
     }
+    [self setRightButton:@"使用教程"];
     
     self.packageCategory = 4;
     self.dicOrderDetail = [[NSDictionary alloc] init];
@@ -91,13 +91,11 @@
 
 - (void)rightButtonClick
 {
-    if (self.isAbroadMessage) {
-        NSLog(@"使用教程");
-        AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
-        abroadVc.isSupport4G = [self.IsSupport4G boolValue];
-        abroadVc.isApn = [self.IsApn boolValue];
-        [self .navigationController pushViewController:abroadVc animated:YES];
-    }
+    NSLog(@"使用教程");
+    AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
+    abroadVc.isSupport4G = [self.IsSupport4G boolValue];
+    abroadVc.isApn = [self.IsApn boolValue];
+    [self .navigationController pushViewController:abroadVc animated:YES];
 }
 
 #pragma mark - tableView代理方法
@@ -184,10 +182,16 @@
             if (!self.firstCell) {
                 self.firstCell=[[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil] firstObject];
             }
-            if (self.isAbroadMessage) {
-                self.firstCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            }else{
+//            if (self.isAbroadMessage) {
+//                self.firstCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//            }else{
+//                self.firstCell.accessoryType = UITableViewCellAccessoryNone;
+//            }
+            
+            if (self.packageCategory == 2 || self.packageCategory == 3) {
                 self.firstCell.accessoryType = UITableViewCellAccessoryNone;
+            }else{
+                self.firstCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }
             return self.firstCell;
             break;
@@ -299,8 +303,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    if (self.isAbroadMessage) {
-        if (indexPath.section == 0) {
+//    if (self.isAbroadMessage) {
+    if (indexPath.section == 0) {
+        if (self.packageCategory != 2 && self.packageCategory != 3) {
             UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
             PackageDetailViewController *packageDetailViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageDetailViewController"];
             if (packageDetailViewController) {
@@ -313,6 +318,7 @@
             }
         }
     }
+//    }
 }
 
 #pragma mark 根据不同状态显示不同文字
