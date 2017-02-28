@@ -9,6 +9,7 @@
 #import "AbroadExplainController.h"
 #import "ExplainDetailsChildController.h"
 #import "BlueToothDataManager.h"
+#import "HTTPServer.h"
 
 @interface AbroadExplainController ()<UIScrollViewDelegate>
 
@@ -16,6 +17,7 @@
 @property (nonatomic, weak) UIPageControl *pageControl;
 
 @property (nonatomic, strong) NSMutableArray *dataArray;
+@property (nonatomic,strong) HTTPServer *localHttpServer;//本地服务器
 
 @end
 
@@ -24,6 +26,36 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initSubViews];
+    [self performSelector:@selector(configLocalHttpServer) withObject:nil afterDelay:1];
+}
+
+#pragma mark - 本地服务器
+#pragma mark - 搭建本地服务器 并且启动
+- (void)configLocalHttpServer{
+    _localHttpServer = [[HTTPServer alloc] init];
+    [_localHttpServer setType:@"_http.tcp"];
+    
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    NSLog(@"文件目录 -- %@",webPath);
+    
+    if (![fileManager fileExistsAtPath:webPath]){
+        NSLog(@"File path error!");
+    }else{
+        NSString *webLocalPath = webPath;
+        [_localHttpServer setDocumentRoot:webLocalPath];
+        NSLog(@"webLocalPath:%@",webLocalPath);
+        [self startServer];
+    }
+}
+
+- (void)startServer {
+    NSError *error;
+    if([_localHttpServer start:&error]){
+        NSLog(@"Started HTTP Server on port %hu", [_localHttpServer listeningPort]);
+        [BlueToothDataManager shareManager].localServicePort = [NSString stringWithFormat:@"%d",[_localHttpServer listeningPort]];
+    } else {
+        NSLog(@"Error starting HTTP Server: %@", error);
+    }
 }
 
 - (void)initSubViews
@@ -222,7 +254,11 @@
     //打开描述文件界面
 //    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=ManagedConfigurationList"]];
     //打开系统设置界面
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]];
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]]) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]];
+    } else {
+        NSLog(@"打不开");
+    }
 }
 
 
