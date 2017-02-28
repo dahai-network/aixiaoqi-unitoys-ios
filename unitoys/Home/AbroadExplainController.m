@@ -29,6 +29,10 @@
     [self performSelector:@selector(configLocalHttpServer) withObject:nil afterDelay:1];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [_localHttpServer stop];
+}
+
 #pragma mark - 本地服务器
 #pragma mark - 搭建本地服务器 并且启动
 - (void)configLocalHttpServer{

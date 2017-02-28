@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "WXApi.h"
 #import <Bugly/Bugly.h>
-//#import "SipEngineUIDelegate.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate,WXApiDelegate, BuglyDelegate>
 

@@ -32,7 +32,6 @@
 #import "UNCallKitCenter.h"
 #import "NSUserActivity+UnExtension.h"
 #import <FMDB/FMDB.h>
-//#import "HTTPServer.h"
 
 // 引 JPush功能所需头 件
 #import "JPUSHService.h"
@@ -60,7 +59,6 @@
 @property (nonatomic, copy)NSString *communicateID;
 @property (nonatomic, strong)NSTimer *timer;
 @property (nonatomic, assign)int sec;
-//@property (nonatomic,strong) HTTPServer *localHttpServer;//本地服务器
 
 @end
 
@@ -150,8 +148,6 @@
         [_udpSocket beginReceiving:&error];
     }
     
-//    [self performSelector:@selector(configLocalHttpServer) withObject:nil afterDelay:1];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendNewMessage:) name:@"receiveNewDtaaPacket" object:nil];//udp发包
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTcpPacket:) name:@"tcppacket" object:nil];//收到tcp部分数据包
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTcpIccidAndImsi:) name:@"iccidAndImsi" object:nil];//收到tcp的iccid和imsi
@@ -162,35 +158,6 @@
     // Override point for customization after application launch.
     return YES;
 }
-
-//#pragma mark - 本地服务器
-//#pragma mark - 搭建本地服务器 并且启动
-//- (void)configLocalHttpServer{
-//    _localHttpServer = [[HTTPServer alloc] init];
-//    [_localHttpServer setType:@"_http.tcp"];
-//    
-//    NSFileManager *fileManager = [[NSFileManager alloc] init];
-//    NSLog(@"文件目录 -- %@",webPath);
-//    
-//    if (![fileManager fileExistsAtPath:webPath]){
-//        NSLog(@"File path error!");
-//    }else{
-//        NSString *webLocalPath = webPath;
-//        [_localHttpServer setDocumentRoot:webLocalPath];
-//        NSLog(@"webLocalPath:%@",webLocalPath);
-//        [self startServer];
-//    }
-//}
-//
-//- (void)startServer {
-//    NSError *error;
-//    if([_localHttpServer start:&error]){
-//        NSLog(@"Started HTTP Server on port %hu", [_localHttpServer listeningPort]);
-//        [BlueToothDataManager shareManager].localServicePort = [NSString stringWithFormat:@"%d",[_localHttpServer listeningPort]];
-//    } else {
-//        NSLog(@"Error starting HTTP Server: %@", error);
-//    }
-//}
 
 - (void)checkCurrentVersion
 {
