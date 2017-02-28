@@ -1391,7 +1391,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 /*呼叫结束*/
 -(void) OnCallEnded{
-    //    NSLog(@"结束通话");
+        NSLog(@"结束通话");
     //    [mStatus setText:@"结束通话"];
     
     [self loadPhoneRecord];

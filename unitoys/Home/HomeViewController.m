@@ -1226,7 +1226,7 @@ typedef enum : NSUInteger {
     } else {
         [self.lblOrderHint setHidden:YES];
         [self.ivLogoPic1 setHidden:NO];
-        [self.lblFlow1 setHidden:NO];
+//        [self.lblFlow1 setHidden:NO];
         [self.lblTotalPrice1 setHidden:NO];
         [self.lblExpireDays1 setHidden:NO];
         [self.btnOrderStatus1 setHidden:NO];

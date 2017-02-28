@@ -491,9 +491,8 @@
                  self.btnSend.enabled = YES;
              }
          } failure:^(id dataObj, NSError *error) {
-             HUDNormal([error description])
+             HUDNormal(@"网络请求出错")
             self.btnSend.enabled = YES;
-        //     NSLog(@"啥都没：%@",[error description]);
          } headers:self.headers];
      }
 }

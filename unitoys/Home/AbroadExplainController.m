@@ -75,35 +75,34 @@
     if (self.currentExplainType == ExplainTypeAbroad) {
         self.title = @"在境外";
         NSDictionary *page1 = @{
-                                @"nameTitle" : @"插电话卡",
-                                @"detailTitle" : @"将爱小器国际卡插入手机中，然后将您的国内电话卡插入到手环中。",
-                                @"explainImage" : @"",
+                                @"nameTitle" : @"手环和手机内置的SIM卡交换位置",
+//                                @"detailTitle" : @"手环和手机内置的SIM卡交换位置。",
+                                @"explainImage" : @"set_afteroutstep1",
                                 };
         NSDictionary *page2 = @{
                                 @"nameTitle" : @"设置APN",
                                 @"detailTitle" : @"打开系统的APN设置界面，点击新建APN，然后在“名称”和“APN”行都输入263，点击保存，最后启用该APN。",
-                                @"explainImage" : @"",
+                                @"explainImage" : @"set_afteroutstep2",
                                 @"buttonTitle" : @"打开APN设置",
                                 @"buttonAction" : @"apnSettingAction",
                                 };
         NSDictionary *page3 = @{
                                 @"nameTitle" : @"关闭4G网络。",
                                 @"detailTitle" : @"在手机的系统设置的网络连接方式中，关闭4G网络，选择2G或3G上网。",
-                                @"explainImage" : @"",
+                                @"explainImage" : @"set_afteroutstep3",
                                 @"buttonTitle" : @"打开系统设置",
                                 @"buttonAction" : @"gotoSystemSettingAction",
                                 };
         NSDictionary *page4 = @{
                                 @"nameTitle" : @"开启数据漫游",
-                                @"detailTitle" : @"在手机的系统设置的数据漫游管理界面，开启数据漫游。此时手机可以上网，打开浏览器测试下。",
-                                @"explainImage" : @"",
+                                @"detailTitle" : @"在手机的系统设置的数据漫游管理界面，开启数据漫游。",
+                                @"explainImage" : @"set_afteroutstep4",
                                 @"buttonTitle" : @"打开系统设置",
                                 @"buttonAction" : @"gotoSystemSettingAction",
                                 };
         NSDictionary *page5 = @{
                                 @"nameTitle" : @"接打电话，收发短信",
-                                @"detailTitle" : @"确保手机能够上网后，重启APP，点击主页走上街按钮，查看手环内电话卡的状态，如果信号良好，即可接打电话，收发短信。",
-                                @"explainImage" : @"",
+                                @"detailTitle" : @"确保手机能够上网后，重启APP，点击主页左上角按钮，查看手环内电话卡的状态，如果信号良好，即可接打电话，收发短信。",
                                 };
         //根据类型确定需要添加的页面
         [self.dataArray addObject:page1];
@@ -119,28 +118,28 @@
     }else if (self.currentExplainType == ExplainTypeInternal){
         self.title = @"回国后";
         NSDictionary *page1 = @{
-                                @"nameTitle" : @"换卡",
-                                @"detailTitle" : @"将爱小器国际卡从手机中取出，然后将自己的电话卡插回手机。",
-                                @"explainImage" : @"",
+                                @"nameTitle" : @"① 手环和手机内置的SIM卡交换位置",
+//                                @"detailTitle" : @"将爱小器国际卡从手机中取出，然后将自己的电话卡插回手机。",
+                                @"explainImage" : @"set_afteroutstep1",
                                 };
         NSDictionary *page2 = @{
                                 @"nameTitle" : @"删除APN",
                                 @"detailTitle" : @"打开系统的APN设置界面，选择新建的名为“263”的APN，然后删除。",
-                                @"explainImage" : @"",
+                                @"explainImage" : @"set_afteroutstep2",
                                 @"buttonTitle" : @"打开APN设置",
-                                @"buttonAction" : @"apnSettingAction",
+                                @"buttonAction" : @"apnDeleteAction",
                                 };
         NSDictionary *page3 = @{
                                 @"nameTitle" : @"开启4G网络。",
                                 @"detailTitle" : @"在手机的系统设置的网络连接方式中，选择4G网络。",
-                                @"explainImage" : @"",
+                                @"explainImage" : @"set_afteroutstep3",
                                 @"buttonTitle" : @"打开系统设置",
                                 @"buttonAction" : @"gotoSystemSettingAction",
                                 };
         NSDictionary *page4 = @{
                                 @"nameTitle" : @"关闭数据漫游",
                                 @"detailTitle" : @"在手机的系统设置的数据漫游管理界面，关闭数据漫游。",
-                                @"explainImage" : @"",
+                                @"explainImage" : @"set_afteroutstep4",
                                 @"buttonTitle" : @"打开系统设置",
                                 @"buttonAction" : @"gotoSystemSettingAction",
                                 };
@@ -192,15 +191,28 @@
 
 - (void)setUpChildViews
 {
+    NSArray *pageNumbers = @[@"❶", @"❷", @"❸", @"❹", @"❺"];
     for (NSInteger i =0; i < self.dataArray.count; i++) {
         NSDictionary *dict = self.dataArray[i];
         ExplainDetailsChildController *explainDetailsVc = [[ExplainDetailsChildController alloc] init];
         explainDetailsVc.view.frame = CGRectMake(i * self.contentScrollView.width, 0, self.contentScrollView.width, self.contentScrollView.height);
-        explainDetailsVc.nameLabel.text = dict[@"nameTitle"];
-        explainDetailsVc.detailLabel.text = dict[@"detailTitle"];
-        if (dict[@"explainImage"]) {
-            explainDetailsVc.explainImageView.image = [UIImage imageNamed:dict[@"explainImage"]];
+        explainDetailsVc.pageNumber.text = pageNumbers[i];
+        
+        if (dict[@"nameTitle"]) {
+            explainDetailsVc.nameLabel.hidden = NO;
+            explainDetailsVc.nameLabel.text = dict[@"nameTitle"];
+        }else{
+            explainDetailsVc.nameLabel.hidden = YES;
+            explainDetailsVc.imageTopMargin.constant -= 20;
         }
+        if (dict[@"detailTitle"]) {
+            explainDetailsVc.detailLabel.hidden = NO;
+            explainDetailsVc.detailLabel.text = dict[@"detailTitle"];
+        }else{
+            explainDetailsVc.detailLabel.hidden = YES;
+            explainDetailsVc.imageTopMargin.constant -= 50;
+        }
+        
         if (dict[@"buttonTitle"]) {
             explainDetailsVc.gotoSystemButton.hidden = NO;
             [explainDetailsVc.gotoSystemButton setTitle:dict[@"buttonTitle"] forState:UIControlStateNormal];
@@ -211,7 +223,34 @@
             }
         }else{
             explainDetailsVc.gotoSystemButton.hidden = YES;
+            explainDetailsVc.imageTopMargin.constant -= 50;
         }
+        
+        if (dict[@"explainImage"]) {
+            explainDetailsVc.explainImageView.hidden = NO;
+            
+            UIImage *image = [UIImage imageNamed:dict[@"explainImage"]];
+            CGSize realSize;
+            CGSize imageSize = image.size;
+            CGFloat imageViewWidthMax = kScreenWidthValue - 40;
+            CGFloat imageViewHeightMax = kScreenHeightValue - 170 - 60 - 44 + (70 - explainDetailsVc.imageTopMargin.constant);
+            CGFloat imageScale = (CGFloat)imageSize.width / imageSize.height;
+            CGFloat imageViewScale = (CGFloat)imageViewWidthMax / imageViewHeightMax;
+            
+            if (imageViewScale > imageScale) {
+                realSize.height = imageViewHeightMax;
+                realSize.width = imageScale * imageViewHeightMax;
+            }else{
+                realSize.width = imageViewWidthMax;
+                realSize.height = imageViewWidthMax / imageScale;
+            }
+            explainDetailsVc.imageWidthConstraint.constant = realSize.width;
+            explainDetailsVc.imageHeightConstraint.constant = realSize.height;
+            explainDetailsVc.explainImageView.image = [UIImage imageNamed:dict[@"explainImage"]];
+        }else{
+            explainDetailsVc.explainImageView.hidden = YES;
+        }
+
         [self.contentScrollView addSubview:explainDetailsVc.view];
     }
 }
@@ -231,7 +270,7 @@
     UIPageControl *pageControl = [[UIPageControl alloc] init];
     self.pageControl = pageControl;
     pageControl.centerX = self.view.width * 0.5;
-    pageControl.bottom = self.view.height - 100;
+    pageControl.bottom = self.view.height - 80;
     pageControl.numberOfPages = self.dataArray.count;
     pageControl.currentPage = 0;
     pageControl.userInteractionEnabled = NO;
@@ -249,6 +288,11 @@
     [[UIApplication sharedApplication] openURL:cleanURL];
     NSDictionary *info = @{@"title": @"访问"};
     [[UIApplication sharedApplication] openURL:cleanURL options:info completionHandler:nil];
+}
+
+- (void)apnDeleteAction
+{
+    //删除APN
 }
 
 - (void)gotoSystemSettingAction

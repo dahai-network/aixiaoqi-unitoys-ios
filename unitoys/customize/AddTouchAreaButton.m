@@ -38,13 +38,13 @@ static char leftNameKey;
     objc_setAssociatedObject(self, &leftNameKey, [NSNumber numberWithFloat:5], OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (void)setTouchEdgeInset:(UIEdgeInsets *)touchEdgeInset
+- (void)setTouchEdgeInset:(UIEdgeInsets)touchEdgeInset
 {
     _touchEdgeInset = touchEdgeInset;
-    objc_setAssociatedObject(self, &topNameKey, [NSNumber numberWithFloat:touchEdgeInset->top], OBJC_ASSOCIATION_COPY_NONATOMIC);
-    objc_setAssociatedObject(self, &rightNameKey, [NSNumber numberWithFloat:touchEdgeInset->right], OBJC_ASSOCIATION_COPY_NONATOMIC);
-    objc_setAssociatedObject(self, &bottomNameKey, [NSNumber numberWithFloat:touchEdgeInset->bottom], OBJC_ASSOCIATION_COPY_NONATOMIC);
-    objc_setAssociatedObject(self, &leftNameKey, [NSNumber numberWithFloat:touchEdgeInset->left], OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, &topNameKey, [NSNumber numberWithFloat:touchEdgeInset.top], OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, &rightNameKey, [NSNumber numberWithFloat:touchEdgeInset.right], OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, &bottomNameKey, [NSNumber numberWithFloat:touchEdgeInset.bottom], OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, &leftNameKey, [NSNumber numberWithFloat:touchEdgeInset.left], OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (CGRect)enlargedRect

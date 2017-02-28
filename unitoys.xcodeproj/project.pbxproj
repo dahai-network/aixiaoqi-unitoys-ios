@@ -104,6 +104,8 @@
 		3CC3E0C61E6412B200A62F8C /* CallPackageListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CC3E0C41E6412B200A62F8C /* CallPackageListCell.xib */; };
 		3CC3E0CB1E6415C000A62F8C /* CallPackageDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0C91E6415C000A62F8C /* CallPackageDetailsController.m */; };
 		3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */; };
+		3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */; };
+		3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */; };
 		3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */; };
 		3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
@@ -426,6 +428,9 @@
 		3CC3E0C91E6415C000A62F8C /* CallPackageDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallPackageDetailsController.m; sourceTree = "<group>"; };
 		3CC3E0CD1E64346700A62F8C /* AbroadPackageDescView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageDescView.h; sourceTree = "<group>"; };
 		3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadPackageDescView.m; sourceTree = "<group>"; };
+		3CCA72CE1E65458900931B20 /* AbroadPackageExplainCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageExplainCell.h; sourceTree = "<group>"; };
+		3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadPackageExplainCell.m; sourceTree = "<group>"; };
+		3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AbroadPackageExplainCell.xib; sourceTree = "<group>"; };
 		3CE117481E616B8F008D5976 /* AddTouchAreaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTouchAreaButton.h; sourceTree = "<group>"; };
 		3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTouchAreaButton.m; sourceTree = "<group>"; };
 		3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageContactsInfoController.h; sourceTree = "<group>"; };
@@ -1404,6 +1409,9 @@
 				3CC3E0A61E63C22F00A62F8C /* CustomOrderCell.xib */,
 				3CC3E0B11E63F75200A62F8C /* AbroadPackageExplainController.h */,
 				3CC3E0B21E63F75200A62F8C /* AbroadPackageExplainController.m */,
+				3CCA72CE1E65458900931B20 /* AbroadPackageExplainCell.h */,
+				3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */,
+				3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */,
 				3CC3E0B41E63FA1800A62F8C /* AbroadExplainController.h */,
 				3CC3E0B51E63FA1800A62F8C /* AbroadExplainController.m */,
 				3CC3E0BA1E63FB9100A62F8C /* ExplainDetailsChildController.h */,
@@ -1843,6 +1851,7 @@
 				9562EE9B1DD31B7B00E10C98 /* AlipaySDK.bundle in Resources */,
 				0436C36B1E1FA2D60033A8F1 /* CommunicateDetailViewController.xib in Resources */,
 				3CC3E0BE1E63FB9100A62F8C /* ExplainDetailsChildController.xib in Resources */,
+				3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */,
 				950E791C1E02BC48003AE0D5 /* Package.storyboard in Resources */,
 				3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */,
 				740FD3961E287F9E009413F1 /* simcom in Resources */,
@@ -1978,6 +1987,7 @@
 				48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */,
 				95CD33EF1D9CE4F300EE5DD3 /* MD5DataSigner.m in Sources */,
 				740FD3901E287F9E009413F1 /* Makefile in Sources */,
+				3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */,
 				954A87B11D98BA6500570843 /* ContactDataHelper.m in Sources */,
 				74A91C651DF7E9A9002B4FCE /* headCollectionReusableView.m in Sources */,
 				9554C9EC1DE7E44400162624 /* FDCalendar.m in Sources */,

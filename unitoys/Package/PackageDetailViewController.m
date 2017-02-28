@@ -43,7 +43,9 @@
             self.lblFeatures.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Features"];
             self.lblDetails.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Details"];
             self.paymentOfTerms.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"paymentOfTerms"];
-            self.howToUse.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"howToUse"];
+//            self.howToUse.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"howToUse"];
+            self.howToUse.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"UseDescr"];
+            
             [self.tableView reloadData];
 //            [self.tableView needsUpdateConstraints];
             

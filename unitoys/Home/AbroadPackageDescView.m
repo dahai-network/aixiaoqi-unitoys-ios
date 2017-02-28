@@ -9,6 +9,7 @@
 #import "AbroadPackageDescView.h"
 #import "UIView+Utils.h"
 #import "global.h"
+#import "AddTouchAreaButton.h"
 
 #define leftMargin (50.0/375) * [UIScreen mainScreen].bounds.size.width
 #define viewHeight 270
@@ -20,7 +21,6 @@
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *descString;
 @property (nonatomic, copy) NSString *buttonTitle;
-
 @end
 
 @implementation AbroadPackageDescView
@@ -54,9 +54,10 @@
 
 - (void)initSubViews
 {
-    self.alpha = 0;
+//    self.alpha = 0;
     self.frame = self.bgWindow.bounds;
     UIView *presentView = [[UIView alloc] initWithFrame:CGRectMake(leftMargin, 0, self.bgWindow.width - 2 * leftMargin, viewHeight)];
+    presentView.backgroundColor = [UIColor whiteColor];
     presentView.layer.borderWidth = 1.0;
     presentView.layer.borderColor = UIColorFromRGB(0xd5d5d5).CGColor;
     presentView.centerY = self.bgWindow.height * 0.5;
@@ -64,26 +65,27 @@
     
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.text = self.title;
-    titleLabel.font = [UIFont systemFontOfSize:15];
+    titleLabel.font = [UIFont systemFontOfSize:17];
     [titleLabel sizeToFit];
     titleLabel.top = 20;
     titleLabel.centerX = presentView.width * 0.5;
     [presentView addSubview:titleLabel];
     
-    UIButton *dismissButton = [[UIButton alloc] init];
-    [dismissButton setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
+    AddTouchAreaButton *dismissButton = [[AddTouchAreaButton alloc] init];
+    dismissButton.touchEdgeInset = UIEdgeInsetsMake(5, 5, 5, 5);
+    [dismissButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
     [dismissButton sizeToFit];
-    dismissButton.top = 10;
-    dismissButton.right = presentView.width - 10;
+    dismissButton.top = 5;
+    dismissButton.right = presentView.width - 5;
     [dismissButton addTarget:self action:@selector(dismissWindow) forControlEvents:UIControlEventTouchUpInside];
     [presentView addSubview:dismissButton];
     
     UIButton *sureButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [sureButton setTitle:self.buttonTitle forState:UIControlStateNormal];
     [sureButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    sureButton.titleLabel.font = [UIFont systemFontOfSize:14];
+    sureButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [sureButton sizeToFit];
-    sureButton.bottom = presentView.height - 20;
+    sureButton.bottom = presentView.height - 15;
     sureButton.centerX = presentView.width * 0.5;
     [sureButton addTarget:self action:@selector(dismissWindow) forControlEvents:UIControlEventTouchUpInside];
     [presentView addSubview:sureButton];
@@ -91,25 +93,36 @@
     UILabel *descLabel = [[UILabel alloc] init];
     descLabel.text = self.descString;
     descLabel.numberOfLines = 0;
-    descLabel.font = [UIFont systemFontOfSize:13];
+    descLabel.font = [UIFont systemFontOfSize:14];
     descLabel.textColor = [UIColor darkGrayColor];
-    descLabel.width = presentView.width - 60;
+    descLabel.width = presentView.width - 40;
     descLabel.top = titleLabel.bottom + 20;
     descLabel.height = sureButton.top - 20 - descLabel.top;
     descLabel.centerX = presentView.width * 0.5;
     [presentView addSubview:descLabel];
     
-    [UIView animateWithDuration:0.7 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.alpha = 1;
-    } completion:nil];
+    
+    CABasicAnimation *baseAnima = [CABasicAnimation animation];
+    baseAnima.keyPath = @"transform.scale";
+    baseAnima.duration = 0.3;
+    baseAnima.fromValue = @0.7;
+    baseAnima.toValue = @1;
+    [presentView.layer addAnimation:baseAnima forKey:nil];
 }
+
 
 - (void)dismissWindow
 {
     if (_bgWindow) {
-        _bgWindow.hidden = YES;
-        [self removeFromSuperview];
-        _bgWindow = nil;
+        [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            self.alpha = 0;
+        } completion:^(BOOL finished) {
+            _bgWindow.hidden = YES;
+            self.hidden = YES;
+            [self removeFromSuperview];
+            _bgWindow = nil;
+        }];
     }
 }
+
 @end

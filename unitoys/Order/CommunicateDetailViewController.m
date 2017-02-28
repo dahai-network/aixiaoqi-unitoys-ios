@@ -92,8 +92,8 @@
             self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"CommunicateDetailTableViewCell" owner:nil options:nil] [1];
         }
         self.secondCell.lblFirstName.text = @"使用介绍:";
-        self.secondCell.lblContent.text = self.communicateDetailInfo[@"Details"];
-        return self.secondCell;
+        self.secondCell.lblContent.text = self.communicateDetailInfo[@"Features"];
+        return self.secondCell; 
     } else {
         static NSString *identifier=@"ContentTableViewCell";
         self.secondCell = [tableView dequeueReusableCellWithIdentifier:identifier];
@@ -101,7 +101,7 @@
             self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"CommunicateDetailTableViewCell" owner:nil options:nil][1];
         }
         self.secondCell.lblFirstName.text = @"注意事项:";
-        self.secondCell.lblContent.text = self.communicateDetailInfo[@"Features"];
+        self.secondCell.lblContent.text = self.communicateDetailInfo[@"Details"];
         return self.secondCell;
     }
 }

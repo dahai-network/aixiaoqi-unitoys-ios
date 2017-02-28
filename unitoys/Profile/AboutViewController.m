@@ -195,8 +195,17 @@
     view.tintColor = [UIColor colorWithRed:234/255.0 green:236/255.0 blue:240/255.0 alpha:1];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 10;
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+//    return 10;
+//}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return 0;
+    }else{
+        return 10;
+    }
 }
 
 #pragma mark -- Table

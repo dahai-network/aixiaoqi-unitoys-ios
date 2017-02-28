@@ -232,7 +232,6 @@
             [AbroadPackageDescView showAbroadPackageDescViewWithTitle:@"使用简介" Desc:@"1）出国前在套餐超市中，购买需前往地的套餐，然后将它激活到爱小器国际卡。\n2）出国后将爱小器国际卡插入手机，实现上网，然后将国内电话卡插入爱小器智能设备，通过APP接打电话，收发短信。" SureButtonTitle:@"知道了,以后不再提醒"];
             [[NSUserDefaults standardUserDefaults] setObject:@(1) forKey:@"isShowAbroadPackageDescView"];
         }
-
     }
 }
 

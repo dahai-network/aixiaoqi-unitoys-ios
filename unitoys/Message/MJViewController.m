@@ -199,7 +199,7 @@
             
             
         } failure:^(id dataObj, NSError *error) {
-            //
+            HUDNormal(@"网络请求出错")
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
         

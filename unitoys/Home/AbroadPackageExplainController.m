@@ -9,6 +9,7 @@
 #import "AbroadPackageExplainController.h"
 #import "BrowserViewController.h"
 #import "AbroadExplainController.h"
+#import "AbroadPackageExplainCell.h"
 
 @interface AbroadPackageExplainController ()
 
@@ -28,14 +29,17 @@
     self.title = @"境外套餐教程";
     self.titlesArray = @[
                          @{
+                             @"cellImage" : @"set_beforesetout",
                              @"cellTitle" :@"出境前激活套餐",
                              @"cellAction" : @"activationAction",
                              },
                          @{
+                             @"cellImage" : @"set_isout",
                              @"cellTitle" :@"在境外使用",
                              @"cellAction" : @"userAction",
                              },
                          @{
+                             @"cellImage" : @"set_isback",
                              @"cellTitle" :@"回国后恢复设置",
                              @"cellAction" : @"recoveryAction",
                              },
@@ -43,6 +47,7 @@
     
     self.tableView.rowHeight = 50;
     self.tableView.tableFooterView = [UIView new];
+    [self.tableView registerNib:[UINib nibWithNibName:@"AbroadPackageExplainCell" bundle:nil] forCellReuseIdentifier:@"AbroadPackageExplainCell"];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -52,12 +57,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"normalCell"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"normalCell"];
-    }
-    cell.textLabel.text = self.titlesArray[indexPath.row][@"cellTitle"];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    AbroadPackageExplainCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AbroadPackageExplainCell"];
+    cell.nameLabel.text = self.titlesArray[indexPath.row][@"cellTitle"];
+    cell.iconImageView.image = [UIImage imageNamed:self.titlesArray[indexPath.row][@"cellImage"]];
     return cell;
 }
 

@@ -10,6 +10,6 @@
 
 @interface AddTouchAreaButton : UIButton
 
-@property (nonatomic, assign) UIEdgeInsets *touchEdgeInset;
+@property (nonatomic, assign) UIEdgeInsets touchEdgeInset;
 
 @end
