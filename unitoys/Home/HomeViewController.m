@@ -2025,11 +2025,15 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].electricQuantity = nil;
     [BlueToothDataManager shareManager].versionNumber = nil;
     [BlueToothDataManager shareManager].currentStep = @"0";
+    [BlueToothDataManager shareManager].bleStatueForCard = 0;
+    [BlueToothDataManager shareManager].isBeingRegisting = NO;
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     if (![BlueToothDataManager shareManager].isAccordBreak) {
-        //重新连接
-        [self checkBindedDeviceFromNet];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //重新连接
+            [self checkBindedDeviceFromNet];
+        });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (![BlueToothDataManager shareManager].isConnected) {
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
@@ -2131,24 +2135,14 @@ typedef enum : NSUInteger {
 
 #pragma mark 更新蓝牙状态
 - (void)refreshBLEStatue {
-    if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected && [BlueToothDataManager shareManager].isRegisted) {
+    if ([BlueToothDataManager shareManager].isConnected) {
         if (![BlueToothDataManager shareManager].isHaveCard) {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
         } else {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
         }
-    } else if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
-        if (![BlueToothDataManager shareManager].isHaveCard) {
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
-        } else {
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
-        }
     } else {
-        if (![BlueToothDataManager shareManager].isHaveCard) {
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
-        } else {
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
-        }
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
     }
 }
 

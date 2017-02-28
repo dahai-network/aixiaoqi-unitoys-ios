@@ -155,8 +155,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewDataStr:) name:@"receiveNewDataStr" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectingBLEAction) name:@"connectingBLE" object:@"connectingBLE"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeTCP) name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];//解绑之后关闭tcp
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dicConnectedBLE) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];//蓝牙断开连接
     // Override point for customization after application launch.
     return YES;
+}
+
+- (void)dicConnectedBLE {
+    self.currentPacketNumber = @"001";
 }
 
 - (void)checkCurrentVersion
@@ -1305,5 +1310,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"receiveNewDataStr" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectingBLE" object:@"connectingBLE"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
 }
 @end

@@ -30,7 +30,7 @@
         self.lblStatue.text = @"信号强";
 //        self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
     }
-    if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted) {
+    if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
         //正在注册
         NSString *senderStr = [BlueToothDataManager shareManager].stepNumber;
         [self countAndShowPercentage:senderStr];
@@ -300,6 +300,7 @@
                 [BlueToothDataManager shareManager].versionNumber = nil;
                 [BlueToothDataManager shareManager].stepNumber = nil;
                 [BlueToothDataManager shareManager].bleStatueForCard = 0;
+                [BlueToothDataManager shareManager].isBeingRegisting = NO;
                 if (self.customView) {
                     self.customView.hidden = YES;
                 }
