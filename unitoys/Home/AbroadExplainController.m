@@ -293,14 +293,14 @@
 - (void)apnDeleteAction
 {
     //删除APN
+    //打开描述文件界面
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=ManagedConfigurationList"]];
 }
 
 - (void)gotoSystemSettingAction
 {
     //打开app设置界面
 //    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-    //打开描述文件界面
-//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=General&path=ManagedConfigurationList"]];
     //打开系统设置界面
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]]) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]];

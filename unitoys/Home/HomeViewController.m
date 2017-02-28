@@ -823,15 +823,19 @@ typedef enum : NSUInteger {
             [BlueToothDataManager shareManager].isShowHud = NO;
             HUDNormal(@"激活成功")
             [self paySuccess];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderSuccess" object:@"actionOrderSuccess"];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
         }else{
             //数据请求失败
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
         }
     } failure:^(id dataObj, NSError *error) {
         //
         NSLog(@"啥都没：%@",[error description]);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
     } headers:self.headers];
 }
 
@@ -2284,6 +2288,9 @@ typedef enum : NSUInteger {
                     [self checkCardType];
                 } else if ([contentStr isEqualToString:@"11"]) {
                     NSLog(@"对卡上电1失败,没有卡");
+                    if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+                        [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
+                    }
                     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
                 } else if ([contentStr isEqualToString:@"02"]) {
                     NSLog(@"对卡上电2成功");
@@ -2322,6 +2329,7 @@ typedef enum : NSUInteger {
                         [BlueToothDataManager shareManager].bleStatueForCard = 1;
                         [BlueToothDataManager shareManager].operatorType = @"2";
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_AIXIAOQICARD];
+                        [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                     } else {
                         //对卡断电
                         [self phoneCardToOutageNew];

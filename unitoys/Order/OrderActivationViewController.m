@@ -66,6 +66,18 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
     [self.valueView addGestureRecognizer:tap];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionOrderStatueSuccess) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionOrderStatueFail) name:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
+    
+}
+
+- (void)actionOrderStatueSuccess {
+    self.activityOrderButton.hidden = YES;
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)actionOrderStatueFail {
+    [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
 }
 
 - (void)selectValue {
@@ -143,7 +155,6 @@
                     //2.套餐激活完成之后获取蓝牙发送的序列号
                     [BlueToothDataManager shareManager].bleStatueForCard = 1;
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"list"][@"OrderID"]];
-                    //                [self actionSuccessLocal];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                     [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
@@ -168,32 +179,9 @@
     }
 }
 
-- (void)actionSuccessLocal {
-    self.checkToken = YES;
-    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.dicOrderDetail[@"list"][@"OrderID"],@"OrderID", nil];
-    [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
-    [SSNetworkRequest postRequest:apiActivationLocalCompleted params:info success:^(id responseObj) {
-    NSLog(@"查询到的用户数据：%@",responseObj);
-    if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            //套餐激活完成
-            HUDNormal(@"激活成功")
-        self.activityOrderButton.hidden = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderSuccess" object:@"actionOrderSuccess"];
-            [self.navigationController popViewControllerAnimated:YES];
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-            HUDNormal(responseObj[@"msg"])
-            [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
-        }
-    } failure:^(id dataObj, NSError *error) {
-        //
-        NSLog(@"啥都没：%@",[error description]);
-        HUDNormal(@"激活失败")
-        [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
-    } headers:self.headers];
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"actionOrderSuccess" object:@"actionOrderSuccess"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
 }
 
 @end
