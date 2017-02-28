@@ -37,8 +37,6 @@
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             
-            
-            
             self.dicOrderDetail = [responseObj objectForKey:@"data"];
             
             self.lblTotalPrice.text = [NSString stringWithFormat:@"￥%.2f",[[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"TotalPrice"] floatValue]];

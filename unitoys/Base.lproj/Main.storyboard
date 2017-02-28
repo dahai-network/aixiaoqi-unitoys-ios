@@ -119,7 +119,7 @@
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="beM-p7-A2p">
                                                             <rect key="frame" x="0.0" y="0.5" width="125" height="90"/>
                                                             <subviews>
-                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="home_setting" translatesAutoresizingMaskIntoConstraints="NO" id="Sgp-8r-rEy">
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="index_internetional_save" translatesAutoresizingMaskIntoConstraints="NO" id="Sgp-8r-rEy">
                                                                     <rect key="frame" x="38" y="12.5" width="49" height="49"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="49" id="Dm7-vx-B7w"/>
@@ -149,7 +149,7 @@
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oUj-zE-fEN">
                                                             <rect key="frame" x="125" y="0.5" width="125" height="90"/>
                                                             <subviews>
-                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="home_device" translatesAutoresizingMaskIntoConstraints="NO" id="o9m-aZ-oY3">
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="index_inland_save" translatesAutoresizingMaskIntoConstraints="NO" id="o9m-aZ-oY3">
                                                                     <rect key="frame" x="38" y="12.5" width="49" height="49"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" secondItem="o9m-aZ-oY3" secondAttribute="height" multiplier="1:1" id="jC4-gg-M9L"/>
@@ -179,7 +179,7 @@
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aUW-9c-qsj">
                                                             <rect key="frame" x="250" y="0.5" width="125" height="90"/>
                                                             <subviews>
-                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="home_tutorial" translatesAutoresizingMaskIntoConstraints="NO" id="aM7-x5-rtg">
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="index_call_packet" translatesAutoresizingMaskIntoConstraints="NO" id="aM7-x5-rtg">
                                                                     <rect key="frame" x="38" y="12.5" width="49" height="49"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="49" id="LcT-5r-X7L"/>
@@ -2409,11 +2409,11 @@
         <image name="Header" width="23" height="23"/>
         <image name="btn_back" width="10" height="18"/>
         <image name="common_warnning" width="64" height="74"/>
-        <image name="home_device" width="49" height="49"/>
         <image name="home_mall" width="23" height="23"/>
-        <image name="home_setting" width="49" height="49"/>
         <image name="home_sportback" width="360" height="94"/>
-        <image name="home_tutorial" width="49" height="49"/>
+        <image name="index_call_packet" width="148" height="147"/>
+        <image name="index_inland_save" width="148" height="147"/>
+        <image name="index_internetional_save" width="148" height="147"/>
         <image name="log_hidewords" width="33" height="32"/>
         <image name="logo" width="48" height="48"/>
         <image name="msg_addman" width="23" height="23"/>
