@@ -475,6 +475,8 @@
                  _messageFrames = nil;
                  
                  //隐藏发送textfield
+                 self.topEditMessageViewHeight.constant = 0;
+                 self.topEditMessageView.hidden = YES;
                  
                  [self loadMessages];
                 self.btnSend.enabled = YES;

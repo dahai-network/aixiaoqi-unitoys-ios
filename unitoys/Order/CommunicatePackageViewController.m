@@ -9,11 +9,11 @@
 #import "CommunicatePackageViewController.h"
 #import "CommunicatePackageTableViewCell.h"
 #import "CommunicateDetailViewController.h"
+#import "UNDatabaseTools.h"
 
 @interface CommunicatePackageViewController ()
 @property (nonatomic, strong)NSMutableArray *listArray;
 @property (weak, nonatomic) IBOutlet UITableView *listTableView;
-
 @end
 
 @implementation CommunicatePackageViewController
@@ -37,22 +37,26 @@
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"1",@"pageNumber", @"20",@"pageSize",@"1", @"category", nil];
-    
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@category%@", @"apiPackageGet", @"1"];
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageGet params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             NSLog(@"获取到的通话套餐:%@", responseObj);
             self.listArray = responseObj[@"data"][@"list"];
             [self.listTableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
         }
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            self.listArray = responseObj[@"data"][@"list"];
+            [self.listTableView reloadData];
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }

@@ -75,15 +75,15 @@
     if (self.currentExplainType == ExplainTypeAbroad) {
         self.title = @"在境外";
         NSDictionary *page1 = @{
-                                @"nameTitle" : @"手环和手机内置的SIM卡交换位置",
-//                                @"detailTitle" : @"手环和手机内置的SIM卡交换位置。",
+                                @"nameTitle" : @"插电话卡",
+                                @"detailTitle" : @"手环和手机内置的SIM卡交换位置。",
                                 @"explainImage" : @"set_afteroutstep1",
                                 };
         NSDictionary *page2 = @{
                                 @"nameTitle" : @"设置APN",
-                                @"detailTitle" : @"打开系统的APN设置界面，点击新建APN，然后在“名称”和“APN”行都输入263，点击保存，最后启用该APN。",
+                                @"detailTitle" : @"点击“安装APN”按钮，跳转到系统设置的安装APN界面，然后点击右上角“安装”按钮，进入”同意“界面再点击右上角“安装”安装，选择安装。",
                                 @"explainImage" : @"set_afteroutstep2",
-                                @"buttonTitle" : @"打开APN设置",
+                                @"buttonTitle" : @"安装APN",
                                 @"buttonAction" : @"apnSettingAction",
                                 };
         NSDictionary *page3 = @{
@@ -118,15 +118,15 @@
     }else if (self.currentExplainType == ExplainTypeInternal){
         self.title = @"回国后";
         NSDictionary *page1 = @{
-                                @"nameTitle" : @"① 手环和手机内置的SIM卡交换位置",
-//                                @"detailTitle" : @"将爱小器国际卡从手机中取出，然后将自己的电话卡插回手机。",
+                                @"nameTitle" : @"插电话卡",
+                                @"detailTitle" : @"手环和手机内置的SIM卡交换位置",
                                 @"explainImage" : @"set_afteroutstep1",
                                 };
         NSDictionary *page2 = @{
                                 @"nameTitle" : @"删除APN",
-                                @"detailTitle" : @"打开系统的APN设置界面，选择新建的名为“263”的APN，然后删除。",
-                                @"explainImage" : @"set_afteroutstep2",
-                                @"buttonTitle" : @"打开APN设置",
+                                @"detailTitle" : @"点击“删除APN”按钮，跳转到系统设置的“描述文件”界面，选择“爱小器APN”，再点击“删除描述文件”。",
+                                @"explainImage" : @"set_afteroutstep5",
+                                @"buttonTitle" : @"删除APN",
                                 @"buttonAction" : @"apnDeleteAction",
                                 };
         NSDictionary *page3 = @{

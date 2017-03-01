@@ -9,6 +9,7 @@
 #import "CommunicateDetailViewController.h"
 #import "CommunicateDetailTableViewCell.h"
 #import "OrderCommitViewController.h"
+#import "UNDatabaseTools.h"
 
 @interface CommunicateDetailViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -41,12 +42,13 @@
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.communicateDetailID,@"id", nil];
-    
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@communicateDetailID%@", @"apiPackageByID", [self.communicateDetailID stringByReplacingOccurrencesOfString:@"-" withString:@""]];
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageByID params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             self.communicateDetailInfo = responseObj[@"data"][@"list"];
             [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -57,7 +59,11 @@
             HUDNormal(responseObj[@"msg"])
         }
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            self.communicateDetailInfo = responseObj[@"data"][@"list"];
+            [self.tableView reloadData];
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }

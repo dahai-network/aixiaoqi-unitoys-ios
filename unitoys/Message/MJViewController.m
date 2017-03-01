@@ -39,7 +39,6 @@
     self.tableView.delegate = self; //控制器成为代理
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"详细信息" style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
-
     [self loadMessages];
     
     self.txtSendText.delegate = self;

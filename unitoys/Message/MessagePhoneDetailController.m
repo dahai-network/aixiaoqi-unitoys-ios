@@ -18,7 +18,7 @@
 @property (strong, nonatomic) CallActionView *callActionView;
 
 @property (nonatomic, strong) NSMutableArray *phoneDatas;
-@property (nonatomic, copy) NSString *phoneName;
+//@property (nonatomic, copy) NSString *phoneName;
 @property (nonatomic, assign) CGFloat headerHeight;
 
 @end
@@ -37,15 +37,27 @@
     self.title = @"详情";
     
     if ([self.toPhoneStr containsString:@","]) {
-        self.phoneName = self.toPhoneStr;
+//        self.phoneName = [self checkLinkNameWithPhoneStrMergeGroupName:self.toPhoneStr];
         NSArray *phones = [self.toPhoneStr componentsSeparatedByString:@","];
-        [self.phoneDatas addObjectsFromArray:phones];
+        NSMutableArray *tempPhone = [NSMutableArray array];
+        for (NSString *phone in phones) {
+            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+            NSString *phoneName = [self checkLinkNameWithPhoneStr:phone];
+            dict[@"phone"] = phone;
+            dict[@"phoneName"] = phoneName;
+            [tempPhone addObject:dict];
+        }
+        [self.phoneDatas addObjectsFromArray:tempPhone];
     }else{
-        self.phoneName = [self checkLinkNameWithPhoneStr:self.toPhoneStr];
+//        self.phoneName = [self checkLinkNameWithPhoneStr:self.toPhoneStr];
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        NSString *phoneName = [self checkLinkNameWithPhoneStr:self.toPhoneStr];
+        dict[@"phone"] = self.toPhoneStr;
+        dict[@"phoneName"] = phoneName;
         [self.phoneDatas addObject:self.toPhoneStr];
     }
     
-    self.headerHeight = [self.phoneName boundingRectWithSize:CGSizeMake(kScreenWidthValue - 62 - 11, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:16]} context:nil].size.height;
+//    self.headerHeight = [self.phoneName boundingRectWithSize:CGSizeMake(kScreenWidthValue - 62 - 11, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:16]} context:nil].size.height;
 }
 
 - (void)initSubViews
@@ -56,6 +68,7 @@
     self.tableView.allowsSelection = NO;
     self.tableView.tableFooterView = [UIView new];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableView.rowHeight = 80;
     [self.tableView registerNib:[UINib nibWithNibName:@"MessagePhoneDetailHeaderCell" bundle:nil] forCellReuseIdentifier:@"MessagePhoneDetailHeaderCell"];
     [self.tableView registerNib:[UINib nibWithNibName:@"MessagePhoneDetailCell" bundle:nil] forCellReuseIdentifier:@"MessagePhoneDetailCell"];
     [self.view addSubview:self.tableView];
@@ -64,36 +77,20 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.phoneDatas.count + 1;
+    return self.phoneDatas.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
-        MessagePhoneDetailHeaderCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessagePhoneDetailHeaderCell"];
-        cell.phoneLabel.text = self.phoneName;
-        return cell;
-    }else{
-        MessagePhoneDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessagePhoneDetailCell"];
-        cell.phoneLabel.text = self.phoneDatas[indexPath.row - 1];
-        cell.callButton.tag = indexPath.row - 1;
-        [cell.callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        return cell;
-    }
+    MessagePhoneDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessagePhoneDetailCell"];
+    NSDictionary *dict = self.phoneDatas[indexPath.row];
+    cell.nameLabel.text = dict[@"phoneName"];
+    cell.phoneLabel.text = dict[@"phone"];
+    cell.callButton.tag = indexPath.row;
+    [cell.callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == 0) {
-        if (self.headerHeight > 60) {
-            return self.headerHeight;
-        }else{
-            return 60;
-        }
-    }else{
-        return 60;
-    }
-}
 
 - (void)callButtonAction:(UIButton *)button
 {

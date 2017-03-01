@@ -526,6 +526,8 @@
                     <connections>
                         <outlet property="btnSend" destination="bq9-oS-Jdl" id="TH1-vE-LKx"/>
                         <outlet property="tableView" destination="hqc-vL-BSW" id="muN-k2-Tk6"/>
+                        <outlet property="topEditMessageView" destination="aAa-Mo-Zng" id="7zf-bP-MyE"/>
+                        <outlet property="topEditMessageViewHeight" destination="hIU-YC-R74" id="kfK-0y-KUf"/>
                         <outlet property="txtLinkman" destination="RFQ-RM-wS1" id="2sd-c5-wpe"/>
                         <outlet property="txtSendText" destination="zZb-xL-VG4" id="Fkn-Yh-zaq"/>
                     </connections>

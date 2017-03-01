@@ -11,6 +11,7 @@
 #import "OrderActivationViewController.h"
 #import "PackageDetailViewController.h"
 #import "AbroadPackageExplainController.h"
+#import "UNDatabaseTools.h"
 
 @interface ActivateGiftCardViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *footView;
@@ -41,9 +42,12 @@
     }else{
         self.title = @"套餐详情";
     }
-    [self setRightButton:@"使用教程"];
     
-    self.packageCategory = 4;
+    if (self.packageCategory != 2 && self.packageCategory != 3) {
+        [self setRightButton:@"使用教程"];
+    }
+    
+//    self.packageCategory = 4;
     self.dicOrderDetail = [[NSDictionary alloc] init];
 
     self.tableView.tableFooterView = self.footView;
@@ -62,13 +66,15 @@
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.idOrder,@"id", nil];
-    
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderId%@", @"apiOrderById", [self.idOrder stringByReplacingOccurrencesOfString:@"-" withString:@""]];
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiOrderById params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
+            
             self.dicOrderDetail = [responseObj objectForKey:@"data"];
-            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
+//            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
             setImage(self.firstCell.imgOrderView, [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"LogoPic"])
             self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
             self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
@@ -84,7 +90,19 @@
             //数据请求失败
         }
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            self.dicOrderDetail = [responseObj objectForKey:@"data"];
+//            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
+            setImage(self.firstCell.imgOrderView, [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"LogoPic"])
+            self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
+            self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
+            self.IsSupport4G = responseObj[@"data"][@"list"][@"PackageIsSupport4G"];
+            self.IsApn = responseObj[@"data"][@"list"][@"PackageIsApn"];
+            self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
+            self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
+            [self.tableView reloadData];
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -92,6 +110,7 @@
 - (void)rightButtonClick
 {
     NSLog(@"使用教程");
+    
     AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
     abroadVc.isSupport4G = [self.IsSupport4G boolValue];
     abroadVc.isApn = [self.IsApn boolValue];
@@ -455,7 +474,7 @@
             HUDNormal(responseObj[@"msg"])
         }
     } failure:^(id dataObj, NSError *error) {
-        //
+        HUDNormal(@"网络异常")
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -483,7 +502,7 @@
         }
         
     } failure:^(id dataObj, NSError *error) {
-        //
+        HUDNormal(@"网络异常")
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }

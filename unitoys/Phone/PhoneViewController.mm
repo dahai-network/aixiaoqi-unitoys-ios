@@ -33,6 +33,7 @@
 
 //#import "JSONModel.h"
 #import <MJExtension/MJExtension.h>
+#import <Reachability/Reachability.h>
 
 @interface PhoneViewController ()
 {
@@ -554,6 +555,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             NSLog(@"The table count: %li", count);
             if (count == 1) {
                 NSLog(@"log_keepers table is existed.");
+                //升序,将数据插入到最前面,因此最先插入的显示在最后
                 NSString *dataSql = @"select * from CallRecord order by calltime asc";
                 FMResultSet *rs = [db executeQuery:dataSql];
                 
@@ -584,7 +586,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //            [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
         }else{
             //加载数据到列表
-            
+            //升序,将数据插入到最前面,因此最先插入的显示在最后
             NSString *dataSql = @"select * from CallRecord order by calltime asc";
             FMResultSet *rs = [db executeQuery:dataSql];
             
@@ -728,7 +730,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 }
             }
         }
-        
         //不在此时插入数据
 //        [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
 //        [self.tableView reloadData];
@@ -747,7 +748,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (![db open]) {
         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
         return FALSE;
-        
     }else{
         [self insertSqlData:dicPhoneRecord dataBase:db Calltime:timestemp];
     }
@@ -1109,7 +1109,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //对系统的通话界面进行无声
             if (kSystemVersionValue >= 10.0 && isUseCallKit) {
                 [[UNCallKitCenter sharedInstance]  mute:self.muteStatus callUUID:nil completion:^(NSError * _Nullable error) {
-                    
                 }];
             }else{
                 theSipEngine->MuteMic(self.muteStatus);
@@ -1131,7 +1130,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
             }else{
                 //查找出错
-                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
+//                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
+                //降序,更新最后一条数据
+                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime desc limit 0,1"];
                 
                 if ([rs next]) {
                     
@@ -1408,7 +1409,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 /*呼叫失败，并返回错误代码，代码对应的含义，请参考common_types.h*/
 -(void) OnCallFailed:(CallErrorCode) error_code{
     NSLog([NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code],nil);
-    [[[UIAlertView alloc] initWithTitle:@"错误提示" message:[NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+    [[[UIAlertView alloc] initWithTitle:@"错误提示" message:[NSString stringWithFormat:@"呼叫异常,请确认网络或账号正常"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
     //    [mStatus setText:[NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code]];
     
 }
@@ -1824,6 +1825,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (void)callUnitysNumber :(NSString *)strNumber {
+    if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable) {
+        HUDNormal(@"网络错误,请检查网络")
+        return;
+    }
+    
+    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     
     if (storyboard) {
@@ -2129,10 +2136,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
 //            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"Fm"]];
-            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"Fm"]];
+            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
+//            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"Fm"]];
         } else {
 //            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"To"]];
-            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"To"]];
+            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
+//            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"To"]];
         }
         
         NSString *textStr = [NSString stringWithFormat:@"%@ >", [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]]];
@@ -2325,10 +2334,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
             if (MJViewController) {
                 if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
-                    MJViewController.title = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"Fm"]];
+                    MJViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
                     MJViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
                 } else {
-                    MJViewController.title = [self checkLinkNameWithPhoneStrNoGroupName:[dicMessageRecord objectForKey:@"To"]];
+                    MJViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
+//                    MJViewController.title = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"To"]];
                     MJViewController.toTelephone = [dicMessageRecord objectForKey:@"To"];
                 }
                 MJViewController.hidesBottomBarWhenPushed = YES;

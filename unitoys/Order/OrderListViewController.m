@@ -14,6 +14,7 @@
 #import "ActivateGiftCardViewController.h"
 #import "CommunicatePackageViewController.h"
 #import "AbroadPackageDescView.h"
+#import "UNDatabaseTools.h"
 
 @interface OrderListViewController ()
 
@@ -101,10 +102,13 @@
         type = @"0";
     }
     NSDictionary *params;
+    NSString *apiNameStr;
     if (self.isAbroadMessage) {
         params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber",@"0",@"PackageCategory", nil];
+        apiNameStr = [NSString stringWithFormat:@"%@PackageCategory%@", @"apiOrderList", @"0"];
     }else{
         params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber", nil];
+        apiNameStr = [NSString stringWithFormat:@"%@PackageCategory", @"apiOrderList"];
     }
     
     [self getBasicHeader];
@@ -113,6 +117,7 @@
     [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             
             self.arrOrderData = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
             
@@ -127,7 +132,11 @@
         
         NSLog(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            self.arrOrderData = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+            [self.tableView reloadData];
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -219,6 +228,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *dicOrder = [self.arrOrderData objectAtIndex:indexPath.row];
     ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
+    giftCardVC.packageCategory = [dicOrder[@"PackageCategory"] intValue];
     giftCardVC.idOrder = dicOrder[@"OrderID"];
     giftCardVC.isAbroadMessage = self.isAbroadMessage;
     [self.navigationController pushViewController:giftCardVC animated:YES];

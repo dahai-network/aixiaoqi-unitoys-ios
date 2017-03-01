@@ -13,6 +13,9 @@
 
 @interface NewMessageViewController : BaseViewController<PhoneNumberSelectDelegate,UITextViewDelegate,NotifyTextFieldDelegate>
 
+@property (weak, nonatomic) IBOutlet UIView *topEditMessageView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topEditMessageViewHeight;
+
 @property (weak, nonatomic) IBOutlet NotifyTextField *txtLinkman;
 
 @property (weak, nonatomic) IBOutlet KTAutoHeightTextView *txtSendText;

@@ -107,6 +107,8 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 //短信不显示组名
 - (NSString *)checkLinkNameWithPhoneStrNoGroupName:(NSString *)phoneStr;
+//短信去除重复组名
+- (NSString *)checkLinkNameWithPhoneStrMergeGroupName:(NSString *)phoneStr;
 
 - (BOOL)isWXAppInstalled;//判断是否安装指定版本的微信
 

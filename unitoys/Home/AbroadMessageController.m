@@ -135,6 +135,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *dicOrder = [self.arrOrderData objectAtIndex:indexPath.row];
     ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
+    giftCardVC.packageCategory = [dicOrder[@"PackageCategory"] intValue];
     giftCardVC.idOrder = dicOrder[@"OrderID"];
     [self.navigationController pushViewController:giftCardVC animated:YES];
 }

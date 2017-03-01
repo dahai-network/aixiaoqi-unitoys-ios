@@ -38,6 +38,10 @@
 // iOS10注册APNs所需头 件
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max 
 #import <UserNotifications/UserNotifications.h> 
+
+#import "UNDatabaseTools.h"
+#import <Reachability/Reachability.h>
+
 #endif
 // 如果需要使 idfa功能所需要引 的头 件(可选) #import <AdSupport/AdSupport.h>
 
@@ -750,7 +754,21 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"登录失败：%@",[error description]);
-        [self loadLoginViewController];
+//        if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable) {
+//            
+//        }
+        
+//        [self loadLoginViewController];
+        
+        HUDNormal(@"网络异常")
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        if (storyboard) {
+            UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
+            if (mainViewController) {
+                self.window.rootViewController = mainViewController;
+            }
+        }
+        
         //        HUDNormal(@"网络连接超时")
         //        HUDNormal([error description])
     } headers:nil];

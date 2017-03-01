@@ -28,6 +28,8 @@
 #import "OrderListViewController.h"
 #import "CommunicatePackageViewController.h"
 
+#import "UNDatabaseTools.h"
+
 //#import "AbroadMessageController.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
@@ -137,6 +139,7 @@ typedef enum : NSUInteger {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     self.navigationItem.leftBarButtonItem = nil;
     [BlueToothDataManager shareManager].bleStatueForCard = 0;
     self.macAddressDict = [NSMutableDictionary new];
@@ -292,6 +295,8 @@ typedef enum : NSUInteger {
     [SSNetworkRequest getRequest:apiDeviceBracelet params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"查询绑定设备 -- %@", responseObj);
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:responseObj];
+            
             self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
             //扫描蓝牙设备
             [self scanAndConnectDevice];
@@ -305,7 +310,12 @@ typedef enum : NSUInteger {
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(@"网络貌似有问题")
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiDeviceBracelet"];
+        if (responseObj) {
+            self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
+            //扫描蓝牙设备
+            [self scanAndConnectDevice];
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -751,6 +761,8 @@ typedef enum : NSUInteger {
     [SSNetworkRequest postRequest:apiCheckUsedExistByPageCategory params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"是否存在制定套餐:%@", responseObj);
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCheckUsedExistByPageCategory" dictData:responseObj];
+            
             if ([responseObj[@"data"][@"Used"] intValue]/*0：不存在，1：存在*/) {
                 dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
                 dispatch_async(global, ^{
@@ -776,7 +788,27 @@ typedef enum : NSUInteger {
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
         }
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiCheckUsedExistByPageCategory"];
+        if (responseObj) {
+            if ([responseObj[@"data"][@"Used"] intValue]/*0：不存在，1：存在*/) {
+                dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+                dispatch_async(global, ^{
+                    if ([self.simtype isEqualToString:@"1"] || [self.simtype isEqualToString:@"2"]) {
+                        if ([BlueToothDataManager shareManager].isTcpConnected) {
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
+                        } else {
+                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
+                        }
+                    } else {
+                        HUDNormal(@"电话卡运营商不属于三大运营商")
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
+                    }
+                });
+            } else {
+                HUDNormal(@"您还没有购买通话套餐")
+                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOPACKAGE];
+            }
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -792,6 +824,7 @@ typedef enum : NSUInteger {
     [SSNetworkRequest postRequest:apiQueryOrderData params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"%@", responseObj);
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiQueryOrderData" dictData:responseObj];
             //上电
             //对卡上电
             [self phoneCardToUpeLectrify:@"03"];
@@ -803,7 +836,11 @@ typedef enum : NSUInteger {
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
         }
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiQueryOrderData"];
+        if (responseObj) {
+            [self phoneCardToUpeLectrify:@"03"];
+            [self sendMessageToBLEWithType:BLECardData validData:responseObj[@"data"][@"Data"]];
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -833,7 +870,7 @@ typedef enum : NSUInteger {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
         }
     } failure:^(id dataObj, NSError *error) {
-        //
+        
         NSLog(@"啥都没：%@",[error description]);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
     } headers:self.headers];
@@ -1153,9 +1190,8 @@ typedef enum : NSUInteger {
     [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiOrderList" dictData:responseObj];
             self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
-        
             [self viewOrders];
         
             [self.tableView reloadData];
@@ -1164,16 +1200,18 @@ typedef enum : NSUInteger {
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
-            //数据请求失败
+
         }
-        
-        
-        
-        
         NSLog(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         //
         NSLog(@"啥都没：%@",[error description]);
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiOrderList"];
+        if (responseObj) {
+            self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+            [self viewOrders];
+            [self.tableView reloadData];
+        }
     } headers:self.headers];
 }
 
@@ -1187,6 +1225,8 @@ typedef enum : NSUInteger {
     [SSNetworkRequest getRequest:apiGetSportTotal params:nil success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetSportTotal" dictData:responseObj];
+            
             _lblStepNum.text = [self convertNull:[[responseObj objectForKey:@"data"] objectForKey:@"StepNum"]];
             _lblStepNum.font = [UIFont systemFontOfSize:20 weight:2];
             _lblKM.text = [self convertNull:[[responseObj objectForKey:@"data"] objectForKey:@"KM"]];
@@ -1208,7 +1248,22 @@ typedef enum : NSUInteger {
         
         NSLog(@"查询到的运动数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetSportTotal"];
+        if (responseObj) {
+            _lblStepNum.text = [self convertNull:[[responseObj objectForKey:@"data"] objectForKey:@"StepNum"]];
+            _lblStepNum.font = [UIFont systemFontOfSize:20 weight:2];
+            _lblKM.text = [self convertNull:[[responseObj objectForKey:@"data"] objectForKey:@"KM"]];
+            _lblKM.font = [UIFont systemFontOfSize:17 weight:2];
+            _lblDate.text = [self convertNull:[[responseObj objectForKey:@"data"] objectForKey:@"Date"]];
+            _lblDate.font = [UIFont systemFontOfSize:17 weight:2];
+            _lblKcal.text = [self convertNull:[[responseObj objectForKey:@"data"] objectForKey:@"Kcal"]];
+            _lblKcal.font = [UIFont systemFontOfSize:17 weight:2];
+            //将数据存储到单例里面
+            [BlueToothDataManager shareManager].sportDays = _lblDate.text;
+            [BlueToothDataManager shareManager].distance = _lblKM.text;
+            [BlueToothDataManager shareManager].consume = _lblKcal.text;
+        }
+        
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -1237,7 +1292,9 @@ typedef enum : NSUInteger {
         
         if (self.arrOrderList.count>0) {
             NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:0];
-            self.ivLogoPic1.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
+//            self.ivLogoPic1.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
+            [self.ivLogoPic1 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
+            
             self.lblFlow1.text = [dicOrder objectForKey:@"PackageName"];
             self.lblExpireDays1.text = [dicOrder objectForKey:@"ExpireDays"];
 //            self.lblTotalPrice1.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
@@ -1281,7 +1338,8 @@ typedef enum : NSUInteger {
         
         if (self.arrOrderList.count>1) {
             NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:1];
-            self.ivLogoPic2.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
+//            self.ivLogoPic2.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
+            [self.ivLogoPic2 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
             self.lblFlow2.text = [dicOrder objectForKey:@"PackageName"];
             self.lblExpireDays2.text = [dicOrder objectForKey:@"ExpireDays"];
 //            self.lblTotalPrice2.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
@@ -1327,7 +1385,8 @@ typedef enum : NSUInteger {
         
         if (self.arrOrderList.count>2) {
             NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:2];
-            self.ivLogoPic3.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
+//            self.ivLogoPic3.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
+            [self.ivLogoPic3 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
             self.lblFlow3.text = [dicOrder objectForKey:@"PackageName"];
             self.lblExpireDays3.text = [dicOrder objectForKey:@"ExpireDays"];
 //            self.lblTotalPrice3.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
@@ -1379,6 +1438,8 @@ typedef enum : NSUInteger {
     [SSNetworkRequest getRequest:[apiGetBannerList stringByAppendingString:[self getParamStr]] params:nil success:^(id responseObj){
        
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetBannerList" dictData:responseObj];
+            
             self.arrPicUrls = [[NSMutableArray alloc] init];
             self.arrPicJump = [[NSMutableArray alloc] init];
             self.arrPicTitles = [[NSMutableArray alloc] init];
@@ -1402,6 +1463,22 @@ typedef enum : NSUInteger {
         
         
     }failure:^(id dataObj, NSError *error) {
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetBannerList"];
+        if (responseObj) {
+            self.arrPicUrls = [[NSMutableArray alloc] init];
+            self.arrPicJump = [[NSMutableArray alloc] init];
+            self.arrPicTitles = [[NSMutableArray alloc] init];
+            //构造图片列表和链接列表
+            for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
+                [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
+                [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
+                [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
+            }
+            self.AdView.imageURLStringsGroup = self.arrPicUrls;
+            self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
+        }
+
+        
         NSLog(@"数据错误：%@",[error description]);
         
     } headers:nil];
@@ -1412,6 +1489,8 @@ typedef enum : NSUInteger {
     [SSNetworkRequest getRequest:apiGetBasicConfig params:nil success:^(id responseObj){
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetBasicConfig" dictData:responseObj];
+            
             [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
             [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
             [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
@@ -1431,6 +1510,16 @@ typedef enum : NSUInteger {
         
         
     }failure:^(id dataObj, NSError *error) {
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetBasicConfig"];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
+        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
+        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
+        //双卡双待教程
+        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
+        //出国前教程
+        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         NSLog(@"数据错误：%@",[error description]);
         
     } headers:nil];
@@ -1445,6 +1534,8 @@ typedef enum : NSUInteger {
     [SSNetworkRequest getRequest:apiGetRegStatus params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"手环注册状态 -- %@", responseObj[@"data"][@"RegStatus"]);
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetRegStatus" dictData:responseObj];
+            
             if ([responseObj[@"data"][@"RegStatus"] intValue] == 1) {
                 //注册成功
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
@@ -1470,7 +1561,28 @@ typedef enum : NSUInteger {
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(@"网络貌似有问题")
-        //
+        
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetRegStatus"];
+        if (responseObj) {
+            if ([responseObj[@"data"][@"RegStatus"] intValue] == 1) {
+                //注册成功
+                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+            } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
+                //未注册成功
+                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
+                //注册卡
+                if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [self checkUserIsExistAppointPackage];
+                    });
+                } else {
+                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                }
+            } else {
+                NSLog(@"注册状态有问题");
+            }
+        }
+        
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -1485,7 +1597,7 @@ typedef enum : NSUInteger {
     NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest getRequest:apiCountryHot params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCountryHot" dictData:responseObj];
             self.arrCountry = [responseObj objectForKey:@"data"];
         
             [self.hotCollectionView reloadData];
@@ -1499,7 +1611,11 @@ typedef enum : NSUInteger {
         
         NSLog(@"查询到的用户数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiCountryHot"];
+        if (responseObj) {
+            self.arrCountry = [responseObj objectForKey:@"data"];
+            [self.hotCollectionView reloadData];
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -1517,6 +1633,8 @@ typedef enum : NSUInteger {
             [SSNetworkRequest postRequest:apiBind params:info success:^(id responseObj) {
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
                     NSLog(@"绑定结果：%@", responseObj);
+                    [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiBind" dictData:responseObj];
+                    
                     //绑定成功之后再绑定蓝牙
                     if (self.strongestRssiPeripheral) {
                         self.peripheral = self.strongestRssiPeripheral;
@@ -1532,7 +1650,14 @@ typedef enum : NSUInteger {
                     HUDNormal(responseObj[@"msg"])
                 }
             } failure:^(id dataObj, NSError *error) {
-                //
+                NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiBind"];
+                if (responseObj) {
+                    if (self.strongestRssiPeripheral) {
+                        self.peripheral = self.strongestRssiPeripheral;
+                        [self.mgr connectPeripheral:self.peripheral options:nil];
+                    }
+                    [BlueToothDataManager shareManager].isBounded = YES;
+                }
                 NSLog(@"啥都没：%@",[error description]);
             } headers:self.headers];
         }
@@ -1616,9 +1741,9 @@ typedef enum : NSUInteger {
 }
 
 - (void)showDetail :(NSInteger)index {
-    NSDictionary *dicOrder;
-    dicOrder = [self.arrOrderList objectAtIndex:index];
+    NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:index];
     ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
+    giftCardVC.packageCategory = [dicOrder[@"PackageCategory"] intValue];
     giftCardVC.idOrder = dicOrder[@"OrderID"];
     [self.navigationController pushViewController:giftCardVC animated:YES];
 }

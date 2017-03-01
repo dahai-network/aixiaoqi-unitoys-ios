@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface MessagePhoneDetailCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneLabel;
 @property (weak, nonatomic) IBOutlet UIButton *callButton;
 
