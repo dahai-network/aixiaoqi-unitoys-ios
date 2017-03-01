@@ -455,11 +455,13 @@ typedef enum : NSUInteger {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.progressWindow = nil;
         });
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (self.peripheral != nil) {
-                [self.mgr cancelPeripheralConnection:self.peripheral];
-                [BlueToothDataManager shareManager].isTcpConnected = NO;
+                self.myController = nil;
+               //                [self.mgr cancelPeripheralConnection:self.peripheral];
+//                [BlueToothDataManager shareManager].isTcpConnected = NO;
                 [self checkBindedDeviceFromNet];
+                NSLog(@"------------------------------------------------");
             }
         });
     }
@@ -2155,10 +2157,11 @@ typedef enum : NSUInteger {
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     if (![BlueToothDataManager shareManager].isAccordBreak) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            //重新连接
-            [self checkBindedDeviceFromNet];
-        });
+        [self checkBindedDeviceFromNet];
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            //重新连接
+//            [self checkBindedDeviceFromNet];
+//        });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (![BlueToothDataManager shareManager].isConnected) {
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
