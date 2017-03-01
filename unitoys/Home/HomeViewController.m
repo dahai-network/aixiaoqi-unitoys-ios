@@ -620,27 +620,27 @@ typedef enum : NSUInteger {
             break;
         case BLEUpdataFromOTA:
             //空中升级
-            typeStr = @"0A00";
+            typeStr = @"0a00";
             break;
         case BLECheckElectricQuantity:
             //请求电量
-            typeStr = @"0B00";
+            typeStr = @"0b00";
             break;
         case BLESearchDevice:
             //查找手环
-            typeStr = @"0C00";
+            typeStr = @"0c00";
             break;
         case BLEIsUpHands:
             //是否是能抬手功能
-            typeStr = @"0D00";
+            typeStr = @"0d00";
             break;
         case BLECheckHistoryStep:
             //请求历史步数
-            typeStr = @"0E00";
+            typeStr = @"0e00";
             break;
         case BLESetAlarmClock:
             //设置闹钟
-            typeStr = @"0F00";
+            typeStr = @"0f00";
             break;
         case BLEUpElectricToCard:
             //对卡上电
