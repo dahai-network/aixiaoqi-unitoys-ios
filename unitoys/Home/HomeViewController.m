@@ -497,20 +497,20 @@ typedef enum : NSUInteger {
         self.progressWindow.windowLevel = UIWindowLevelStatusBar+1;
         self.progressWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
         
-        UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2)-100, ([UIScreen mainScreen].bounds.size.height/2)-75, 200, 150)];
+        UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2)-100, ([UIScreen mainScreen].bounds.size.height/2)-60, 200, 120)];
         littleView.backgroundColor = [UIColor whiteColor];
         littleView.layer.masksToBounds = YES;
         littleView.layer.cornerRadius = 10;
         [self.progressWindow addSubview:littleView];
         
         self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth(littleView.frame)-20, 21)];
-        self.titleLabel.text = @"空中升级";
+        self.titleLabel.text = @"固件升级";
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         [littleView addSubview:self.titleLabel];
         
         self.progressNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, littleView.frame.size.height/2-30, CGRectGetWidth(littleView.frame)-20, 60)];
         self.progressNumberLabel.textAlignment = NSTextAlignmentCenter;
-        self.progressNumberLabel.font = [UIFont systemFontOfSize:25];
+        self.progressNumberLabel.font = [UIFont systemFontOfSize:17];
         self.progressNumberLabel.text = @"正在下载升级文件";
         [littleView addSubview:self.progressNumberLabel];
         
@@ -2139,7 +2139,7 @@ typedef enum : NSUInteger {
         if (![BlueToothDataManager shareManager].isHaveCard) {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
         } else {
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
         }
     } else {
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
@@ -2258,6 +2258,22 @@ typedef enum : NSUInteger {
             case 3:
                 //充电状态
                 NSLog(@"接收到充电状态数据");
+                int chargeStatue = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
+                NSLog(@"充电状态 --> %d", chargeStatue);
+                switch (chargeStatue) {
+                    case 1:
+                        NSLog(@"未充电");
+                        break;
+                    case 2:
+                        NSLog(@"正在充电");
+                        break;
+                    case 3:
+                        NSLog(@"充电完成");
+                        break;
+                    default:
+                        NSLog(@"充电状态有问题");
+                        break;
+                }
                 break;
             case 4:
                 //同意绑定
