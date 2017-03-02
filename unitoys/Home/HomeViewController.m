@@ -214,7 +214,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkPastStep) name:@"checkPastStep" object:@"pastStep"];//历史步数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCurrentStep) name:@"checkCurrentStep" object:@"currentStep"];//当前步数
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBindedDeviceFromNet) name:@"scanToConnect" object:@"connect"];//扫描并连接设备
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paySuccess) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];//激活套餐成功
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activitySuccessAction) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];//激活套餐成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(upLoadToCard) name:@"upLoadToCard" object:@"upLoadToCard"];//对卡上电
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(senderNewMessageToBLE:) name:@"receiveNewMessageFromBLE" object:nil];//给蓝牙发送消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(homeStatueHasChanged:) name:@"homeStatueChanged" object:nil];//蓝牙状态改变
@@ -227,7 +227,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cardNumberNotTrueAction:) name:@"cardNumberNotTrue" object:nil];//号码有问题专用
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(oatUpdataAction:) name:@"OTAAction" object:nil];//空中升级
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshStatueToCard) name:@"refreshStatueToCard" object:@"refreshStatueToCard"];//刷新卡状态
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetAndStart) name:@"resetAndStartDevice" object:@"resetAndStartDevice"];//重启手环
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paySuccess) name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];//绑定礼包卡成功
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
     
@@ -245,17 +245,6 @@ typedef enum : NSUInteger {
     } else {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange:) name:@"addressBookChanged" object:@"addressBookChanged"];
     }
-}
-
-#pragma mark 重启手环
-- (void)resetAndStart {
-    [BlueToothDataManager shareManager].isNeedToResert = YES;
-    //发送复位请求
-    [self sendMessageToBLEWithType:BLESystemReset validData:nil];
-    [BlueToothDataManager shareManager].isReseted = YES;
-    [BlueToothDataManager shareManager].isBounded = NO;
-    //重新连接
-    [self checkBindedDeviceFromNet];
 }
 
 #pragma mark 刷新卡状态
@@ -785,6 +774,7 @@ typedef enum : NSUInteger {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCheckUsedExistByPageCategory" dictData:responseObj];
             
             if ([responseObj[@"data"][@"Used"] intValue]/*0：不存在，1：存在*/) {
+                [BlueToothDataManager shareManager].isHavePackage = YES;
                 dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
                 dispatch_async(global, ^{
                     if ([self.simtype isEqualToString:@"1"] || [self.simtype isEqualToString:@"2"]) {
@@ -800,6 +790,7 @@ typedef enum : NSUInteger {
                 });
             } else {
                 HUDNormal(@"您还没有购买通话套餐")
+                [BlueToothDataManager shareManager].isHavePackage = NO;
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOPACKAGE];
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -827,6 +818,7 @@ typedef enum : NSUInteger {
                 });
             } else {
                 HUDNormal(@"您还没有购买通话套餐")
+                [BlueToothDataManager shareManager].isHavePackage = NO;
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOPACKAGE];
             }
         }else{
@@ -1120,11 +1112,17 @@ typedef enum : NSUInteger {
 #pragma mark 支付成功刷新
 - (void)paySuccess {
     [self loadOrderList];
-    //对卡上电
-    if ([BlueToothDataManager shareManager].isConnected) {
-        [BlueToothDataManager shareManager].bleStatueForCard = 0;
-        [self phoneCardToUpeLectrify:@"01"];
+    if (![BlueToothDataManager shareManager].isHavePackage) {
+        //对卡上电
+        if ([BlueToothDataManager shareManager].isConnected) {
+            [BlueToothDataManager shareManager].bleStatueForCard = 0;
+            [self phoneCardToUpeLectrify:@"01"];
+        }
     }
+}
+
+- (void)activitySuccessAction {
+    [self loadOrderList];
 }
 
 #pragma mark 设置点击跳转到运动界面
@@ -2472,6 +2470,15 @@ typedef enum : NSUInteger {
                 } else if ([contentStr isEqualToString:@"11"]) {
                     NSLog(@"对卡上电1失败,没有卡");
                     if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+                        [self dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:@"未能检测到手环内有电话卡，您需要重启手环重新检测吗？" alertAction:^{
+                            [BlueToothDataManager shareManager].isNeedToResert = YES;
+                            //发送复位请求
+                            [self sendMessageToBLEWithType:BLESystemReset validData:nil];
+                            [BlueToothDataManager shareManager].isReseted = YES;
+                            [BlueToothDataManager shareManager].isBounded = NO;
+                            //重新连接
+                            [self checkBindedDeviceFromNet];
+                            }];
                         [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                     }
                     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
@@ -2976,7 +2983,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"OTAAction" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"refreshStatueToCard" object:@"refreshStatueToCard"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"resetAndStartDevice" object:@"resetAndStartDevice"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];
     
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {

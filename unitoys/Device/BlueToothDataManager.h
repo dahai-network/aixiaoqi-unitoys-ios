@@ -41,6 +41,7 @@
 @property (nonatomic, assign) BOOL isShowHud;//激活大王卡的时候是否显示hud
 @property (nonatomic, assign) BOOL isShowAlert;//是否显示重试的提示，为1的时候不会显示首页的那个提示语而显示搜索页面的提示语
 @property (nonatomic, assign) int bleStatueForCard;//蓝牙发送消息的状态，默认0：默认状态 1：激活大王卡状态 2：注册手机卡状态
+@property (nonatomic, assign) BOOL isHavePackage;//是否含有制定套餐
 @property (nonatomic, assign) BOOL isConnectedPairedDevice;//是否连接已配对的设备
 @property (nonatomic, assign) BOOL isCheckAndRefreshBLEStatue;//是否正在查询卡的状态（包括tcp连接）
 @property (nonatomic, copy) NSString *localServicePort;//本地服务器的端口号

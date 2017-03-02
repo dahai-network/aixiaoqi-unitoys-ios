@@ -378,19 +378,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         if ([BlueToothDataManager shareManager].isConnected) {
-            if ([BlueToothDataManager shareManager].isHaveCard) {
-                if (![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
-                    if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
-                        [self startAnimation];
-                        [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
-                    }
+            if (![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+                if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
+                    [self startAnimation];
+                    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
                 }
-            } else {
-                [self dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:@"未能检测到手环内有电话卡，您需要重启手环重新检测吗？" alertAction:^{
-                    //发送重启手环通知
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"resetAndStartDevice" object:@"resetAndStartDevice"];
-                }];
             }
         } else {
             HUDNormal(@"未连接手环")
