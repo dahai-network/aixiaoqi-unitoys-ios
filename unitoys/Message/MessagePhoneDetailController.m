@@ -94,7 +94,8 @@
 
 - (void)callButtonAction:(UIButton *)button
 {
-    NSString *number = self.phoneDatas[button.tag];
+    NSDictionary *dict = self.phoneDatas[button.tag];
+    NSString *number = dict[@"phone"];
     
     if (!self.callActionView){
         self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
