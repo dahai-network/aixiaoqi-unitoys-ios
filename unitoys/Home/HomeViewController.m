@@ -1478,6 +1478,8 @@ typedef enum : NSUInteger {
             }
             self.AdView.imageURLStringsGroup = self.arrPicUrls;
             self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
+        }else{
+            HUDNormal(@"网络貌似有问题")
         }
 
         
@@ -1512,16 +1514,20 @@ typedef enum : NSUInteger {
         
         
     }failure:^(id dataObj, NSError *error) {
-        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetBasicConfig"];
-        
-        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
-        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
-        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
-        //双卡双待教程
-        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
-        //出国前教程
-        [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+//        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetBasicConfig"];
+//        if (responseObj) {
+//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
+//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
+//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
+//            //双卡双待教程
+//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
+//            //出国前教程
+//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
+//            [[NSUserDefaults standardUserDefaults] synchronize];
+//        }else{
+//            HUDNormal(@"网络貌似有问题")
+//        }
+
         NSLog(@"数据错误：%@",[error description]);
         
     } headers:nil];
@@ -1617,6 +1623,8 @@ typedef enum : NSUInteger {
         if (responseObj) {
             self.arrCountry = [responseObj objectForKey:@"data"];
             [self.hotCollectionView reloadData];
+        }else{
+            HUDNormal(@"网络貌似有问题")
         }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];

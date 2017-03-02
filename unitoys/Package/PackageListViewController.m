@@ -92,7 +92,7 @@
         
         NSLog(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
-        //
+        HUDNormal(@"网络异常")
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }

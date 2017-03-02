@@ -319,7 +319,7 @@
         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
         
     } failure:^(id dataObj, NSError *error) {
-        //
+        HUDNormal(@"网络异常")
         NSLog(@"啥都没：%@",[error description]);
         
     } headers:self.headers];
@@ -373,7 +373,7 @@
          [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
         
     } failure:^(id dataObj, NSError *error) {
-        //
+        HUDNormal(@"网络异常")
         NSLog(@"啥都没：%@",[error description]);
         
     } headers:self.headers];
@@ -441,7 +441,7 @@
         
         
     } failure:^(id dataObj, NSError *error) {
-        //
+        HUDNormal(@"网络异常")
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
     
@@ -526,7 +526,7 @@
 
         
     } failure:^(id dataObj, NSError *error) {
-        //
+        HUDNormal(@"网络异常")
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
     

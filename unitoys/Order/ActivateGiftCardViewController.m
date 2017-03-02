@@ -201,11 +201,6 @@
             if (!self.firstCell) {
                 self.firstCell=[[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil] firstObject];
             }
-//            if (self.isAbroadMessage) {
-//                self.firstCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-//            }else{
-//                self.firstCell.accessoryType = UITableViewCellAccessoryNone;
-//            }
             
             if (self.packageCategory == 2 || self.packageCategory == 3) {
                 self.firstCell.accessoryType = UITableViewCellAccessoryNone;
@@ -322,7 +317,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-//    if (self.isAbroadMessage) {
     if (indexPath.section == 0) {
         if (self.packageCategory != 2 && self.packageCategory != 3) {
             UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
@@ -337,7 +331,6 @@
             }
         }
     }
-//    }
 }
 
 #pragma mark 根据不同状态显示不同文字

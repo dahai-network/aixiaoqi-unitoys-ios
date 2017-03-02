@@ -9,6 +9,7 @@
 #import "PackageDetailViewController.h"
 #import "OrderCommitViewController.h"
 #import "AbroadPackageExplainController.h"
+#import "UNDatabaseTools.h"
 
 @implementation PackageDetailViewController
 
@@ -29,11 +30,14 @@
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.idPackage,@"id", nil];
     
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@idPackage%@", @"apiPackageByID", self.idPackage];
+    
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageByID params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             
             self.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Price"] floatValue]];
             self.lblPackageName.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"PackageName"];
@@ -63,7 +67,23 @@
         
         NSLog(@"查询到的套餐详情数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
-        //
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            self.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Price"] floatValue]];
+            self.lblPackageName.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"PackageName"];
+            self.ivPic.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Pic"]]]];
+            self.dicPackage = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+            self.lblFeatures.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Features"];
+            self.lblDetails.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Details"];
+            self.paymentOfTerms.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"paymentOfTerms"];
+            self.howToUse.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"UseDescr"];
+            
+            [self.tableView reloadData];
+        
+            if (self.isAbroadMessage) {
+                self.title = responseObj[@"data"][@"list"][@"CountryName"];
+            }
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
     
