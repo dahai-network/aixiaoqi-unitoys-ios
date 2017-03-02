@@ -810,6 +810,8 @@ typedef enum : NSUInteger {
                 HUDNormal(@"您还没有购买通话套餐")
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOPACKAGE];
             }
+        }else{
+            HUDNormal(@"网络貌似有问题")
         }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -842,6 +844,8 @@ typedef enum : NSUInteger {
         if (responseObj) {
             [self phoneCardToUpeLectrify:@"03"];
             [self sendMessageToBLEWithType:BLECardData validData:responseObj[@"data"][@"Data"]];
+        }else{
+            HUDNormal(@"网络貌似有问题")
         }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -1213,6 +1217,8 @@ typedef enum : NSUInteger {
             self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
             [self viewOrders];
             [self.tableView reloadData];
+        }else{
+            HUDNormal(@"网络貌似有问题")
         }
     } headers:self.headers];
 }
@@ -1264,6 +1270,8 @@ typedef enum : NSUInteger {
             [BlueToothDataManager shareManager].sportDays = _lblDate.text;
             [BlueToothDataManager shareManager].distance = _lblKM.text;
             [BlueToothDataManager shareManager].consume = _lblKcal.text;
+        }else{
+            HUDNormal(@"网络貌似有问题")
         }
         
         NSLog(@"啥都没：%@",[error description]);

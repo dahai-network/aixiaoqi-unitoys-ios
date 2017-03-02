@@ -54,7 +54,7 @@
         NSString *phoneName = [self checkLinkNameWithPhoneStr:self.toPhoneStr];
         dict[@"phone"] = self.toPhoneStr;
         dict[@"phoneName"] = phoneName;
-        [self.phoneDatas addObject:self.toPhoneStr];
+        [self.phoneDatas addObject:dict];
     }
     
 //    self.headerHeight = [self.phoneName boundingRectWithSize:CGSizeMake(kScreenWidthValue - 62 - 11, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:16]} context:nil].size.height;
@@ -66,11 +66,11 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.allowsSelection = NO;
+    [self.tableView registerNib:[UINib nibWithNibName:@"MessagePhoneDetailCell" bundle:nil] forCellReuseIdentifier:@"MessagePhoneDetailCell"];
     self.tableView.tableFooterView = [UIView new];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = 80;
-    [self.tableView registerNib:[UINib nibWithNibName:@"MessagePhoneDetailHeaderCell" bundle:nil] forCellReuseIdentifier:@"MessagePhoneDetailHeaderCell"];
-    [self.tableView registerNib:[UINib nibWithNibName:@"MessagePhoneDetailCell" bundle:nil] forCellReuseIdentifier:@"MessagePhoneDetailCell"];
+//    [self.tableView registerNib:[UINib nibWithNibName:@"MessagePhoneDetailHeaderCell" bundle:nil] forCellReuseIdentifier:@"MessagePhoneDetailHeaderCell"];
     [self.view addSubview:self.tableView];
     [self.tableView reloadData];
 }

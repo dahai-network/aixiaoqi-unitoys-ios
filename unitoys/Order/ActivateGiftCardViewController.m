@@ -102,6 +102,8 @@
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
             self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
             [self.tableView reloadData];
+        }else{
+            HUDNormal(@"网络貌似有问题")
         }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
