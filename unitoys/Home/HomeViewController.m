@@ -227,6 +227,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cardNumberNotTrueAction:) name:@"cardNumberNotTrue" object:nil];//号码有问题专用
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(oatUpdataAction:) name:@"OTAAction" object:nil];//空中升级
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshStatueToCard) name:@"refreshStatueToCard" object:@"refreshStatueToCard"];//刷新卡状态
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetAndStart) name:@"resetAndStartDevice" object:@"resetAndStartDevice"];//重启手环
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
     
@@ -244,6 +245,17 @@ typedef enum : NSUInteger {
     } else {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange:) name:@"addressBookChanged" object:@"addressBookChanged"];
     }
+}
+
+#pragma mark 重启手环
+- (void)resetAndStart {
+    [BlueToothDataManager shareManager].isNeedToResert = YES;
+    //发送复位请求
+    [self sendMessageToBLEWithType:BLESystemReset validData:nil];
+    [BlueToothDataManager shareManager].isReseted = YES;
+    [BlueToothDataManager shareManager].isBounded = NO;
+    //重新连接
+    [self checkBindedDeviceFromNet];
 }
 
 #pragma mark 刷新卡状态
@@ -273,6 +285,7 @@ typedef enum : NSUInteger {
         self.boundedDeviceInfo = nil;
     }
     [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
+    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
 }
 
 #pragma mark 停止扫描
@@ -396,42 +409,46 @@ typedef enum : NSUInteger {
 
 #pragma mark - 空中升级
 - (void)oatUpdataAction:(NSNotification *)sender {
-    [self sendMessageToBLEWithType:BLEUpdataFromOTA validData:@"b1"];
-    [self showProgress];
-    NSURL *downloadURL = [NSURL URLWithString:sender.object];
-    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:downloadURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        //下载完成之后的回调
-        // 文件路径
-        NSString* ceches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
-        NSString* filepath = [ceches stringByAppendingPathComponent:response.suggestedFilename];
-        NSLog(@"文件路径 --> %@", filepath);
-        
-        // 创建一个空的文件到沙盒中
-        NSFileManager *mgr = [NSFileManager defaultManager];
-        [mgr createFileAtPath:filepath contents:nil attributes:nil];
-        
-        // 创建一个用来写数据的文件句柄对象
-        self.writeHandle = [NSFileHandle fileHandleForWritingAtPath:filepath];
-        // 将数据写入沙盒
-        [self.writeHandle writeData:data];
-        // 关闭文件
-        [self.writeHandle closeFile];
-        self.writeHandle = nil;
-        self.progressNumberLabel.text = @"正在重启蓝牙";
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
+    if (sender && ![sender.object isEqualToString:@"<null>"]) {
+        [self sendMessageToBLEWithType:BLEUpdataFromOTA validData:@"b1"];
+        [self showProgress];
+        NSURL *downloadURL = [NSURL URLWithString:sender.object];
+        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:downloadURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+            //下载完成之后的回调
+            // 文件路径
+            NSString* ceches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+            NSString* filepath = [ceches stringByAppendingPathComponent:response.suggestedFilename];
+            NSLog(@"文件路径 --> %@", filepath);
             
-            NSURL *fileURL = [NSURL fileURLWithPath:filepath];
-//            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
-            DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
-            DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:self.mgr target:self.peripheral];
-            [initiator withFirmwareFile:selectedFirmware];
-            initiator.delegate = self;
-            initiator.logger = self;
-            initiator.progressDelegate = self;
-            self.myController = [initiator start];//开始升级
-        });
-    }];
+            // 创建一个空的文件到沙盒中
+            NSFileManager *mgr = [NSFileManager defaultManager];
+            [mgr createFileAtPath:filepath contents:nil attributes:nil];
+            
+            // 创建一个用来写数据的文件句柄对象
+            self.writeHandle = [NSFileHandle fileHandleForWritingAtPath:filepath];
+            // 将数据写入沙盒
+            [self.writeHandle writeData:data];
+            // 关闭文件
+            [self.writeHandle closeFile];
+            self.writeHandle = nil;
+            self.progressNumberLabel.text = @"正在重启蓝牙";
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                //            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
+                
+                NSURL *fileURL = [NSURL fileURLWithPath:filepath];
+                //            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
+                DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
+                DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:self.mgr target:self.peripheral];
+                [initiator withFirmwareFile:selectedFirmware];
+                initiator.delegate = self;
+                initiator.logger = self;
+                initiator.progressDelegate = self;
+                self.myController = [initiator start];//开始升级
+            });
+        }];
+    } else {
+        NSLog(@"URL有问题");
+    }
 }
 
 #pragma mark 代理方法
@@ -452,9 +469,9 @@ typedef enum : NSUInteger {
     //    DFUState dfuStateType = (DFUState)state;
     NSLog(@"显示升级状态 --> %ld", (long)state);
     if (state == 6&&self.progressWindow) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.progressWindow = nil;
-        });
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            self.progressWindow = nil;
+//        });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (self.peripheral != nil) {
                 self.myController = nil;
@@ -469,10 +486,10 @@ typedef enum : NSUInteger {
 
 - (void)didErrorOccur:(enum DFUError)error withMessage:(NSString *)message {
     NSLog(@"ERROR %ld:%@", (long)error, message);
-    self.progressNumberLabel.text = @"升级失败";
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.progressWindow = nil;
-    });
+    self.progressNumberLabel.text = @"升级失败\n请重新启动爱小器App";
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        self.progressWindow = nil;
+//    });
 }
 
 - (void)onUploadProgress:(NSInteger)part totalParts:(NSInteger)totalParts progress:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
@@ -486,7 +503,7 @@ typedef enum : NSUInteger {
 //    NSLog(@"当前百分比%f", (float)progress/100);
     if (progress == 100) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.progressNumberLabel.text = @"升级成功";
+            self.progressNumberLabel.text = @"升级成功\n请重新启动爱小器App";
         });
     }
 }
@@ -503,13 +520,14 @@ typedef enum : NSUInteger {
     NSLog(@"升级步骤显示 --> %ld, %@", (long)level, message);
 }
 
+#pragma mark 进度条布局
 - (void)showProgress {
     if (!self.progressWindow) {
         self.progressWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 20, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-20)];
         self.progressWindow.windowLevel = UIWindowLevelStatusBar+1;
         self.progressWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
         
-        UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2)-100, ([UIScreen mainScreen].bounds.size.height/2)-60, 200, 120)];
+        UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2)-110, ([UIScreen mainScreen].bounds.size.height/2)-60, 220, 120)];
         littleView.backgroundColor = [UIColor whiteColor];
         littleView.layer.masksToBounds = YES;
         littleView.layer.cornerRadius = 10;
@@ -522,6 +540,7 @@ typedef enum : NSUInteger {
         
         self.progressNumberLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, littleView.frame.size.height/2-30, CGRectGetWidth(littleView.frame)-20, 60)];
         self.progressNumberLabel.textAlignment = NSTextAlignmentCenter;
+        self.progressNumberLabel.numberOfLines = 0;
         self.progressNumberLabel.font = [UIFont systemFontOfSize:17];
         self.progressNumberLabel.text = @"正在下载升级文件";
         [littleView addSubview:self.progressNumberLabel];
@@ -1101,6 +1120,11 @@ typedef enum : NSUInteger {
 #pragma mark 支付成功刷新
 - (void)paySuccess {
     [self loadOrderList];
+    //对卡上电
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [BlueToothDataManager shareManager].bleStatueForCard = 0;
+        [self phoneCardToUpeLectrify:@"01"];
+    }
 }
 
 #pragma mark 设置点击跳转到运动界面
@@ -1557,7 +1581,7 @@ typedef enum : NSUInteger {
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
             } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
                 //未注册成功
-                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
+//                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
                 //注册卡
                 if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -2170,11 +2194,12 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].currentStep = @"0";
     [BlueToothDataManager shareManager].bleStatueForCard = 0;
     [BlueToothDataManager shareManager].isBeingRegisting = NO;
+    [BlueToothDataManager shareManager].stepNumber = @"000";
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     if (![BlueToothDataManager shareManager].isAccordBreak) {
         [self checkBindedDeviceFromNet];
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //            //重新连接
 //            [self checkBindedDeviceFromNet];
 //        });
@@ -2292,15 +2317,19 @@ typedef enum : NSUInteger {
 
 #pragma mark 发送指令
 - (void)sendConnectingInstructWithData:(NSData *)data {
-    self.peripheral.delegate = self;
-    if((self.characteristic.properties & CBCharacteristicWriteWithoutResponse) != 0) {
-        [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithoutResponse];
-    } else if ((self.characteristic.properties & CBCharacteristicPropertyWrite) != 0) {
-        [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithResponse];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        self.peripheral.delegate = self;
+        if((self.characteristic.properties & CBCharacteristicWriteWithoutResponse) != 0) {
+            [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithoutResponse];
+        } else if ((self.characteristic.properties & CBCharacteristicPropertyWrite) != 0) {
+            [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithResponse];
+        } else {
+            NSLog(@"No write property on TX characteristic, %ld.",self.characteristic.properties);
+        }
+        NSLog(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
     } else {
-        NSLog(@"No write property on TX characteristic, %ld.",self.characteristic.properties);
+        NSLog(@"蓝牙未连接");
     }
-    NSLog(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
@@ -2327,7 +2356,7 @@ typedef enum : NSUInteger {
         UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [BlueToothDataManager shareManager].isNeedToResert = YES;
             //发送复位请求
-            [self sendConnectingInstructWithData:[self resettingInstruct]];
+            [self sendMessageToBLEWithType:BLESystemReset validData:nil];
             [BlueToothDataManager shareManager].isReseted = YES;
             [BlueToothDataManager shareManager].isBounded = NO;
             //重新连接
@@ -2741,20 +2770,6 @@ typedef enum : NSUInteger {
     [self sendMessageToBLEWithType:BLEDownElectricToCard validData:nil];
 }
 
-#pragma mark 复位请求指令
-- (NSData *)resettingInstruct {
-    Byte reg[6];
-    //    0xAA 0x11 0x22 0x33 0xAA
-    reg[0]=0xAA;
-    reg[1]=0x11;
-    reg[2]=0x22;
-    reg[3]=0x33;
-    reg[4]=0xAA;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    return data;
-}
-
 #pragma mark ------------其他------------
 #pragma mark 转换十六进制
 - (NSString *)hexStringFromString:(NSString *)string {
@@ -2961,6 +2976,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"OTAAction" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"refreshStatueToCard" object:@"refreshStatueToCard"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"resetAndStartDevice" object:@"resetAndStartDevice"];
     
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {

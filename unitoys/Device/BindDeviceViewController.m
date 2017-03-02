@@ -130,7 +130,7 @@
 }
 
 - (void)changeStatueAction:(NSNotification *)sender {
-    if (![BlueToothDataManager shareManager].isRegisted) {
+    if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
         NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
         if ([senderStr intValue] == 1) {
             [self startTimerAction];
@@ -146,7 +146,7 @@
 }
 
 - (void)bleStatueChanged:(NSNotification *)sender {
-    if (![BlueToothDataManager shareManager].isRegisted) {
+    if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
         NSString *statueStr = [NSString stringWithFormat:@"%@", sender.object];
         if ([statueStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
             self.lblStatue.text = @"信号强";
@@ -173,7 +173,7 @@
     self.hintLabel.text = @"还没有连接设备，点击连接";
     self.versionNumber.hidden = YES;
     self.macAddress.hidden = YES;
-    self.lblStatue.text = @"无信号";
+    self.lblStatue.text = @"未连接";
     if (self.timer) {
         [self.timer setFireDate:[NSDate distantFuture]];
     }
@@ -307,7 +307,7 @@
                 self.versionNumber.hidden = YES;
                 self.macAddress.hidden = YES;
                 self.hintLabel.text = @"还没有连接设备，点击连接";
-                self.lblStatue.text = @"未连接";
+                self.lblStatue.text = @"未绑定";
                 if (self.timer) {
                     [self.timer setFireDate:[NSDate distantFuture]];
                 }
@@ -378,12 +378,19 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         if ([BlueToothDataManager shareManager].isConnected) {
-            if (![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
-                if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
-                    [self startAnimation];
-                    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
+            if ([BlueToothDataManager shareManager].isHaveCard) {
+                if (![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+                    if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
+                        [self startAnimation];
+                        [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
+                    }
                 }
+            } else {
+                [self dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:@"未能检测到手环内有电话卡，您需要重启手环重新检测吗？" alertAction:^{
+                    //发送重启手环通知
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"resetAndStartDevice" object:@"resetAndStartDevice"];
+                }];
             }
         } else {
             HUDNormal(@"未连接手环")

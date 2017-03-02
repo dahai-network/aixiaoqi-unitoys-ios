@@ -515,7 +515,7 @@
         [BlueToothDataManager shareManager].stepNumber = @"0";
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [BlueToothDataManager shareManager].isRegisted = NO;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOSIGNAL];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOSIGNAL];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 self.communicateID = @"00000000";
@@ -655,9 +655,9 @@
 //    NSLog(@"获取的端口号 -> %d", self.prot);
     self.currentPacketNumber = [receivedMessage substringWithRange:NSMakeRange(0, 6)];
     NSString *str = [self.currentPacketNumber substringWithRange:NSMakeRange(3, 3)];
+    [BlueToothDataManager shareManager].isBeingRegisting = YES;
     //发送当前编号
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:str];
-    [BlueToothDataManager shareManager].isBeingRegisting = YES;
     [BlueToothDataManager shareManager].stepNumber = str;
     if (![BlueToothDataManager shareManager].isRegisted) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_CONNECTING];

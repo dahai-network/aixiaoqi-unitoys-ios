@@ -19,7 +19,7 @@
 
 
 
-#define DEBUGMODE 1
+#define DEBUGMODE 0
 
 #if DEBUGMODE
 
@@ -102,9 +102,6 @@
 
 //使用签名，根据条件查询订单，分页
 #define apiOrderList defaultHost@"api/Order/GetUserOrderList"
-
-//使用签名，根据条件查询订单，分页
-#define apiOrderListi defaultHost@"api/Order/GetUserOrderListIOS"
 
 //使用签名，根据ID查询用户订单
 #define apiOrderById defaultHost@"api/Order/GetByID"
