@@ -104,8 +104,8 @@
     NSDictionary *params;
     NSString *apiNameStr;
     if (self.isAbroadMessage) {
-        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber",@"0",@"PackageCategory", nil];
-        apiNameStr = [NSString stringWithFormat:@"%@PackageCategory%@", @"apiOrderList", @"0"];
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber",@"true",@"PackageIsCategoryFlow", nil];
+        apiNameStr = [NSString stringWithFormat:@"%@PackageCategory%@", @"apiOrderList", @"PackageIsCategoryFlow"];
     }else{
         params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber", nil];
         apiNameStr = [NSString stringWithFormat:@"%@PackageCategory", @"apiOrderList"];

@@ -503,6 +503,7 @@ typedef enum : NSUInteger {
     NSLog(@"升级步骤显示 --> %ld, %@", (long)level, message);
 }
 
+#pragma mark 进度条布局
 - (void)showProgress {
     if (!self.progressWindow) {
         self.progressWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 20, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-20)];
@@ -755,7 +756,7 @@ typedef enum : NSUInteger {
 #pragma mark 判断用户是否存在指定套餐
 - (void)checkUserIsExistAppointPackage {
     self.checkToken = YES;
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"1",@"PackageCategory", nil];
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"true",@"PackageIsCategoryCall", nil];
     
     [self getBasicHeader];
     NSLog(@"表演头：%@",self.headers);
@@ -2165,11 +2166,11 @@ typedef enum : NSUInteger {
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     if (![BlueToothDataManager shareManager].isAccordBreak) {
-        [self checkBindedDeviceFromNet];
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            //重新连接
-//            [self checkBindedDeviceFromNet];
-//        });
+//        [self checkBindedDeviceFromNet];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //重新连接
+            [self checkBindedDeviceFromNet];
+        });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (![BlueToothDataManager shareManager].isConnected) {
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
