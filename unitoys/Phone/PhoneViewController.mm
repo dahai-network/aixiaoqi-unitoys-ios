@@ -1943,6 +1943,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         [self.navigationController.tabBarItem setImage:[UIImage imageNamed:@"tel_numberpad_pushon"]];
         [self.navigationController.tabBarItem setSelectedImage:[UIImage imageNamed:@"tel_numberpad_pushon"]];
         
+        if ([self.tableView.mj_header isRefreshing]) {
+            [self.tableView.mj_header endRefreshing];
+        }
+        if ([self.tableView.mj_footer isRefreshing]) {
+            [self.tableView.mj_footer endRefreshing];
+        }
         self.tableView.mj_header = nil;
         self.tableView.mj_footer = nil;
     }else{
@@ -1955,8 +1961,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         [self.phonePadView setHidden:YES];
         
         self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-            //Call this Block When enter the refresh status automatically
-            self.arrMessageRecord = nil;
+//            self.arrMessageRecord = nil;
             self.page = 1;
             [self.tableView.mj_footer resetNoMoreData];
             [self loadMessage];
