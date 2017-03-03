@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */; };
+		0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0430A04F1E69623800FFE611 /* Default-568h@2x.png */; };
 		0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */; };
 		0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */; };
 		0436C3651E1F90460033A8F1 /* CommunicatePackageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C3631E1F90460033A8F1 /* CommunicatePackageTableViewCell.m */; };
@@ -272,6 +273,7 @@
 		041BB4B61E5C1F05001C4841 /* TTRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSlider.h; sourceTree = "<group>"; };
 		041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRangeSlider.m; sourceTree = "<group>"; };
 		041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSliderDelegate.h; sourceTree = "<group>"; };
+		0430A04F1E69623800FFE611 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0436C35D1E1F86180033A8F1 /* CommunicatePackageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommunicatePackageViewController.h; sourceTree = "<group>"; };
 		0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunicatePackageViewController.m; sourceTree = "<group>"; };
 		0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunicatePackageViewController.xib; sourceTree = "<group>"; };
@@ -1709,6 +1711,7 @@
 		95F337131D853256000B5461 /* unitoys */ = {
 			isa = PBXGroup;
 			children = (
+				0430A04F1E69623800FFE611 /* Default-568h@2x.png */,
 				95E918531DDC7A97005DABC0 /* Device */,
 				3CEA93901E5C537000205C29 /* CallKitTools */,
 				740FD37E1E287F9E009413F1 /* VSW */,
@@ -1858,6 +1861,7 @@
 				04EAB8BD1E2787F6000D3D13 /* AlarmListViewController.xib in Resources */,
 				0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */,
 				04F727DB1E642BED002EB54C /* CertificateFiles in Resources */,
+				0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */,
 				74A91C661DF7E9A9002B4FCE /* headCollectionReusableView.xib in Resources */,
 				04472ABF1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib in Resources */,
 				043965C51E07DF9D00B67989 /* IsBoundingViewController.xib in Resources */,
