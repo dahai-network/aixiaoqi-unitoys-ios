@@ -66,6 +66,10 @@
 @property (nonatomic, strong)NSTimer *timer;
 @property (nonatomic, assign)int sec;
 
+
+@property (nonatomic, assign) BOOL isPushKit;
+@property (nonatomic, assign) BOOL isLoadDelegate;
+
 @end
 
 @implementation AppDelegate
@@ -1030,6 +1034,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
+//程序被杀死
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
@@ -1337,6 +1342,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //    }
 //    return NO;
 //}
+
+
 
 #pragma mark --- PuskKitDelegate
 - (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type {

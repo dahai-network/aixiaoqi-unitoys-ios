@@ -85,6 +85,7 @@
 		3C20C20D1E6CF3CC008078BB /* UNDataTransformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C20A1E6CF3CC008078BB /* UNDataTransformation.m */; };
 		3C20C20E1E6CF3CC008078BB /* UNSipEngineInitialize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C20C1E6CF3CC008078BB /* UNSipEngineInitialize.mm */; };
 		3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */; };
+		3C20C2131E6D00F1008078BB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C20C2121E6D00F1008078BB /* PushKit.framework */; };
 		3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F81E5EB65B001E67C4 /* logo_call.png */; };
 		3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */; };
 		3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */; };
@@ -405,6 +406,7 @@
 		3C20C20C1E6CF3CC008078BB /* UNSipEngineInitialize.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UNSipEngineInitialize.mm; sourceTree = "<group>"; };
 		3C20C20F1E6CF3E5008078BB /* UNCreatLocalNoti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCreatLocalNoti.h; sourceTree = "<group>"; };
 		3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCreatLocalNoti.m; sourceTree = "<group>"; };
+		3C20C2121E6D00F1008078BB /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
 		3C52B1F81E5EB65B001E67C4 /* logo_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_call.png; sourceTree = "<group>"; };
 		3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_callKit.png; sourceTree = "<group>"; };
 		3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_callKit@2x.png"; sourceTree = "<group>"; };
@@ -817,6 +819,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C20C2131E6D00F1008078BB /* PushKit.framework in Frameworks */,
 				3C8E779A1E5D40F400C4833E /* CallKit.framework in Frameworks */,
 				046BD6481E0B7C5F008A958A /* CFNetwork.framework in Frameworks */,
 				046BD6461E0B7C3F008A958A /* CoreFoundation.framework in Frameworks */,
@@ -1057,6 +1060,7 @@
 		430B1E9DC15699DC69140B1C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3C20C2121E6D00F1008078BB /* PushKit.framework */,
 				3C8E77991E5D40F400C4833E /* CallKit.framework */,
 				046BD6471E0B7C5F008A958A /* CFNetwork.framework */,
 				046BD6451E0B7C3F008A958A /* CoreFoundation.framework */,
