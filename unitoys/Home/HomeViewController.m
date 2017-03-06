@@ -68,6 +68,7 @@ typedef enum : NSUInteger {
     APPAnswerDownElectricToCard,//对卡断电回应
     APPAnswerSIMData,//SIM数据回应
     APPAixiaoqiCardData,//爱小器国际卡数据
+    APPChangeCardStatue,//卡状态改变（热插拔）
     APPLastChargeElectricTime,//上次充电时间
     APPAlarmClockSetSuccess,//闹钟设置成功
 } BLESENDTOAPP;
@@ -2733,9 +2734,13 @@ typedef enum : NSUInteger {
                 }
                 break;
             case 11:
-                //上一次充电时间
+                //卡状态改变(热插拔)
+                NSLog(@"蓝牙发送卡状态改变 -- %@", contentStr);
                 break;
             case 12:
+                //上一次充电时间
+                break;
+            case 13:
                 //设置闹钟成功
                 break;
             default:

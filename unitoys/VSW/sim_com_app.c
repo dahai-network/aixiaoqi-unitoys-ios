@@ -5,7 +5,7 @@
 #include "sim_com_interface.h"
 #include "sim_com_serial.h"
 #include <stdio.h>
-//#include <time.h>
+#include <time.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <string.h>
@@ -61,9 +61,9 @@ unsigned long GetSysTimeSec(void)
 #else
     clock_gettime(CLOCK_MONOTONIC, &ts);
 #endif
-
-//    clock_gettime(CLOCK_MONOTONIC, &ts);
-//    printf("nsec -- %ld sec -- %ld\n", ts.tv_nsec, ts.tv_sec);
+    
+    //    clock_gettime(CLOCK_MONOTONIC, &ts);
+    //    printf("nsec -- %ld sec -- %ld\n", ts.tv_nsec, ts.tv_sec);
     return (ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
 }
 
@@ -83,8 +83,8 @@ unsigned long GetSysTickCount(void)
 #else
     clock_gettime(CLOCK_MONOTONIC, &ts);
 #endif
-
-//    clock_gettime(CLOCK_MONOTONIC, &ts);
+    
+    //    clock_gettime(CLOCK_MONOTONIC, &ts);
     return (ts.tv_sec * 100 + ts.tv_nsec / 10000000);
 }
 
@@ -2060,12 +2060,15 @@ static _UINT32 SimComSetSimTypeTimerCB(_UINT32 uiChannelId, _UINT32 tmp)
 	{
         CommonTimerStop((_UINT32)pChnStHandle->SetSimTypeTimerId);
 	}
+    #if 0   //auto read the sim card.
     pChnStHandle->simCardType = EN_SIMTYPE_USIM;
     SIMCOM_INFO("Channel %d Set sim type timeout,set default %d.\n", uiChannelId, pChnStHandle->simCardType);
     
     if(pSimComRootSt->SIMDetectTimerId > 0)
         CommonTimerStart((_UINT32)pSimComRootSt->SIMDetectTimerId, 100, 0);
-
+    #else   //stop reading sim, wait for a signal.
+    SIMCOM_INFO("Channel %d Set sim type timeout,Stop & Wait.\n", uiChannelId);
+    #endif
     return EOS_OK;
 }
 
