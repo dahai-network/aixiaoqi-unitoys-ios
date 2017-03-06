@@ -49,6 +49,8 @@
             
         }];
 //        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+        //关闭tcp
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"disconnectTCP" object:@"disconnectTCP"];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
     }];
