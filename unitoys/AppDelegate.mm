@@ -44,6 +44,8 @@
 #import <PushKit/PushKit.h>
 #import "UNSipEngineInitialize.h"
 
+#import "UNCreatLocalNoti.h"
+
 #endif
 // 如果需要使 idfa功能所需要引 的头 件(可选) #import <AdSupport/AdSupport.h>
 
@@ -74,8 +76,24 @@
 
 @implementation AppDelegate
 
+- (void)redirectNSLogToDocumentFolder
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentDirectory = [paths objectAtIndex:0];
+    
+    NSString *fileName = [NSString stringWithFormat:@"%@.log",[[NSDate alloc] initWithTimeIntervalSinceNow:8*3600]]; // 注意不是NSData!
+    NSString *logFilePath = [documentDirectory stringByAppendingPathComponent:fileName];
+    
+    // 将log输入到文件
+    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+",stderr);
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //制定真机调试保存日志文件
+    [self redirectNSLogToDocumentFolder];
+    self.isLoadDelegate = YES;
+    [UNCreatLocalNoti createLocalNotiMessageString:@"didFinishLaunchingWithOptions"];
+    
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
     }
@@ -1369,12 +1387,18 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
     if ([payload.type isEqualToString:@"PKPushTypeVoIP"]) {
         NSLog(@"开始电话接入======%@=======", payload.dictionaryPayload);
-        
-        
-//        [UNCreatLocalNoti createLocalNotiMessageString:@"didReceiveIncomingPushWithPayload"];
+        if (!self.isLoadDelegate) {
             //创建网络电话服务
-        [[UNSipEngineInitialize sharedInstance] initEngine];
-
+            [[UNSipEngineInitialize sharedInstance] initEngine];
+            //加载蓝牙手环
+            
+        }else{
+            
+            //被杀死后首次启动会调用此处
+            self.isLoadDelegate = NO;
+        }
+        [UNCreatLocalNoti createLocalNotiMessageString:@"didReceiveIncomingPushWithPayload"];
+        self.isPushKit = YES;
         
 //        //创建网络电话服务
 //        [[UNSipEngineInitialize sharedInstance] initEngine];
@@ -1393,6 +1417,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //        }
 //
 //        [[UNSipEngineInitialize sharedInstance]  setUpUdpSocket];
+        
+        
         
     }
 }

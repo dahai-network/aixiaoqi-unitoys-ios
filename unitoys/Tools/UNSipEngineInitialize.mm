@@ -42,8 +42,8 @@ typedef enum : NSUInteger {
     BLEUpElectricToCard,//对卡上电
     BLEDownElectricToCard,//对卡断电
     BLECardData,//卡数据
+    BLEAixiaoqiCardData,//爱小器国外卡数据
 } APPSENDTOBLE;
-
 
 //蓝牙发送给app
 typedef enum : NSUInteger {
@@ -56,8 +56,11 @@ typedef enum : NSUInteger {
     APPAnswerUpElectricToCard,//对卡上电回应
     APPAnswerDownElectricToCard,//对卡断电回应
     APPAnswerSIMData,//SIM数据回应
+    APPAixiaoqiCardData,//爱小器国际卡数据
     APPLastChargeElectricTime,//上次充电时间
+    APPAlarmClockSetSuccess,//闹钟设置成功
 } BLESENDTOAPP;
+
 
 @interface UNSipEngineInitialize()<SipEngineUICallDelegate,SipEngineUIRegistrationDelegate,CBCentralManagerDelegate,CBPeripheralDelegate,GCDAsyncUdpSocketDelegate>
 
@@ -275,141 +278,6 @@ typedef enum : NSUInteger {
     }
 }
 
-//- (void)getMaxPhoneCall {
-//    self.checkToken = YES;
-//    [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
-//        NSLog(@"有数据：%@",responseObj);
-//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//            
-//            self.maxPhoneCall = [[[responseObj objectForKey:@"data"]  objectForKey:@"maximumPhoneCallTime"] intValue];
-//            
-//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//            
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//        }else{
-//            //数据请求失败
-//        }
-//        
-//        
-//        
-//    } failure:^(id dataObj, NSError *error) {
-//        NSLog(@"有异常：%@",[error description]);
-//    } headers:self.headers];
-//}
-
-
-
-//- (void)callingAction:(NSNotification *)notification {
-//    if (notification.object) {
-//        NSString *action = notification.object;
-
-//        SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-//        if ([action isEqualToString:@"Hungup"]) {
-//            self.speakerStatus = NO;
-//            if(theSipEngine->InCalling())
-//                theSipEngine->TerminateCall();
-//            
-//            //挂断系统的通话界面
-//            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
-//                [[UNCallKitCenter sharedInstance]  endCall:nil completion:^(NSError * _Nullable error) {
-//                }];
-//            }
-//            
-//            self.callStopTime = [NSDate date];
-//            self.hostHungup = @"source";
-//            //            [self endingCallOut];
-//            
-//        }else if ([action isEqualToString:@"SwitchSound"]){
-//            //保存扩音状态,在未接通时修改扩音状态无效,因此保存此状态,在接通时更新.
-//            if (notification.userInfo) {
-//                if (notification.userInfo[@"isHandfreeon"]) {
-//                    self.speakerStatus = [notification.userInfo[@"isHandfreeon"] boolValue];
-//                }
-//            }
-//            
-//            NSLog(@"当前扩音状态:%zd", self.speakerStatus);
-//            //系统扩音状态会自动更新,无法对系统扩音进行操作,因此不做处理
-//            theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
-//            
-//        }else if ([action isEqualToString:@"MuteSound"]){
-//            if (notification.userInfo) {
-//                if (notification.userInfo[@"isMuteon"]) {
-//                    self.muteStatus = [notification.userInfo[@"isMuteon"] boolValue];
-//                }
-//            }
-//            
-//            //对系统的通话界面进行无声
-//            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
-//                [[UNCallKitCenter sharedInstance]  mute:self.muteStatus callUUID:nil completion:^(NSError * _Nullable error) {
-//                }];
-//            }else{
-//                theSipEngine->MuteMic(self.muteStatus);
-//            }
-//            
-//            //            self.muteStatus = !self.muteStatus;
-//            //            theSipEngine->MuteMic(self.muteStatus);
-//        }else if ([action isEqualToString:@"Answer"]){
-//            //选择最后一条，更新为
-//            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//            NSString *path = [paths objectAtIndex:0];
-//            
-//            //            path = [path stringByAppendingPathComponent:@"callrecord.db"];
-//            path = [path stringByAppendingPathComponent:@"callrecord2.db"];
-//            
-//            FMDatabase *db = [FMDatabase databaseWithPath:path];
-//            
-//            if (![db open]) {
-//                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
-//            }else{
-//                //查找出错
-//                //                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
-//                //降序,更新最后一条数据
-//                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime desc limit 0,1"];
-//                
-//                if ([rs next]) {
-//                    
-//                    //如果能打开说明已存在,获取数据
-//                    NSString *jsonStr1 = [rs stringForColumn:@"datas"];
-//                    NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
-//                    NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
-//                    NSMutableArray *muteArray = [NSMutableArray arrayWithArray:dataArray];
-//                    NSMutableDictionary *dictRecord;
-//                    if (dataArray.count) {
-//                        dictRecord = [NSMutableDictionary dictionaryWithDictionary:dataArray.firstObject];
-//                    }
-//                    [dictRecord setObject:@1 forKey:@"status"];
-//                    [muteArray replaceObjectAtIndex:0 withObject:dictRecord];
-//                    
-//                    NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
-//                    NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
-//                    [db executeUpdate:[NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]];
-//                    //                    BOOL isSuccess = [db executeUpdate:@"UPDATE CallRecord set datas='%@' calltime='%@' where dataid ='%@'", jsonStr2, timestemp, dataId];
-//                    //                    if (!isSuccess) {
-//                    //                        NSLog(@"更新通话记录失败！%@",dicPhoneRecord);
-//                    //                    }
-//                    
-//                    //                    [db executeUpdate:@"update CallRecord set status=1 where calltime=?",[rs stringForColumn:@"calltime"]];
-//                    [rs close];
-//                    [db close];
-//                }
-//                
-//            }
-//            [self loadPhoneRecord];
-//            [self.tableView reloadData];
-//            
-//            theSipEngine->AnswerCall();
-//            theSipEngine->StopRinging();
-//        }else if ([action isEqualToString:@"Refuse"]){
-//            theSipEngine->TerminateCall();
-//        }
-//    }
-//}
-
-
-
-
-
-
 
 #pragma mark --- SipEngineUIDelegate
 -(void) OnNetworkQuality:(int)ms {
@@ -427,37 +295,6 @@ typedef enum : NSUInteger {
 -(void) OnNewCall:(CallDir)dir
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
-    //    NSString *msg = @"";
-//    NSString *newcid;
-//    
-//    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    
-//    if (dir == CallIncoming){
-//        //去掉“+”
-//        if ([cid containsString:@"+"]) {
-//            newcid = [cid stringByReplacingOccurrencesOfString:@"+" withString:@""];
-//            cid = newcid;
-//        }
-//        //去掉86
-//        if ([[cid substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
-//            newcid = [cid substringFromIndex:2];
-//            cid = newcid;
-//        }
-//        
-//        if (kSystemVersionValue >= 10.0 && isUseCallKit) {
-//            [self InComingCallWithCallKitName:[self checkLinkNameWithPhoneStr:cid] PhoneNumber:cid];
-//        }else{
-//            self.callCominginVC = [[CallComingInViewController alloc] init];
-//            self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
-//            [self.navigationController presentViewController:self.callCominginVC animated:YES completion:nil];
-//            
-//        }
-//        [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
-//        
-//    }else{
-//        [self addPhoneRecordWithHostcid:[userdata objectForKey:@"Tel"] Destcid:cid Calltime:[NSDate date] Calltype:@"去电"];
-//    }
-
 }
 
 -(void) OnCallProcessing{
@@ -473,9 +310,6 @@ typedef enum : NSUInteger {
 -(void) OnCallStreamsRunning:(bool)is_video_call{
     NSLog(@"接通...");
     //在接通时更新扩音状态
-//    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-//    theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
-//    theSipEngine->MuteMic(self.muteStatus);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在通话"];
 }
 
@@ -1425,6 +1259,10 @@ typedef enum : NSUInteger {
         case BLECardData:
             //卡数据
             typeStr = @"1200";
+            break;
+        case BLEAixiaoqiCardData:
+            //卡数据
+            typeStr = @"1300";
             break;
             
         default:

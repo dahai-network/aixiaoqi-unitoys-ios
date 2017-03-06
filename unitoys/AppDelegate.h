@@ -15,5 +15,7 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, assign) int currentNumber;//记录心跳包次数，从08开始
 
+@property (nonatomic, readonly) BOOL isPushKit;
+
 @end
 
