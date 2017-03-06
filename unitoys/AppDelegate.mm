@@ -41,11 +41,13 @@
 
 #import "UNDatabaseTools.h"
 #import <Reachability/Reachability.h>
+#import <PushKit/PushKit.h>
+#import "UNSipEngineInitialize.h"
 
 #endif
 // 如果需要使 idfa功能所需要引 的头 件(可选) #import <AdSupport/AdSupport.h>
 
-@interface AppDelegate ()<JPUSHRegisterDelegate, GCDAsyncUdpSocketDelegate, GCDAsyncSocketDelegate>
+@interface AppDelegate ()<JPUSHRegisterDelegate, GCDAsyncUdpSocketDelegate, GCDAsyncSocketDelegate, PKPushRegistryDelegate>
 @property (strong , nonatomic) BGTask *task;
 @property (strong , nonatomic) NSTimer *bgTimer;
 @property (strong , nonatomic) BGLogation *bgLocation;
@@ -73,7 +75,13 @@
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
     }
-
+    
+    if (kSystemVersionValue >= 8.0) {
+        PKPushRegistry *pushRegistry = [[PKPushRegistry alloc] initWithQueue:dispatch_get_main_queue()];
+        pushRegistry.delegate = self;
+        pushRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
+    }
+    
     //存储版本号
     [self checkCurrentVersion];
     
@@ -141,16 +149,17 @@
     
     //创建一个udp
 //    _udpSocket = [[GCDAsyncUdpSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
-    _udpSocket = [[GCDAsyncUdpSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-    [_udpSocket receiveOnce:nil];
-    //监听接口和接收数据
-    NSError * error = nil;
-    [_udpSocket bindToPort:PORT error:&error];
-    if (error) {//监听错误打印错误信息
-        NSLog(@"error:%@",error);
-    }else {//监听成功则开始接收信息
-        [_udpSocket beginReceiving:&error];
-    }
+//    _udpSocket = [[GCDAsyncUdpSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+//    [_udpSocket receiveOnce:nil];
+//    //监听接口和接收数据
+//    NSError * error = nil;
+//    [_udpSocket bindToPort:PORT error:&error];
+//    if (error) {//监听错误打印错误信息
+//        NSLog(@"error:%@",error);
+//    }else {//监听成功则开始接收信息
+//        [_udpSocket beginReceiving:&error];
+//    }
+    [self setUpUdpSocket];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendNewMessage:) name:@"receiveNewDtaaPacket" object:nil];//udp发包
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTcpPacket:) name:@"tcppacket" object:nil];//收到tcp部分数据包
@@ -162,6 +171,20 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dicConnectedBLE) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];//蓝牙断开连接
     // Override point for customization after application launch.
     return YES;
+}
+
+- (void)setUpUdpSocket
+{
+    _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [_udpSocket receiveOnce:nil];
+    //监听接口和接收数据
+    NSError * error = nil;
+    [_udpSocket bindToPort:PORT error:&error];
+    if (error) {//监听错误打印错误信息
+        NSLog(@"error:%@",error);
+    }else {//监听成功则开始接收信息
+        [_udpSocket beginReceiving:&error];
+    }
 }
 
 - (void)dicConnectedBLE {
@@ -1314,6 +1337,52 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //    }
 //    return NO;
 //}
+
+#pragma mark --- PuskKitDelegate
+- (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type {
+    NSString *tokenString = [[[[credentials.token description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];
+    //将token传送到服务器
+//    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"tokenString--%@",tokenString]];
+    NSLog(@"pushToken======%@=======", tokenString);
+    
+    //    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"pushToken" message:tokenString preferredStyle:UIAlertControllerStyleAlert];
+    //    UIAlertAction *action = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    //    }];
+    //    [alertVc addAction:action];
+    //    [self.window.rootViewController presentViewController:alertVc animated:YES completion:nil];
+}
+
+- (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
+    if ([payload.type isEqualToString:@"PKPushTypeVoIP"]) {
+        NSLog(@"开始电话接入======%@=======", payload.dictionaryPayload);
+        
+        
+//        [UNCreatLocalNoti createLocalNotiMessageString:@"didReceiveIncomingPushWithPayload"];
+            //创建网络电话服务
+        [[UNSipEngineInitialize sharedInstance] initEngine];
+
+        
+//        //创建网络电话服务
+//        [[UNSipEngineInitialize sharedInstance] initEngine];
+//
+//        //开启UDP
+//        [[UNSipEngineInitialize sharedInstance]  setUpUdpSocket];
+//
+//        //连接手环并上电
+//        [[UNSipEngineInitialize sharedInstance] scanLBEDevice];
+//
+//        if (kSystemVersionValue >= 10.0) {
+//
+//        }else{
+////            [self creatLocalNoti:payload.dictionaryPayload[@"aps"]];
+//            [UNCreatLocalNoti createLocalNotiMessage:payload.dictionaryPayload[@"aps"]];
+//        }
+//
+//        [[UNSipEngineInitialize sharedInstance]  setUpUdpSocket];
+        
+    }
+}
+
 
 
 
