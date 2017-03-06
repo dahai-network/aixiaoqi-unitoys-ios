@@ -68,6 +68,7 @@ typedef enum : NSUInteger {
     APPAnswerDownElectricToCard,//对卡断电回应
     APPAnswerSIMData,//SIM数据回应
     APPAixiaoqiCardData,//爱小器国际卡数据
+    APPAnswerOTA,//回应收到空中升级指令
     APPChangeCardStatue,//卡状态改变（热插拔）
     APPLastChargeElectricTime,//上次充电时间
     APPAlarmClockSetSuccess,//闹钟设置成功
@@ -2425,6 +2426,17 @@ typedef enum : NSUInteger {
                 NSLog(@"当前电量为：%d%%", electricQuantity);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantity];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
+                //是否有卡
+                if (contentStr.length >= 8) {
+                    NSString *isHaveCardStr = [contentStr substringWithRange:NSMakeRange(6, 2)];
+                    if ([isHaveCardStr isEqualToString:@"00"]) {
+                        NSLog(@"系统基本信息 -- 无卡");
+                    } else if ([isHaveCardStr isEqualToString:@"01"]) {
+                        NSLog(@"系统基本信息 -- 有卡");
+                    } else {
+                        NSLog(@"系统基本信息 -- 状态有问题");
+                    }
+                }
                 break;
             case 2:
                 //电量
@@ -2494,11 +2506,13 @@ typedef enum : NSUInteger {
                     NSLog(@"对卡上电2成功");
                 } else if ([contentStr isEqualToString:@"12"]) {
                     NSLog(@"对卡上电2失败");
+                    [BlueToothDataManager shareManager].isBeingRegisting = NO;
                     [self registFailAction];
                 } else if ([contentStr isEqualToString:@"03"]) {
                     NSLog(@"对卡上电3成功");
                 }else if ([contentStr isEqualToString:@"13"]) {
                     NSLog(@"对卡上电3失败");
+                    [BlueToothDataManager shareManager].isBeingRegisting = NO;
                     [self registFailAction];
                 }
                 break;
@@ -2734,13 +2748,39 @@ typedef enum : NSUInteger {
                 }
                 break;
             case 11:
-                //卡状态改变(热插拔)
-                NSLog(@"蓝牙发送卡状态改变 -- %@", contentStr);
+                //回应收到空中升级指令
+                NSLog(@"回应收到空中升级指令 -- %@", contentStr);
                 break;
             case 12:
-                //上一次充电时间
+                //卡状态改变(热插拔)
+                NSLog(@"蓝牙发送卡状态改变 -- %@", contentStr);
+                int isHaveCardStatue = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
+                switch (isHaveCardStatue) {
+                        case 0:
+                        NSLog(@"卡状态改变 -- 无卡");
+                        [BlueToothDataManager shareManager].isHaveCard = NO;
+                        [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
+                        break;
+                        case 1:
+                        NSLog(@"卡状态改变 -- 有卡");
+                        [BlueToothDataManager shareManager].isHaveCard = YES;
+                        //更新蓝牙状态
+                        //                        [self refreshBLEStatue];
+                        //判断卡类型
+                        [BlueToothDataManager shareManager].bleStatueForCard = 0;
+                        [self phoneCardToUpeLectrify:@"03"];
+                        [self checkCardType];
+                        break;
+                    default:
+                        NSLog(@"卡状态改变 -- 状态有问题");
+                        break;
+                }
                 break;
             case 13:
+                //上一次充电时间
+                break;
+            case 14:
                 //设置闹钟成功
                 break;
             default:

@@ -73,6 +73,11 @@
         self.lblStatue.text = self.hintStrFirst;
         NSLog(@"状态改变 --> %@", self.hintStrFirst);
     }
+    if (![self.hintStrFirst isEqualToString:@"连接中"]) {
+        if (self.timer) {
+            [self.timer setFireDate:[NSDate distantFuture]];
+        }
+    }
 }
 
 #pragma mark 计时器
@@ -343,7 +348,7 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"空中升级的请求结果 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
-                [self dj_alertAction:self alertTitle:nil actionTitle:@"升级" message:responseObj[@"data"][@"Descr"] alertAction:^{
+                [self dj_alertAction:self alertTitle:@"手环固件有更新" actionTitle:@"升级" message:responseObj[@"data"][@"Descr"] alertAction:^{
                     //点击升级
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"OTAAction" object:responseObj[@"data"][@"Url"]];
                 }];

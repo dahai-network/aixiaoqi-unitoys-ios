@@ -507,12 +507,18 @@
         
         //获取电话端口号
         if ([string length] <= 44) {
+            NSLog(@"获取电话端口出问题了");
             return;
         }
         NSString *callPortStr = [string substringFromIndex:44];
         NSString *newString = [NSString stringFromHexString:callPortStr];
         NSLog(@"截取到的电话端口 -- %@", newString);
         if ([newString isEqualToString:@"n Failed"]) {
+            NSLog(@"截取电话端口出错 -- %@", newString);
+            return;
+        }
+        if ([newString isEqualToString:@"Timeout"]) {
+            NSLog(@"截取电话端口出错 -- %@", newString);
             return;
         }
         NSString *cutStr = [newString substringFromIndex:[newString rangeOfString:@"_"].location+1];
