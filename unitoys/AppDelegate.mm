@@ -90,9 +90,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     self.isLoadDelegate = YES;
-    [UNCreatLocalNoti createLocalNotiMessageString:@"didFinishLaunchingWithOptions"];
+//    [UNCreatLocalNoti createLocalNotiMessageString:@"didFinishLaunchingWithOptions"];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -641,7 +641,7 @@
         NSString *sendStr = [NSString stringWithFormat:@"108a0500%@%@00060101006501b4", self.communicateID, str];
         NSLog(@"发送心跳包 -- %@", sendStr);
         [self sendMsgWithMessage:sendStr];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"sendHeartPacket" object:@"sendHeartPacket"];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"sendHeartPacket" object:@"sendHeartPacket"];
         self.currentNumber++;
     }
     self.sec++;

@@ -2020,7 +2020,7 @@ typedef enum : NSUInteger {
     });
 }
 
-#pragma mark 获取历史计步按钮点击事件
+#pragma mark 各种蓝牙功能
 - (IBAction)checkPastAction:(UIButton *)sender {
     if ([BlueToothDataManager shareManager].isBounded) {
         //请求历史步数
@@ -2029,8 +2029,11 @@ typedef enum : NSUInteger {
         //设置闹钟:闹钟1 开启闹钟 重复 周一到周六 15：30
         //        [self checkClockAlarmSetWithNumber:@"00" open:@"01" reuse:@"00" monday:@"01" tuesday:@"01" wednesday:@"01" thursday:@"01" friday:@"01" saturday:@"01" sunday:@"00" hour:@"16" min:@"38"];
         
-        //设置使能抬手亮屏 00:禁止 01:使能
-        //        [self sendConnectingInstructWithData:[self isSetUpToLightWithSet:@"01"]];
+        //是否是能通知
+//        [self sendDataToCheckIsAllowToNotificationWithPhoneCall:NO Message:YES WeiChart:YES QQ:YES];
+        
+        //是否使能抬手功能 00:禁止 01:使能
+//        [self sendMessageToBLEWithType:BLEIsUpHands validData:@"01"];
     } else {
         [self showAlertWithMessage:@"还没有连接设备，请先连接设备"];
     }
@@ -2211,7 +2214,7 @@ typedef enum : NSUInteger {
 //            [self checkBindedDeviceFromNet];
 //        });
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (![BlueToothDataManager shareManager].isConnected) {
+            if (![BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isOpened) {
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
                 [self.mgr stopScan];
                 //开始计时
@@ -2234,11 +2237,11 @@ typedef enum : NSUInteger {
     if (self.time == 60) {
         [self.timer setFireDate:[NSDate distantFuture]];
         self.time = 0;
-        if (![BlueToothDataManager shareManager].isConnected) {
+        if (![BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isOpened) {
             //重新连接
             [self checkBindedDeviceFromNet];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (![BlueToothDataManager shareManager].isConnected) {
+                if (![BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isOpened) {
                     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
                     [self.mgr stopScan];
                     //开始计时
@@ -2335,7 +2338,8 @@ typedef enum : NSUInteger {
         }
         NSLog(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
     } else {
-        NSLog(@"蓝牙未连接");
+//        NSLog(@"蓝牙未连接");
+        HUDNormal(@"蓝牙未连接")
     }
 }
 
@@ -2866,6 +2870,27 @@ typedef enum : NSUInteger {
     [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0a40000023f00"];
 }
 
+#pragma mark 是否使能通知
+- (void)sendDataToCheckIsAllowToNotificationWithPhoneCall:(BOOL)phoneCall Message:(BOOL)message WeiChart:(BOOL)weiChart QQ:(BOOL)QQ {
+    int dataNum = 0;
+    NSString *dataStr;
+    if (phoneCall) {
+        dataNum+=8;
+    }
+    if (message) {
+        dataNum+=4;
+    }
+    if (weiChart) {
+        dataNum+=2;
+    }
+    if (QQ) {
+        dataNum+=1;
+    }
+    dataStr = [NSString stringWithFormat:@"%d", dataNum];
+    NSString *dataHexStr = [self hexStringFromString:dataStr];
+    [self sendMessageToBLEWithType:BLEIsNotifi validData:dataHexStr];
+}
+
 #pragma mark 查询实时步数指令(实时步数)
 //- (NSData *)checkCurrentStepNumber {
 //    //0xAA, 0x01, 0x04, 0xO1, 0xAE
@@ -2916,24 +2941,6 @@ typedef enum : NSUInteger {
     reg[15]=[self strEndMinute:check];
     reg[16]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]^reg[5]^reg[6]^reg[7]^reg[8]^reg[9]^reg[10]^reg[11]^reg[12]^reg[13]^reg[14]^reg[15]);
     NSData *data=[NSData dataWithBytes:reg length:17];
-    return data;
-}
-
-#pragma mark 是否使能抬手亮屏指令(禁止/使能)
-- (NSData *)isSetUpToLightWithSet:(NSString *)set {
-    Byte reg[6];
-    //    0xAA 0x0C 0x04 0x00/01 0xA2/A3
-    reg[0]=0xAA;
-    reg[1]=0x0C;
-    reg[2]=0x04;
-    reg[3]=[self strEndMinute:set];
-    if ([set isEqualToString:@"00"]) {
-        reg[4]=0xA2;
-    } else if ([set isEqualToString:@"01"]) {
-        reg[4]=0xA3;
-    }
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
     return data;
 }
 
