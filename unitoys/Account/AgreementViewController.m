@@ -17,6 +17,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:YES];
     self.tabBarController.tabBar.hidden = YES;
 //    self.view.backgroundColor = [UIColor whiteColor];
 }

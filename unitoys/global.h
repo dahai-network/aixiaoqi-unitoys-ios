@@ -261,6 +261,9 @@
 //连接中
 #define HOMESTATUETITLE_CONNECTING @"连接中"
 #define HOMESTATUE_CONNECTING @"homeStatue_isConnecting"
+//正在注册
+#define HOMESTATUETITLE_REGISTING @"正在注册"
+#define HOMESTATUE_REGISTING @"homeStatue_isConnecting"
 //无套餐
 #define HOMESTATUETITLE_NOPACKAGE @"无套餐"
 #define HOMESTATUE_NOPACKAGE @"homeStatue_noPackge"

@@ -73,7 +73,7 @@
         self.lblStatue.text = self.hintStrFirst;
         NSLog(@"状态改变 --> %@", self.hintStrFirst);
     }
-    if (![self.hintStrFirst isEqualToString:@"连接中"]) {
+    if (![self.hintStrFirst isEqualToString:HOMESTATUETITLE_REGISTING]) {
         if (self.timer) {
             [self.timer setFireDate:[NSDate distantFuture]];
         }

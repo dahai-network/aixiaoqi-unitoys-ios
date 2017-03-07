@@ -712,13 +712,13 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:str];
     [BlueToothDataManager shareManager].stepNumber = str;
     if (![BlueToothDataManager shareManager].isRegisted) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_CONNECTING];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
     }
     NSLog(@"转换之后的内容：%@", receivedMessage);
     if ([receivedMessage isEqualToString:@"200001:0x0000"]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"upLoadToCard" object:@"upLoadToCard"];
         if ([BlueToothDataManager shareManager].isNeedToResert) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_CONNECTING];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
         }
     } else {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewMessageFromBLE" object:[receivedMessage substringFromIndex:7]];

@@ -365,6 +365,9 @@ typedef enum : NSUInteger {
     } else if ([title isEqualToString:HOMESTATUETITLE_CONNECTING]) {
         //连接中
         [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_CONNECTING] forState:UIControlStateNormal];
+    }else if ([title isEqualToString:HOMESTATUETITLE_REGISTING]) {
+        //正在注册
+        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_CONNECTING] forState:UIControlStateNormal];
     } else if ([title isEqualToString:HOMESTATUETITLE_NOPACKAGE]) {
         //无套餐
         [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOPACKAGE] forState:UIControlStateNormal];
@@ -2318,7 +2321,7 @@ typedef enum : NSUInteger {
         if (![BlueToothDataManager shareManager].isHaveCard) {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
         } else {
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
         }
     } else {
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
