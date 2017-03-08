@@ -54,6 +54,7 @@ typedef enum : NSUInteger {
     BLEDownElectricToCard,//对卡断电
     BLECardData,//卡数据
     BLEAixiaoqiCardData,//爱小器国外卡数据
+    BLEJUSTBOXCANCONNECT,//仅钥匙扣能连
 } APPSENDTOBLE;
 
 //蓝牙发送给app
@@ -312,6 +313,7 @@ typedef enum : NSUInteger {
         }else if ([[responseObj objectForKey:@"status"] intValue]==0){
             //数据请求失败
             NSLog(@"没有设备");
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
             //扫描蓝牙设备
             [self scanAndConnectDevice];
         }
@@ -685,6 +687,10 @@ typedef enum : NSUInteger {
         case BLEAixiaoqiCardData:
             //卡数据
             typeStr = @"1300";
+            break;
+        case BLEJUSTBOXCANCONNECT:
+            //仅钥匙扣能连
+            typeStr = @"1400";
             break;
             
         default:
@@ -1672,6 +1678,37 @@ typedef enum : NSUInteger {
     } headers:self.headers];
 }
 
+#pragma mark 查询手环设备是否已被绑定
+- (void)checkDeviceIsBound {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    NSLog(@"表头：%@",self.headers);
+    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", nil];
+    [SSNetworkRequest getRequest:apiIsBind params:info success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"手环是否已被绑定 -- %@", responseObj[@"data"][@"BindStatus"]);
+            if ([responseObj[@"data"][@"BindStatus"] isEqualToString:@"0"]) {
+                //未绑定
+                [self bindBoundDevice];
+            } else if ([responseObj[@"data"][@"BindStatus"] isEqualToString:@"1"]) {
+                //已绑定
+                HUDNormal(@"此设备已被其他用户绑定")
+            } else {
+                NSLog(@"无法识别的判断");
+            }
+            
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            HUDNormal(responseObj[@"msg"])
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(@"网络貌似有问题")
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
 #pragma mark 调用绑定手环接口
 - (void)bindBoundDevice {
     if ([BlueToothDataManager shareManager].deviceMacAddress&&![[BlueToothDataManager shareManager].deviceMacAddress isEqualToString:@"(null):(null):(null):(null):(null):(null)"]) {
@@ -1898,7 +1935,8 @@ typedef enum : NSUInteger {
 #pragma mark 绑定设备
 - (void)boundingConnectedDevice {
     if ([BlueToothDataManager shareManager].isConnected) {
-        [self bindBoundDevice];
+        [self checkDeviceIsBound];
+//        [self bindBoundDevice];
     } else {
         [self showAlertWithMessage:@"还没有连接蓝牙，请先连接设备"];
     }
@@ -2014,8 +2052,14 @@ typedef enum : NSUInteger {
         [BlueToothDataManager shareManager].isAccordBreak = NO;
         //绑定设备
         if (!self.boundedDeviceInfo[@"IMEI"]) {
-            //调用绑定设备接口
-            [self bindBoundDevice];
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+            //扫描蓝牙设备
+            if ([BlueToothDataManager shareManager].isNeedToBoundDevice) {
+                //调用绑定设备接口
+                [self checkDeviceIsBound];
+                [BlueToothDataManager shareManager].isNeedToBoundDevice = NO;
+            }
+//            [self bindBoundDevice];
         } else {
             NSLog(@"已经绑定过了%@", self.boundedDeviceInfo[@"IMEI"]);
             //已经绑定过
@@ -2052,16 +2096,17 @@ typedef enum : NSUInteger {
             NSLog(@"设备名称：%@", peripheral.name);
             NSString *imeiStr = self.boundedDeviceInfo[@"IMEI"];
             NSString *imeiLowStr = imeiStr.lowercaseString;
-            NSString *nameStr;
-            if (peripheral.name.length > 7) {
-                nameStr = [peripheral.name substringWithRange:NSMakeRange(0, 7)];
-            } else {
-                nameStr = peripheral.name;
+            NSString *nameStr = peripheral.name;;
+            if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
+                nameStr = MYDEVICENAMEUNITOYS;
+            }
+            if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
+                nameStr = MYDEVICENAMEUNIBOX;
             }
             if (imeiLowStr&&[MYDEVICENAME containsString:nameStr.lowercaseString]) {
                 //新版本带mac地址的
-                if (peripheral.name.length > 8) {
-                    NSString *macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:8]];
+                if (peripheral.name.length > nameStr.length+1) {
+                    NSString *macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1]];
                     if ([macStr.lowercaseString isEqualToString:imeiLowStr]) {
                         self.peripheral = peripheral;
                         [self.mgr connectPeripheral:self.peripheral options:nil];
@@ -2076,8 +2121,8 @@ typedef enum : NSUInteger {
                 }
             } else {
                 //新版本带mac地址的
-                if (peripheral.name.length > 8 && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
-                    NSString *macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:8]];
+                if (peripheral.name.length > nameStr.length+1 && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
+                    NSString *macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1]];
                     
                     [self.peripherals addObject:peripheral];
                     NSLog(@"带mac地址 -- uuid = %@ name = %@ 信号强度是：%@ mac地址是：%@", peripheral.identifier, peripheral.name, RSSI, macStr.lowercaseString);
@@ -2113,12 +2158,18 @@ typedef enum : NSUInteger {
             if(self.pairedArr.count>0) {
                 NSLog(@"连接的配对设备 - %@", self.pairedArr);
                 for (CBPeripheral* peripheral in self.pairedArr) {
-                    NSString *nameStr = [peripheral.name substringWithRange:NSMakeRange(0, 7)];
+                    NSString *nameStr = peripheral.name;
+                    if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
+                        nameStr = MYDEVICENAMEUNITOYS;
+                    }
+                    if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
+                        nameStr = MYDEVICENAMEUNIBOX;
+                    }
                     if (peripheral != nil && [MYDEVICENAME containsString:nameStr.lowercaseString]) {
                         
                         //获取mac地址
-                        if (!self.boundedDeviceInfo[@"IMEI"] && peripheral.name.length > 8) {
-                            [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:8].lowercaseString];
+                        if (!self.boundedDeviceInfo[@"IMEI"] && peripheral.name.length > nameStr.length+1) {
+                            [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1].lowercaseString];
                         }
                         if (self.boundedDeviceInfo[@"IMEI"]) {
                             NSString *boundStr = self.boundedDeviceInfo[@"IMEI"];
@@ -2126,11 +2177,15 @@ typedef enum : NSUInteger {
                         }
                         //绑定设备
                         if (!self.boundedDeviceInfo[@"IMEI"]) {
-                            //调用绑定设备接口
-                            self.strongestRssiPeripheral = peripheral;
-                            [self.macAddressDict setObject:[BlueToothDataManager shareManager].deviceMacAddress forKey:peripheral.identifier];
-                            [self bindBoundDevice];
-                            [BlueToothDataManager shareManager].isConnectedPairedDevice = YES;
+                            if ([BlueToothDataManager shareManager].isNeedToBoundDevice) {
+                                //调用绑定设备接口
+                                self.strongestRssiPeripheral = peripheral;
+                                [self.macAddressDict setObject:[BlueToothDataManager shareManager].deviceMacAddress forKey:peripheral.identifier];
+                                [self checkDeviceIsBound];
+                                [BlueToothDataManager shareManager].isConnectedPairedDevice = YES;
+                            } else {
+                                NSLog(@"啥都不做");
+                            }
                         } else {
                             NSLog(@"已经绑定过了%@", self.boundedDeviceInfo[@"IMEI"]);
                             //已经绑定过
@@ -2307,6 +2362,8 @@ typedef enum : NSUInteger {
     [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
     //请求电量
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
+    //仅钥匙扣能连接
+    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
     //是否是能通知
     [self sendDataToCheckIsAllowToNotificationWithPhoneCall:YES Message:NO WeiChart:NO QQ:NO];
     //对卡上电
@@ -2341,7 +2398,10 @@ typedef enum : NSUInteger {
         NSLog(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
     } else {
 //        NSLog(@"蓝牙未连接");
-        HUDNormal(@"蓝牙未连接")
+        NSString *dataStr = [NSString stringWithFormat:@"%@", data];
+        if (![dataStr isEqualToString:@"<88800310 0002>"]) {
+            HUDNormal(@"蓝牙未连接")
+        }
     }
 }
 

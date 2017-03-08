@@ -195,6 +195,9 @@
 //使用签名，手环设备查询
 #define apiDeviceBracelet defaultHost@"api/DeviceBracelet/Get"
 
+//使用签名，查询手环设备是否被其他用户绑定
+#define apiIsBind defaultHost@"api/DeviceBracelet/IsBind"
+
 //使用签名，空中升级
 #define apiDeviceBraceletOTA defaultHost@"api/DeviceBracelet/OTA"
 
@@ -289,9 +292,10 @@
 
 #pragma 蓝牙相关
 //蓝牙的设备名称
-//#define MYDEVICENAME @"dongjie Dong"
-#define MYDEVICENAME @"unitoys"
-//#define MYDEVICENAME @"dongjie Dong unitoys"
+#define MYDEVICENAME @"unitoys unibox"
+#define MYDEVICENAMEUNITOYS @"unitoys"
+#define MYDEVICENAMEUNIBOX @"unibox"
+
 //服务1的UUID
 #define UUIDFORSERVICE1SERVICE @"6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 //服务1里面写属性特征

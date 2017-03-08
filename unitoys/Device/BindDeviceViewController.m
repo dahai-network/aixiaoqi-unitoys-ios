@@ -111,12 +111,12 @@
             float count = (float)[senderStr intValue]/160;
             NSString *countStr = [NSString stringWithFormat:@"%.2f", count];
             if ([countStr floatValue] == 1) {
-                self.lblStatue.text = @"正在注册99%";
+                self.lblStatue.text = @"注册中99%";
             } else {
-                self.lblStatue.text = [NSString stringWithFormat:@"正在注册%.0f%%", [countStr floatValue] * 100];
+                self.lblStatue.text = [NSString stringWithFormat:@"注册中%.0f%%", [countStr floatValue] * 100];
             }
         } else {
-            self.lblStatue.text = @"正在注册99%";
+            self.lblStatue.text = @"注册中99%";
         }
     }
     if ([[BlueToothDataManager shareManager].operatorType intValue] == 2) {
@@ -124,12 +124,12 @@
             float count = (float)[senderStr intValue]/340;
             NSString *countStr = [NSString stringWithFormat:@"%.2f", count];
             if ([countStr floatValue] == 1) {
-                self.lblStatue.text = @"正在注册99%";
+                self.lblStatue.text = @"注册中99%";
             } else {
-                self.lblStatue.text = [NSString stringWithFormat:@"正在注册%.0f%%", [countStr floatValue] * 100];
+                self.lblStatue.text = [NSString stringWithFormat:@"注册中%.0f%%", [countStr floatValue] * 100];
             }
         } else {
-            self.lblStatue.text = @"正在注册99%";
+            self.lblStatue.text = @"注册中99%";
         }
     }
 }
@@ -231,6 +231,7 @@
         } else if (![BlueToothDataManager shareManager].isConnected) {
             //未连接设备，先扫描连接
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
+            [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
             IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
             [self.navigationController pushViewController:isBoundVC animated:YES];
         } else {
