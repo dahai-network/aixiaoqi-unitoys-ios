@@ -262,13 +262,13 @@
 #define HOMESTATUETITLE_CONNECTING @"连接中"
 #define HOMESTATUE_CONNECTING @"homeStatue_isConnecting"
 //正在注册
-#define HOMESTATUETITLE_REGISTING @"正在注册"
+#define HOMESTATUETITLE_REGISTING @"注册中"
 #define HOMESTATUE_REGISTING @"homeStatue_isConnecting"
 //无套餐
 #define HOMESTATUETITLE_NOPACKAGE @"无套餐"
 #define HOMESTATUE_NOPACKAGE @"homeStatue_noPackge"
-//无信号
-#define HOMESTATUETITLE_NOSIGNAL @"无信号"
+//注册失败
+#define HOMESTATUETITLE_NOSIGNAL @"注册失败"
 #define HOMESTATUE_NOSIGNAL @"homeStatue_noSignal"
 //信号强
 #define HOMESTATUETITLE_SIGNALSTRONG @"信号强"

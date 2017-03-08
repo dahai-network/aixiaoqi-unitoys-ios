@@ -366,13 +366,13 @@ typedef enum : NSUInteger {
         //连接中
         [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_CONNECTING] forState:UIControlStateNormal];
     }else if ([title isEqualToString:HOMESTATUETITLE_REGISTING]) {
-        //正在注册
+        //注册中
         [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_CONNECTING] forState:UIControlStateNormal];
     } else if ([title isEqualToString:HOMESTATUETITLE_NOPACKAGE]) {
         //无套餐
         [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOPACKAGE] forState:UIControlStateNormal];
     } else if ([title isEqualToString:HOMESTATUETITLE_NOSIGNAL]) {
-        //无信号
+        //注册失败
         [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOSIGNAL] forState:UIControlStateNormal];
     } else if ([title isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         //信号强
@@ -2032,9 +2032,6 @@ typedef enum : NSUInteger {
         //设置闹钟:闹钟1 开启闹钟 重复 周一到周六 15：30
         //        [self checkClockAlarmSetWithNumber:@"00" open:@"01" reuse:@"00" monday:@"01" tuesday:@"01" wednesday:@"01" thursday:@"01" friday:@"01" saturday:@"01" sunday:@"00" hour:@"16" min:@"38"];
         
-        //是否是能通知
-//        [self sendDataToCheckIsAllowToNotificationWithPhoneCall:NO Message:YES WeiChart:YES QQ:YES];
-        
         //是否使能抬手功能 00:禁止 01:使能
 //        [self sendMessageToBLEWithType:BLEIsUpHands validData:@"01"];
     } else {
@@ -2310,6 +2307,8 @@ typedef enum : NSUInteger {
     [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
     //请求电量
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
+    //是否是能通知
+    [self sendDataToCheckIsAllowToNotificationWithPhoneCall:YES Message:NO WeiChart:NO QQ:NO];
     //对卡上电
     [self phoneCardToUpeLectrify:@"01"];
     [self refreshBLEStatue];

@@ -165,7 +165,7 @@
 }
 
 - (void)cardNumberNotTrueActionForBind:(NSNotification *)sender {
-    self.lblStatue.text = @"无信号";
+    self.lblStatue.text = @"注册失败";
     if (self.timer) {
         [self.timer setFireDate:[NSDate distantFuture]];
     }
