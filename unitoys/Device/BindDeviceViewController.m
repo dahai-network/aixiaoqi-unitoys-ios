@@ -9,7 +9,6 @@
 #import "BindDeviceViewController.h"
 #import "BlueToothDataManager.h"
 #import "WaterIdentifyView.h"
-#import "IsBoundingViewController.h"
 
 @interface BindDeviceViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *lblStatue;
@@ -23,8 +22,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self addElectricQue];
     self.lblStatue.text = self.hintStrFirst;
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self addElectricQue];
+    } else {
+        if (self.customView) {
+            self.customView.hidden = YES;
+        }
+        self.hintLabel.text = @"还没有连接设备，点击连接";
+        self.versionNumber.hidden = YES;
+        self.macAddress.hidden = YES;
+        self.lblStatue.text = @"未连接";
+    }
     
     if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
         self.lblStatue.text = @"信号强";
@@ -65,6 +74,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cardNumberNotTrueActionForBind:) name:@"cardNumberNotTrue" object:nil];//号码有问题专用
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatueAll:) name:@"changeStatueAll" object:nil];//状态改变
     // Do any additional setup after loading the view.
+}
+
+- (void)leftButtonAction {
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void)changeStatueAll:(NSNotification *)sender {
@@ -226,14 +239,14 @@
         if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBounded) {
             //点击绑定设备
             [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
-            IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
-            [self.navigationController pushViewController:isBoundVC animated:YES];
+//            IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
+//            [self.navigationController pushViewController:isBoundVC animated:YES];
         } else if (![BlueToothDataManager shareManager].isConnected) {
             //未连接设备，先扫描连接
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
             [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
-            IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
-            [self.navigationController pushViewController:isBoundVC animated:YES];
+//            IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
+//            [self.navigationController pushViewController:isBoundVC animated:YES];
         } else {
             //已经绑定了
         }

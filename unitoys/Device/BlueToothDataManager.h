@@ -46,6 +46,7 @@
 @property (nonatomic, assign) BOOL isCheckAndRefreshBLEStatue;//是否正在查询卡的状态（包括tcp连接）
 @property (nonatomic, copy) NSString *localServicePort;//本地服务器的端口号
 @property (nonatomic, assign) BOOL isNeedToBoundDevice;//是否需要绑定
+@property (nonatomic, copy) NSString *deviceType;//需要绑定的设备类型
 //@property (nonatomic, assign) BOOL isAccordTocheckCard;//是否主动查询是否有卡
 //@property (nonatomic, assign) int blutoothStatue;//蓝牙状态 0:蓝牙未开 1:蓝牙已开启但未连接 2: 蓝牙已连接但未绑定 3:蓝牙已绑定设备但未插卡 4:设备已插卡
 

@@ -11,6 +11,7 @@
 
 #import "IsBoundingViewController.h"
 #import "BlueToothDataManager.h"
+#import "BindDeviceViewController.h"
 
 @interface IsBoundingViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *firstLabel;
@@ -22,6 +23,7 @@
 @property (nonatomic, assign)int time;
 @property (nonatomic, copy)NSString *currentLabel;
 @property (nonatomic, assign) BOOL isback;//是否主动退出页面
+@property (nonatomic, strong)BindDeviceViewController *bindDeviceVC;
 
 @end
 
@@ -41,6 +43,7 @@
     
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectedSuccess) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectFail) name:@"connectFail" object:@"connectFail"];//绑定失败
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -58,12 +61,33 @@
 - (IBAction)cancelScanAction:(UIButton *)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
     [BlueToothDataManager shareManager].isShowAlert = YES;
+    self.time = 0;
+    [self.timer setFireDate:[NSDate distantPast]];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 
 - (void)connectedSuccess {
     self.isback = NO;
+    //有绑定
+    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
+    if (!self.bindDeviceVC) {
+        self.bindDeviceVC = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
+    }
+    
+    if(![self.navigationController.topViewController isKindOfClass:[BindDeviceViewController class]]) {
+        self.time = 0;
+        [self.timer setFireDate:[NSDate distantPast]];
+        self.tabBarController.tabBar.hidden = YES;
+        self.bindDeviceVC.hintStrFirst = @"连接中";
+        [self.navigationController pushViewController:self.bindDeviceVC animated:YES];
+    }
+}
+
+- (void)connectFail {
+    self.isback = NO;
+    self.time = 0;
+    [self.timer setFireDate:[NSDate distantPast]];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -128,6 +152,11 @@
     [controller presentViewController:alertVC animated:YES completion:nil];
 }
 
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectFail" object:@"connectFail"];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

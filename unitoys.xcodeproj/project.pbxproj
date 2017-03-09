@@ -30,6 +30,10 @@
 		04472ABA1E1CABD70042CEE1 /* ActivateGiftCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04472AB81E1CABD70042CEE1 /* ActivateGiftCardViewController.xib */; };
 		04472ABE1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04472ABC1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m */; };
 		04472ABF1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04472ABD1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib */; };
+		04553F301E70EE980025CA34 /* ChooseDeviceTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04553F2E1E70EE980025CA34 /* ChooseDeviceTypeViewController.m */; };
+		04553F311E70EE980025CA34 /* ChooseDeviceTypeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04553F2F1E70EE980025CA34 /* ChooseDeviceTypeViewController.xib */; };
+		04553F351E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04553F331E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m */; };
+		04553F361E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04553F341E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib */; };
 		046BD63F1E0B79BB008A958A /* jcore-ios-1.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD63C1E0B79BB008A958A /* jcore-ios-1.0.0.a */; };
 		046BD6401E0B79BB008A958A /* jpush-ios-3.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD63D1E0B79BB008A958A /* jpush-ios-3.0.0.a */; };
 		046BD6421E0B7A41008A958A /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD6411E0B7A41008A958A /* libresolv.tbd */; };
@@ -314,6 +318,12 @@
 		04472ABB1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivateGiftCardTableViewCell.h; sourceTree = "<group>"; };
 		04472ABC1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivateGiftCardTableViewCell.m; sourceTree = "<group>"; };
 		04472ABD1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivateGiftCardTableViewCell.xib; sourceTree = "<group>"; };
+		04553F2D1E70EE980025CA34 /* ChooseDeviceTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseDeviceTypeViewController.h; sourceTree = "<group>"; };
+		04553F2E1E70EE980025CA34 /* ChooseDeviceTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseDeviceTypeViewController.m; sourceTree = "<group>"; };
+		04553F2F1E70EE980025CA34 /* ChooseDeviceTypeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChooseDeviceTypeViewController.xib; sourceTree = "<group>"; };
+		04553F321E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseDeviceTypeTableViewCell.h; sourceTree = "<group>"; };
+		04553F331E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseDeviceTypeTableViewCell.m; sourceTree = "<group>"; };
+		04553F341E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChooseDeviceTypeTableViewCell.xib; sourceTree = "<group>"; };
 		046BD63C1E0B79BB008A958A /* jcore-ios-1.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jcore-ios-1.0.0.a"; sourceTree = "<group>"; };
 		046BD63D1E0B79BB008A958A /* jpush-ios-3.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-3.0.0.a"; sourceTree = "<group>"; };
 		046BD63E1E0B79BB008A958A /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
@@ -1694,6 +1704,12 @@
 				04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */,
 				95E918541DDC7AA8005DABC0 /* BindDeviceViewController.h */,
 				95E918551DDC7AA8005DABC0 /* BindDeviceViewController.m */,
+				04553F2D1E70EE980025CA34 /* ChooseDeviceTypeViewController.h */,
+				04553F2E1E70EE980025CA34 /* ChooseDeviceTypeViewController.m */,
+				04553F2F1E70EE980025CA34 /* ChooseDeviceTypeViewController.xib */,
+				04553F321E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.h */,
+				04553F331E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m */,
+				04553F341E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib */,
 				04D90E871DEEDC5C00035C46 /* BlueToothDataManager.h */,
 				04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */,
 			);
@@ -1888,6 +1904,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				950E791E1E02C0D8003AE0D5 /* Order.storyboard in Resources */,
+				04553F311E70EE980025CA34 /* ChooseDeviceTypeViewController.xib in Resources */,
 				3CC3E0A81E63C22F00A62F8C /* CustomOrderCell.xib in Resources */,
 				955CCC311D90075D00BC8110 /* https.cer in Resources */,
 				950E79201E02C981003AE0D5 /* Phone.storyboard in Resources */,
@@ -1935,6 +1952,7 @@
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
 				3C52B2031E5EF87A001E67C4 /* number_location.zip in Resources */,
 				95F337221D853256000B5461 /* Main.storyboard in Resources */,
+				04553F361E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib in Resources */,
 				043965CA1E07E18C00B67989 /* BindChargeCardViewController.xib in Resources */,
 				04F727B31E641CE4002EB54C /* index.html in Resources */,
 				04F727B41E641CE4002EB54C /* Base.xcconfig in Resources */,
@@ -2098,6 +2116,7 @@
 				95C575F01DA7750000F459DF /* ConerSegment.m in Sources */,
 				740FD3B91E2A58CB009413F1 /* Test.m in Sources */,
 				04F727AF1E641CE4002EB54C /* HTTPErrorResponse.m in Sources */,
+				04553F351E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m in Sources */,
 				952AB0091DF8DA8900C5A927 /* PhoneOperationPad.m in Sources */,
 				95C575FC1DA77C1000F459DF /* MessageRecordCell.m in Sources */,
 				04F727A41E641CE4002EB54C /* DDRange.m in Sources */,
@@ -2108,6 +2127,7 @@
 				95E9185A1DDC7EB6005DABC0 /* BeforeOutViewController.m in Sources */,
 				04F727AB1E641CE4002EB54C /* MultipartMessageHeaderField.m in Sources */,
 				95CD33F01D9CE4F300EE5DD3 /* NSDataEx.m in Sources */,
+				04553F301E70EE980025CA34 /* ChooseDeviceTypeViewController.m in Sources */,
 				954A87CE1D98BBA700570843 /* JSONModelArray.m in Sources */,
 				9536B9741D8FC16600CD6B78 /* UnderlineField.m in Sources */,
 				04F7279D1E641CE4002EB54C /* DDLog.m in Sources */,

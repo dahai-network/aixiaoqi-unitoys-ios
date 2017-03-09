@@ -117,6 +117,22 @@
     return YES;
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if (textField == self.edtPhoneNumber) {
+        if (string.length == 0) return YES;
+        
+        NSInteger existedLength = textField.text.length;
+        NSInteger selectedLength = range.length;
+        NSInteger replaceLength = string.length;
+        if (existedLength - selectedLength + replaceLength > 11) {
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
 
 -(void)textFieldDidEndEditing:(UITextField *)textField{
     //输入框编辑完成以后，当键盘即将消失时，将视图恢复到原始状态
