@@ -40,6 +40,8 @@
 #pragma mark 拒绝按钮点击事件
 - (IBAction)refuseButtonAction:(UIButton *)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
+    //直接挂断
+    [self endCallPhone];
 }
 
 #pragma mark 拒绝按钮动画

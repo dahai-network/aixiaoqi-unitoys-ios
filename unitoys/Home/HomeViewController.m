@@ -30,6 +30,11 @@
 
 #import "UNDatabaseTools.h"
 
+#import "UNCreatLocalNoti.h"
+#import "AppDelegate.h"
+#import "UNGetSimData.h"
+#import "UNBLEDataManager.h"
+
 //#import "AbroadMessageController.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
@@ -83,10 +88,28 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong)UILabel *titleLabel;
 @property (nonatomic, strong)UILabel *progressNumberLabel;
 
+@property (nonatomic, assign) BOOL isQuickLoad;
+@property (nonatomic, copy) NSString *simDataString;
+@property (nonatomic, assign) BOOL isHasSimType;
+@property (nonatomic, copy) NSString *simTypeData;
+@property (nonatomic, strong) UNSimCardAuthenticationModel *authenticationModel;
+//@property (nonatomic, copy) NSString *currentSendStr;
+@property (nonatomic, assign) NSInteger maxSendCount;
+@property (nonatomic, assign) NSInteger currentSendIndex;
+@property (nonatomic, strong) NSMutableArray *needSendDatas;
+
 @end
 
 @implementation HomeViewController
 
+
+- (NSMutableArray *)needSendDatas
+{
+    if (!_needSendDatas) {
+        _needSendDatas = [NSMutableArray array];
+    }
+    return _needSendDatas;
+}
 
 //80+80+112=272  section 0 scale 320width
 //
@@ -234,6 +257,8 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(oatUpdataAction:) name:@"OTAAction" object:nil];//空中升级
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshStatueToCard) name:@"refreshStatueToCard" object:@"refreshStatueToCard"];//刷新卡状态
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paySuccess) name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];//绑定礼包卡成功
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
     
@@ -603,7 +628,14 @@ typedef enum : NSUInteger {
 
 - (void)senderNewMessageToBLE:(NSNotification *)sender {
     NSString *tempStr = sender.object;
+    NSLog(@"获取卡数据---%@", tempStr);
     [self sendMessageToBLEWithType:BLECardData validData:tempStr];
+}
+
+- (void)sendNewMessageToBLEWithPushKit:(NSString *)sendString
+{
+    NSLog(@"获取卡数据从pushkit---%@", sendString);
+    [self sendMessageToBLEWithType:BLECardData validData:sendString];
 }
 
 #pragma mark 新协议发送数据包的方法
@@ -2328,6 +2360,15 @@ typedef enum : NSUInteger {
     }
 }
 
+- (void)receivePushKitMessage
+{
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self sendInitMessageToBLE];
+    }else{
+        [self checkBindedDeviceFromNet];
+    }
+}
+
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
     // 遍历所有的特征
@@ -2354,6 +2395,51 @@ typedef enum : NSUInteger {
         NSLog(@"characteristic:%@", characteristic);
     }
     [BlueToothDataManager shareManager].isConnected = YES;
+    
+    [self sendInitMessageToBLE];
+    
+//    //告诉蓝牙是苹果设备
+//    [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
+//    //同步时间
+//    [self checkNowTime];
+//    //请求基本信息
+//    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+//    //请求电量
+//    [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
+//    //仅钥匙扣能连接
+//    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+//    //是否是能通知
+//    [self sendDataToCheckIsAllowToNotificationWithPhoneCall:YES Message:NO WeiChart:NO QQ:NO];
+//    //对卡上电
+//    [self phoneCardToUpeLectrify:@"01"];
+//    [self refreshBLEStatue];
+}
+
+//第一次发送蓝牙消息
+- (void)sendInitMessageToBLE
+{
+    AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    if (appdelegate.isPushKit) {
+        [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"appdelegate.isPushKit===%zd", appdelegate.isPushKit]];
+        if (appdelegate.simDataString) {
+            self.simDataString = appdelegate.simDataString;
+        }
+        [self sendLBEMessageWithPushKit];
+    }else{
+        [self sendLBEMessageNoPushKit];
+    }
+}
+
+- (void)sendLBEMessageWithPushKit
+{
+    self.isQuickLoad = YES;
+    //对卡上电
+    [self phoneCardToUpeLectrify:@"03"];
+}
+
+- (void)sendLBEMessageNoPushKit
+{
+    self.isQuickLoad = NO;
     //告诉蓝牙是苹果设备
     [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
     //同步时间
@@ -2370,6 +2456,8 @@ typedef enum : NSUInteger {
     [self phoneCardToUpeLectrify:@"01"];
     [self refreshBLEStatue];
 }
+
+
 
 #pragma mark 更新蓝牙状态
 - (void)refreshBLEStatue {
@@ -2576,6 +2664,9 @@ typedef enum : NSUInteger {
                     [self registFailAction];
                 } else if ([contentStr isEqualToString:@"03"]) {
                     NSLog(@"对卡上电3成功");
+                    if (self.isQuickLoad) {
+                        [self sendDataToVSW:self.simDataString];
+                    }
                 }else if ([contentStr isEqualToString:@"13"]) {
                     NSLog(@"对卡上电3失败");
                     [BlueToothDataManager shareManager].isBeingRegisting = NO;
@@ -2690,7 +2781,42 @@ typedef enum : NSUInteger {
                                 }
                             }
                             NSLog(@"最终发送的数据包字符为：%@", self.totalString);
-                            [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
+                            if (self.isQuickLoad) {
+                                //手动解析
+                                //                               [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString];
+                                NSString *currentSendStr = self.needSendDatas[self.currentSendIndex];
+                                if (self.authenticationModel.isAddSendData) {
+                                    if ([currentSendStr isEqualToString:@"a0c0000003"] || [currentSendStr isEqualToString:@"a0c000000c"]) {
+                                        //最后一条额外数据
+                                        [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:2];
+                                        NSString *sendTcpStr = [self getStringToTcp];
+                                        [self sendTcpString:sendTcpStr];
+                                        NSLog(@"sendTcpStr====%@", sendTcpStr);
+                                    }else if([currentSendStr isEqualToString:self.authenticationModel.simData]){
+                                        [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
+                                        self.currentSendIndex += 1;
+                                        [self sendDataToLBEWithIndex:self.currentSendIndex];
+                                    }else{
+                                        self.currentSendIndex += 1;
+                                        [self sendDataToLBEWithIndex:self.currentSendIndex];
+                                    }
+                                }else{
+                                    //如果不是a088,到这里结束
+                                    if ([currentSendStr isEqualToString:self.authenticationModel.simData]) {
+                                        [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
+                                        NSString *sendTcpStr = [self getStringToTcp];
+                                        [self sendTcpString:sendTcpStr];
+                                        NSLog(@"sendTcpStr====%@", sendTcpStr);
+                                    }else{
+                                        self.currentSendIndex += 1;
+                                        [self sendDataToLBEWithIndex:self.currentSendIndex];
+                                    }
+                                }
+                            }else{
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
+                            }
+
+//                            [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
                             [self.dataPacketArray removeAllObjects];
                             self.totalString = nil;
                         }
@@ -2855,6 +2981,181 @@ typedef enum : NSUInteger {
         }
     }
 }
+
+#pragma mark --在pushkit下发送蓝牙数据
+- (void)sendDataToVSW:(NSString *)string
+{
+    NSLog(@"%@", string);
+    if (!string) {
+        return;
+    }
+    [BlueToothDataManager shareManager].bleStatueForCard = 2;
+    
+    UNSimCardAuthenticationModel *model = [UNGetSimData getModelWithAuthenticationString:string];
+    self.authenticationModel = model;
+    if (model.simTypePrefix.length == 4) {
+        NSString *simType = [model.simTypePrefix substringFromIndex:2];
+        if ([simType isEqualToString:@"88"]) {
+            self.isHasSimType = YES;
+            self.simTypeData = @"C0";
+        }else{
+            NSArray *simArray = @[@"C0",@"B0",@"B2",@"F2",@"12"];
+            if ([simArray containsObject:simType.uppercaseString]) {
+                self.isHasSimType = YES;
+                self.simTypeData = simType;
+            }else{
+                self.isHasSimType = NO;
+                self.simTypeData = nil;
+            }
+        }
+    }
+    if (model.simdirectory && model.simdirectory.count) {
+        for (NSString *simString in model.simdirectory) {
+            NSString *sendData = [NSString stringWithFormat:@"a0a4000002%@", simString];
+            [self.needSendDatas addObject:sendData];
+        }
+    }
+    [self.needSendDatas addObject:model.simData];
+    if (model.isAddSendData) {
+        if ([self.simtype isEqualToString:@"2"]) {
+            //电信
+            [self.needSendDatas addObject:@"a0c0000003"];
+        }else if ([self.simtype isEqualToString:@"1"]){
+            //移动联通
+            [self.needSendDatas addObject:@"a0c000000c"];
+        }
+    }
+    //已经发送完
+    self.currentSendIndex = 0;
+    [self sendDataToLBEWithIndex:self.currentSendIndex];
+}
+
+- (void)sendDataToLBEWithIndex:(NSInteger)index
+{
+    if (self.needSendDatas.count > index) {
+        [self sendNewMessageToBLEWithPushKit:self.needSendDatas[index]];
+    }else{
+        NSLog(@"发送蓝牙数据错误====");
+    }
+}
+
+//接受蓝牙的数据并根据规律组合
+//- (NSString *)getStringToTcpWithShortString:(NSString *)shortStr LongString:(NSString *)longStr
+- (NSString *)getStringToTcp
+{
+    //   收到的需要发送的数据 0003 0011 0F A0C000000C 9F0C C0 A9316DD53556EEAADB5C1F0F9000
+    
+    // 原始数据   00 34 05 11 000200 02 3f00 7f25 6f3a 0000 a08800001100000000640000000000639b9980000000
+    // SDK传过来的数据  0034 0008 06 A0C0000003 9F03 C0 03AFC19000
+    //    0008（总长度） 06（后面有效长度） a0c0000003（最后需要发送的命令） 9f03（a088返回的数据） c0（当前位置） 03AFC19000（加密返回的数据）
+    
+    NSString *shortStr = [UNBLEDataManager sharedInstance].shortString;
+    NSString *longStr = [UNBLEDataManager sharedInstance].longString;
+    NSMutableString *tempStr = [NSMutableString string];
+    [tempStr appendString:self.authenticationModel.chn];
+    [tempStr appendString:self.authenticationModel.cmdIndex];
+    
+    //加密返回的数据
+    NSString *lastData;
+    if (longStr) {
+        lastData = longStr;
+    }
+    
+    //卡类型
+    NSString *simtTypeStr;
+    if (self.isHasSimType && self.simTypeData) {
+        simtTypeStr = self.simTypeData;
+    }
+    
+    //卡类型返回的数据(短数据,只有a088时才有)
+    NSString *simTypeGetData = shortStr;
+    
+    //最后发送的命令
+    NSString *lastStr = @"0000000000";
+    if (self.authenticationModel.isAddSendData) {
+        if ([self.simtype isEqualToString:@"2"]) {
+            //电信
+            lastStr = @"a0c0000003";
+        }else if ([self.simtype isEqualToString:@"1"]){
+            //移动联通
+            lastStr = @"a0c000000c";
+        }
+    }
+    
+    //后面有效长度
+    NSInteger validStrLength = 0;
+    NSString *laterLength;
+    if (longStr) {
+        if (lastData) {
+            validStrLength += lastData.length;
+        }
+        if (simtTypeStr) {
+            validStrLength += simtTypeStr.length;
+        }
+        validStrLength = validStrLength/2;
+        laterLength = [self hexStringFromString:[NSString stringWithFormat:@"%zd", validStrLength]];
+    }else{
+        if (simtTypeStr) {
+            validStrLength += simtTypeStr.length /2;
+        }
+        laterLength = @"00";
+    }
+    
+    //总长度
+    if (simTypeGetData) {
+        validStrLength += (simTypeGetData.length/2);
+    }
+    NSString *totalLenth = [self hexStringFromString:[NSString stringWithFormat:@"%zd", validStrLength]];
+    if (totalLenth.length == 2) {
+        totalLenth = [NSString stringWithFormat:@"00%@", totalLenth];
+    }else if (totalLenth.length == 3){
+        totalLenth = [NSString stringWithFormat:@"0%@", totalLenth];
+    }
+    
+    //总长度
+    [tempStr appendString:totalLenth];
+    //后面有效长度
+    [tempStr appendString:laterLength];
+    //最后发送的命令(a088才需要,移动联通电信才需要)
+    if (lastStr) {
+        [tempStr appendString:lastStr];
+    }
+    //卡类型返回的数据(如9f0c)
+    if (lastData) {
+        if (simTypeGetData) {
+            [tempStr appendString:simTypeGetData];
+        }
+        //卡类型(如C0)
+        if (simtTypeStr) {
+            [tempStr appendString:simtTypeStr];
+        }
+        
+        //加密返回的数据(a088时发送移动联通指令返回的数据)
+        [tempStr appendString:lastData];
+    }else{
+        if (simtTypeStr) {
+            [tempStr appendString:simtTypeStr];
+        }
+        if (simTypeGetData) {
+            [tempStr appendString:simTypeGetData];
+        }
+    }
+    
+    
+    [[UNBLEDataManager sharedInstance] clearData];
+    self.currentSendIndex = 0;
+    [self.needSendDatas removeAllObjects];
+    NSLog(@"发送给TCP的数据%@",[tempStr uppercaseString]);
+    return [tempStr uppercaseString];
+}
+
+//将组合的数据发送到tcp服务器
+- (void)sendTcpString:(NSString *)string
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"SendTcpDataFromPushKit" object:nil userInfo:@{@"tcpString" : string}];
+}
+
+
 
 #pragma mark 获取当前时间
 - (void)checkNowTime {

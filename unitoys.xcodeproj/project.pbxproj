@@ -114,6 +114,9 @@
 		3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D81E65754000931B20 /* MessagePhoneDetailCell.xib */; };
 		3CCA72DE1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */; };
 		3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */; };
+		3CD9134C1E70E59F00434465 /* UNBLEDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD913471E70E59F00434465 /* UNBLEDataManager.m */; };
+		3CD9134D1E70E59F00434465 /* UNGetSimData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD913491E70E59F00434465 /* UNGetSimData.m */; };
+		3CD9134E1E70E59F00434465 /* UNSimCardAuthenticationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */; };
 		3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */; };
 		3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
@@ -452,6 +455,12 @@
 		3CCA72DB1E6576E300931B20 /* MessagePhoneDetailHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailHeaderCell.h; sourceTree = "<group>"; };
 		3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailHeaderCell.m; sourceTree = "<group>"; };
 		3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessagePhoneDetailHeaderCell.xib; sourceTree = "<group>"; };
+		3CD913461E70E59F00434465 /* UNBLEDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNBLEDataManager.h; sourceTree = "<group>"; };
+		3CD913471E70E59F00434465 /* UNBLEDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNBLEDataManager.m; sourceTree = "<group>"; };
+		3CD913481E70E59F00434465 /* UNGetSimData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNGetSimData.h; sourceTree = "<group>"; };
+		3CD913491E70E59F00434465 /* UNGetSimData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNGetSimData.m; sourceTree = "<group>"; };
+		3CD9134A1E70E59F00434465 /* UNSimCardAuthenticationModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNSimCardAuthenticationModel.h; sourceTree = "<group>"; };
+		3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNSimCardAuthenticationModel.m; sourceTree = "<group>"; };
 		3CE117481E616B8F008D5976 /* AddTouchAreaButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddTouchAreaButton.h; sourceTree = "<group>"; };
 		3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTouchAreaButton.m; sourceTree = "<group>"; };
 		3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageContactsInfoController.h; sourceTree = "<group>"; };
@@ -1035,6 +1044,12 @@
 				3C20C20C1E6CF3CC008078BB /* UNSipEngineInitialize.mm */,
 				3C20C20F1E6CF3E5008078BB /* UNCreatLocalNoti.h */,
 				3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */,
+				3CD913461E70E59F00434465 /* UNBLEDataManager.h */,
+				3CD913471E70E59F00434465 /* UNBLEDataManager.m */,
+				3CD913481E70E59F00434465 /* UNGetSimData.h */,
+				3CD913491E70E59F00434465 /* UNGetSimData.m */,
+				3CD9134A1E70E59F00434465 /* UNSimCardAuthenticationModel.h */,
+				3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -2073,9 +2088,11 @@
 				954A87AB1D98B6E800570843 /* ContactTableViewCell.m in Sources */,
 				04F727A91E641CE4002EB54C /* MultipartFormDataParser.m in Sources */,
 				95FB44241DC82C0000B81A0D /* AmountDetailCell.m in Sources */,
+				3CD9134D1E70E59F00434465 /* UNGetSimData.m in Sources */,
 				95DD7FED1DAA5748006E1B0D /* KTKeyboardAvoidingView.m in Sources */,
 				3CC3E0B61E63FA1800A62F8C /* AbroadExplainController.m in Sources */,
 				04472ABE1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m in Sources */,
+				3CD9134E1E70E59F00434465 /* UNSimCardAuthenticationModel.m in Sources */,
 				952B2AFF1DC22948006A7C69 /* MJViewController.m in Sources */,
 				3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */,
 				95C575F01DA7750000F459DF /* ConerSegment.m in Sources */,
@@ -2113,6 +2130,7 @@
 				95CD33F11D9CE4F300EE5DD3 /* openssl_wrapper.m in Sources */,
 				740FD39F1E28B674009413F1 /* VSWManager.m in Sources */,
 				95938D4A1D93E522008A0A21 /* FeedbackViewController.m in Sources */,
+				3CD9134C1E70E59F00434465 /* UNBLEDataManager.m in Sources */,
 				3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */,
 				04F727A31E641CE4002EB54C /* DDNumber.m in Sources */,
 				95DD7FE61DAA4C1F006E1B0D /* KTAutoHeightTextView.m in Sources */,

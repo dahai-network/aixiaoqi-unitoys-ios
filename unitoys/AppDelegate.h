@@ -16,6 +16,7 @@
 @property (nonatomic, assign) int currentNumber;//记录心跳包次数，从08开始
 
 @property (nonatomic, readonly) BOOL isPushKit;
+@property (nonatomic, readonly) NSString *simDataString;
 
 @end
 

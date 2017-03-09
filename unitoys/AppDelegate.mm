@@ -68,9 +68,14 @@
 @property (nonatomic, strong)NSTimer *timer;
 @property (nonatomic, assign)int sec;
 
-
 @property (nonatomic, assign) BOOL isPushKit;
-@property (nonatomic, assign) BOOL isLoadDelegate;
+//@property (nonatomic, assign) BOOL isLoadDelegate;
+@property (nonatomic, copy) NSString *simDataString;
+@property (nonatomic, copy) NSString *tcpStringWithPushKit;
+@property (nonatomic, copy) NSString *tcpPacketStrWithPushKit;
+@property (nonatomic, assign) BOOL isPoweroffWithPushKit;
+
+@property (nonatomic, copy) NSString *sessionIdToVSWSDK;
 
 @end
 
@@ -85,14 +90,21 @@
     NSString *logFilePath = [documentDirectory stringByAppendingPathComponent:fileName];
     
     // 将log输入到文件
+//    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+", stdout);
     freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+",stderr);
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+//    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
+//    [self separatePushKitString:servicePushKitData];
+//    self.isPushKit = YES;
+    
     //制定真机调试保存日志文件
 //    [self redirectNSLogToDocumentFolder];
-    self.isLoadDelegate = YES;
-//    [UNCreatLocalNoti createLocalNotiMessageString:@"didFinishLaunchingWithOptions"];
+    
+//    self.isLoadDelegate = YES;
+    [UNCreatLocalNoti createLocalNotiMessageString:@"didFinishLaunchingWithOptions"];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -193,6 +205,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dicConnectedBLE) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];//蓝牙断开连接
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeTCP) name:@"disconnectTCP" object:@"disconnectTCP"];//关闭tcp
     // Override point for customization after application launch.
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTcpDataFromPushKit:) name:@"SendTcpDataFromPushKit" object:nil];
     return YES;
 }
 
@@ -362,6 +375,52 @@
     [self creatAsocketTcp];
 }
 
+#pragma mark pushkit下接收需要发送数据并创建tcp
+- (void)receiveTcpDataFromPushKit:(NSNotification *)noti
+{
+    NSString *tcpString = noti.userInfo[@"tcpString"];
+    if (tcpString) {
+        self.tcpStringWithPushKit = tcpString;
+        //        NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", tcpString.length/2]];
+        //        NSLog(@"数据包长度为 -- %lu  数据包长度转换成十六进制 -- %@", tcpString.length/2, packetLengthHex);
+        //        self.packetFinalHex = [NSString stringWithFormat:@"c7%@%@", packetLengthHex, tcpString];
+        
+        //组合TCP数据包
+        //        self.tcpPacketStr = @"";
+    }
+    [self creatAsocketTcp];
+}
+
+#pragma mark pushkit下发送tcp数据
+- (void)setUpTcppacketFromPushKit
+{
+    //    NSString *tempString = self.tcpStringWithPushKit;
+    //    NSString *tempHex = [self hexTLVLength:[NSString stringWithFormat:@"%lu", tempString.length/2]];
+    //    //    NSLog(@"最终发送出去的数据包长度为 ---> %lu\n 转换之后的十六进制数 ---> %@", tempString.length/2, tempHex);
+    //    self.tcpPacketStr = [NSString stringWithFormat:@"%@%@0001%@%@", TCPFIRSTSUBNOT, TCPCOMMUNICATEID, tempHex, tempString];
+    //    [self sendMsgWithMessage:self.tcpPacketStr];
+    
+    NSLog(@"self.tlvFirstStr -- -- %@", self.tlvFirstStr);
+    NSString *packteStr = [NSString stringWithFormat:@"%@", self.tcpStringWithPushKit];
+    NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", packteStr.length/2]];
+    NSString *newStr = [NSString stringWithFormat:@"%@%@%@",self.tlvFirstStr, packetLengthHex, packteStr];
+    NSString *countLengthStr = [newStr substringFromIndex:24];
+    NSLog(@"替换后面的文字之后 -- %@", newStr);
+    //    NSLog(@"jiequzhihoudes  -- %@", countLengthStr);
+    NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%lu", countLengthStr.length/2]];
+    //    NSString *finalString = [newStr stringByReplacingOccurrencesOfString:[newStr substringWithRange:NSMakeRange(20, 4)] withString:countLengthHex];
+    NSString *finalString = [newStr stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
+    NSLog(@"发送给服务器的数据 -- %@", finalString);
+    self.tcpPacketStrWithPushKit = finalString;
+    [self sendMsgWithMessage:finalString];
+    if (self.isPushKit) {
+        if (!self.isPoweroffWithPushKit) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
+            self.isPoweroffWithPushKit = YES;
+        }
+    }
+}
+
 #pragma mark 转换成十六进制，换算长度
 - (NSString *)hexNewStringFromString:(NSString *)string {
     if ([string intValue] < 128) {
@@ -448,15 +507,27 @@
 
 #pragma mark - 代理方法表示连接成功/失败 回调函数
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port {
-    if (![BlueToothDataManager shareManager].isReseted) {
+    if (self.isPushKit) {
         self.communicateID = @"00000000";
         NSLog(@"tcp连接成功");
         [BlueToothDataManager shareManager].isTcpConnected = YES;
         // 等待数据来啊
         [sock readDataWithTimeout:-1 tag:200];
-        NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
         //发送数据
-        [self sendMsgWithMessage:self.tcpPacketStr];
+        //        [self sendMsgWithMessage:self.tcpStringWithPushKit];
+        [self setUpTcppacketFromPushKit];
+        NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStrWithPushKit);
+    }else{
+        if (![BlueToothDataManager shareManager].isReseted) {
+            self.communicateID = @"00000000";
+            NSLog(@"tcp连接成功");
+            [BlueToothDataManager shareManager].isTcpConnected = YES;
+            // 等待数据来啊
+            [sock readDataWithTimeout:-1 tag:200];
+            NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
+            //发送数据
+            [self sendMsgWithMessage:self.tcpPacketStr];
+        }
     }
 }
 // 如果对象关闭了 这里也会调用
@@ -476,38 +547,45 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     [sock readDataWithTimeout:-1 tag:200];
-    NSString *ip = [sock connectedHost];
-    uint16_t port = [sock connectedPort];
-//    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-    NSString *tempStr = [NSString stringWithFormat:@"%@", data];
-    if ([tempStr containsString:@"<"]) {
-        tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
-    }
-    if ([tempStr containsString:@">"]) {
-        tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
-    }
-    if ([tempStr containsString:@" "]) {
-        tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
-    }
-//    NSLog(@"转换之前的data -- %@", tempStr);
-//    NSString *firstStr = [tempStr substringWithRange:NSMakeRange(0, 8)];
-//    NSString *communicateID = [tempStr substringWithRange:NSMakeRange(8, 8)];
-    NSString *lengthStr = [tempStr substringWithRange:NSMakeRange(20, 4)];
-    int leng = strtoul([lengthStr UTF8String], 0, 16);
-//    NSString *TLVdetail = [tempStr substringWithRange:NSMakeRange(24, leng * 2)];
-//    NSLog(@"截取之后的字符串 -- %@", TLVdetail);
-    if (24+leng*2 != tempStr.length) {
-        NSString *firstStr= [tempStr substringWithRange:NSMakeRange(0, 24+leng*2)];
-        NSLog(@"第一个包 -- %@", firstStr);
-        [self checkPacketDetailWithString:firstStr];
-        NSString *lastStr = [tempStr substringFromIndex:24+leng*2];
-        NSLog(@"剩下的一个包 -- %@", lastStr);
-        [self checkPacketDetailWithString:lastStr];
-    } else {
-        NSString *firstStr= [tempStr substringWithRange:NSMakeRange(0, 24+leng*2)];
-        NSLog(@"只有一个包 -- %@", firstStr);
-        [self checkPacketDetailWithString:firstStr];
+    if (self.isPushKit) {
+        NSString *ip = [sock connectedHost];
+        uint16_t port = [sock connectedPort];
+        //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+    }else{
+        NSString *ip = [sock connectedHost];
+        uint16_t port = [sock connectedPort];
+    //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+        NSString *tempStr = [NSString stringWithFormat:@"%@", data];
+        if ([tempStr containsString:@"<"]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
+        }
+        if ([tempStr containsString:@">"]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
+        }
+        if ([tempStr containsString:@" "]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+        }
+    //    NSLog(@"转换之前的data -- %@", tempStr);
+    //    NSString *firstStr = [tempStr substringWithRange:NSMakeRange(0, 8)];
+    //    NSString *communicateID = [tempStr substringWithRange:NSMakeRange(8, 8)];
+        NSString *lengthStr = [tempStr substringWithRange:NSMakeRange(20, 4)];
+        NSInteger leng = strtoul([lengthStr UTF8String], 0, 16);
+    //    NSString *TLVdetail = [tempStr substringWithRange:NSMakeRange(24, leng * 2)];
+    //    NSLog(@"截取之后的字符串 -- %@", TLVdetail);
+        if (24+leng*2 != tempStr.length) {
+            NSString *firstStr= [tempStr substringWithRange:NSMakeRange(0, 24+leng*2)];
+            NSLog(@"第一个包 -- %@", firstStr);
+            [self checkPacketDetailWithString:firstStr];
+            NSString *lastStr = [tempStr substringFromIndex:24+leng*2];
+            NSLog(@"剩下的一个包 -- %@", lastStr);
+            [self checkPacketDetailWithString:lastStr];
+        } else {
+            NSString *firstStr= [tempStr substringWithRange:NSMakeRange(0, 24+leng*2)];
+            NSLog(@"只有一个包 -- %@", firstStr);
+            [self checkPacketDetailWithString:firstStr];
+        }
     }
 }
 
@@ -612,9 +690,7 @@
             string = [string stringByReplacingOccurrencesOfString:tempStr withString:TLVdetail];
             NSLog(@"替换之后的字符串 -- %@", string);
             [self sendMsgWithMessage:string];
-            
-            
-            
+
         } else if ([[string substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"00"]) {
             //00
             NSLog(@"这是00的执行方法");
@@ -623,6 +699,7 @@
             leng = strtoul([lengthStr UTF8String], 0, 16);
             TLVdetail = [string substringWithRange:NSMakeRange(34, leng * 2)];
             NSLog(@"两位leng = %d  需要传入的字符串 -- %@", leng, TLVdetail);
+            self.sessionIdToVSWSDK = TLVdetail;
             //发送给sdk
             [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%d", leng] pdata:TLVdetail];
         }
@@ -1377,53 +1454,56 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"tokenString--%@",tokenString]];
     NSLog(@"pushToken======%@=======", tokenString);
     
-    //    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:@"pushToken" message:tokenString preferredStyle:UIAlertControllerStyleAlert];
-    //    UIAlertAction *action = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-    //    }];
-    //    [alertVc addAction:action];
-    //    [self.window.rootViewController presentViewController:alertVc animated:YES completion:nil];
 }
 
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
     if ([payload.type isEqualToString:@"PKPushTypeVoIP"]) {
         NSLog(@"开始电话接入======%@=======", payload.dictionaryPayload);
-        if (!self.isLoadDelegate) {
+        if (payload.dictionaryPayload) {
+            [UNCreatLocalNoti createLocalNotiMessageString:@"didReceiveIncomingPushWithPayload"];
             //创建网络电话服务
             [[UNSipEngineInitialize sharedInstance] initEngine];
             //加载蓝牙手环
+            //            NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
+            NSString *servicePushKitData = @"108a10002ffd82a60003001a010100c72300010019000000000000C0000000007F200200000000000A9300190400838A838A9000";
+            [self separatePushKitString:servicePushKitData];
             
+            if ([self.sessionIdToVSWSDK isEqualToString:self.simDataString] && self.sessionIdToVSWSDK) {
+                self.isPushKit = NO;
+            }else{
+                self.isPushKit = YES;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
+            }
         }else{
-            
-            //被杀死后首次启动会调用此处
-            self.isLoadDelegate = NO;
+        
         }
-        [UNCreatLocalNoti createLocalNotiMessageString:@"didReceiveIncomingPushWithPayload"];
-        self.isPushKit = YES;
-        
-//        //创建网络电话服务
-//        [[UNSipEngineInitialize sharedInstance] initEngine];
-//
-//        //开启UDP
-//        [[UNSipEngineInitialize sharedInstance]  setUpUdpSocket];
-//
-//        //连接手环并上电
-//        [[UNSipEngineInitialize sharedInstance] scanLBEDevice];
-//
-//        if (kSystemVersionValue >= 10.0) {
-//
-//        }else{
-////            [self creatLocalNoti:payload.dictionaryPayload[@"aps"]];
-//            [UNCreatLocalNoti createLocalNotiMessage:payload.dictionaryPayload[@"aps"]];
-//        }
-//
-//        [[UNSipEngineInitialize sharedInstance]  setUpUdpSocket];
-        
-        
-        
+     
     }
 }
 
-
+- (void)separatePushKitString:(NSString *)servicePushKitData
+{
+    NSString *classStr = [servicePushKitData substringWithRange:NSMakeRange(4, 2)];
+    
+    if ([classStr isEqualToString:@"10"]) {
+        NSLog(@"透明传输SIM交互命令");
+        NSInteger leng;
+        //        NSString *TLVdetail;
+        servicePushKitData = [servicePushKitData stringByReplacingCharactersInRange:NSMakeRange(4, 2) withString:@"90"];
+        self.tlvFirstStr = [servicePushKitData substringWithRange:NSMakeRange(0, 32)];
+        NSLog(@"截取前面的数据 -- %@", self.tlvFirstStr);
+        
+        if ([[servicePushKitData substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"00"]) {
+            //00
+            NSLog(@"这是00的执行方法");
+            NSString *lengthStr = [servicePushKitData substringWithRange:NSMakeRange(32, 2)];
+            //74
+            leng = strtoul([lengthStr UTF8String], 0, 16);
+            self.simDataString = [servicePushKitData substringWithRange:NSMakeRange(34, leng * 2)];
+            NSLog(@"两位leng = %zd  需要传入的字符串 -- %@", leng, self.simDataString);
+        }
+    }
+}
 
 
 - (void)dealloc {
