@@ -310,6 +310,7 @@ typedef enum : NSUInteger {
     if (self.boundedDeviceInfo) {
         self.boundedDeviceInfo = nil;
     }
+    [BlueToothDataManager shareManager].isAllowToBound = NO;
     [BlueToothDataManager shareManager].isBounded = NO;
     [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
@@ -1788,7 +1789,9 @@ typedef enum : NSUInteger {
                         [self.mgr connectPeripheral:self.peripheral options:nil];
                     }
                     [BlueToothDataManager shareManager].isBounded = YES;
-                    HUDNormal(responseObj[@"msg"])
+                    if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
+                        HUDNormal(responseObj[@"msg"])
+                    }
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                 }else{
@@ -1812,6 +1815,36 @@ typedef enum : NSUInteger {
     } else {
         NSLog(@"绑定蓝牙接口出问题 -- %s:%d", __func__, __LINE__);
     }
+}
+
+- (void)sendDataToUnBoundDevice {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    NSLog(@"表头：%@",self.headers);
+    [SSNetworkRequest getRequest:apiUnBind params:nil success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"解除绑定结果：%@", responseObj);
+            HUDNormal(@"绑定失败")
+            [BlueToothDataManager shareManager].isBounded = NO;
+            [BlueToothDataManager shareManager].isConnected = NO;
+            [BlueToothDataManager shareManager].isRegisted = NO;
+            [BlueToothDataManager shareManager].deviceMacAddress = nil;
+            [BlueToothDataManager shareManager].electricQuantity = nil;
+            [BlueToothDataManager shareManager].versionNumber = nil;
+            [BlueToothDataManager shareManager].stepNumber = nil;
+            [BlueToothDataManager shareManager].bleStatueForCard = 0;
+            [BlueToothDataManager shareManager].isBeingRegisting = NO;
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            HUDNormal(responseObj[@"msg"])
+        }
+    } failure:^(id dataObj, NSError *error) {
+        //
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -2519,10 +2552,36 @@ typedef enum : NSUInteger {
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
     //仅钥匙扣能连接
     [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+    if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
+        //连接的是手环
+        //对卡上电
+        [self phoneCardToUpeLectrify:@"01"];
+    } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
+        //连接的是钥匙扣
+        if (!self.boundedDeviceInfo[@"IMEI"]) {
+            //发送绑定请求
+            [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
+             [self showAlertWithMessage:@"请点击钥匙扣按钮确认绑定"];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (![BlueToothDataManager shareManager].isAllowToBound) {
+                    [BlueToothDataManager shareManager].isAccordBreak = YES;
+                    [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
+                    [self.mgr cancelPeripheralConnection:self.peripheral];
+                    [self sendDataToUnBoundDevice];
+                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+                }
+            });
+        } else {
+            //对卡上电
+            [self phoneCardToUpeLectrify:@"01"];
+        }
+    } else {
+        NSLog(@"已绑定过之后上电");
+        //对卡上电
+        [self phoneCardToUpeLectrify:@"01"];
+    }
     //是否是能通知
     [self sendDataToCheckIsAllowToNotificationWithPhoneCall:YES Message:NO WeiChart:NO QQ:NO];
-    //对卡上电
-    [self phoneCardToUpeLectrify:@"01"];
     [self refreshBLEStatue];
 }
 
@@ -2688,6 +2747,9 @@ typedef enum : NSUInteger {
             case 4:
                 //同意绑定
                 NSLog(@"接收到同意绑定数据");
+                [BlueToothDataManager shareManager].isAllowToBound = YES;
+                [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"01"];
+                HUDNormal(@"绑定成功")
                 break;
             case 5:
                 //实时计步
@@ -2819,6 +2881,7 @@ typedef enum : NSUInteger {
 //                    }
                     NSLog(@"错误的数据状态,这是sim卡的数据2");
                 } else if ([BlueToothDataManager shareManager].bleStatueForCard == 2) {
+                    NSLog(@"接收到sim注册数据");
                     //注册手机卡状态
                     //注册电话卡的步骤
                     NSString *totalString = contentStr;
@@ -2880,9 +2943,7 @@ typedef enum : NSUInteger {
                                     }
                                 }
                             }else{
-                                if (![BlueToothDataManager shareManager].isRegisted) {
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
-                                }
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
                             }
 
 //                            [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
