@@ -23,6 +23,7 @@
     
     //左边按钮
     self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"btn_back"] imageWithRenderingMode:/*去除渲染效果*/UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(leftButtonAction)];
+//    self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
 }
 
 //- (void)viewWillAppear:(BOOL)animated {

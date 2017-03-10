@@ -102,6 +102,7 @@ typedef enum : NSUInteger {
 
 //是否更新过蓝牙信息
 @property (nonatomic, assign) BOOL isUpdatedLBEInfo;
+@property (nonatomic, strong)NSString *connectedDeviceName;//连接的设备名称（用于区分连接的是什么设备）
 //@property (nonatomic, assign) BOOL is
 @end
 
@@ -2355,6 +2356,13 @@ typedef enum : NSUInteger {
     peripheral.delegate = self;
     // 查找外设中的所有服务
     NSLog(@"连接成功，开始查找外设重所有服务%@",peripheral.name);
+    if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
+        self.connectedDeviceName = MYDEVICENAMEUNITOYS;
+    } else if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
+        self.connectedDeviceName = MYDEVICENAMEUNIBOX;
+    } else {
+        NSLog(@"连接的是什么设备");
+    }
     
     [BlueToothDataManager shareManager].isBounded = YES;
     //发送绑定成功通知
@@ -2384,9 +2392,16 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].bleStatueForCard = 0;
     [BlueToothDataManager shareManager].isBeingRegisting = NO;
     [BlueToothDataManager shareManager].stepNumber = @"000";
-    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
+    if ([self.connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+    } else if ([self.connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
+    } else {
+        NSLog(@"这是什么鬼类型");
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     if (![BlueToothDataManager shareManager].isAccordBreak) {
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
         [self checkBindedDeviceFromNet];
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //            //重新连接
@@ -2752,6 +2767,8 @@ typedef enum : NSUInteger {
                 [BlueToothDataManager shareManager].isAllowToBound = YES;
                 [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"01"];
                 HUDNormal(@"绑定成功")
+                //对卡上电
+                [self phoneCardToUpeLectrify:@"01"];
                 break;
             case 5:
                 //实时计步

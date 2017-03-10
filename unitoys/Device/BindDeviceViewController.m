@@ -84,7 +84,7 @@
     self.hintStrFirst = sender.object;
     if (![BlueToothDataManager shareManager].isBeingRegisting) {
         self.lblStatue.text = self.hintStrFirst;
-        NSLog(@"状态改变 --> %@", self.hintStrFirst);
+        NSLog(@"状态改变 --> %@ %@", self.hintStrFirst, self.lblStatue.text);
     }
     if (![self.hintStrFirst isEqualToString:HOMESTATUETITLE_REGISTING]) {
         if (self.timer) {
