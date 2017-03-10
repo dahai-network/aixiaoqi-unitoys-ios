@@ -32,20 +32,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"正在绑定";
-    [BlueToothDataManager shareManager].isShowAlert = YES;
-    self.isback = YES;
-    
-    //倒计时
-    self.time = 0;
-    self.currentLabel = @"firstLabel";
-    //开始计时
-    [self startTimer];
     
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectedSuccess) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectFail) name:@"connectFail" object:@"connectFail"];//绑定失败
     
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [BlueToothDataManager shareManager].isShowAlert = YES;
+    self.isback = YES;
+    //倒计时
+    self.time = 0;
+    self.currentLabel = @"firstLabel";
+    self.firstLabel.backgroundColor = currentColor;
+    self.secondLabel.backgroundColor = defoultColor;
+    self.thirdLabel.backgroundColor = defoultColor;
+    self.forthLabel.backgroundColor = defoultColor;
+    //开始计时
+    [self startTimer];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -77,7 +83,7 @@
     
     if(![self.navigationController.topViewController isKindOfClass:[BindDeviceViewController class]]) {
         self.time = 0;
-        [self.timer setFireDate:[NSDate distantPast]];
+        [self.timer setFireDate:[NSDate distantFuture]];
         self.tabBarController.tabBar.hidden = YES;
         self.bindDeviceVC.hintStrFirst = @"连接中";
         [self.navigationController pushViewController:self.bindDeviceVC animated:YES];
@@ -87,13 +93,16 @@
 - (void)connectFail {
     self.isback = NO;
     self.time = 0;
-    [self.timer setFireDate:[NSDate distantPast]];
+    [self.timer setFireDate:[NSDate distantFuture]];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)startTimer {
     if (!self.timer) {
         self.timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
+    } else {
+        self.time = 0;
+        [self.timer setFireDate:[NSDate distantPast]];
     }
 }
 
@@ -104,6 +113,8 @@
         [self dj_alertAction:self alertTitle:nil actionTitle:@"重试" message:@"未能搜索到爱小器手环" alertAction:^{
             self.time = 0;
             [self.timer setFireDate:[NSDate distantPast]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
+            [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
         }];
     }
     self.time++;
