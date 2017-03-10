@@ -2253,17 +2253,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                         }
                     }
                 };
-                
                 [self.callActionView showActionView];
             }
-
         }else{
             //电话记录，拨打电话
             if (!self.callActionView){
                 self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
             }
-            
-            
             __weak typeof(self) weakSelf = self;
             
             self.callActionView.cancelBlock = ^(){
@@ -2318,22 +2314,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     }
                 }
             };
-            
 
             [self.callActionView showActionView];
         }
-        
     } else {
         //消息记录，显示消息
-        
         NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
-        
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-        
         if (storyboard) {
-            
 //            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
-            
             MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
             if (MJViewController) {
                 if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
@@ -2346,7 +2335,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 }
                 MJViewController.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:MJViewController animated:YES];
-                
             }
         }
     }
@@ -2370,11 +2358,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (self.phoneOperation == 1) {
         if (editingStyle == UITableViewCellEditingStyleDelete) {
             NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
-            
             NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_arrMessageRecord];
             [tempArray removeObjectAtIndex:indexPath.row];
             _arrMessageRecord = [tempArray copy];
-            
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             
             //从服务器删除数据
@@ -2402,7 +2388,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *path = [paths objectAtIndex:0];
-    
 //    path = [path stringByAppendingPathComponent:@"callrecord.db"];
     path = [path stringByAppendingPathComponent:@"callrecord2.db"];
     FMDatabase *db = [FMDatabase databaseWithPath:path];
@@ -2451,7 +2436,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //        NSLog(@"有异常：%@",[error description]);
 //    } headers:self.headers];
 }
-
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ([alertView.title isEqualToString:@"错误提示"]) {

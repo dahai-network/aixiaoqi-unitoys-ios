@@ -17,7 +17,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    self.btnMuteStatus.tag = 0;
+    self.btnSpeakerStatus.tag = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
 }
 
@@ -25,14 +26,14 @@
     if (notification.object) {
         self.lblCallingHint.text = notification.object;
         if ([self.lblCallingHint.text isEqualToString:@"对方振铃..."]) {
-            self.hadRing = YES;
-            
-            if (self.isHandfree) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
-            }
-            if (self.isMute) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
-            }
+//            self.hadRing = YES;
+//            
+//            if (self.isHandfree) {
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
+//            }
+//            if (self.isMute) {
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
+//            }
         }
         
         if ([self.lblCallingHint.text isEqualToString:@"呼叫接通"]) {
@@ -85,13 +86,15 @@
         [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteoff"] forState:UIControlStateNormal];
         _btnMuteStatus.tag=0;
     }
-    if (self.hadRing){
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound" userInfo:@{@"isMuteon" : @(_btnMuteStatus.tag)}];
-        
-    }else{
-        self.isMute = !self.isMute;
-    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound" userInfo:@{@"isMuteon" : @(_btnMuteStatus.tag)}];
+//    if (self.hadRing){
+////        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound" userInfo:@{@"isMuteon" : @(_btnMuteStatus.tag)}];
+//        
+//    }else{
+//        self.isMute = !self.isMute;
+//    }
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion

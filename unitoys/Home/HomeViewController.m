@@ -102,6 +102,7 @@ typedef enum : NSUInteger {
 
 //是否更新过蓝牙信息
 @property (nonatomic, assign) BOOL isUpdatedLBEInfo;
+//@property (nonatomic, assign) BOOL is
 @end
 
 @implementation HomeViewController
@@ -262,9 +263,8 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshStatueToCard) name:@"refreshStatueToCard" object:@"refreshStatueToCard"];//刷新卡状态
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paySuccess) name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];//绑定礼包卡成功
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLBEStatuWithPushKit) name:@"UpdateLBEStatuWithPushKit" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];//接收PushKit消息
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLBEStatuWithPushKit) name:@"UpdateLBEStatuWithPushKit" object:nil];//通过PushKit启动程序更新蓝牙状态
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
     
@@ -341,7 +341,6 @@ typedef enum : NSUInteger {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"查询绑定设备 -- %@", responseObj);
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:responseObj];
-            
             self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
             if (!responseObj[@"data"][@"IMEI"]) {
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
@@ -2455,6 +2454,7 @@ typedef enum : NSUInteger {
 
 - (void)receivePushKitMessage
 {
+    NSLog(@"接收到PushKit消息---receivePushKitMessage");
     if ([BlueToothDataManager shareManager].isConnected) {
         [self sendInitMessageToBLE];
     }else{
@@ -2525,6 +2525,7 @@ typedef enum : NSUInteger {
             self.simDataString = appdelegate.simDataString;
         }
         [self sendLBEMessageWithPushKit];
+        NSLog(@"发送pushkit消息到蓝牙");
     }else{
         [self sendLBEMessageNoPushKit];
     }
@@ -2534,6 +2535,7 @@ typedef enum : NSUInteger {
 {
     self.isQuickLoad = YES;
     //对卡上电
+    NSLog(@"对卡上电03");
     [self phoneCardToUpeLectrify:@"03"];
 }
 
@@ -2945,7 +2947,6 @@ typedef enum : NSUInteger {
                             }else{
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
                             }
-
 //                            [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
                             [self.dataPacketArray removeAllObjects];
                             self.totalString = nil;
@@ -3271,7 +3272,7 @@ typedef enum : NSUInteger {
         }
     }
     
-    
+    //重置数据
     [[UNBLEDataManager sharedInstance] clearData];
     self.currentSendIndex = 0;
     [self.needSendDatas removeAllObjects];
@@ -3462,8 +3463,7 @@ typedef enum : NSUInteger {
 - (NSString *)check_sum:(NSArray*)date {
     
     NSInteger checksum = 0;
-    int tempData = 0;
-    
+    unsigned long int tempData = 0;
     for (NSInteger i = 0; i < date.count; i++) {
         //先将十六进制转换成十进制
         tempData = strtoul([date[i] UTF8String], 0, 16);
@@ -3654,7 +3654,8 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"OTAAction" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"refreshStatueToCard" object:@"refreshStatueToCard"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceivePushKitMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UpdateLBEStatuWithPushKit" object:nil];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:CNContactStoreDidChangeNotification object:nil];

@@ -403,12 +403,6 @@
     NSString *tcpString = noti.userInfo[@"tcpString"];
     if (tcpString) {
         self.tcpStringWithPushKit = tcpString;
-        //        NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", tcpString.length/2]];
-        //        NSLog(@"数据包长度为 -- %lu  数据包长度转换成十六进制 -- %@", tcpString.length/2, packetLengthHex);
-        //        self.packetFinalHex = [NSString stringWithFormat:@"c7%@%@", packetLengthHex, tcpString];
-        
-        //组合TCP数据包
-        //        self.tcpPacketStr = @"";
     }
     [self creatAsocketTcp];
 }
@@ -433,8 +427,8 @@
     //    NSString *finalString = [newStr stringByReplacingOccurrencesOfString:[newStr substringWithRange:NSMakeRange(20, 4)] withString:countLengthHex];
     NSString *finalString = [newStr stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
     NSLog(@"发送给服务器的数据 -- %@", finalString);
-    self.tcpPacketStrWithPushKit = [NSString stringWithFormat:@"发送给服务器的数据--%@", finalString];
-    [UNCreatLocalNoti createLocalNotiMessageString:finalString];
+    self.tcpPacketStrWithPushKit = finalString;
+    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", finalString]];
     [self sendMsgWithMessage:finalString];
     if (self.isPushKit) {
         if (!self.isPoweroffWithPushKit) {
@@ -534,7 +528,6 @@
         self.communicateID = @"00000000";
         NSLog(@"tcp连接成功");
         [BlueToothDataManager shareManager].isTcpConnected = YES;
-        // 等待数据来啊
         [sock readDataWithTimeout:-1 tag:200];
         //发送数据
         [self setUpTcppacketFromPushKit];
@@ -575,14 +568,12 @@
         uint16_t port = [sock connectedPort];
         //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-        if (self.isPushKit) {
-            [BlueToothDataManager shareManager].isBeingRegisting = NO;
-            [BlueToothDataManager shareManager].stepNumber = @"0";
-            [BlueToothDataManager shareManager].isRegisted = YES;
-            [BlueToothDataManager shareManager].isConnected = YES;
-            [BlueToothDataManager shareManager].isTcpConnected = YES;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
-        }
+        [BlueToothDataManager shareManager].isBeingRegisting = NO;
+        [BlueToothDataManager shareManager].stepNumber = @"0";
+        [BlueToothDataManager shareManager].isRegisted = YES;
+        [BlueToothDataManager shareManager].isConnected = YES;
+        [BlueToothDataManager shareManager].isTcpConnected = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
     }else{
         NSString *ip = [sock connectedHost];
         uint16_t port = [sock connectedPort];
@@ -1514,7 +1505,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                         [[UNSipEngineInitialize sharedInstance] initEngine];
                         //加载蓝牙手环
                         //            NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
-                        //                    NSString *servicePushKitData = @"108a10002ffd82a60003001a010100c72300010019000000000000C0000000007F200200000000000A9300190400838A838A9000";
+                        //    NSString *servicePushKitData = @"108A1000300CBDE7000E002A010100C72500090510000200033F007F206F740000A088000010A458F84D016BD7C2A75F6A752D6E0FD9";
                         self.isPushKit = YES;
                         if (self.simDataString) {
                             if ([self.sessionIdToVSWSDK isEqualToString:self.simDataString] && self.sessionIdToVSWSDK) {
@@ -1542,12 +1533,11 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
     NSString *classStr = [servicePushKitData substringWithRange:NSMakeRange(4, 2)];
     if ([classStr isEqualToString:@"10"]) {
-        NSLog(@"透明传输SIM交互命令");
         NSInteger leng;
         //        NSString *TLVdetail;
         servicePushKitData = [servicePushKitData stringByReplacingCharactersInRange:NSMakeRange(4, 2) withString:@"90"];
         self.tlvFirstStr = [servicePushKitData substringWithRange:NSMakeRange(0, 32)];
-        NSLog(@"截取前面的数据 -- %@", self.tlvFirstStr);
+        NSLog(@"截取Pushkit消息前面的数据 -- %@", self.tlvFirstStr);
         
         if ([[servicePushKitData substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"00"]) {
 //            00

@@ -37,6 +37,7 @@
     }
 }
 
+//清空数据
 - (void)clearData
 {
     self.shortString = nil;
