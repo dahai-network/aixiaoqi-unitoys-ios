@@ -2523,8 +2523,8 @@ typedef enum : NSUInteger {
 //        [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"appdelegate.isPushKit===%zd", appdelegate.isPushKit]];
         if (appdelegate.simDataString) {
             self.simDataString = appdelegate.simDataString;
+            [self sendLBEMessageWithPushKit];
         }
-        [self sendLBEMessageWithPushKit];
         NSLog(@"发送pushkit消息到蓝牙");
     }else{
         [self sendLBEMessageNoPushKit];

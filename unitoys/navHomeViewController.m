@@ -8,7 +8,7 @@
 
 #import "navHomeViewController.h"
 
-@interface navHomeViewController ()
+@interface navHomeViewController ()<UIGestureRecognizerDelegate>
 
 @end
 
@@ -17,6 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -5)];
+    self.interactivePopGestureRecognizer.delegate = self;
 }
 /**
  *  重写这个方法目的：能够拦截所有push进来的控制器
@@ -39,12 +40,34 @@
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
-
 {
-    
     return UIStatusBarStyleLightContent;
-    
 }
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if (self.viewControllers.count <= 1) {
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.interactivePopGestureRecognizer.enabled = NO;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    self.interactivePopGestureRecognizer.enabled = YES;
+}
+
 
 /*
 #pragma mark - Navigation

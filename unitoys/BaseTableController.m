@@ -79,7 +79,6 @@
 - (UIStatusBarStyle)preferredStatusBarStyle
 
 {
-    
     return UIStatusBarStyleLightContent;
     
 }

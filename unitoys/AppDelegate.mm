@@ -574,6 +574,16 @@
         [BlueToothDataManager shareManager].isConnected = YES;
         [BlueToothDataManager shareManager].isTcpConnected = YES;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if (!self.timer) {
+                //开始计时
+                self.sec = 0;
+                self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
+                //如果不添加下面这条语句，会阻塞定时器的调用
+                [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
+            }
+        });
     }else{
         NSString *ip = [sock connectedHost];
         uint16_t port = [sock connectedPort];
@@ -1380,9 +1390,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (NSString *)attachmentForException:(NSException *)exception {
     NSLog(@"attachmentForException %@",exception);
-    
     [Bugly reportException:exception];  //直接上报异常
-    
     return @"Test User attachment";
 }
 
@@ -1504,7 +1512,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                         //创建网络电话服务
                         [[UNSipEngineInitialize sharedInstance] initEngine];
                         //加载蓝牙手环
-                        //            NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
+                        //    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
                         //    NSString *servicePushKitData = @"108A1000300CBDE7000E002A010100C72500090510000200033F007F206F740000A088000010A458F84D016BD7C2A75F6A752D6E0FD9";
                         self.isPushKit = YES;
                         if (self.simDataString) {
@@ -1516,13 +1524,16 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                         }
                     }
                 }
-
+            }else if ([dict[@"MessageType"] isEqualToString:@"06"]){
+                self.receivePushKitDataFormServices = nil;
+                [UNCreatLocalNoti createLocalNotiMessageString:@"pushKit消息唤醒网络电话"];
+                //创建网络电话服务
+                [[UNSipEngineInitialize sharedInstance] initEngine];
+                self.isPushKit = YES;
             }
-
         }else{
-        
+            
         }
-     
     }
 }
 
