@@ -994,7 +994,7 @@ typedef enum : NSUInteger {
                 //回应上电
                 if ([contentStr isEqualToString:@"01"]) {
                     NSLog(@"对卡上电1成功，有卡");
-                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电1成功，有卡"];
+//                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电1成功，有卡"];
                     [BlueToothDataManager shareManager].isHaveCard = YES;
                     //更新蓝牙状态
 //                    [self refreshBLEStatue];
@@ -1002,20 +1002,20 @@ typedef enum : NSUInteger {
                     [self checkCardType];
                 } else if ([contentStr isEqualToString:@"11"]) {
                     NSLog(@"对卡上电1失败,没有卡");
-                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电1失败,没有卡"];
+//                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电1失败,没有卡"];
                     if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
                         [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                     }
 //                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
                 } else if ([contentStr isEqualToString:@"02"]) {
-                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电2成功"];
+//                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电2成功"];
                     NSLog(@"对卡上电2成功");
                 } else if ([contentStr isEqualToString:@"12"]) {
-                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电2失败"];
+//                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电2失败"];
                     NSLog(@"对卡上电2失败");
                     [self registFailAction];
                 } else if ([contentStr isEqualToString:@"03"]) {
-                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电3成功"];
+//                    [UNCreatLocalNoti createLocalNotiMessageString:@"对卡上电3成功"];
                     NSLog(@"对卡上电3成功");
                     [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%d", 33] pdata:@"0006050c000200003f007f206f740000a01400000c810301250082028281830100"];
                 }else if ([contentStr isEqualToString:@"13"]) {

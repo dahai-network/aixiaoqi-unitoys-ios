@@ -105,8 +105,13 @@
     if (self.callTimer) {
         [self.callTimer setFireDate:[NSDate distantFuture]];
     }
-    
     [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+    [super dismissViewControllerAnimated:flag completion:completion];
 }
 
 #pragma mark 静音按钮点击事件
@@ -155,18 +160,7 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 - (void)getCallingMessage :(NSNotification *)notification {
     if (notification.object) {
@@ -179,15 +173,16 @@
        
         }else if([self.lbTime.text isEqualToString:@"通话结束"]){
             //关掉当前
-            if (self.callTimer) {
-                [self.callTimer setFireDate:[NSDate distantFuture]];
-            }
-            
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [self endCallPhone];
         }else{
             
         }
     }
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

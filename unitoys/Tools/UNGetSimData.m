@@ -47,7 +47,7 @@
             model.simdirectory = directoryArray;
             
             NSString *simDataString = [laterData substringFromIndex:(range.location+range.length)];
-            if ([[simDataString substringToIndex:4] isEqualToString:@"a088"]) {
+            if ([[simDataString substringWithRange:NSMakeRange(2, 2)] isEqualToString:@"88"]) {
                 model.isAddSendData = YES;
             }
             model.simData = simDataString;

@@ -247,6 +247,7 @@
 #define TCPSIMLOCAL @"b40100"//sim卡位置描述
 #define TCPSIMNUMBER @"c00100"//sim卡卡号
 #define TCPSIMBALANCE @"c10100"//sim卡余额
+#define TCPVERSIONTYPE @"c90101"//设备类型(区分安卓)
 
 #pragma mark 顶端状态
 //蓝牙未开

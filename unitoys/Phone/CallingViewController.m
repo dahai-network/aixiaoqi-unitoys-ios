@@ -30,7 +30,6 @@
             if (self.isHandfree) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
             }
-            
             if (self.isMute) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
             }
@@ -38,7 +37,6 @@
         
         if ([self.lblCallingHint.text isEqualToString:@"呼叫接通"]) {
             self.callingStatus = YES;
-            
         }else if ([self.lblCallingHint.text isEqualToString:@"正在通话"]) {
             self.callingStatus = YES;
             
@@ -48,11 +46,7 @@
             }
             
         }else if([self.lblCallingHint.text isEqualToString:@"通话结束"]){
-            //关掉当前
-            if (self.callTimer) {
-                [self.callTimer setFireDate:[NSDate distantFuture]];
-            }
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [self endCallPhone];
         }else{
             self.callingStatus = NO;
         }
@@ -100,6 +94,12 @@
     }
 }
 
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+    [super dismissViewControllerAnimated:flag completion:completion];
+}
+
 - (IBAction)handfreeCalling:(id)sender {
     
     if (_btnSpeakerStatus.tag==0) {
@@ -119,8 +119,18 @@
     }
 }
 
+- (void)endCallPhone
+{
+    //关掉当前
+    if (self.callTimer) {
+        [self.callTimer setFireDate:[NSDate distantFuture]];
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (IBAction)hungupCalling:(id)sender {
     self.hadRing = NO;
      [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
+    [self endCallPhone];
 }
 @end

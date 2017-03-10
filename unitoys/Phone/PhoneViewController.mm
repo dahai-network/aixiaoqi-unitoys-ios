@@ -1832,7 +1832,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-    
     if (storyboard) {
         if (!strNumber) {
             self.phoneNumber= self.phonePadView.inputedPhoneNumber;
@@ -1852,7 +1851,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }];
         }
     }
-    
 }
 
 - (void)endingCallOut {
