@@ -373,6 +373,7 @@ typedef enum : NSUInteger {
     } headers:self.headers];
 }
 
+
 - (void)leftButtonAction {
     if ([BlueToothDataManager shareManager].isBounded) {
         //有绑定

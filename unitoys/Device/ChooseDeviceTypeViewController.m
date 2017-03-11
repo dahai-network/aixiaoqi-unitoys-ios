@@ -54,25 +54,29 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    switch (indexPath.row) {
-            case 0:
-            //爱小器手环
-            [BlueToothDataManager shareManager].deviceType = MYDEVICENAMEUNITOYS;
-            break;
-            case 1:
-            //钥匙扣
-            [BlueToothDataManager shareManager].deviceType = MYDEVICENAMEUNIBOX;
-            break;
-        default:
-            NSLog(@"什么类型");
-            break;
+    if ([BlueToothDataManager shareManager].isOpened) {
+        switch (indexPath.row) {
+                case 0:
+                //爱小器手环
+                [BlueToothDataManager shareManager].deviceType = MYDEVICENAMEUNITOYS;
+                break;
+                case 1:
+                //钥匙扣
+                [BlueToothDataManager shareManager].deviceType = MYDEVICENAMEUNIBOX;
+                break;
+            default:
+                NSLog(@"什么类型");
+                break;
+        }
+        if (!self.isBoundingVC) {
+            self.isBoundingVC = [[IsBoundingViewController alloc] init];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
+        [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
+        [self.navigationController pushViewController:self.isBoundingVC animated:YES];
+    } else {
+        HUDNormal(@"请开启蓝牙")
     }
-    if (!self.isBoundingVC) {
-        self.isBoundingVC = [[IsBoundingViewController alloc] init];
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
-    [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
-    [self.navigationController pushViewController:self.isBoundingVC animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

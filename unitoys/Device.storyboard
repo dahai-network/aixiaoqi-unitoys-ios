@@ -365,6 +365,7 @@
                         </connections>
                     </tableView>
                     <connections>
+                        <outlet property="disconnectedImageView" destination="318-5U-2X4" id="3cW-9U-xPD"/>
                         <outlet property="headView" destination="unv-1I-mJX" id="Eq8-Ql-2fv"/>
                         <outlet property="hintLabel" destination="ZAG-NH-6Nr" id="FKK-vK-OOF"/>
                         <outlet property="imgStatueImage" destination="YhL-hZ-daP" id="2D8-tt-cXS"/>

@@ -34,6 +34,7 @@
 		04553F311E70EE980025CA34 /* ChooseDeviceTypeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04553F2F1E70EE980025CA34 /* ChooseDeviceTypeViewController.xib */; };
 		04553F351E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04553F331E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m */; };
 		04553F361E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04553F341E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib */; };
+		04553F381E73FB840025CA34 /* scan.gif in Resources */ = {isa = PBXBuildFile; fileRef = 04553F371E73FB840025CA34 /* scan.gif */; };
 		046BD63F1E0B79BB008A958A /* jcore-ios-1.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD63C1E0B79BB008A958A /* jcore-ios-1.0.0.a */; };
 		046BD6401E0B79BB008A958A /* jpush-ios-3.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD63D1E0B79BB008A958A /* jpush-ios-3.0.0.a */; };
 		046BD6421E0B7A41008A958A /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD6411E0B7A41008A958A /* libresolv.tbd */; };
@@ -323,6 +324,7 @@
 		04553F321E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseDeviceTypeTableViewCell.h; sourceTree = "<group>"; };
 		04553F331E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseDeviceTypeTableViewCell.m; sourceTree = "<group>"; };
 		04553F341E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChooseDeviceTypeTableViewCell.xib; sourceTree = "<group>"; };
+		04553F371E73FB840025CA34 /* scan.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = scan.gif; sourceTree = "<group>"; };
 		046BD63C1E0B79BB008A958A /* jcore-ios-1.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jcore-ios-1.0.0.a"; sourceTree = "<group>"; };
 		046BD63D1E0B79BB008A958A /* jpush-ios-3.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "jpush-ios-3.0.0.a"; sourceTree = "<group>"; };
 		046BD63E1E0B79BB008A958A /* JPUSHService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JPUSHService.h; sourceTree = "<group>"; };
@@ -1692,6 +1694,7 @@
 		95E918531DDC7A97005DABC0 /* Device */ = {
 			isa = PBXGroup;
 			children = (
+				04553F371E73FB840025CA34 /* scan.gif */,
 				043965C11E07DF9D00B67989 /* IsBoundingViewController.h */,
 				043965C21E07DF9D00B67989 /* IsBoundingViewController.m */,
 				043965C31E07DF9D00B67989 /* IsBoundingViewController.xib */,
@@ -1941,6 +1944,7 @@
 				04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */,
 				95C575F51DA77AB200F459DF /* PhoneRecordCell.xib in Resources */,
 				950E791A1E02BA3C003AE0D5 /* Profile.storyboard in Resources */,
+				04553F381E73FB840025CA34 /* scan.gif in Resources */,
 				04DA1B981E12958C00C50904 /* CallComingInViewController.xib in Resources */,
 				04472AB51E1CA5F60042CEE1 /* BindGiftBagCardViewController.xib in Resources */,
 				0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */,
@@ -2340,8 +2344,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.aixiaoqi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3b7df60a-60b6-4b21-84e0-7aa003c55747";
-				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170213;
+				PROVISIONING_PROFILE = "4d40a69b-b772-413e-9675-cf754d360f7d";
+				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170311;
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
 			};
@@ -2398,8 +2402,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.aixiaoqi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3b7df60a-60b6-4b21-84e0-7aa003c55747";
-				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170213;
+				PROVISIONING_PROFILE = "4d40a69b-b772-413e-9675-cf754d360f7d";
+				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170311;
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
 			};

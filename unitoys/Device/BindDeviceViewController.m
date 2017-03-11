@@ -9,12 +9,14 @@
 #import "BindDeviceViewController.h"
 #import "BlueToothDataManager.h"
 #import "WaterIdentifyView.h"
+#import "UIImage+GIF.h"
 
 @interface BindDeviceViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *lblStatue;
 @property (weak, nonatomic) IBOutlet UIImageView *imgStatueImage;
 @property (weak, nonatomic) IBOutlet UIButton *relieveBoundButton;
 @property (nonatomic, strong)NSTimer *timer;
+@property (weak, nonatomic) IBOutlet UIImageView *disconnectedImageView;
 
 @end
 
@@ -193,6 +195,7 @@
     if (self.customView) {
         self.customView.hidden = YES;
     }
+    self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
     self.hintLabel.text = @"还没有连接设备，点击连接";
     self.versionNumber.hidden = YES;
     self.macAddress.hidden = YES;
@@ -236,6 +239,15 @@
             self.hintLabel.text = @"还没有绑定设备，点击绑定";
         }
     }
+    self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
+}
+
+#pragma mark 加载扫描图形
+- (void)addScanView {
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"scan" ofType:@"gif"];
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    UIImage *image = [UIImage sd_animatedGIFWithData:data];
+    self.disconnectedImageView.image = image;
 }
 
 #pragma mark 点击手势连接设备
@@ -244,14 +256,12 @@
         if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBounded) {
             //点击绑定设备
             [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
-//            IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
-//            [self.navigationController pushViewController:isBoundVC animated:YES];
+            [self addScanView];
         } else if (![BlueToothDataManager shareManager].isConnected) {
             //未连接设备，先扫描连接
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
             [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
-//            IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
-//            [self.navigationController pushViewController:isBoundVC animated:YES];
+            [self addScanView];
         } else {
             //已经绑定了
         }
@@ -314,6 +324,7 @@
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 NSLog(@"解除绑定结果：%@", responseObj);
                 HUDNormal(@"已解除绑定")
+                self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
                 //发送解除绑定成功通知
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
                 [BlueToothDataManager shareManager].isBounded = NO;
