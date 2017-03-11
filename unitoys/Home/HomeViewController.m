@@ -2595,9 +2595,11 @@ typedef enum : NSUInteger {
         if (!self.boundedDeviceInfo[@"IMEI"]) {
             //发送绑定请求
             [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
-             [self showAlertWithMessage:@"请点击钥匙扣按钮确认绑定"];
+//             [self showAlertWithMessage:@"请点击钥匙扣按钮确认绑定"];
+            HUDNoStop1(@"请点击钥匙扣按钮确认绑定")
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![BlueToothDataManager shareManager].isAllowToBound) {
+                    HUDStop
                     [BlueToothDataManager shareManager].isAccordBreak = YES;
                     [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
                     [self.mgr cancelPeripheralConnection:self.peripheral];
@@ -2783,6 +2785,7 @@ typedef enum : NSUInteger {
                 NSLog(@"接收到同意绑定数据");
                 [BlueToothDataManager shareManager].isAllowToBound = YES;
                 [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"01"];
+                HUDStop
                 HUDNormal(@"绑定成功")
                 //对卡上电
                 [self phoneCardToUpeLectrify:@"01"];
