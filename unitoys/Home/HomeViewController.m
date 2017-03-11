@@ -2038,7 +2038,9 @@ typedef enum : NSUInteger {
 - (void)relieveBoundAction {
     if ([BlueToothDataManager shareManager].isBounded) {
         [BlueToothDataManager shareManager].isAccordBreak = YES;
-        [self.mgr cancelPeripheralConnection:self.peripheral];
+        if ([BlueToothDataManager shareManager].isConnected && self.peripheral) {
+            [self.mgr cancelPeripheralConnection:self.peripheral];
+        }
         [BlueToothDataManager shareManager].isTcpConnected = NO;
     } else {
         [self showAlertWithMessage:@"设备本没有绑定"];

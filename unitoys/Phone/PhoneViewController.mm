@@ -1059,9 +1059,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }else{
             //数据请求失败
         }
-        
-        
-        
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"有异常：%@",[error description]);
     } headers:self.headers];
@@ -1082,11 +1079,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [[UNCallKitCenter sharedInstance]  endCall:nil completion:^(NSError * _Nullable error) {
                 }];
             }
-            
             self.callStopTime = [NSDate date];
             self.hostHungup = @"source";
 //            [self endingCallOut];
-            
         }else if ([action isEqualToString:@"SwitchSound"]){
             //保存扩音状态,在未接通时修改扩音状态无效,因此保存此状态,在接通时更新.
             if (notification.userInfo) {
@@ -1094,7 +1089,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     self.speakerStatus = [notification.userInfo[@"isHandfreeon"] boolValue];
                 }
             }
-            
             NSLog(@"当前扩音状态:%zd", self.speakerStatus);
             //系统扩音状态会自动更新,无法对系统扩音进行操作,因此不做处理
             theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
@@ -1125,7 +1119,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             path = [path stringByAppendingPathComponent:@"callrecord2.db"];
             
             FMDatabase *db = [FMDatabase databaseWithPath:path];
-            
             if (![db open]) {
                 [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
             }else{
@@ -1133,9 +1126,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
                 //降序,更新最后一条数据
                 FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime desc limit 0,1"];
-                
                 if ([rs next]) {
-                    
                     //如果能打开说明已存在,获取数据
                     NSString *jsonStr1 = [rs stringForColumn:@"datas"];
                     NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
@@ -1155,7 +1146,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //                    if (!isSuccess) {
 //                        NSLog(@"更新通话记录失败！%@",dicPhoneRecord);
 //                    }
-                    
 //                    [db executeUpdate:@"update CallRecord set status=1 where calltime=?",[rs stringForColumn:@"calltime"]];
                     [rs close];
                     [db close];
@@ -1225,7 +1215,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:NO completion:^{
                 }];
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
                         [weakSelf callingAction:noti];
                 });
