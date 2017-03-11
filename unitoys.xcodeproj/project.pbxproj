@@ -109,7 +109,6 @@
 		3CC3E0B61E63FA1800A62F8C /* AbroadExplainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0B51E63FA1800A62F8C /* AbroadExplainController.m */; };
 		3CC3E0BD1E63FB9100A62F8C /* ExplainDetailsChildController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0BB1E63FB9100A62F8C /* ExplainDetailsChildController.m */; };
 		3CC3E0BE1E63FB9100A62F8C /* ExplainDetailsChildController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CC3E0BC1E63FB9100A62F8C /* ExplainDetailsChildController.xib */; };
-		3CC3E0CB1E6415C000A62F8C /* CallPackageDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0C91E6415C000A62F8C /* CallPackageDetailsController.m */; };
 		3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */; };
 		3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */; };
 		3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */; };
@@ -450,8 +449,6 @@
 		3CC3E0BA1E63FB9100A62F8C /* ExplainDetailsChildController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExplainDetailsChildController.h; sourceTree = "<group>"; };
 		3CC3E0BB1E63FB9100A62F8C /* ExplainDetailsChildController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExplainDetailsChildController.m; sourceTree = "<group>"; };
 		3CC3E0BC1E63FB9100A62F8C /* ExplainDetailsChildController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExplainDetailsChildController.xib; sourceTree = "<group>"; };
-		3CC3E0C81E6415C000A62F8C /* CallPackageDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallPackageDetailsController.h; sourceTree = "<group>"; };
-		3CC3E0C91E6415C000A62F8C /* CallPackageDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallPackageDetailsController.m; sourceTree = "<group>"; };
 		3CC3E0CD1E64346700A62F8C /* AbroadPackageDescView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageDescView.h; sourceTree = "<group>"; };
 		3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadPackageDescView.m; sourceTree = "<group>"; };
 		3CCA72CE1E65458900931B20 /* AbroadPackageExplainCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageExplainCell.h; sourceTree = "<group>"; };
@@ -1481,8 +1478,6 @@
 				3CC3E0BA1E63FB9100A62F8C /* ExplainDetailsChildController.h */,
 				3CC3E0BB1E63FB9100A62F8C /* ExplainDetailsChildController.m */,
 				3CC3E0BC1E63FB9100A62F8C /* ExplainDetailsChildController.xib */,
-				3CC3E0C81E6415C000A62F8C /* CallPackageDetailsController.h */,
-				3CC3E0C91E6415C000A62F8C /* CallPackageDetailsController.m */,
 				3CC3E0CD1E64346700A62F8C /* AbroadPackageDescView.h */,
 				3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */,
 			);
@@ -2042,7 +2037,6 @@
 				9520BCB01DA1048100F0B286 /* RechargeViewController.m in Sources */,
 				04F7279F1E641CE4002EB54C /* ContextFilterLogFormatter.m in Sources */,
 				95E596601DC478A700B3F4F8 /* ContactPhoneCell.m in Sources */,
-				3CC3E0CB1E6415C000A62F8C /* CallPackageDetailsController.m in Sources */,
 				9562EEA31DD3672F00E10C98 /* NewMessageViewController.m in Sources */,
 				953CF9D01DCCF16A0001CE8E /* PaySuccessViewController.m in Sources */,
 				954A87DC1D99136300570843 /* BrowserViewController.m in Sources */,

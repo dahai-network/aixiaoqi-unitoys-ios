@@ -1209,15 +1209,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         switch (actionType) {
             case UNCallActionTypeAnswer:
             {
-                weakSelf.callCominginVC = [[CallComingInViewController alloc] init];
-                weakSelf.callCominginVC.nameStr = [weakSelf checkLinkNameWithPhoneStr:name];
+                weakSelf.callCominginVC                    = [[CallComingInViewController alloc] init];
+                weakSelf.callCominginVC.nameStr            = [weakSelf checkLinkNameWithPhoneStr:name];
                 weakSelf.callCominginVC.isPresentInCallKit = YES;
                 [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:NO completion:^{
                 }];
-                
+
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
-                        [weakSelf callingAction:noti];
+                    NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
+                    [weakSelf callingAction:noti];
                 });
                 
 //                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
@@ -1828,7 +1828,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }else{
             self.phoneNumber = strNumber;
         }
-        self.calledTelNum = [NSString stringWithFormat:@"986%@",self.phoneNumber];
+        if (self.phoneNumber) {
+            self.calledTelNum = [NSString stringWithFormat:@"986%@",self.phoneNumber];
+        }
         
         CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
         if (callingViewController) {
@@ -1837,7 +1839,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             [self presentViewController:callingViewController animated:YES completion:^{
                 SipEngine *theSipEngine = [SipEngineManager getSipEngine];
                 callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
-                theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
+                if ([VSWManager shareManager].callPort) {
+                    theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
+                }else{
+                    HUDNormal(@"呼叫失败")
+                }
             }];
         }
     }
@@ -1867,8 +1873,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }else{
             //数据请求失败
         }
-        
-        
     } failure:^(id dataObj, NSError *error) {
         //
         NSLog(@"啥都没：%@",[error description]);

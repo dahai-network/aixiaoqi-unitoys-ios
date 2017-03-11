@@ -24,7 +24,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     self.title = @"套餐详情";
     
     self.communicateDetailInfo = [[NSDictionary alloc] init];
@@ -33,6 +33,7 @@
     //cell高度自适应
     self.tableView.estimatedRowHeight = 44.0f;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.allowsSelection = NO;
     [self checkCommunicateDetailById];
     // Do any additional setup after loading the view from its nib.
 }
@@ -111,7 +112,6 @@
         return self.secondCell;
     }
 }
-
 #pragma mark 点击购买按钮点击事件
 - (IBAction)bitToBuyAction:(UIButton *)sender {
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Order" bundle:nil];

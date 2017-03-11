@@ -2497,6 +2497,7 @@ typedef enum : NSUInteger {
 - (void)updateLBEStatuWithPushKit
 {
     if (!self.isUpdatedLBEInfo) {
+        NSLog(@"更新蓝牙状态");
         [self sendLBEMessageNoPushKit];
     }
 }
@@ -3384,7 +3385,6 @@ typedef enum : NSUInteger {
 }
 
 #pragma mark ------------发送的数据包------------
-
 #pragma mark 获取空卡序列号第一步
 - (void)checkEmptyCardSerialNumberFirst:(NSNotification *)sender {
     self.activityOrderId = [NSString stringWithFormat:@"%@", sender.object];

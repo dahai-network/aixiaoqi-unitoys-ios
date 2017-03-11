@@ -107,7 +107,7 @@
 //    self.isPushKit = YES;
     
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
 //    self.isLoadDelegate = YES;
 //    [UNCreatLocalNoti createLocalNotiMessageString:@"didFinishLaunchingWithOptions"];
@@ -568,12 +568,12 @@
         uint16_t port = [sock connectedPort];
         //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-        [BlueToothDataManager shareManager].isBeingRegisting = NO;
-        [BlueToothDataManager shareManager].stepNumber = @"0";
-        [BlueToothDataManager shareManager].isRegisted = YES;
+//        [BlueToothDataManager shareManager].isBeingRegisting = NO;
+//        [BlueToothDataManager shareManager].stepNumber = @"0";
+//        [BlueToothDataManager shareManager].isRegisted = YES;
         [BlueToothDataManager shareManager].isConnected = YES;
         [BlueToothDataManager shareManager].isTcpConnected = YES;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (!self.timer) {
@@ -657,6 +657,7 @@
         cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
         NSLog(@"最终的电话端口 -- %@", cutStr);
         [VSWManager shareManager].callPort = cutStr;
+        [[NSUserDefaults standardUserDefaults] setObject:cutStr forKey:@"VSWCallPort"];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (!self.timer) {
@@ -889,61 +890,58 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         [self loadLoginViewController];
     }
     //    HUDNoStop1(@"正在登录...")
-    [SSNetworkRequest getRequest:strGetLogin params:nil success:^(id resonseObj){
-        
-        if (resonseObj) {
-            if ([[resonseObj objectForKey:@"status"] intValue]==1) {
-//                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
-                //更新别名为token
-                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
-                [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
-                    NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
-                }];
-                NSLog(@"拿到数据：%@",resonseObj);
+    if (strGetLogin) {
+        [SSNetworkRequest getRequest:strGetLogin params:nil success:^(id resonseObj){
+            
+            if (resonseObj) {
+                if ([[resonseObj objectForKey:@"status"] intValue]==1) {
+                    //                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
+                    //更新别名为token
+                    NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
+                    [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
+                        NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
+                    }];
+                    NSLog(@"拿到数据：%@",resonseObj);
+                    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                    if (storyboard) {
+                        UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
+                        if (mainViewController) {
+                            self.window.rootViewController = mainViewController;
+                        }
+                    }
+                    
+                    //                [[UITabBar appearance] setBackgroundImage:<#(UIImage * _Nullable)#>:[UIColor blueColor]];
+                }else{
+                    [self loadLoginViewController];
+                    //                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"999" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                }
+            }else{
+                [self loadLoginViewController];
+                //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器好像有点忙，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            }
+            
+        }failure:^(id dataObj, NSError *error) {
+            NSLog(@"登录失败：%@",[error description]);
+            //        if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable) {
+            //
+            //        }
+            
+            //        [self loadLoginViewController];
+            
+            HUDNormal(@"网络异常")
+            NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+            if (userdata) {
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 if (storyboard) {
                     UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
                     if (mainViewController) {
                         self.window.rootViewController = mainViewController;
-                        //                        [self.window makeKeyAndVisible];
-                        
-                        
-                        //                        [self presentViewController:mainViewController animated:YES completion:nil];
                     }
                 }
-                
-                //                [[UITabBar appearance] setBackgroundImage:<#(UIImage * _Nullable)#>:[UIColor blueColor]];
-            }else{
-                [self loadLoginViewController];
-                //                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"999" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
             }
-        }else{
-            [self loadLoginViewController];
-            //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器好像有点忙，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-        }
-        
-    }failure:^(id dataObj, NSError *error) {
-        NSLog(@"登录失败：%@",[error description]);
-//        if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable) {
-//            
-//        }
-        
-//        [self loadLoginViewController];
-        
-        HUDNormal(@"网络异常")
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        if (storyboard) {
-            UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
-            if (mainViewController) {
-                self.window.rootViewController = mainViewController;
-            }
-        }
-        
-        //        HUDNormal(@"网络连接超时")
-        //        HUDNormal([error description])
-    } headers:nil];
-    
-    
+        } headers:nil];
+
+    }
 }
 
 - (NSString *)md5:(NSString *)str
@@ -1169,6 +1167,16 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [JPUSHService resetBadge];
     [application setApplicationIconBadgeNumber:0];
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    
+    //进入前台重新注册
+    if (self.isPushKit) {
+        self.isPushKit = NO;
+        NSLog(@"进入前台");
+        if (!_udpSocket) {
+            [self setUpUdpSocket];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+    }
     
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
@@ -1508,6 +1516,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     if (![servicePushKitData isEqualToString:self.receivePushKitDataFormServices]) {
                         self.receivePushKitDataFormServices = servicePushKitData;
                         [self separatePushKitString:servicePushKitData];
+                        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
+                            [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
+                        }
                         [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
                         //创建网络电话服务
                         [[UNSipEngineInitialize sharedInstance] initEngine];
@@ -1525,11 +1536,20 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     }
                 }
             }else if ([dict[@"MessageType"] isEqualToString:@"06"]){
+                self.isPushKit = YES;
                 self.receivePushKitDataFormServices = nil;
+                self.tlvFirstStr = nil;
+                self.simDataString = nil;
+                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
+                    [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
+                }
                 [UNCreatLocalNoti createLocalNotiMessageString:@"pushKit消息唤醒网络电话"];
                 //创建网络电话服务
                 [[UNSipEngineInitialize sharedInstance] initEngine];
-                self.isPushKit = YES;
+//                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+//                [BlueToothDataManager shareManager].stepNumber = @"0";
+//                [BlueToothDataManager shareManager].isRegisted = YES;
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
             }
         }else{
             

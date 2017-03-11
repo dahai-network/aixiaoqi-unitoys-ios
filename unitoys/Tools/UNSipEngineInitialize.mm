@@ -163,10 +163,9 @@ typedef enum : NSUInteger {
     }
     if ([SipEngineManager instance].registrationDelegate == nil) {
         [[SipEngineManager instance] setRegistrationDelegate:self];
-        [self doRegister];
     }
-    
-    
+
+    [self doRegister];
 //    [self getMaxPhoneCall];
     
     //读取本地缓存的账号信息

@@ -61,8 +61,6 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
     [self.valueView addGestureRecognizer:tap];
     
-    
-    
     self.pickerType = 1;
     
     self.arrSource = self.arrSex;
