@@ -36,8 +36,13 @@
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectedSuccess) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectFail) name:@"connectFail" object:@"connectFail"];//绑定失败
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchNoDevice) name:@"searchNoDevice" object:@"searchNoDevice"];//没有搜索到手环
     
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)searchNoDevice {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -167,6 +172,7 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectFail" object:@"connectFail"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"searchNoDevice" object:@"searchNoDevice"];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

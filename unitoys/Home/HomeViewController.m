@@ -311,6 +311,7 @@ typedef enum : NSUInteger {
     if (self.boundedDeviceInfo) {
         self.boundedDeviceInfo = nil;
     }
+    [BlueToothDataManager shareManager].deviceType = nil;
     [BlueToothDataManager shareManager].isAllowToBound = NO;
     [BlueToothDataManager shareManager].isBounded = NO;
     [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
@@ -1742,6 +1743,10 @@ typedef enum : NSUInteger {
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", nil];
+    if (!info[@"IMEI"]) {
+        [self showAlertViewWithMessage:@"没有搜索到可连接的设备"];
+        return;
+    }
     [SSNetworkRequest getRequest:apiIsBind params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"手环是否已被绑定 -- %@", responseObj[@"data"][@"BindStatus"]);
@@ -1766,6 +1771,15 @@ typedef enum : NSUInteger {
         HUDNormal(@"网络貌似有问题")
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
+}
+
+- (void)showAlertViewWithMessage:(NSString *)message {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"searchNoDevice" object:@"searchNoDevice"];
+    }];
+    [alertVC addAction:certailAction];
+    [self presentViewController:alertVC animated:YES completion:nil];
 }
 
 #pragma mark 调用绑定手环接口
@@ -1834,6 +1848,7 @@ typedef enum : NSUInteger {
             [BlueToothDataManager shareManager].stepNumber = nil;
             [BlueToothDataManager shareManager].bleStatueForCard = 0;
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];

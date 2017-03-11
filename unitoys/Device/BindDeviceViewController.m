@@ -73,7 +73,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bleStatueChanged:) name:@"homeStatueChanged" object:nil];//连接成功或者失败
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cardNumberNotTrueActionForBind:) name:@"cardNumberNotTrue" object:nil];//号码有问题专用
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatueAll:) name:@"changeStatueAll" object:nil];//状态改变
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(boundDeviceFail) name:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];//绑定钥匙扣的时候如果没有点击确认绑定就会发送此通知
     // Do any additional setup after loading the view.
+}
+
+- (void)boundDeviceFail {
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void)leftButtonAction {
@@ -330,6 +335,7 @@
                 if (self.timer) {
                     [self.timer setFireDate:[NSDate distantFuture]];
                 }
+                [self.navigationController popToRootViewControllerAnimated:YES];
 //                self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
@@ -438,6 +444,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"homeStatueChanged" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"cardNumberNotTrue" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
 }
 
 /*

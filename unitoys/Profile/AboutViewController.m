@@ -10,8 +10,15 @@
 #import "UIimageView+WebCache.h"
 #import "BindDeviceViewController.h"
 #import "AlarmListViewController.h"
+#import "BlueToothDataManager.h"
+#import "ChooseDeviceTypeViewController.h"
 
 #define CELLHEIGHT 44
+
+@interface AboutViewController ()
+@property (nonatomic, strong) ChooseDeviceTypeViewController *chooseDeviceTypeVC;
+
+@end
 
 @implementation AboutViewController
 
@@ -140,12 +147,28 @@
         }
         if (indexPath.row == 1) {
             //跳转到设备界面
-            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
-            
-            BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
-            if (bindDeviceViewController) {
-                self.tabBarController.tabBar.hidden = YES;
-                [self.navigationController pushViewController:bindDeviceViewController animated:YES];
+//            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
+//            
+//            BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
+//            if (bindDeviceViewController) {
+//                self.tabBarController.tabBar.hidden = YES;
+//                [self.navigationController pushViewController:bindDeviceViewController animated:YES];
+//            }
+            if ([BlueToothDataManager shareManager].isBounded) {
+                //有绑定
+                UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
+                BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
+                if (bindDeviceViewController) {
+                    self.tabBarController.tabBar.hidden = YES;
+//                    bindDeviceViewController.hintStrFirst = self.leftButton.titleLabel.text;
+                    [self.navigationController pushViewController:bindDeviceViewController animated:YES];
+                }
+            } else {
+                //没绑定
+                if (!self.chooseDeviceTypeVC) {
+                    self.chooseDeviceTypeVC = [[ChooseDeviceTypeViewController alloc] init];
+                }
+                [self.navigationController pushViewController:self.chooseDeviceTypeVC animated:YES];
             }
         }
     }
