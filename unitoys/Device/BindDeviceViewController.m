@@ -222,10 +222,17 @@
         CGFloat a = (float)[num intValue]/100;
         self.customView.percent = a;
         //        self.hintLabel.hidden = YES;
-        if ([BlueToothDataManager shareManager].lastChargTime) {
-            self.hintLabel.text = [NSString stringWithFormat:@"上次充电时间:%@", [BlueToothDataManager shareManager].lastChargTime];
+//        if ([BlueToothDataManager shareManager].lastChargTime) {
+//            self.hintLabel.text = [NSString stringWithFormat:@"上次充电时间:%@", [BlueToothDataManager shareManager].lastChargTime];
+//        } else {
+//            self.hintLabel.text = [NSString stringWithFormat:@"设备还未充过电"];
+//        }
+        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+            self.hintLabel.text = @"已连接爱小器手环";
+        } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+            self.hintLabel.text = @"已连接爱小器钥匙扣";
         } else {
-            self.hintLabel.text = [NSString stringWithFormat:@"设备还未充过电"];
+            NSLog(@"这是连接的什么？");
         }
     } else {
         if (self.customView) {
@@ -257,11 +264,25 @@
             //点击绑定设备
             [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
             [self addScanView];
+            self.hintLabel.text = @"正在搜索设备";
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (![BlueToothDataManager shareManager].isConnected) {
+                    self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
+                    self.hintLabel.text = @"还没有连接设备，点击连接";
+                }
+            });
         } else if (![BlueToothDataManager shareManager].isConnected) {
             //未连接设备，先扫描连接
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
             [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
             [self addScanView];
+            self.hintLabel.text = @"正在搜索设备";
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (![BlueToothDataManager shareManager].isConnected) {
+                    self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
+                    self.hintLabel.text = @"还没有连接设备，点击连接";
+                }
+            });
         } else {
             //已经绑定了
         }
@@ -408,6 +429,21 @@
         return 15;
     } else {
         return 0.01;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        return 44;
+    } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+        if (indexPath.section == 1 && indexPath.row == 0) {
+            return 0;
+        } else {
+            return 44;
+        }
+    } else {
+        NSLog(@"连接的设备类型有问题");
+        return 44;
     }
 }
 

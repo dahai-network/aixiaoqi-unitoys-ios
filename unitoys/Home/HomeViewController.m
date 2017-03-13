@@ -2376,8 +2376,10 @@ typedef enum : NSUInteger {
     NSLog(@"连接成功，开始查找外设重所有服务%@",peripheral.name);
     if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
         self.connectedDeviceName = MYDEVICENAMEUNITOYS;
+        [BlueToothDataManager shareManager].connectedDeviceName = MYDEVICENAMEUNITOYS;
     } else if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
         self.connectedDeviceName = MYDEVICENAMEUNIBOX;
+        [BlueToothDataManager shareManager].connectedDeviceName = MYDEVICENAMEUNIBOX;
     } else {
         NSLog(@"连接的是什么设备");
     }

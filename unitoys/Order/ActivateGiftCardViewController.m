@@ -74,7 +74,7 @@
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             
             self.dicOrderDetail = [responseObj objectForKey:@"data"];
-//            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
+            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
             setImage(self.firstCell.imgOrderView, [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"LogoPic"])
             self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
             self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
@@ -93,7 +93,7 @@
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
         if (responseObj) {
             self.dicOrderDetail = [responseObj objectForKey:@"data"];
-//            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
+            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
             setImage(self.firstCell.imgOrderView, [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"LogoPic"])
             self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
             self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
@@ -354,8 +354,14 @@
                 [label setText:@"已激活"];
             }
             label.textColor = [UIColor orangeColor];
-            self.activateButton.hidden = YES;
-            self.cancelButton.hidden = YES;
+            if (self.packageCategory == 0) {
+                [self.activateButton setTitle:@"立即激活" forState:UIControlStateNormal];
+                self.activateButton.hidden = NO;
+                self.cancelButton.hidden = YES;
+            } else {
+                self.activateButton.hidden = YES;
+                self.cancelButton.hidden = YES;
+            }
             break;
         case 2:
             [label setText:@"已过期"];

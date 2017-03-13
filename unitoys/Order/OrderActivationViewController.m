@@ -156,10 +156,12 @@
                     [BlueToothDataManager shareManager].bleStatueForCard = 1;
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"list"][@"OrderID"]];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                    HUDStop
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                     [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
                 }else{
                     //数据请求失败
+                    HUDStop
                     //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
                     HUDNormal(responseObj[@"msg"])
                     [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
