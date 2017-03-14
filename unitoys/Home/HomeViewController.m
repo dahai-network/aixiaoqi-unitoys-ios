@@ -103,11 +103,22 @@ typedef enum : NSUInteger {
 //是否更新过蓝牙信息
 @property (nonatomic, assign) BOOL isUpdatedLBEInfo;
 @property (nonatomic, strong)NSString *connectedDeviceName;//连接的设备名称（用于区分连接的是什么设备）
-//@property (nonatomic, assign) BOOL is
+
+@property (nonatomic, assign) NSInteger sendICCIDIndex;
+@property (nonatomic, copy) NSArray *sendICCIDCommands;
+
+@property (nonatomic, copy) NSString *iccidString;
 @end
 
 @implementation HomeViewController
 
+- (NSArray *)sendICCIDCommands
+{
+    if (!_sendICCIDCommands) {
+        _sendICCIDCommands = [NSArray array];
+    }
+    return _sendICCIDCommands;
+}
 
 - (NSMutableArray *)needSendDatas
 {
@@ -752,7 +763,6 @@ typedef enum : NSUInteger {
             //仅钥匙扣能连
             typeStr = @"1400";
             break;
-            
         default:
             break;
     }
@@ -859,7 +869,10 @@ typedef enum : NSUInteger {
                         if ([BlueToothDataManager shareManager].isTcpConnected) {
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
                         } else {
-                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
+//                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
+                            
+                            [self updataToCard];
+                            [self sendICCIDMessage];
                         }
                     } else {
                         HUDNormal(@"电话卡运营商不属于三大运营商")
@@ -887,7 +900,9 @@ typedef enum : NSUInteger {
                         if ([BlueToothDataManager shareManager].isTcpConnected) {
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
                         } else {
-                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
+//                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
+                            [self updataToCard];
+                            [self sendICCIDMessage];
                         }
                     } else {
                         HUDNormal(@"电话卡运营商不属于三大运营商")
@@ -2578,8 +2593,8 @@ typedef enum : NSUInteger {
 - (void)sendLBEMessageNoPushKit
 {
     self.isUpdatedLBEInfo = YES;
-    
     self.isQuickLoad = NO;
+    
     //告诉蓝牙是苹果设备
     [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
     //同步时间
@@ -2623,6 +2638,23 @@ typedef enum : NSUInteger {
     //是否是能通知
     [self sendDataToCheckIsAllowToNotificationWithPhoneCall:YES Message:NO WeiChart:NO QQ:NO];
     [self refreshBLEStatue];
+}
+
+//初始化ICCID指令
+- (void)sendICCIDMessage
+{
+    [BlueToothDataManager shareManager].bleStatueForCard = 2;
+    self.sendICCIDCommands = @[@"a0a40000023f00",@"a0a40000022fe2",@"a0c000000f",@"a0b000000a"];
+    self.sendICCIDIndex = 0;
+    [self sendICCIDCommand:self.sendICCIDIndex];
+}
+
+//发送ICCID指令
+- (void)sendICCIDCommand:(NSInteger)index
+{
+    if (index < self.sendICCIDCommands.count) {
+        [self sendMessageToBLEWithType:BLECardData validData:self.sendICCIDCommands[index]];
+    }
 }
 
 #pragma mark 更新蓝牙状态
@@ -2986,7 +3018,30 @@ typedef enum : NSUInteger {
                                     }
                                 }
                             }else{
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
+                                if (self.sendICCIDIndex < self.sendICCIDCommands.count) {
+                                    self.sendICCIDIndex++;
+                                    if (self.sendICCIDIndex == self.sendICCIDCommands.count) {
+                                        //判断本地是否存在ICCID
+                                        self.iccidString = [self getIccidWithString:self.totalString];
+                                        
+                                        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:self.iccidString];
+                                        if (dict) {
+                                            //创建tcp,建立连接
+                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:self.iccidString];
+                                        }else{
+                                            //创建udp,初始化操作
+                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:nil];
+                                        }
+                                        self.sendICCIDCommands = nil;
+                                        self.sendICCIDIndex = 0;
+                                        //对卡断电
+                                        [self downElectToCard];
+                                    }else{
+                                        [self sendICCIDCommand:self.sendICCIDIndex];
+                                    }
+                                }else{
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
+                                }
                             }
 //                            [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
                             [self.dataPacketArray removeAllObjects];
@@ -3152,6 +3207,23 @@ typedef enum : NSUInteger {
                 break;
         }
     }
+}
+
+//获取Iccid
+- (NSString *)getIccidWithString:(NSString *)string
+{
+    NSString *tempStr = [string substringToIndex:(string.length - 4)];
+    return [self getReverseString:tempStr];
+}
+
+- (NSString *)getReverseString:(NSString *)string
+{
+    NSMutableString *mutaleString = [NSMutableString string];
+    for (int i = 0; i < (string.length /2); i++) {
+        [mutaleString appendString:[string substringWithRange:NSMakeRange(i*2+1, 1)]];
+        [mutaleString appendString:[string substringWithRange:NSMakeRange(i*2, 1)]];
+    }
+    return mutaleString;
 }
 
 #pragma mark --在pushkit下发送蓝牙数据
