@@ -54,7 +54,7 @@
         strGetLogin = [NSString stringWithFormat:@"%@&TOKEN=%@",strGetLogin,[userdata objectForKey:@"Token"]];
         //
     }
-    HUDNoStop1(@"正在登录...")
+    HUDNoStop1(INTERNATIONALSTRING(@"正在登录..."))
     [SSNetworkRequest getRequest:strGetLogin params:nil success:^(id resonseObj){
         
         if (resonseObj) {
@@ -76,16 +76,15 @@
                 
                 //                [[UITabBar appearance] setBackgroundImage:<#(UIImage * _Nullable)#>:[UIColor blueColor]];
             }else if ([[resonseObj objectForKey:@"status"] intValue]==-999){
-                
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"999" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                [self showAlertViewWithMessage:@"999"];
             }
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器好像有点忙，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [self showAlertViewWithMessage:@"服务器好像有点忙，请稍后重试"];
         }
         
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"登录失败：%@",[error description]);
-        HUDNormal(@"网络连接超时")
+        HUDNormal(INTERNATIONALSTRING(@"网络连接超时"))
 //        HUDNormal([error description])
     } headers:nil];
 }
@@ -103,14 +102,14 @@
 
 - (IBAction)login:(id)sender {
     if (self.edtUserName.text.length!=11) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"请输入正确的手机号" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        [self showAlertViewWithMessage:@"请输入正确的手机号"];
         return;
     }
     if (self.edtPassText.text.length<6) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"请输入正确的密码" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        [self showAlertViewWithMessage:@"请输入正确的密码"];
         return;
     }
-    HUDNoStop1(@"正在登录...")
+    HUDNoStop1(INTERNATIONALSTRING(@"正在登录..."))
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.edtUserName.text,@"Tel",self.edtPassText.text,@"PassWord", @"webApi", @"LoginTerminal",nil];
     [SSNetworkRequest postRequest:[apiCheckLogin stringByAppendingString:[self getParamStr]] params:info success:^(id resonseObj){
         NSMutableDictionary *userData = [[NSMutableDictionary alloc] initWithDictionary:[resonseObj objectForKey:@"data"]];
@@ -146,21 +145,25 @@
                 //                [[UITabBar appearance] setBackgroundImage:<#(UIImage * _Nullable)#>:[UIColor blueColor]];
             }else{
                 if (resonseObj[@"msg"]) {
-                    [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
                 }else{
-                    HUDNormal(@"登录失败")
+                    HUDNormal(INTERNATIONALSTRING(@"登录失败"))
                 }
 //                HUDNormal(resonseObj[@"msg"])
             }
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器好像有点忙，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [self showAlertViewWithMessage:@"服务器好像有点忙，请稍后重试"];
         }
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"登录失败：%@",[error description]);
 //        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器可能罢工中，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-        HUDNormal(@"网络连接失败")
+        HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
 //        HUDNormal([error description])
     } headers:nil];
+}
+
+- (void)showAlertViewWithMessage:(NSString *)message {
+    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(message) delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
 }
 
 - (IBAction)forget:(id)sender {

@@ -414,7 +414,7 @@ typedef enum : NSUInteger {
 
 #pragma mark 设置按钮的文字和图片
 - (void)setButtonImageAndTitleWithTitle:(NSString *)title {
-    [self.leftButton setTitle:title forState:UIControlStateNormal];
+    [self.leftButton setTitle:INTERNATIONALSTRING(title) forState:UIControlStateNormal];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:title];
     if ([title isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
         //蓝牙未开

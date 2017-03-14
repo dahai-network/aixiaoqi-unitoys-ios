@@ -1,0 +1,60 @@
+
+/* Class = "UILabel"; text = "-"; ObjectID = "0TY-Yl-FzV"; */
+"0TY-Yl-FzV.text" = "-";
+
+/* Class = "UITableViewController"; title = "套餐列表"; ObjectID = "35a-8s-1zi"; */
+"35a-8s-1zi.title" = "套餐列表";
+
+/* Class = "UILabel"; text = "￥00.00"; ObjectID = "5cM-5N-dmU"; */
+"5cM-5N-dmU.text" = "￥00.00";
+
+/* Class = "UILabel"; text = "-"; ObjectID = "BQz-MC-bIm"; */
+"BQz-MC-bIm.text" = "-";
+
+/* Class = "UIViewController"; title = "套餐超市"; ObjectID = "D5V-9s-QPQ"; */
+"D5V-9s-QPQ.title" = "套餐超市";
+
+/* Class = "UILabel"; text = "有效期：--天"; ObjectID = "GFA-dl-P18"; */
+"GFA-dl-P18.text" = "有效期：--天";
+
+/* Class = "UILabel"; text = "◎支付条款"; ObjectID = "JhH-w8-QX6"; */
+"JhH-w8-QX6.text" = "◎支付条款";
+
+/* Class = "UILabel"; text = "country"; ObjectID = "Lk2-sA-vH3"; */
+"Lk2-sA-vH3.text" = "country";
+
+/* Class = "UILabel"; text = "￥---.--"; ObjectID = "QKH-r3-mEi"; */
+"QKH-r3-mEi.text" = "￥---.--";
+
+/* Class = "UILabel"; text = "◎产品特色"; ObjectID = "Qhw-wb-Vx7"; */
+"Qhw-wb-Vx7.text" = "◎产品特色";
+
+/* Class = "UILabel"; text = "套餐名称"; ObjectID = "Tuk-7f-PAO"; */
+"Tuk-7f-PAO.text" = "套餐名称";
+
+/* Class = "UIButton"; normalTitle = "立即购买"; ObjectID = "Vns-BE-q0h"; */
+"Vns-BE-q0h.normalTitle" = "立即购买";
+
+/* Class = "UILabel"; text = "◎如何使用"; ObjectID = "YDB-Ch-87L"; */
+"YDB-Ch-87L.text" = "◎如何使用";
+
+/* Class = "UILabel"; text = "◎套餐详情"; ObjectID = "eSU-JZ-SIc"; */
+"eSU-JZ-SIc.text" = "◎套餐详情";
+
+/* Class = "UILabel"; text = "-"; ObjectID = "jDT-GG-Fxk"; */
+"jDT-GG-Fxk.text" = "-";
+
+/* Class = "UILabel"; text = "01"; ObjectID = "kFr-9l-n3J"; */
+"kFr-9l-n3J.text" = "01";
+
+/* Class = "UILabel"; text = "价格"; ObjectID = "lph-th-usB"; */
+"lph-th-usB.text" = "价格";
+
+/* Class = "UILabel"; text = "流量：---MB"; ObjectID = "o0L-6A-yGO"; */
+"o0L-6A-yGO.text" = "流量：---MB";
+
+/* Class = "UILabel"; text = "-"; ObjectID = "qzg-SS-VZ4"; */
+"qzg-SS-VZ4.text" = "-";
+
+/* Class = "UILabel"; text = "我们正在努力为您准备更优质的资源服务中，敬请期待。"; ObjectID = "sW2-0T-IbF"; */
+"sW2-0T-IbF.text" = "我们正在努力为您准备更优质的资源服务中，敬请期待。";

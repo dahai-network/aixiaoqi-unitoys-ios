@@ -21,7 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"绑定";
+    self.title = INTERNATIONALSTRING(@"绑定");
     self.tableView.tableFooterView = [UIView new];
     // Do any additional setup after loading the view from its nib.
 }

@@ -1,0 +1,165 @@
+
+/* Class = "UILabel"; text = "推荐有支付宝账户的用户使用"; ObjectID = "0V2-ac-niG"; */
+"0V2-ac-niG.text" = "Alipay account is recommanded";
+
+/* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "2n7-7g-2HL"; */
+"2n7-7g-2HL.normalTitle" = "Stateless";
+
+/* Class = "UILabel"; text = "推荐安装微信5.0版本以上的用户使用"; ObjectID = "2pv-cs-MCR"; */
+"2pv-cs-MCR.text" = "Wechat version above 5.0 is recommanded";
+
+/* Class = "UILabel"; text = "套餐名称"; ObjectID = "3kh-Jy-DtX"; */
+"3kh-Jy-DtX.text" = "Package name";
+
+/* Class = "UILabel"; text = "2016-08-08 12:09"; ObjectID = "50D-QR-X81"; */
+"50D-QR-X81.text" = "2016-08-08 12:09";
+
+/* Class = "UILabel"; text = "支付方式"; ObjectID = "53b-ue-mRw"; */
+"53b-ue-mRw.text" = "Payment";
+
+/* Class = "UILabel"; text = "购买数量"; ObjectID = "90q-lZ-Yev"; */
+"90q-lZ-Yev.text" = "Payement Methods";
+
+/* Class = "UILabel"; text = "x1"; ObjectID = "AQp-W6-ynd"; */
+"AQp-W6-ynd.text" = "x1";
+
+/* Class = "UILabel"; text = "￥0.00"; ObjectID = "CbN-8c-5iX"; */
+"CbN-8c-5iX.text" = "￥0.00";
+
+/* Class = "UILabel"; text = "下单时间"; ObjectID = "EMr-95-u8B"; */
+"EMr-95-u8B.text" = "Order time";
+
+/* Class = "UILabel"; text = "微信支付"; ObjectID = "FBm-PK-css"; */
+"FBm-PK-css.text" = "WeChat pay";
+
+/* Class = "UILabel"; text = "订单信息"; ObjectID = "FRR-Sm-z7K"; */
+"FRR-Sm-z7K.text" = "Information";
+
+/* Class = "UILabel"; text = "合计："; ObjectID = "FTD-GH-fQc"; */
+"FTD-GH-fQc.text" = "Total：";
+
+/* Class = "UILabel"; text = "微信支付"; ObjectID = "Hpf-7b-01h"; */
+"Hpf-7b-01h.text" = "WeChat pay";
+
+/* Class = "UIButton"; normalTitle = "完成"; ObjectID = "HuN-gz-lpm"; */
+"HuN-gz-lpm.normalTitle" = "Success";
+
+/* Class = "UILabel"; text = "余额支付"; ObjectID = "HvP-du-Gpv"; */
+"HvP-du-Gpv.text" = "Balance pay";
+
+/* Class = "UILabel"; text = "999"; ObjectID = "JUA-ex-UKi"; */
+"JUA-ex-UKi.text" = "999";
+
+/* Class = "UILabel"; text = "￥999"; ObjectID = "JiV-b4-1Wm"; */
+"JiV-b4-1Wm.text" = "￥999";
+
+/* Class = "UITableViewController"; title = "激活套餐"; ObjectID = "K7b-Qa-131"; */
+"K7b-Qa-131.title" = "Activate Package";
+
+/* Class = "UITableViewController"; title = "订单列表"; ObjectID = "MKn-Db-Vxx"; */
+"MKn-Db-Vxx.title" = "Order List";
+
+/* Class = "UIButton"; normalTitle = "确认"; ObjectID = "PD1-Sr-Nou"; */
+"PD1-Sr-Nou.normalTitle" = "Confirm";
+
+/* Class = "UIButton"; normalTitle = "立即激活"; ObjectID = "RDN-pS-cIW"; */
+"RDN-pS-cIW.normalTitle" = "Activat now";
+
+/* Class = "UILabel"; text = "未连接"; ObjectID = "S1b-jC-RCb"; */
+"S1b-jC-RCb.text" = "Disconnected";
+
+/* Class = "UILabel"; text = "订单编号"; ObjectID = "UWB-Nq-lMz"; */
+"UWB-Nq-lMz.text" = "Order Number";
+
+/* Class = "UIButton"; normalTitle = "激活套餐"; ObjectID = "WC0-eD-H29"; */
+"WC0-eD-H29.normalTitle" = "Activate Package";
+
+/* Class = "UILabel"; text = "生效日期"; ObjectID = "WFJ-t2-cmp"; */
+"WFJ-t2-cmp.text" = "Effective Date";
+
+/* Class = "UILabel"; text = "总价"; ObjectID = "WiB-Qt-l35"; */
+"WiB-Qt-l35.text" = "Total Price";
+
+/* Class = "UILabel"; text = "套餐状态：未激活"; ObjectID = "ae7-w8-9Jd"; */
+"ae7-w8-9Jd.text" = "Package Status：Nonactivated";
+
+/* Class = "UITableViewController"; title = "订单详情"; ObjectID = "bON-r6-NIX"; */
+"bON-r6-NIX.title" = "Order details";
+
+/* Class = "UILabel"; text = "支付宝"; ObjectID = "bTl-Ke-ppV"; */
+"bTl-Ke-ppV.text" = "Alipay";
+
+/* Class = "UILabel"; text = "2016年10月10日"; ObjectID = "c78-Fg-uYX"; */
+"c78-Fg-uYX.text" = "2016年10月10日";
+
+/* Class = "UILabel"; text = "微信"; ObjectID = "cXz-a3-cIY"; */
+"cXz-a3-cIY.text" = "Wechat";
+
+/* Class = "UILabel"; text = "￥00元"; ObjectID = "dv0-e5-KQ9"; */
+"dv0-e5-KQ9.text" = "￥00元";
+
+/* Class = "UILabel"; text = "￥0"; ObjectID = "fKa-cF-97E"; */
+"fKa-cF-97E.text" = "￥0";
+
+/* Class = "UILabel"; text = "￥999.99"; ObjectID = "fmT-Y8-hSt"; */
+"fmT-Y8-hSt.text" = "￥999.99";
+
+/* Class = "UILabel"; text = "￥999.99"; ObjectID = "ghd-vU-8nJ"; */
+"ghd-vU-8nJ.text" = "￥999.99";
+
+/* Class = "UILabel"; text = "有效期：--天"; ObjectID = "hXN-8g-gHr"; */
+"hXN-8g-gHr.text" = "Expiry：--day";
+
+/* Class = "UILabel"; text = "设备"; ObjectID = "jOf-te-ddv"; */
+"jOf-te-ddv.text" = "Device";
+
+/* Class = "UILabel"; text = "2016080808"; ObjectID = "kWk-uL-Iy6"; */
+"kWk-uL-Iy6.text" = "2016080808";
+
+/* Class = "UIButton"; normalTitle = "取消订单"; ObjectID = "lLw-Ok-nUs"; */
+"lLw-Ok-nUs.normalTitle" = "Cancel order";
+
+/* Class = "UILabel"; text = "流量：---MB"; ObjectID = "m8W-fM-55c"; */
+"m8W-fM-55c.text" = "Flow：---MB";
+
+/* Class = "UILabel"; text = "总价"; ObjectID = "mpp-aJ-Gec"; */
+"mpp-aJ-Gec.text" = "Total Price";
+
+/* Class = "UILabel"; text = "￥0"; ObjectID = "nBM-bJ-mTt"; */
+"nBM-bJ-mTt.text" = "￥0";
+
+/* Class = "UILabel"; text = "流量：---MB"; ObjectID = "oWW-P1-DEc"; */
+"oWW-P1-DEc.text" = "Flow：---MB";
+
+/* Class = "UITableViewController"; title = "提交订单"; ObjectID = "oc7-mK-ynJ"; */
+"oc7-mK-ynJ.title" = "Submit orders";
+
+/* Class = "UILabel"; text = "单价"; ObjectID = "pTu-eO-A5x"; */
+"pTu-eO-A5x.text" = "Unit-price";
+
+/* Class = "UILabel"; text = "有效期：3天"; ObjectID = "q6F-te-ipG"; */
+"q6F-te-ipG.text" = "Expiry：3day";
+
+/* Class = "UILabel"; text = "有效期：--天"; ObjectID = "qUY-Ub-gsc"; */
+"qUY-Ub-gsc.text" = "Expiry：--day";
+
+/* Class = "UILabel"; text = "有效时长"; ObjectID = "rze-0M-LvA"; */
+"rze-0M-LvA.text" = "Effecitve Time";
+
+/* Class = "UIButton"; normalTitle = "购买成功"; ObjectID = "tC3-PL-e9l"; */
+"tC3-PL-e9l.normalTitle" = "purchase succeeds";
+
+/* Class = "UILabel"; text = "30天"; ObjectID = "ten-HV-zkI"; */
+"ten-HV-zkI.text" = "30day";
+
+/* Class = "UILabel"; text = "金额"; ObjectID = "uR4-IS-pg6"; */
+"uR4-IS-pg6.text" = "Amount";
+
+/* Class = "UILabel"; text = "支付方式"; ObjectID = "wfs-6H-hSK"; */
+"wfs-6H-hSK.text" = "Payement Methods";
+
+/* Class = "UILabel"; text = "购买方式"; ObjectID = "yZw-3u-fj1"; */
+"yZw-3u-fj1.text" = "Ways of purchase";
+
+/* Class = "UILabel"; text = "最晚激活日期：2018年12月31日"; ObjectID = "zSX-89-Zqf"; */
+"zSX-89-Zqf.text" = "Latest date of activation：2018年12月31日";

@@ -30,9 +30,9 @@
         
         self.btnAgreement.hidden = YES;
         self.btnLicense.hidden = YES;
-        [self.btnAction setTitle:@"确定" forState:UIControlStateNormal];
+        [self.btnAction setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
         
-        self.title = @"找回密码";
+        self.title = INTERNATIONALSTRING(@"找回密码");
         
     }
     
@@ -154,7 +154,7 @@
 
 - (IBAction)sendVerifyCode:(id)sender {
     if (self.edtPhoneNumber.text.length<10) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"请输入手机号" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"请输入手机号") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         return;
     }
     
@@ -171,14 +171,14 @@
     NSString *userMode = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserMode"];
 
     if ([userMode isEqualToString:@"ForgetMode"]) {
-        hintInfo = @"已发送验证码，请查看并输入完成密码找回";
+        hintInfo = INTERNATIONALSTRING(@"已发送验证码，请查看并输入完成密码找回");
     }else{
-        hintInfo = @"已发送验证码，请查看并输入完整注册信息";
+        hintInfo = INTERNATIONALSTRING(@"已发送验证码，请查看并输入完整注册信息");
     }
     
     [SSNetworkRequest postRequest:[apiSendSMS stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:hintInfo delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:hintInfo delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             
             [self.edtVerifyCode becomeFirstResponder];
             self.hintTime = 60;
@@ -189,7 +189,7 @@
             [self.hintTimer fire];
             
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
         
     }failure:^(id dataObj, NSError *error) {
@@ -204,25 +204,25 @@
     
     if (self.hintTime==0) {
         self.btnSendVerifyCode.enabled = YES;
-        [self.btnSendVerifyCode setTitle:@"重新发送" forState:UIControlStateNormal];
+        [self.btnSendVerifyCode setTitle:INTERNATIONALSTRING(@"重新发送") forState:UIControlStateNormal];
         
         [self.btnSendVerifyCode setTintColor:[UIColor blueColor]];
         
         [self.hintTimer invalidate];
         NSLog(@"就这么断了？");
     }else
-      [self.btnSendVerifyCode setTitle:[NSString stringWithFormat:@"重新发送（%d）",self.hintTime] forState:UIControlStateNormal];
+      [self.btnSendVerifyCode setTitle:[NSString stringWithFormat:@"%@（%d）",INTERNATIONALSTRING(@"重新发送") ,self.hintTime] forState:UIControlStateNormal];
 }
 
 - (IBAction)registerUser:(id)sender {
     
     if (!_bAggre) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"请先阅读并同意用户许可" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"请先阅读并同意用户许可") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         return;
     }
     
     if (self.edtVerifyCode.text.length!=4) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"请输入正确的验证码" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"请输入正确的验证码") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         return;
     }
     
@@ -237,7 +237,7 @@
             //注册成功之后登录
             [self registerSuccessAndLogin];
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[NSString stringWithFormat:@"用户注册失败：%@",[resonseObj objectForKey:@"msg"]] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[NSString stringWithFormat:@"%@：%@", INTERNATIONALSTRING(@"用户注册失败"),[resonseObj objectForKey:@"msg"]] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
         
     }failure:^(id dataObj, NSError *error) {
@@ -275,15 +275,15 @@
                 }
                 
             }else{
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             }
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器好像有点忙，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"服务器好像有点忙，请稍后重试") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
         
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"登录失败：%@",[error description]);
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器可能罢工中，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"服务器好像有点忙，请稍后重试") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         
     } headers:nil];
 }
@@ -291,7 +291,7 @@
 - (IBAction)forgetPassword:(id)sender {
     
     if (self.edtVerifyCode.text.length!=4) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"请输入正确的验证码" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"请输入正确的验证码") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         return;
     }
     
@@ -301,10 +301,10 @@
     
     [SSNetworkRequest postRequest:[apiForgetPassword stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
-            [[[UIAlertView alloc] initWithTitle:@"注册提示" message:@"密码找回成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"密码找回成功") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             [self dismissViewControllerAnimated:YES completion:nil];
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[NSString stringWithFormat:@"密码找回失败：%@",[resonseObj objectForKey:@"msg"]] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[NSString stringWithFormat:@"%@：%@", INTERNATIONALSTRING(@"密码找回失败"),[resonseObj objectForKey:@"msg"]] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
         
     }failure:^(id dataObj, NSError *error) {

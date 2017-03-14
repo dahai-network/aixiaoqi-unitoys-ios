@@ -1,0 +1,12 @@
+
+/* Class = "UILabel"; text = "拒绝"; ObjectID = "0kd-UN-56M"; */
+"0kd-UN-56M.text" = "拒绝";
+
+/* Class = "UILabel"; text = "手机"; ObjectID = "HuX-vt-NXn"; */
+"HuX-vt-NXn.text" = "手机";
+
+/* Class = "UILabel"; text = "接听"; ObjectID = "ZKU-ab-J51"; */
+"ZKU-ab-J51.text" = "接听";
+
+/* Class = "UILabel"; text = "姓名"; ObjectID = "bVm-X2-EM3"; */
+"bVm-X2-EM3.text" = "姓名";

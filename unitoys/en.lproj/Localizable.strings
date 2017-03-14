@@ -1,0 +1,48 @@
+/*
+  Localizable.strings
+  unitoys
+
+  Created by 董杰 on 2017/3/14.
+  Copyright © 2017年 sumars. All rights reserved.
+*/
+"首页" = "Home";
+"拨打" = "Call";
+"通讯录" = "Contacts";
+"运动" = "Sport";
+"个人中心" = "Personal";
+"确定要退出登录吗？" = "Confirm to log out?";
+"确定" = "Confirm";
+"取消" = "Cancel";
+"当前版本" = "Current Version";
+"找回密码" = "Retrieve password";
+"系统提示" = "System prompt";
+"请输入手机号" = "Please enter the phone number";
+"已发送验证码，请查看并输入完成密码找回" = "Verification code has been sent, please input correct code to retrieve password";
+"已发送验证码，请查看并输入完整注册信息" = "Verification code has been sent, please input complete registration information";
+"重新发送" = "Resend";
+"请先阅读并同意用户许可" = "Read and agree with User Licence Agreement";
+"请输入正确的验证码" = "Please input correct verification code";
+"用户注册失败" = "Failed to register";
+"服务器好像有点忙，请稍后重试" = "Server is busy, please retry later";
+"密码找回成功" = "Retrieve password successfully";
+"密码找回失败" = "Failed to retrieve password";
+"加载失败" = "Load failed";
+"正在登录..." = "Logging...";
+"网络连接超时" = "Network connection timeout";
+"请输入正确的手机号" = "Please input correct phone number";
+"请输入正确的密码" = "Please input correct password";
+"登录失败" = "Login failed";
+"网络连接失败" = "Network connection failed";
+"爱小器卡" = "Unitoys’ Cloud Card";
+"未绑定" = "Not bound";
+"蓝牙未开" = "Bluetooth is off";
+"连接中" = "Connecting";
+"未连接" = "Disconnected";
+"未插卡" = "No Card";
+"无套餐" = "No Packages";
+"注册中" = "Registering";
+"注册失败" = "Failed to register";
+"信号强" = "High signal intensity";
+"绑定" = "Binding";
+
+

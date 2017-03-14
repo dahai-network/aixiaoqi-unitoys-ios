@@ -1,0 +1,78 @@
+
+/* Class = "UILabel"; text = "￥00元"; ObjectID = "3EJ-FH-KmL"; */
+"3EJ-FH-KmL.text" = "￥00元";
+
+/* Class = "UITableViewController"; title = "快捷设置"; ObjectID = "4A5-lv-Ub8"; */
+"4A5-lv-Ub8.title" = "Quick Setting";
+
+/* Class = "UILabel"; text = "出国前"; ObjectID = "5tt-17-gzk"; */
+"5tt-17-gzk.text" = "Before going abroad";
+
+/* Class = "UIPageViewController"; title = "回国后"; ObjectID = "7yS-2X-gUe"; */
+"7yS-2X-gUe.title" = "Return";
+
+/* Class = "UILabel"; text = "有效期：--天"; ObjectID = "8Om-Zf-V3e"; */
+"8Om-Zf-V3e.text" = "Expiry：--day";
+
+/* Class = "UILabel"; text = "连接手环"; ObjectID = "DnX-Iw-E46"; */
+"DnX-Iw-E46.text" = "Link bracelet";
+
+/* Class = "UILabel"; text = "1"; ObjectID = "E1y-Tn-qac"; */
+"E1y-Tn-qac.text" = "1";
+
+/* Class = "UIPageViewController"; title = "在境外"; ObjectID = "Hhm-Ym-7xX"; */
+"Hhm-Ym-7xX.title" = "Abroad";
+
+/* Class = "UILabel"; text = "流量：---MB"; ObjectID = "KM5-rq-Xdx"; */
+"KM5-rq-Xdx.text" = "Flow：---MB";
+
+/* Class = "UILabel"; text = "设备内电话卡"; ObjectID = "LHU-mq-qTU"; */
+"LHU-mq-qTU.text" = "Equipment within the phone card";
+
+/* Class = "UITableViewController"; title = "设备"; ObjectID = "LkK-iw-huv"; */
+"LkK-iw-huv.title" = "Equipment";
+
+/* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "Lwu-EN-SN8"; */
+"Lwu-EN-SN8.normalTitle" = "Stateless";
+
+/* Class = "UILabel"; text = "在境外"; ObjectID = "TJY-md-bLe"; */
+"TJY-md-bLe.text" = "Abroad";
+
+/* Class = "UIButton"; normalTitle = "解除绑定"; ObjectID = "VuM-1L-NWo"; */
+"VuM-1L-NWo.normalTitle" = "Unbound";
+
+/* Class = "UITableViewController"; title = "出国前"; ObjectID = "WXU-a7-F5R"; */
+"WXU-a7-F5R.title" = "Before going abroad";
+
+/* Class = "UILabel"; text = "蓝牙未连接，点击开启"; ObjectID = "ZAG-NH-6Nr"; */
+"ZAG-NH-6Nr.text" = "Bluetooth not connected, click open";
+
+/* Class = "UILabel"; text = "回国后"; ObjectID = "bSc-BO-GhS"; */
+"bSc-BO-GhS.text" = "Return";
+
+/* Class = "UIButton"; normalTitle = "打开手机APN设置"; ObjectID = "ckd-cy-k7L"; */
+"ckd-cy-k7L.normalTitle" = "Open the phone APN Settings";
+
+/* Class = "UILabel"; text = "打开系统的APN设置器，点击新建APN，然后在名称和APN行输入263，点击保存，最后启用该APN"; ObjectID = "eZA-2v-e3a"; */
+"eZA-2v-e3a.text" = "Turn on APN configurator in system settings, creat new APN, click 'Agree' and then click 'Install'.";
+
+/* Class = "UILabel"; text = "在APP的套餐超市，选择您需要前往的国家，购买流量套餐，然后激活"; ObjectID = "fz9-za-xrH"; */
+"fz9-za-xrH.text" = "nil";
+
+/* Class = "UILabel"; text = "2"; ObjectID = "qAP-JM-i5R"; */
+"qAP-JM-i5R.text" = "2";
+
+/* Class = "UILabel"; text = "查找手环"; ObjectID = "rLT-LT-s0U"; */
+"rLT-LT-s0U.text" = "Search my Wristband";
+
+/* Class = "UILabel"; text = "设备MAC地址"; ObjectID = "w9O-Ff-xvu"; */
+"w9O-Ff-xvu.text" = "Device‘s Mac Address";
+
+/* Class = "UILabel"; text = "设置APN"; ObjectID = "xK6-iL-XNz"; */
+"xK6-iL-XNz.text" = "Set up APN";
+
+/* Class = "UILabel"; text = "固件版本"; ObjectID = "ygV-Hr-O0B"; */
+"ygV-Hr-O0B.text" = "Hardware Version";
+
+/* Class = "UILabel"; text = "手环和手机内置的SIM卡交换位置。"; ObjectID = "yhJ-YM-Lao"; */
+"yhJ-YM-Lao.text" = "Exchange SIM cards ";

@@ -1,0 +1,12 @@
+
+/* Class = "UILabel"; text = "插电话卡"; ObjectID = "2VR-YY-mRj"; */
+"2VR-YY-mRj.text" = "插电话卡";
+
+/* Class = "UILabel"; text = "LabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabel"; ObjectID = "XGP-G3-4Gm"; */
+"XGP-G3-4Gm.text" = "LabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabelLabel";
+
+/* Class = "UILabel"; text = "①"; ObjectID = "js5-Op-yRg"; */
+"js5-Op-yRg.text" = "①";
+
+/* Class = "UIButton"; normalTitle = "打开APN设置"; ObjectID = "oCm-dp-3As"; */
+"oCm-dp-3As.normalTitle" = "打开APN设置";

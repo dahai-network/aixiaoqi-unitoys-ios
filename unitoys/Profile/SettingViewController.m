@@ -21,10 +21,10 @@
 }
 
 - (IBAction)logout:(id)sender {
-    
-    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:@"确定要退出登录吗？" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//    NSString *str = NSLocalizedString(@"确定要退出登录吗？", nil);
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:INTERNATIONALSTRING(@"确定要退出登录吗？") preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         //点击事件
         self.checkToken = YES;
         
@@ -97,7 +97,7 @@
                 [self.navigationController pushViewController:agreementViewController animated:YES];
             }
         } else if (indexPath.row==1) {
-            NSString *str = [NSString stringWithFormat:@"当前版本%@", self.versionNumberStr];
+            NSString *str = [NSString stringWithFormat:@"%@%@",INTERNATIONALSTRING(@"当前版本") , self.versionNumberStr];
             HUDNormal(str)
         }
     }

@@ -1,0 +1,6 @@
+
+/* Class = "UIButton"; normalTitle = "取消订单"; ObjectID = "YSo-Bg-YYW"; */
+"YSo-Bg-YYW.normalTitle" = "Cancel order";
+
+/* Class = "UIButton"; normalTitle = "立即激活"; ObjectID = "teI-Mm-2yb"; */
+"teI-Mm-2yb.normalTitle" = "Activat now";

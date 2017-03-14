@@ -14,20 +14,30 @@
 		0436C3651E1F90460033A8F1 /* CommunicatePackageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C3631E1F90460033A8F1 /* CommunicatePackageTableViewCell.m */; };
 		0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0436C3641E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib */; };
 		0436C36A1E1FA2D60033A8F1 /* CommunicateDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C3681E1FA2D50033A8F1 /* CommunicateDetailViewController.m */; };
-		0436C36B1E1FA2D60033A8F1 /* CommunicateDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0436C3691E1FA2D50033A8F1 /* CommunicateDetailViewController.xib */; };
 		0436C36F1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C36D1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.m */; };
 		0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0436C36E1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib */; };
 		0436F95A1E1E3DDC00A57E67 /* BGLogation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436F9571E1E3DDC00A57E67 /* BGLogation.m */; };
 		0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436F9591E1E3DDC00A57E67 /* BGTask.m */; };
 		043965C41E07DF9D00B67989 /* IsBoundingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043965C21E07DF9D00B67989 /* IsBoundingViewController.m */; };
-		043965C51E07DF9D00B67989 /* IsBoundingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043965C31E07DF9D00B67989 /* IsBoundingViewController.xib */; };
 		043965C91E07E18C00B67989 /* BindChargeCardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043965C71E07E18C00B67989 /* BindChargeCardViewController.m */; };
-		043965CA1E07E18C00B67989 /* BindChargeCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043965C81E07E18C00B67989 /* BindChargeCardViewController.xib */; };
 		043965CD1E07ED8100B67989 /* AddressBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 043965CC1E07ED8100B67989 /* AddressBookManager.m */; };
+		04440CEE1E77887000206877 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 04440CF01E77887000206877 /* InfoPlist.strings */; };
+		04440CF41E778A2E00206877 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 04440CF61E778A2E00206877 /* Localizable.strings */; };
+		04440CF81E77905500206877 /* Setting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04440CFA1E77905500206877 /* Setting.storyboard */; };
+		04440CFF1E77910F00206877 /* Package.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04440D011E77910F00206877 /* Package.storyboard */; };
+		04440D061E779AD500206877 /* Order.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04440D081E779AD500206877 /* Order.storyboard */; };
+		04440D0D1E779B5D00206877 /* Phone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04440D0F1E779B5D00206877 /* Phone.storyboard */; };
+		04440D141E779CF900206877 /* Device.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04440D161E779CF900206877 /* Device.storyboard */; };
+		04440D1B1E77BBF000206877 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 04440D1D1E77BBF000206877 /* Profile.storyboard */; };
+		04440D221E77C4C400206877 /* BindChargeCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04440D241E77C4C400206877 /* BindChargeCardViewController.xib */; };
+		04440D291E77C6BA00206877 /* ExplainDetailsChildController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04440D2B1E77C6BA00206877 /* ExplainDetailsChildController.xib */; };
+		04440D301E77C98F00206877 /* CallComingInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04440D321E77C98F00206877 /* CallComingInViewController.xib */; };
+		04440D371E77CE2800206877 /* CommunicateDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04440D391E77CE2800206877 /* CommunicateDetailViewController.xib */; };
+		04440D3E1E77CE9500206877 /* ActivateGiftCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04440D401E77CE9500206877 /* ActivateGiftCardViewController.xib */; };
+		04440D451E77CEE000206877 /* BindGiftBagCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04440D471E77CEE000206877 /* BindGiftBagCardViewController.xib */; };
+		04440D4C1E77D15900206877 /* IsBoundingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04440D4E1E77D15900206877 /* IsBoundingViewController.xib */; };
 		04472AB41E1CA5F60042CEE1 /* BindGiftBagCardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04472AB21E1CA5F60042CEE1 /* BindGiftBagCardViewController.m */; };
-		04472AB51E1CA5F60042CEE1 /* BindGiftBagCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04472AB31E1CA5F60042CEE1 /* BindGiftBagCardViewController.xib */; };
 		04472AB91E1CABD70042CEE1 /* ActivateGiftCardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04472AB71E1CABD70042CEE1 /* ActivateGiftCardViewController.m */; };
-		04472ABA1E1CABD70042CEE1 /* ActivateGiftCardViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04472AB81E1CABD70042CEE1 /* ActivateGiftCardViewController.xib */; };
 		04472ABE1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04472ABC1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m */; };
 		04472ABF1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04472ABD1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib */; };
 		04553F301E70EE980025CA34 /* ChooseDeviceTypeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04553F2E1E70EE980025CA34 /* ChooseDeviceTypeViewController.m */; };
@@ -46,7 +56,6 @@
 		04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */; };
 		04D90E8C1DF172FD00035C46 /* WaterIdentifyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */; };
 		04DA1B971E12958C00C50904 /* CallComingInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA1B951E12958C00C50904 /* CallComingInViewController.m */; };
-		04DA1B981E12958C00C50904 /* CallComingInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04DA1B961E12958C00C50904 /* CallComingInViewController.xib */; };
 		04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */ = {isa = PBXBuildFile; fileRef = 04DA1BF01E164A6400C50904 /* appleCallComing.wav */; };
 		04EAB8BC1E2787F6000D3D13 /* AlarmListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EAB8BA1E2787F6000D3D13 /* AlarmListViewController.m */; };
 		04EAB8BD1E2787F6000D3D13 /* AlarmListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EAB8BB1E2787F6000D3D13 /* AlarmListViewController.xib */; };
@@ -109,7 +118,6 @@
 		3CC3E0B31E63F75200A62F8C /* AbroadPackageExplainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0B21E63F75200A62F8C /* AbroadPackageExplainController.m */; };
 		3CC3E0B61E63FA1800A62F8C /* AbroadExplainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0B51E63FA1800A62F8C /* AbroadExplainController.m */; };
 		3CC3E0BD1E63FB9100A62F8C /* ExplainDetailsChildController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0BB1E63FB9100A62F8C /* ExplainDetailsChildController.m */; };
-		3CC3E0BE1E63FB9100A62F8C /* ExplainDetailsChildController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CC3E0BC1E63FB9100A62F8C /* ExplainDetailsChildController.xib */; };
 		3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */; };
 		3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */; };
 		3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */; };
@@ -143,12 +151,6 @@
 		74A91C661DF7E9A9002B4FCE /* headCollectionReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74A91C641DF7E9A9002B4FCE /* headCollectionReusableView.xib */; };
 		950072B51DBF58D000C16088 /* PhoneViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 950072B41DBF58D000C16088 /* PhoneViewController.mm */; };
 		950BC6171DBCE0640048CEAB /* OrderActivationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 950BC6161DBCE0640048CEAB /* OrderActivationViewController.m */; };
-		950E79181E02B714003AE0D5 /* Setting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950E79171E02B714003AE0D5 /* Setting.storyboard */; };
-		950E791A1E02BA3C003AE0D5 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950E79191E02BA3C003AE0D5 /* Profile.storyboard */; };
-		950E791C1E02BC48003AE0D5 /* Package.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950E791B1E02BC48003AE0D5 /* Package.storyboard */; };
-		950E791E1E02C0D8003AE0D5 /* Order.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950E791D1E02C0D8003AE0D5 /* Order.storyboard */; };
-		950E79201E02C981003AE0D5 /* Phone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950E791F1E02C981003AE0D5 /* Phone.storyboard */; };
-		950E79221E02CDB5003AE0D5 /* Device.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 950E79211E02CDB4003AE0D5 /* Device.storyboard */; };
 		9520BCB01DA1048100F0B286 /* RechargeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9520BCAF1DA1048100F0B286 /* RechargeViewController.m */; };
 		9524FAB31DB8E32C002032DF /* MessageSessionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9524FAB21DB8E32C002032DF /* MessageSessionCell.m */; };
 		952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 952AB0051DF8DA6F00C5A927 /* PhoneOperationPad.xib */; };
@@ -293,7 +295,6 @@
 		0436C3641E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunicatePackageTableViewCell.xib; sourceTree = "<group>"; };
 		0436C3671E1FA2D50033A8F1 /* CommunicateDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommunicateDetailViewController.h; sourceTree = "<group>"; };
 		0436C3681E1FA2D50033A8F1 /* CommunicateDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunicateDetailViewController.m; sourceTree = "<group>"; };
-		0436C3691E1FA2D50033A8F1 /* CommunicateDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunicateDetailViewController.xib; sourceTree = "<group>"; };
 		0436C36C1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommunicateDetailTableViewCell.h; sourceTree = "<group>"; };
 		0436C36D1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunicateDetailTableViewCell.m; sourceTree = "<group>"; };
 		0436C36E1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunicateDetailTableViewCell.xib; sourceTree = "<group>"; };
@@ -303,18 +304,61 @@
 		0436F9591E1E3DDC00A57E67 /* BGTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGTask.m; sourceTree = "<group>"; };
 		043965C11E07DF9D00B67989 /* IsBoundingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IsBoundingViewController.h; sourceTree = "<group>"; };
 		043965C21E07DF9D00B67989 /* IsBoundingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IsBoundingViewController.m; sourceTree = "<group>"; };
-		043965C31E07DF9D00B67989 /* IsBoundingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IsBoundingViewController.xib; sourceTree = "<group>"; };
 		043965C61E07E18C00B67989 /* BindChargeCardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BindChargeCardViewController.h; sourceTree = "<group>"; };
 		043965C71E07E18C00B67989 /* BindChargeCardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BindChargeCardViewController.m; sourceTree = "<group>"; };
-		043965C81E07E18C00B67989 /* BindChargeCardViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BindChargeCardViewController.xib; sourceTree = "<group>"; };
 		043965CB1E07ED8100B67989 /* AddressBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddressBookManager.h; sourceTree = "<group>"; };
 		043965CC1E07ED8100B67989 /* AddressBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddressBookManager.m; sourceTree = "<group>"; };
+		04440CE61E77858700206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		04440CE71E77858700206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		04440CE91E7785CA00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
+		04440CEB1E77864800206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		04440CEF1E77887000206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		04440CF11E77887B00206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		04440CF51E778A2E00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		04440CF71E778A3200206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		04440CF91E77905500206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Setting.storyboard; sourceTree = "<group>"; };
+		04440CFC1E77905900206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Setting.strings; sourceTree = "<group>"; };
+		04440CFE1E77905B00206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Setting.strings"; sourceTree = "<group>"; };
+		04440D001E77910F00206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Package.storyboard; sourceTree = "<group>"; };
+		04440D031E77911300206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Package.strings; sourceTree = "<group>"; };
+		04440D051E77911800206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Package.strings"; sourceTree = "<group>"; };
+		04440D071E779AD500206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Order.storyboard; sourceTree = "<group>"; };
+		04440D0A1E779ADA00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Order.strings; sourceTree = "<group>"; };
+		04440D0C1E779AE000206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Order.strings"; sourceTree = "<group>"; };
+		04440D0E1E779B5D00206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Phone.storyboard; sourceTree = "<group>"; };
+		04440D111E779B6000206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Phone.strings; sourceTree = "<group>"; };
+		04440D131E779B6300206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Phone.strings"; sourceTree = "<group>"; };
+		04440D151E779CF900206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Device.storyboard; sourceTree = "<group>"; };
+		04440D181E779D0000206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Device.strings; sourceTree = "<group>"; };
+		04440D1A1E779D0300206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Device.strings"; sourceTree = "<group>"; };
+		04440D1C1E77BBF000206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Profile.storyboard; sourceTree = "<group>"; };
+		04440D1F1E77BBF400206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Profile.strings; sourceTree = "<group>"; };
+		04440D211E77BBF700206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Profile.strings"; sourceTree = "<group>"; };
+		04440D231E77C4C400206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/BindChargeCardViewController.xib; sourceTree = "<group>"; };
+		04440D261E77C4C700206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/BindChargeCardViewController.strings; sourceTree = "<group>"; };
+		04440D281E77C4CC00206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/BindChargeCardViewController.strings"; sourceTree = "<group>"; };
+		04440D2A1E77C6BA00206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ExplainDetailsChildController.xib; sourceTree = "<group>"; };
+		04440D2D1E77C6BE00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ExplainDetailsChildController.strings; sourceTree = "<group>"; };
+		04440D2F1E77C6C100206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/ExplainDetailsChildController.strings"; sourceTree = "<group>"; };
+		04440D311E77C98F00206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CallComingInViewController.xib; sourceTree = "<group>"; };
+		04440D341E77C99100206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CallComingInViewController.strings; sourceTree = "<group>"; };
+		04440D361E77C99200206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CallComingInViewController.strings"; sourceTree = "<group>"; };
+		04440D381E77CE2800206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CommunicateDetailViewController.xib; sourceTree = "<group>"; };
+		04440D3B1E77CE2C00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CommunicateDetailViewController.strings; sourceTree = "<group>"; };
+		04440D3D1E77CE2E00206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CommunicateDetailViewController.strings"; sourceTree = "<group>"; };
+		04440D3F1E77CE9500206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ActivateGiftCardViewController.xib; sourceTree = "<group>"; };
+		04440D421E77CE9C00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ActivateGiftCardViewController.strings; sourceTree = "<group>"; };
+		04440D441E77CE9D00206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/ActivateGiftCardViewController.strings"; sourceTree = "<group>"; };
+		04440D461E77CEE000206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/BindGiftBagCardViewController.xib; sourceTree = "<group>"; };
+		04440D491E77CEE500206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/BindGiftBagCardViewController.strings; sourceTree = "<group>"; };
+		04440D4B1E77CEE700206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/BindGiftBagCardViewController.strings"; sourceTree = "<group>"; };
+		04440D4D1E77D15900206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IsBoundingViewController.xib; sourceTree = "<group>"; };
+		04440D501E77D15D00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/IsBoundingViewController.strings; sourceTree = "<group>"; };
+		04440D521E77D15E00206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/IsBoundingViewController.strings"; sourceTree = "<group>"; };
 		04472AB11E1CA5F60042CEE1 /* BindGiftBagCardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BindGiftBagCardViewController.h; sourceTree = "<group>"; };
 		04472AB21E1CA5F60042CEE1 /* BindGiftBagCardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BindGiftBagCardViewController.m; sourceTree = "<group>"; };
-		04472AB31E1CA5F60042CEE1 /* BindGiftBagCardViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BindGiftBagCardViewController.xib; sourceTree = "<group>"; };
 		04472AB61E1CABD70042CEE1 /* ActivateGiftCardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivateGiftCardViewController.h; sourceTree = "<group>"; };
 		04472AB71E1CABD70042CEE1 /* ActivateGiftCardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivateGiftCardViewController.m; sourceTree = "<group>"; };
-		04472AB81E1CABD70042CEE1 /* ActivateGiftCardViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivateGiftCardViewController.xib; sourceTree = "<group>"; };
 		04472ABB1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivateGiftCardTableViewCell.h; sourceTree = "<group>"; };
 		04472ABC1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivateGiftCardTableViewCell.m; sourceTree = "<group>"; };
 		04472ABD1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivateGiftCardTableViewCell.xib; sourceTree = "<group>"; };
@@ -343,7 +387,6 @@
 		04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaterIdentifyView.m; sourceTree = "<group>"; };
 		04DA1B941E12958C00C50904 /* CallComingInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallComingInViewController.h; sourceTree = "<group>"; };
 		04DA1B951E12958C00C50904 /* CallComingInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallComingInViewController.m; sourceTree = "<group>"; };
-		04DA1B961E12958C00C50904 /* CallComingInViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CallComingInViewController.xib; sourceTree = "<group>"; };
 		04DA1BF01E164A6400C50904 /* appleCallComing.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = appleCallComing.wav; sourceTree = "<group>"; };
 		04EAB8B91E2787F6000D3D13 /* AlarmListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlarmListViewController.h; sourceTree = "<group>"; };
 		04EAB8BA1E2787F6000D3D13 /* AlarmListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlarmListViewController.m; sourceTree = "<group>"; };
@@ -450,7 +493,6 @@
 		3CC3E0B51E63FA1800A62F8C /* AbroadExplainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadExplainController.m; sourceTree = "<group>"; };
 		3CC3E0BA1E63FB9100A62F8C /* ExplainDetailsChildController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExplainDetailsChildController.h; sourceTree = "<group>"; };
 		3CC3E0BB1E63FB9100A62F8C /* ExplainDetailsChildController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExplainDetailsChildController.m; sourceTree = "<group>"; };
-		3CC3E0BC1E63FB9100A62F8C /* ExplainDetailsChildController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExplainDetailsChildController.xib; sourceTree = "<group>"; };
 		3CC3E0CD1E64346700A62F8C /* AbroadPackageDescView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageDescView.h; sourceTree = "<group>"; };
 		3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadPackageDescView.m; sourceTree = "<group>"; };
 		3CCA72CE1E65458900931B20 /* AbroadPackageExplainCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageExplainCell.h; sourceTree = "<group>"; };
@@ -513,12 +555,6 @@
 		950072B41DBF58D000C16088 /* PhoneViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PhoneViewController.mm; sourceTree = "<group>"; };
 		950BC6151DBCE0640048CEAB /* OrderActivationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderActivationViewController.h; sourceTree = "<group>"; };
 		950BC6161DBCE0640048CEAB /* OrderActivationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderActivationViewController.m; sourceTree = "<group>"; };
-		950E79171E02B714003AE0D5 /* Setting.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Setting.storyboard; sourceTree = "<group>"; };
-		950E79191E02BA3C003AE0D5 /* Profile.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
-		950E791B1E02BC48003AE0D5 /* Package.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Package.storyboard; sourceTree = "<group>"; };
-		950E791D1E02C0D8003AE0D5 /* Order.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Order.storyboard; sourceTree = "<group>"; };
-		950E791F1E02C981003AE0D5 /* Phone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Phone.storyboard; sourceTree = "<group>"; };
-		950E79211E02CDB4003AE0D5 /* Device.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Device.storyboard; sourceTree = "<group>"; };
 		9520BCAE1DA1048100F0B286 /* RechargeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RechargeViewController.h; sourceTree = "<group>"; };
 		9520BCAF1DA1048100F0B286 /* RechargeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RechargeViewController.m; sourceTree = "<group>"; };
 		9524FAB11DB8E32C002032DF /* MessageSessionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageSessionCell.h; sourceTree = "<group>"; };
@@ -1365,7 +1401,7 @@
 				95B099211DC1ED1600743877 /* CallingViewController.m */,
 				04DA1B941E12958C00C50904 /* CallComingInViewController.h */,
 				04DA1B951E12958C00C50904 /* CallComingInViewController.m */,
-				04DA1B961E12958C00C50904 /* CallComingInViewController.xib */,
+				04440D321E77C98F00206877 /* CallComingInViewController.xib */,
 				3C8CFA661E5597D10035A460 /* UCallPhonePadView.h */,
 				3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */,
 				3C8CFA691E55988B0035A460 /* UCallPhoneButton.h */,
@@ -1396,10 +1432,10 @@
 				953CF9CF1DCCF16A0001CE8E /* PaySuccessViewController.m */,
 				04472AB11E1CA5F60042CEE1 /* BindGiftBagCardViewController.h */,
 				04472AB21E1CA5F60042CEE1 /* BindGiftBagCardViewController.m */,
-				04472AB31E1CA5F60042CEE1 /* BindGiftBagCardViewController.xib */,
+				04440D471E77CEE000206877 /* BindGiftBagCardViewController.xib */,
 				04472AB61E1CABD70042CEE1 /* ActivateGiftCardViewController.h */,
 				04472AB71E1CABD70042CEE1 /* ActivateGiftCardViewController.m */,
-				04472AB81E1CABD70042CEE1 /* ActivateGiftCardViewController.xib */,
+				04440D401E77CE9500206877 /* ActivateGiftCardViewController.xib */,
 				04472ABB1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.h */,
 				04472ABC1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m */,
 				04472ABD1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib */,
@@ -1411,7 +1447,7 @@
 				0436C3641E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib */,
 				0436C3671E1FA2D50033A8F1 /* CommunicateDetailViewController.h */,
 				0436C3681E1FA2D50033A8F1 /* CommunicateDetailViewController.m */,
-				0436C3691E1FA2D50033A8F1 /* CommunicateDetailViewController.xib */,
+				04440D391E77CE2800206877 /* CommunicateDetailViewController.xib */,
 				0436C36C1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.h */,
 				0436C36D1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.m */,
 				0436C36E1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib */,
@@ -1424,7 +1460,7 @@
 			children = (
 				043965C61E07E18C00B67989 /* BindChargeCardViewController.h */,
 				043965C71E07E18C00B67989 /* BindChargeCardViewController.m */,
-				043965C81E07E18C00B67989 /* BindChargeCardViewController.xib */,
+				04440D241E77C4C400206877 /* BindChargeCardViewController.xib */,
 				955CCC3A1D90D55C00BC8110 /* AboutViewController.h */,
 				955CCC3B1D90D55C00BC8110 /* AboutViewController.m */,
 				95938D2C1D92B7FC008A0A21 /* SettingViewController.h */,
@@ -1479,7 +1515,7 @@
 				3CC3E0B51E63FA1800A62F8C /* AbroadExplainController.m */,
 				3CC3E0BA1E63FB9100A62F8C /* ExplainDetailsChildController.h */,
 				3CC3E0BB1E63FB9100A62F8C /* ExplainDetailsChildController.m */,
-				3CC3E0BC1E63FB9100A62F8C /* ExplainDetailsChildController.xib */,
+				04440D2B1E77C6BA00206877 /* ExplainDetailsChildController.xib */,
 				3CC3E0CD1E64346700A62F8C /* AbroadPackageDescView.h */,
 				3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */,
 			);
@@ -1697,7 +1733,7 @@
 				04553F371E73FB840025CA34 /* scan.gif */,
 				043965C11E07DF9D00B67989 /* IsBoundingViewController.h */,
 				043965C21E07DF9D00B67989 /* IsBoundingViewController.m */,
-				043965C31E07DF9D00B67989 /* IsBoundingViewController.xib */,
+				04440D4E1E77D15900206877 /* IsBoundingViewController.xib */,
 				04D90E8A1DF172FD00035C46 /* WaterIdentifyView.h */,
 				04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */,
 				95E918541DDC7AA8005DABC0 /* BindDeviceViewController.h */,
@@ -1796,16 +1832,18 @@
 				95334A601D8A83DD002C1CFB /* BaseTableController.h */,
 				95334A611D8A83DD002C1CFB /* BaseTableController.m */,
 				95334A631D8A83FF002C1CFB /* global.h */,
-				950E79191E02BA3C003AE0D5 /* Profile.storyboard */,
-				950E79211E02CDB4003AE0D5 /* Device.storyboard */,
-				950E791F1E02C981003AE0D5 /* Phone.storyboard */,
-				950E791D1E02C0D8003AE0D5 /* Order.storyboard */,
-				950E791B1E02BC48003AE0D5 /* Package.storyboard */,
-				950E79171E02B714003AE0D5 /* Setting.storyboard */,
+				04440D1D1E77BBF000206877 /* Profile.storyboard */,
+				04440D161E779CF900206877 /* Device.storyboard */,
+				04440D0F1E779B5D00206877 /* Phone.storyboard */,
+				04440D081E779AD500206877 /* Order.storyboard */,
+				04440D011E77910F00206877 /* Package.storyboard */,
+				04440CFA1E77905500206877 /* Setting.storyboard */,
 				95F337201D853256000B5461 /* Main.storyboard */,
 				95F337231D853256000B5461 /* Assets.xcassets */,
 				95F337251D853256000B5461 /* LaunchScreen.storyboard */,
 				95F337281D853256000B5461 /* Info.plist */,
+				04440CF01E77887000206877 /* InfoPlist.strings */,
+				04440CF61E778A2E00206877 /* Localizable.strings */,
 				95F337141D853256000B5461 /* Supporting Files */,
 				952B2B061DC22D75006A7C69 /* messages.plist */,
 			);
@@ -1885,6 +1923,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 95F337081D853255000B5461;
 			productRefGroup = 95F337121D853256000B5461 /* Products */;
@@ -1901,34 +1940,35 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				950E791E1E02C0D8003AE0D5 /* Order.storyboard in Resources */,
+				04440D061E779AD500206877 /* Order.storyboard in Resources */,
 				04553F311E70EE980025CA34 /* ChooseDeviceTypeViewController.xib in Resources */,
 				3CC3E0A81E63C22F00A62F8C /* CustomOrderCell.xib in Resources */,
 				955CCC311D90075D00BC8110 /* https.cer in Resources */,
-				950E79201E02C981003AE0D5 /* Phone.storyboard in Resources */,
+				04440D0D1E779B5D00206877 /* Phone.storyboard in Resources */,
 				04F727B51E641CE4002EB54C /* Debug.xcconfig in Resources */,
 				04EAB8BD1E2787F6000D3D13 /* AlarmListViewController.xib in Resources */,
 				0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */,
 				04F727DB1E642BED002EB54C /* CertificateFiles in Resources */,
+				04440CEE1E77887000206877 /* InfoPlist.strings in Resources */,
 				0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */,
 				74A91C661DF7E9A9002B4FCE /* headCollectionReusableView.xib in Resources */,
 				04472ABF1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib in Resources */,
-				043965C51E07DF9D00B67989 /* IsBoundingViewController.xib in Resources */,
+				04440D4C1E77D15900206877 /* IsBoundingViewController.xib in Resources */,
 				9562EE9B1DD31B7B00E10C98 /* AlipaySDK.bundle in Resources */,
-				0436C36B1E1FA2D60033A8F1 /* CommunicateDetailViewController.xib in Resources */,
-				3CC3E0BE1E63FB9100A62F8C /* ExplainDetailsChildController.xib in Resources */,
+				04440D371E77CE2800206877 /* CommunicateDetailViewController.xib in Resources */,
+				04440D291E77C6BA00206877 /* ExplainDetailsChildController.xib in Resources */,
 				3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */,
-				950E791C1E02BC48003AE0D5 /* Package.storyboard in Resources */,
+				04440CFF1E77910F00206877 /* Package.storyboard in Resources */,
 				3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */,
 				740FD3961E287F9E009413F1 /* simcom in Resources */,
-				04472ABA1E1CABD70042CEE1 /* ActivateGiftCardViewController.xib in Resources */,
+				04440D3E1E77CE9500206877 /* ActivateGiftCardViewController.xib in Resources */,
 				04F727A11E641CE4002EB54C /* README.txt in Resources */,
 				952B2B071DC22D75006A7C69 /* messages.plist in Resources */,
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
 				04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
 				3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */,
-				950E79221E02CDB5003AE0D5 /* Device.storyboard in Resources */,
+				04440D141E779CF900206877 /* Device.storyboard in Resources */,
 				3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */,
 				952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */,
 				3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */,
@@ -1939,20 +1979,21 @@
 				95C575FD1DA77C1000F459DF /* MessageRecordCell.xib in Resources */,
 				04F727B71E641CE4002EB54C /* Release.xcconfig in Resources */,
 				3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */,
-				950E79181E02B714003AE0D5 /* Setting.storyboard in Resources */,
+				04440CF81E77905500206877 /* Setting.storyboard in Resources */,
 				95F337271D853256000B5461 /* LaunchScreen.storyboard in Resources */,
 				04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */,
 				95C575F51DA77AB200F459DF /* PhoneRecordCell.xib in Resources */,
-				950E791A1E02BA3C003AE0D5 /* Profile.storyboard in Resources */,
+				04440D1B1E77BBF000206877 /* Profile.storyboard in Resources */,
 				04553F381E73FB840025CA34 /* scan.gif in Resources */,
-				04DA1B981E12958C00C50904 /* CallComingInViewController.xib in Resources */,
-				04472AB51E1CA5F60042CEE1 /* BindGiftBagCardViewController.xib in Resources */,
+				04440CF41E778A2E00206877 /* Localizable.strings in Resources */,
+				04440D301E77C98F00206877 /* CallComingInViewController.xib in Resources */,
+				04440D451E77CEE000206877 /* BindGiftBagCardViewController.xib in Resources */,
 				0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */,
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
 				3C52B2031E5EF87A001E67C4 /* number_location.zip in Resources */,
 				95F337221D853256000B5461 /* Main.storyboard in Resources */,
 				04553F361E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib in Resources */,
-				043965CA1E07E18C00B67989 /* BindChargeCardViewController.xib in Resources */,
+				04440D221E77C4C400206877 /* BindChargeCardViewController.xib in Resources */,
 				04F727B31E641CE4002EB54C /* index.html in Resources */,
 				04F727B41E641CE4002EB54C /* Base.xcconfig in Resources */,
 			);
@@ -2204,10 +2245,160 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		04440CF01E77887000206877 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440CEF1E77887000206877 /* en */,
+				04440CF11E77887B00206877 /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		04440CF61E778A2E00206877 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440CF51E778A2E00206877 /* en */,
+				04440CF71E778A3200206877 /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		04440CFA1E77905500206877 /* Setting.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440CF91E77905500206877 /* Base */,
+				04440CFC1E77905900206877 /* en */,
+				04440CFE1E77905B00206877 /* zh-Hans */,
+			);
+			name = Setting.storyboard;
+			sourceTree = "<group>";
+		};
+		04440D011E77910F00206877 /* Package.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D001E77910F00206877 /* Base */,
+				04440D031E77911300206877 /* en */,
+				04440D051E77911800206877 /* zh-Hans */,
+			);
+			name = Package.storyboard;
+			sourceTree = "<group>";
+		};
+		04440D081E779AD500206877 /* Order.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D071E779AD500206877 /* Base */,
+				04440D0A1E779ADA00206877 /* en */,
+				04440D0C1E779AE000206877 /* zh-Hans */,
+			);
+			name = Order.storyboard;
+			sourceTree = "<group>";
+		};
+		04440D0F1E779B5D00206877 /* Phone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D0E1E779B5D00206877 /* Base */,
+				04440D111E779B6000206877 /* en */,
+				04440D131E779B6300206877 /* zh-Hans */,
+			);
+			name = Phone.storyboard;
+			sourceTree = "<group>";
+		};
+		04440D161E779CF900206877 /* Device.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D151E779CF900206877 /* Base */,
+				04440D181E779D0000206877 /* en */,
+				04440D1A1E779D0300206877 /* zh-Hans */,
+			);
+			name = Device.storyboard;
+			sourceTree = "<group>";
+		};
+		04440D1D1E77BBF000206877 /* Profile.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D1C1E77BBF000206877 /* Base */,
+				04440D1F1E77BBF400206877 /* en */,
+				04440D211E77BBF700206877 /* zh-Hans */,
+			);
+			name = Profile.storyboard;
+			sourceTree = "<group>";
+		};
+		04440D241E77C4C400206877 /* BindChargeCardViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D231E77C4C400206877 /* Base */,
+				04440D261E77C4C700206877 /* en */,
+				04440D281E77C4CC00206877 /* zh-Hans */,
+			);
+			name = BindChargeCardViewController.xib;
+			sourceTree = "<group>";
+		};
+		04440D2B1E77C6BA00206877 /* ExplainDetailsChildController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D2A1E77C6BA00206877 /* Base */,
+				04440D2D1E77C6BE00206877 /* en */,
+				04440D2F1E77C6C100206877 /* zh-Hans */,
+			);
+			name = ExplainDetailsChildController.xib;
+			sourceTree = "<group>";
+		};
+		04440D321E77C98F00206877 /* CallComingInViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D311E77C98F00206877 /* Base */,
+				04440D341E77C99100206877 /* en */,
+				04440D361E77C99200206877 /* zh-Hans */,
+			);
+			name = CallComingInViewController.xib;
+			sourceTree = "<group>";
+		};
+		04440D391E77CE2800206877 /* CommunicateDetailViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D381E77CE2800206877 /* Base */,
+				04440D3B1E77CE2C00206877 /* en */,
+				04440D3D1E77CE2E00206877 /* zh-Hans */,
+			);
+			name = CommunicateDetailViewController.xib;
+			sourceTree = "<group>";
+		};
+		04440D401E77CE9500206877 /* ActivateGiftCardViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D3F1E77CE9500206877 /* Base */,
+				04440D421E77CE9C00206877 /* en */,
+				04440D441E77CE9D00206877 /* zh-Hans */,
+			);
+			name = ActivateGiftCardViewController.xib;
+			sourceTree = "<group>";
+		};
+		04440D471E77CEE000206877 /* BindGiftBagCardViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D461E77CEE000206877 /* Base */,
+				04440D491E77CEE500206877 /* en */,
+				04440D4B1E77CEE700206877 /* zh-Hans */,
+			);
+			name = BindGiftBagCardViewController.xib;
+			sourceTree = "<group>";
+		};
+		04440D4E1E77D15900206877 /* IsBoundingViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04440D4D1E77D15900206877 /* Base */,
+				04440D501E77D15D00206877 /* en */,
+				04440D521E77D15E00206877 /* zh-Hans */,
+			);
+			name = IsBoundingViewController.xib;
+			sourceTree = "<group>";
+		};
 		95F337201D853256000B5461 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				95F337211D853256000B5461 /* Base */,
+				04440CE61E77858700206877 /* zh-Hans */,
+				04440CE91E7785CA00206877 /* en */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -2216,6 +2407,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				95F337261D853256000B5461 /* Base */,
+				04440CE71E77858700206877 /* zh-Hans */,
+				04440CEB1E77864800206877 /* en */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -2227,6 +2420,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2272,6 +2466,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2344,8 +2539,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.aixiaoqi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3b7df60a-60b6-4b21-84e0-7aa003c55747";
-				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170213;
+				PROVISIONING_PROFILE = "1d2df3bd-70af-435d-97ad-27d6c978fd89";
+				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170314;
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
 			};
@@ -2402,8 +2597,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.aixiaoqi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "3b7df60a-60b6-4b21-84e0-7aa003c55747";
-				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170213;
+				PROVISIONING_PROFILE = "1d2df3bd-70af-435d-97ad-27d6c978fd89";
+				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170314;
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
 			};

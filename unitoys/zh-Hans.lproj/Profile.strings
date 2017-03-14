@@ -1,0 +1,87 @@
+
+/* Class = "UITableViewController"; title = "余额明细"; ObjectID = "5LC-aJ-5s3"; */
+"5LC-aJ-5s3.title" = "余额明细";
+
+/* Class = "UILabel"; text = "性别"; ObjectID = "5aX-3r-738"; */
+"5aX-3r-738.text" = "性别";
+
+/* Class = "UIButton"; normalTitle = "20"; ObjectID = "5te-7S-HKH"; */
+"5te-7S-HKH.normalTitle" = "20";
+
+/* Class = "UILabel"; text = "2016-10-10"; ObjectID = "7LI-lo-irn"; */
+"7LI-lo-irn.text" = "2016-10-10";
+
+/* Class = "UILabel"; text = "修改头像"; ObjectID = "HJ0-eX-cWg"; */
+"HJ0-eX-cWg.text" = "修改头像";
+
+/* Class = "UILabel"; text = "年龄"; ObjectID = "I8B-YH-9fH"; */
+"I8B-YH-9fH.text" = "年龄";
+
+/* Class = "UILabel"; text = "支付宝"; ObjectID = "KC6-O3-uh2"; */
+"KC6-O3-uh2.text" = "支付宝";
+
+/* Class = "UILabel"; text = "运动目标"; ObjectID = "M8e-n1-7Q5"; */
+"M8e-n1-7Q5.text" = "运动目标";
+
+/* Class = "UILabel"; text = "类型"; ObjectID = "PlH-PP-hqw"; */
+"PlH-PP-hqw.text" = "类型";
+
+/* Class = "UILabel"; text = "身高"; ObjectID = "QJC-MD-oKH"; */
+"QJC-MD-oKH.text" = "身高";
+
+/* Class = "UITextField"; placeholder = "昵称"; ObjectID = "Ty6-7I-26W"; */
+"Ty6-7I-26W.placeholder" = "昵称";
+
+/* Class = "UILabel"; text = "体重"; ObjectID = "U86-gF-Dlh"; */
+"U86-gF-Dlh.text" = "体重";
+
+/* Class = "UILabel"; text = "选择充值金额（元）"; ObjectID = "UqS-vK-hwO"; */
+"UqS-vK-hwO.text" = "选择充值金额（元）";
+
+/* Class = "UIButton"; normalTitle = "50"; ObjectID = "Wj0-Lc-0xB"; */
+"Wj0-Lc-0xB.normalTitle" = "50";
+
+/* Class = "UITableViewController"; title = "个人信息"; ObjectID = "XXk-PJ-W3X"; */
+"XXk-PJ-W3X.title" = "个人信息";
+
+/* Class = "UILabel"; text = "推荐安装微信5.0版本以上的用户使用"; ObjectID = "aLI-9S-RSL"; */
+"aLI-9S-RSL.text" = "推荐安装微信5.0版本以上的用户使用";
+
+/* Class = "UILabel"; text = "支付方式"; ObjectID = "adD-Wl-34H"; */
+"adD-Wl-34H.text" = "支付方式";
+
+/* Class = "UILabel"; text = "微信"; ObjectID = "cnu-VW-UVp"; */
+"cnu-VW-UVp.text" = "微信";
+
+/* Class = "UIButton"; normalTitle = "100"; ObjectID = "dCG-FE-gxm"; */
+"dCG-FE-gxm.normalTitle" = "100";
+
+/* Class = "UIButton"; normalTitle = "500"; ObjectID = "dZR-Zy-PyM"; */
+"dZR-Zy-PyM.normalTitle" = "500";
+
+/* Class = "UILabel"; text = "BMI"; ObjectID = "egM-0e-loy"; */
+"egM-0e-loy.text" = "BMI";
+
+/* Class = "UILabel"; text = "姓名"; ObjectID = "fBV-sD-nAy"; */
+"fBV-sD-nAy.text" = "姓名";
+
+/* Class = "UIButton"; normalTitle = "下一步"; ObjectID = "l1Z-il-BET"; */
+"l1Z-il-BET.normalTitle" = "下一步";
+
+/* Class = "UITextField"; placeholder = "自定义金额"; ObjectID = "qoF-c8-4EU"; */
+"qoF-c8-4EU.placeholder" = "自定义金额";
+
+/* Class = "UIButton"; normalTitle = "300"; ObjectID = "rEo-P3-fio"; */
+"rEo-P3-fio.normalTitle" = "300";
+
+/* Class = "UIViewController"; title = "名字"; ObjectID = "rTM-C2-9X9"; */
+"rTM-C2-9X9.title" = "名字";
+
+/* Class = "UILabel"; text = "推荐有支付宝账户的用户使用"; ObjectID = "u4Y-gI-6rt"; */
+"u4Y-gI-6rt.text" = "推荐有支付宝账户的用户使用";
+
+/* Class = "UITableViewController"; title = "充值"; ObjectID = "whq-Tu-UTv"; */
+"whq-Tu-UTv.title" = "充值";
+
+/* Class = "UILabel"; text = "￥0.00"; ObjectID = "zTv-2E-GWU"; */
+"zTv-2E-GWU.text" = "￥0.00";

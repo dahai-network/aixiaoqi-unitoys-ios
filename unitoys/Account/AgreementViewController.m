@@ -58,7 +58,7 @@
     [act stopAnimating];
     UIView *view = [self.view viewWithTag:108];
     [view removeFromSuperview];
-    [self showAlertWithMessage:@"加载失败"];
+    [self showAlertWithMessage:INTERNATIONALSTRING(@"加载失败")];
     return;
 }
 
@@ -73,7 +73,7 @@
 
 - (void)showAlertWithMessage:(NSString *)message {
     UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
     }];
     [alertVC addAction:certailAction];
     [self presentViewController:alertVC animated:YES completion:nil];

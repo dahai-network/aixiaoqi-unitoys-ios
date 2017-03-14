@@ -1,0 +1,267 @@
+
+/* Class = "UIButton"; normalTitle = "我已阅读"; ObjectID = "0ZQ-dh-vcp"; */
+"0ZQ-dh-vcp.normalTitle" = "我已阅读";
+
+/* Class = "UILabel"; text = "当日步数"; ObjectID = "1ui-Ky-fG5"; */
+"1ui-Ky-fG5.text" = "当日步数";
+
+/* Class = "UILabel"; text = "暂无运动数据"; ObjectID = "2aq-tK-RWC"; */
+"2aq-tK-RWC.text" = "暂无运动数据";
+
+/* Class = "UIButton"; normalTitle = "注册"; ObjectID = "2y9-0r-E0g"; */
+"2y9-0r-E0g.normalTitle" = "注册";
+
+/* Class = "UIButton"; normalTitle = "发送验证码"; ObjectID = "3DP-zF-yJH"; */
+"3DP-zF-yJH.normalTitle" = "发送验证码";
+
+/* Class = "UILabel"; text = "有效期：--天"; ObjectID = "3b8-8D-gTu"; */
+"3b8-8D-gTu.text" = "有效期：--天";
+
+/* Class = "UILabel"; text = "公里"; ObjectID = "4kG-XZ-lAb"; */
+"4kG-XZ-lAb.text" = "公里";
+
+/* Class = "UILabel"; text = "有效期：--天"; ObjectID = "59G-2x-geX"; */
+"59G-2x-geX.text" = "有效期：--天";
+
+/* Class = "UILabel"; text = "累计/天"; ObjectID = "5R0-Xf-MV3"; */
+"5R0-Xf-MV3.text" = "累计/天";
+
+/* Class = "UILabel"; text = "13888888888"; ObjectID = "5eF-a5-nhX"; */
+"5eF-a5-nhX.text" = "13888888888";
+
+/* Class = "UILabel"; text = "来电提醒"; ObjectID = "6Xi-s8-IZn"; */
+"6Xi-s8-IZn.text" = "来电提醒";
+
+/* Class = "UILabel"; text = "QQ消息提醒"; ObjectID = "6mS-Z9-4kH"; */
+"6mS-Z9-4kH.text" = "QQ消息提醒";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "6mk-8J-oFN"; */
+"6mk-8J-oFN.text" = "0";
+
+/* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "7Qc-qp-sgp"; */
+"7Qc-qp-sgp.normalTitle" = "无状态";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "7gi-iV-Iec"; */
+"7gi-iV-Iec.text" = "0";
+
+/* Class = "UILabel"; text = "距离/公里"; ObjectID = "8BE-kN-omM"; */
+"8BE-kN-omM.text" = "距离/公里";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "9Ft-9M-ixF"; */
+"9Ft-9M-ixF.text" = "0";
+
+/* Class = "UIButton"; normalTitle = "《用户许可及使用协议》"; ObjectID = "A2s-cu-8fU"; */
+"A2s-cu-8fU.normalTitle" = "《用户许可及使用协议》";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "Aaa-Vd-8cf"; */
+"Aaa-Vd-8cf.text" = "0";
+
+/* Class = "UINavigationItem"; title = "注册"; ObjectID = "AcE-tB-633"; */
+"AcE-tB-633.title" = "注册";
+
+/* Class = "UINavigationController"; title = "我"; ObjectID = "Asa-PC-QhR"; */
+"Asa-PC-QhR.title" = "我";
+
+/* Class = "UINavigationItem"; title = "我"; ObjectID = "C5B-0N-FGx"; */
+"C5B-0N-FGx.title" = "我";
+
+/* Class = "UIButton"; normalTitle = "11月11"; ObjectID = "DOA-nY-aqS"; */
+"DOA-nY-aqS.normalTitle" = "11月11";
+
+/* Class = "UINavigationController"; title = "首页"; ObjectID = "DbG-xP-2CW"; */
+"DbG-xP-2CW.title" = "首页";
+
+/* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "Ehm-fa-WTq"; */
+"Ehm-fa-WTq.normalTitle" = "无状态";
+
+/* Class = "UILabel"; text = "步"; ObjectID = "FIg-2N-vBq"; */
+"FIg-2N-vBq.text" = "步";
+
+/* Class = "UISegmentedControl"; HXY-4h-27d.segmentTitles[0] = "拨打"; ObjectID = "HXY-4h-27d"; */
+"HXY-4h-27d.segmentTitles[0]" = "拨打";
+
+/* Class = "UISegmentedControl"; HXY-4h-27d.segmentTitles[1] = "短信"; ObjectID = "HXY-4h-27d"; */
+"HXY-4h-27d.segmentTitles[1]" = "短信";
+
+/* Class = "UILabel"; text = ">"; ObjectID = "Hwv-72-5FX"; */
+"Hwv-72-5FX.text" = ">";
+
+/* Class = "UILabel"; text = "消耗/千卡"; ObjectID = "I1E-Y7-lMD"; */
+"I1E-Y7-lMD.text" = "消耗/千卡";
+
+/* Class = "UILabel"; text = "已购套餐"; ObjectID = "Icg-WE-vyi"; */
+"Icg-WE-vyi.text" = "已购套餐";
+
+/* Class = "UILabel"; text = "手环闹钟"; ObjectID = "JAv-Nd-PC8"; */
+"JAv-Nd-PC8.text" = "手环闹钟";
+
+/* Class = "UITabBarItem"; title = "通讯录"; ObjectID = "KAi-Bz-db3"; */
+"KAi-Bz-db3.title" = "通讯录";
+
+/* Class = "UILabel"; text = "总共步行/步"; ObjectID = "LhS-ro-ryz"; */
+"LhS-ro-ryz.text" = "总共步行/步";
+
+/* Class = "UILabel"; text = "微信消息提醒"; ObjectID = "Lq8-GF-cl6"; */
+"Lq8-GF-cl6.text" = "微信消息提醒";
+
+/* Class = "UILabel"; text = "流量：---MB"; ObjectID = "NDD-fu-Ty1"; */
+"NDD-fu-Ty1.text" = "流量：---MB";
+
+/* Class = "UILabel"; text = "累计/天"; ObjectID = "Opx-89-Su7"; */
+"Opx-89-Su7.text" = "累计/天";
+
+/* Class = "UILabel"; text = "千卡"; ObjectID = "PbG-MC-gNs"; */
+"PbG-MC-gNs.text" = "千卡";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "QdB-9f-EXC"; */
+"QdB-9f-EXC.text" = "0";
+
+/* Class = "UILabel"; text = "热门流量套餐"; ObjectID = "R5T-eh-pqI"; */
+"R5T-eh-pqI.text" = "热门流量套餐";
+
+/* Class = "UILabel"; text = "有效期：--天"; ObjectID = "TCy-Xb-7Us"; */
+"TCy-Xb-7Us.text" = "有效期：--天";
+
+/* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "Tl9-4J-PAS"; */
+"Tl9-4J-PAS.normalTitle" = "更多>";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "TnU-Qc-YbS"; */
+"TnU-Qc-YbS.text" = "0";
+
+/* Class = "UILabel"; text = "我的套餐"; ObjectID = "Uc0-Nm-qoJ"; */
+"Uc0-Nm-qoJ.text" = "我的套餐";
+
+/* Class = "UIButton"; normalTitle = "注册"; ObjectID = "XNA-uz-1RX"; */
+"XNA-uz-1RX.normalTitle" = "注册";
+
+/* Class = "UILabel"; text = "暂未购买套餐"; ObjectID = "XRI-Rn-oDt"; */
+"XRI-Rn-oDt.text" = "暂未购买套餐";
+
+/* Class = "UILabel"; text = "通话套餐"; ObjectID = "aRg-av-5EC"; */
+"aRg-av-5EC.text" = "通话套餐";
+
+/* Class = "UIButton"; normalTitle = "充值"; ObjectID = "aSg-jc-95q"; */
+"aSg-jc-95q.normalTitle" = "充值";
+
+/* Class = "UITextField"; placeholder = "请输入6-12位密码"; ObjectID = "b2F-d2-48i"; */
+"b2F-d2-48i.placeholder" = "请输入6-12位密码";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "bDB-xK-ZcB"; */
+"bDB-xK-ZcB.text" = "0";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "byG-lF-DHz"; */
+"byG-lF-DHz.text" = "0";
+
+/* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "cAW-Zz-6aP"; */
+"cAW-Zz-6aP.normalTitle" = "更多>";
+
+/* Class = "UILabel"; text = "设置"; ObjectID = "cQM-8y-MA7"; */
+"cQM-8y-MA7.text" = "设置";
+
+/* Class = "UIBarButtonItem"; title = "Item"; ObjectID = "dYk-7g-8dR"; */
+"dYk-7g-8dR.title" = "Item";
+
+/* Class = "UILabel"; text = "双卡双待"; ObjectID = "dhm-an-uHp"; */
+"dhm-an-uHp.text" = "双卡双待";
+
+/* Class = "UIViewController"; title = "新信息"; ObjectID = "ew1-8b-Bg0"; */
+"ew1-8b-Bg0.title" = "新信息";
+
+/* Class = "UILabel"; text = "|"; ObjectID = "fXT-FG-dwB"; */
+"fXT-FG-dwB.text" = "|";
+
+/* Class = "UINavigationItem"; title = "首页"; ObjectID = "fZh-Fu-1Mz"; */
+"fZh-Fu-1Mz.title" = "首页";
+
+/* Class = "UILabel"; text = "00:00-23:59 活动"; ObjectID = "fnw-Ya-1fG"; */
+"fnw-Ya-1fG.text" = "00:00-23:59 活动";
+
+/* Class = "UITabBarItem"; title = "运动"; ObjectID = "g9T-ek-z28"; */
+"g9T-ek-z28.title" = "运动";
+
+/* Class = "UINavigationItem"; title = "通讯录"; ObjectID = "hEi-Uz-s66"; */
+"hEi-Uz-s66.title" = "通讯录";
+
+/* Class = "UILabel"; text = "余额"; ObjectID = "hPW-bn-mBa"; */
+"hPW-bn-mBa.text" = "余额";
+
+/* Class = "UIButton"; normalTitle = ">"; ObjectID = "hev-Kw-Th9"; */
+"hev-Kw-Th9.normalTitle" = ">";
+
+/* Class = "UILabel"; text = "流量：---MB"; ObjectID = "hzY-dP-y63"; */
+"hzY-dP-y63.text" = "流量：---MB";
+
+/* Class = "UILabel"; text = "NickName"; ObjectID = "iCF-nU-x9b"; */
+"iCF-nU-x9b.text" = "NickName";
+
+/* Class = "UITabBarItem"; title = "首页"; ObjectID = "iJW-Ui-4cG"; */
+"iJW-Ui-4cG.title" = "首页";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "jnn-tt-EJg"; */
+"jnn-tt-EJg.text" = "0";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "nKV-Hv-CpV"; */
+"nKV-Hv-CpV.text" = "Label";
+
+/* Class = "UILabel"; text = "境外通讯"; ObjectID = "pZK-e0-bEG"; */
+"pZK-e0-bEG.text" = "境外通讯";
+
+/* Class = "UILabel"; text = "我的设备"; ObjectID = "pfB-eP-eIa"; */
+"pfB-eP-eIa.text" = "我的设备";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "qT2-Dn-qVv"; */
+"qT2-Dn-qVv.text" = "0";
+
+/* Class = "UIViewController"; title = "通讯录"; ObjectID = "qWR-1H-Wfw"; */
+"qWR-1H-Wfw.title" = "通讯录";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "qkZ-aM-vtd"; */
+"qkZ-aM-vtd.text" = "0";
+
+/* Class = "UITextField"; placeholder = "请输入手机号码"; ObjectID = "r4o-kn-caO"; */
+"r4o-kn-caO.placeholder" = "请输入手机号码";
+
+/* Class = "UILabel"; text = "流量：---MB"; ObjectID = "rhT-bS-3Qp"; */
+"rhT-bS-3Qp.text" = "流量：---MB";
+
+/* Class = "UILabel"; text = "消耗/千卡"; ObjectID = "rhx-hb-oRA"; */
+"rhx-hb-oRA.text" = "消耗/千卡";
+
+/* Class = "UILabel"; text = "更多>"; ObjectID = "s0D-2Z-1VP"; */
+"s0D-2Z-1VP.text" = "更多>";
+
+/* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "t4s-zm-RsX"; */
+"t4s-zm-RsX.normalTitle" = "无状态";
+
+/* Class = "UILabel"; text = "Country"; ObjectID = "tuP-Fn-ZZP"; */
+"tuP-Fn-ZZP.text" = "Country";
+
+/* Class = "UILabel"; text = "收件人："; ObjectID = "uq2-kU-12W"; */
+"uq2-kU-12W.text" = "收件人：";
+
+/* Class = "UIButton"; normalTitle = "忘记密码？"; ObjectID = "vY5-lb-LgB"; */
+"vY5-lb-LgB.normalTitle" = "忘记密码？";
+
+/* Class = "UILabel"; text = "距离/公里"; ObjectID = "wS3-hf-Isa"; */
+"wS3-hf-Isa.text" = "距离/公里";
+
+/* Class = "UIButton"; normalTitle = "发送"; ObjectID = "wdk-Xo-rJV"; */
+"wdk-Xo-rJV.normalTitle" = "发送";
+
+/* Class = "UILabel"; text = "0"; ObjectID = "y7S-hD-pkf"; */
+"y7S-hD-pkf.text" = "0";
+
+/* Class = "UIButton"; normalTitle = "登录"; ObjectID = "yhO-oq-EkL"; */
+"yhO-oq-EkL.normalTitle" = "登录";
+
+/* Class = "UITabBarItem"; title = "拨打"; ObjectID = "z8a-mc-f7E"; */
+"z8a-mc-f7E.title" = "拨打";
+
+/* Class = "UILabel"; text = "短信提醒"; ObjectID = "zAU-TR-hDJ"; */
+"zAU-TR-hDJ.text" = "短信提醒";
+
+/* Class = "UITabBarItem"; title = "个人中心"; ObjectID = "zL2-et-yt6"; */
+"zL2-et-yt6.title" = "个人中心";
+
+/* Class = "UITextField"; placeholder = "请输入验证码"; ObjectID = "zL6-cc-V4v"; */
+"zL6-cc-V4v.placeholder" = "请输入验证码";

@@ -19,7 +19,7 @@
 
 
 
-#define DEBUGMODE 1
+#define DEBUGMODE 0
 
 #if DEBUGMODE
 
@@ -45,6 +45,8 @@
 #define kWeakSelf __weak typeof(self) weakSelf = self;
 
 #define kSystemVersionValue [[UIDevice currentDevice].systemVersion floatValue]
+
+#define INTERNATIONALSTRING(str) NSLocalizedString(str, nil)
 
 //如果不使用签名则按partner、expires、sign三个参数直接作为URL参数，其他则Post或是Get根据需要写入
 //如果使用签名则按partner、expires、sign和TOKEN（登录后获得，12天失效）四个参数写进Header进行签名认证。其他则Post或是Get根据需要写入
