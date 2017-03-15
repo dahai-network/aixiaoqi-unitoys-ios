@@ -18,7 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.chargeCardNumber becomeFirstResponder];
-    self.title = @"绑定充值卡";
+    self.title = INTERNATIONALSTRING(@"绑定充值卡");
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -26,7 +26,7 @@
 - (IBAction)bindingAndUse:(UIButton *)sender {
     [self.chargeCardNumber resignFirstResponder];
     if ([self isBlankString:self.chargeCardNumber.text]) {
-        HUDNormal(@"请输入正确的密码")
+        HUDNormal(INTERNATIONALSTRING(@"请输入正确的密码"))
     } else {
         self.checkToken = YES;
         NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.chargeCardNumber.text, @"CardPwd", nil];

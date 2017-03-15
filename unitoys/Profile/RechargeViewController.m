@@ -38,7 +38,7 @@
     self.btnSelected = _btn20;
     self.currentSelectButton = self.btnAlipay;
     
-    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:@"绑定充值卡" style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
+    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"绑定充值卡") style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
     self.navigationItem.rightBarButtonItem = right;
     
     NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
@@ -99,7 +99,7 @@
                     if (range.location - ran.location <= 2) {
                         return YES;
                     }else{
-                        HUDNormal(@"亲，您最多输入两位小数")
+                        HUDNormal(INTERNATIONALSTRING(@"亲，您最多输入两位小数"))
                         return NO;
                     }
                 }else{
@@ -112,7 +112,7 @@
                 }
             }
         }else{//输入的数据格式不正确
-            HUDNormal(@"亲，您输入的格式不正确")
+            HUDNormal(INTERNATIONALSTRING(@"亲，您输入的格式不正确"))
             [textField.text stringByReplacingCharactersInRange:range withString:@""];
             return NO;
         }
@@ -177,10 +177,10 @@
                 
                 paySuccessViewController.lblPayMethod.text = @"支付宝";
                 paySuccessViewController.lblPayAmount.text = [NSString stringWithFormat:@"￥%@",self.edtRechargeValue.text];*/
-                paySuccessViewController.strHintInfo = @"充值成功";
-                paySuccessViewController.strPayMethod = @"支付宝";
+                paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+                paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"支付宝");
                 paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.payValue];
-                paySuccessViewController.title = @"充值成功";
+                paySuccessViewController.title = INTERNATIONALSTRING(@"充值成功");
                 [self.navigationController pushViewController:paySuccessViewController animated:YES];
                 
             }
@@ -209,19 +209,19 @@
                     
                     paySuccessViewController.lblPayMethod.text = @"微信支付";
                     paySuccessViewController.lblPayAmount.text = [NSString stringWithFormat:@"￥%@",self.edtRechargeValue.text];*/
-                    paySuccessViewController.strHintInfo = @"充值成功";
-                    paySuccessViewController.strPayMethod = @"微信支付";
+                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"微信支付");
                     paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.payValue];
-                    paySuccessViewController.title = @"充值成功";
+                    paySuccessViewController.title = INTERNATIONALSTRING(@"充值成功");
                     [self.navigationController pushViewController:paySuccessViewController animated:YES];
                     
                 }
             }
         }else{
             if (payResult) {
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:payResult delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:payResult delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             } else {
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"支付失败，可能已取消支付或者其他原因" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"支付失败，可能已取消支付或者其他原因") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             }
         }
     }
@@ -243,7 +243,7 @@
 
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if ([alertView.message isEqualToString:@"你当前订单已支付完成！"]) {
+    if ([alertView.message isEqualToString:INTERNATIONALSTRING(@"你当前订单已支付完成！")]) {
         [self.navigationController popViewControllerAnimated:YES];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"NeedRefreshAmount" object:nil];
@@ -342,7 +342,7 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
         
         
@@ -418,7 +418,7 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
         
         
@@ -456,10 +456,10 @@
         [privateKey length] == 0||
         [appID length] == 0)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
-                                                        message:@"缺少partner或者seller或者私钥。"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"提示")
+                                                        message:INTERNATIONALSTRING(@"缺少partner或者seller或者私钥。")
                                                        delegate:self
-                                              cancelButtonTitle:@"确定"
+                                              cancelButtonTitle:INTERNATIONALSTRING(@"确定")
                                               otherButtonTitles:nil];
         [alert show];
         //        [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -494,8 +494,8 @@
     
     // NOTE: 商品数据
     order.biz_content = [BizContent new];
-    order.biz_content.body = @"账户余额充值";
-    order.biz_content.subject = @"账户充值";
+    order.biz_content.body = INTERNATIONALSTRING(@"账户余额充值");
+    order.biz_content.subject = INTERNATIONALSTRING(@"账户充值");
     order.biz_content.out_trade_no = self.orderNumber; //订单ID（由商家自行制定）
     order.biz_content.timeout_express = @"30m"; //超时时间设置
     order.biz_content.total_amount = self.orderAmount; //商品价格

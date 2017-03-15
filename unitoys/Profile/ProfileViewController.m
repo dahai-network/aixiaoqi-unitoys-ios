@@ -45,7 +45,7 @@
     UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(pickerview.frame) + 3, self.view.bounds.size.width, 35)];
     btnOK.hidden = NO;
     [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [btnOK setTitle:@"确定" forState:UIControlStateNormal];
+    [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
     [btnOK setBackgroundColor:[UIColor whiteColor]];
     
     [btnOK addTarget:self action:@selector(selectValue) forControlEvents:UIControlEventTouchUpInside];
@@ -298,9 +298,9 @@
     self.lblName.text = [userData objectForKey:@"NickName"];
     
     if ([[userData objectForKey:@"Sex"] intValue]==0) {
-        self.lblSex.text = @"男";
+        self.lblSex.text = INTERNATIONALSTRING(@"男");
     }else{
-        self.lblSex.text = @"女";
+        self.lblSex.text = INTERNATIONALSTRING(@"女");
     }
     if (userData[@"Birthday"]) {
         self.lblAge.text = [[self timeWithTimeIntervalString:userData[@"Birthday"]] substringWithRange:NSMakeRange(0, 8)];
@@ -361,9 +361,9 @@
 - (void)loadNewHead{
     UIActionSheet *choiceSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                              delegate:self
-                                                    cancelButtonTitle:@"取消"
+                                                    cancelButtonTitle:INTERNATIONALSTRING(@"取消")
                                                destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"拍照", @"从相册中选取", nil];
+                                                    otherButtonTitles:INTERNATIONALSTRING(@"拍照"), INTERNATIONALSTRING(@"从相册中选取"), nil];
     [choiceSheet showInView:self.view];
 }
 
@@ -461,7 +461,7 @@
         }else if ([[responseObject objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else if ([[responseObject objectForKey:@"status"] intValue]==1028){
-            HUDNormal(@"缓存失败,请检查图片是否过大")
+            HUDNormal(INTERNATIONALSTRING(@"缓存失败,请检查图片是否过大"))
         }else{
             HUDNormal(responseObject[@"msg"])
         }
@@ -568,28 +568,28 @@
             case 1:
                 self.pickerType = 1;
                 self.titleLabel.hidden = YES;
-                self.titleLabel.text = @"性别";
+                self.titleLabel.text = INTERNATIONALSTRING(@"性别");
                 self.arrSource = self.arrSex;
                 self.valueView.hidden = NO;
                 break;
             case 2:
                 self.pickerType = 2;
                 self.titleLabel.hidden = NO;
-                self.titleLabel.text = @"出生年月";
+                self.titleLabel.text = INTERNATIONALSTRING(@"出生年月");
                 self.arrSource = self.arrAgeYear;
                 self.valueView.hidden = NO;
                 break;
             case 3:
                 self.pickerType = 3;
                 self.titleLabel.hidden = NO;
-                self.titleLabel.text = @"身高";
+                self.titleLabel.text = INTERNATIONALSTRING(@"身高");
                 self.arrSource = self.arrHeight;
                 self.valueView.hidden = NO;
                 break;
             case 4:
                 self.pickerType = 4;
                 self.titleLabel.hidden = NO;
-                self.titleLabel.text = @"体重";
+                self.titleLabel.text = INTERNATIONALSTRING(@"体重");
                 self.arrSource = self.arrWeight;
                 self.valueView.hidden = NO;
                 break;
@@ -602,7 +602,7 @@
     
             self.pickerType = 5;
             self.titleLabel.hidden = NO;
-            self.titleLabel.text = @"运动目标";
+            self.titleLabel.text = INTERNATIONALSTRING(@"运动目标");
             self.arrSource = self.arrTarget;
             self.valueView.hidden = NO;
             

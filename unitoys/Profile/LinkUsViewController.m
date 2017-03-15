@@ -36,7 +36,7 @@
 // 1.  Launches the Mail application on the device.
 
 -(void)launchMailAppOnDevice {
-    NSString *recipients = [NSString stringWithFormat:@"mailto:%@&subject=对我想说的", EMAIL];
+    NSString *recipients = [NSString stringWithFormat:@"mailto:%@&subject=%@", EMAIL, INTERNATIONALSTRING(@"对我想说的")];
 //    NSString *recipients = @"mailto:630893613@qq.com&subject=主题";
     NSString *body = @"&body=email body!";
     NSString *email = [NSString stringWithFormat:@"%@%@", recipients, body];
@@ -49,7 +49,7 @@
 -(void)displayComposerSheet {
     MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];/*MFMailComposeViewController邮件发送选择器*/
     picker.mailComposeDelegate = self;
-    [picker setSubject:@"对我想说的"];/*emailpicker标题主题行*/
+    [picker setSubject:INTERNATIONALSTRING(@"对我想说的")];/*emailpicker标题主题行*/
 //    [mailPicker setToRecipients:[NSArray arrayWithObjects:EMAIL, nil]]; //设置发送给谁，参数是NSarray
 //    cc
 //    [mailPicker setCcRecipients:[NSArray arrayWithObject:@"zhuqil@163.com"]]; //可以添加抄送
@@ -65,7 +65,7 @@
     
     NSLog(@"ios 应用发布后 .app 应用文件路径::%@",[NSBundle mainBundle] );
     NSLog(@"ios 应用发布后 .app 应用文件内 ::%@",[[NSBundle mainBundle] infoDictionary]);
-    [picker setMessageBody:@"想说的话" isHTML:NO];
+    [picker setMessageBody:INTERNATIONALSTRING(@"想说的话") isHTML:NO];
     [self presentModalViewController:picker animated:YES];
 }
 
@@ -77,15 +77,15 @@
     switch (result){
         case MFMailComposeResultCancelled:
 //            NSLog(@"取消发送了…");
-            HUDNormal(@"已取消发送")
+            HUDNormal(INTERNATIONALSTRING(@"已取消发送"))
             break;
         case MFMailComposeResultSaved:
 //            NSLog(@"邮件保存了…");
-            HUDNormal(@"已保存")
+            HUDNormal(INTERNATIONALSTRING(@"已保存"))
             break;
         case MFMailComposeResultSent:
 //            NSLog(@"邮件发送成功…");
-            HUDNormal(@"发送成功")
+            HUDNormal(INTERNATIONALSTRING(@"发送成功"))
             break;
         case MFMailComposeResultFailed:
             NSLog(@"邮件发送出错: %@…", [error localizedDescription]);

@@ -12,7 +12,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.contentFeedback.placeholder = @"请写下你的建议（不少于10字，不多于500字）";
+    self.contentFeedback.placeholder = INTERNATIONALSTRING(@"请写下你的建议（不少于10字，不多于500字）");
 }
 
 - (IBAction)feedback:(id)sender {
@@ -21,9 +21,9 @@
 //    ;
 //
     if (self.contentFeedback.text.length < 10) {
-        HUDNormal(@"内容不少于10个字")
+        HUDNormal(INTERNATIONALSTRING(@"内容不少于10个字"))
     } else if (self.contentFeedback.text.length > 500) {
-        HUDNormal(@"内容不能多于500字")
+        HUDNormal(INTERNATIONALSTRING(@"内容不能多于500字"))
     } else {
         NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[[UIDevice currentDevice] systemVersion],@"Version",[[UIDevice currentDevice] model],@"Model",self.contentFeedback.text,@"Info", nil];
         [self getBasicHeader];

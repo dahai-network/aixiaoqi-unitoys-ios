@@ -177,7 +177,7 @@
         switch (indexPath.row) {
             case 0:
                 //来电提醒
-                HUDNormal(@"来电提醒")
+                HUDNormal(INTERNATIONALSTRING(@"来电提醒"))
                 break;
             case 1:
                 //手环闹钟
@@ -187,15 +187,15 @@
                 break;
             case 2:
                 //短信提醒
-                HUDNormal(@"短信提醒")
+                HUDNormal(INTERNATIONALSTRING(@"短信提醒"))
                 break;
             case 3:
                 //微信消息提醒
-                HUDNormal(@"微信消息提醒")
+                HUDNormal(INTERNATIONALSTRING(@"微信消息提醒"))
                 break;
             case 4:
                 //QQ消息提醒
-                HUDNormal(@"QQ消息提醒")
+                HUDNormal(INTERNATIONALSTRING(@"QQ消息提醒"))
                 break;
             default:
                 break;

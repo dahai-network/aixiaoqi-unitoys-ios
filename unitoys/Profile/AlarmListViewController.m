@@ -32,7 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"手环闹钟";
+    self.title = INTERNATIONALSTRING(@"手环闹钟");
     self.tableView.tableFooterView = self.footView;
     [self loadData];
     
@@ -66,7 +66,7 @@
         case 0:
 //            HUDNormal(@"修改")
             self.isEditing = YES;
-            [self setLeftButton:@"完成"];
+            [self setLeftButton:INTERNATIONALSTRING(@"完成")];
             //设置可编辑
             [self.tableView setEditing:YES animated:YES];
             [self.tableView reloadData];

@@ -20,10 +20,10 @@
     self.edtValue.text = self.name;
     
     //左边按钮
-    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(leftButtonAction)];
+    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"取消") style:UIBarButtonItemStyleDone target:self action:@selector(leftButtonAction)];
     self.navigationItem.leftBarButtonItem = left;
     
-    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:@"保存" style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
+    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"保存") style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
     self.navigationItem.rightBarButtonItem = right;
     
     NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];

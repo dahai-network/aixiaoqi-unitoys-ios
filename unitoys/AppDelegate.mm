@@ -897,7 +897,8 @@
     string = [string stringByReplacingOccurrencesOfString:tempStr withString:TLVdetail];
     NSLog(@"替换之后的字符串 -- %@", string);
     
-    self.tcpStringWithPushKit = nil;
+//    self.tcpStringWithPushKit = nil;
+    self.isSendTcpString = YES;
     if (!self.sendTcpSocket) {
         [self creatAsocketTcp];
     }
