@@ -112,14 +112,15 @@
         [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeoff"] forState:UIControlStateNormal];
         _btnSpeakerStatus.tag=0;
     }
-    
-    if (self.hadRing){
-        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
-        //解决通话前设置扩音无效问题
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound" userInfo:@{@"isHandfreeon" : @(_btnSpeakerStatus.tag)}];
-    }else{
-        self.isHandfree = !self.isHandfree;
-    }
+    //解决通话前设置扩音无效问题
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound" userInfo:@{@"isHandfreeon" : @(_btnSpeakerStatus.tag)}];
+//    if (self.hadRing){
+//        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
+//        //解决通话前设置扩音无效问题
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound" userInfo:@{@"isHandfreeon" : @(_btnSpeakerStatus.tag)}];
+//    }else{
+//        self.isHandfree = !self.isHandfree;
+//    }
 }
 
 - (void)endCallPhone

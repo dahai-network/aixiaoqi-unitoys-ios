@@ -90,7 +90,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong)UILabel *progressNumberLabel;
 @property (nonatomic, strong)ChooseDeviceTypeViewController *chooseDeviceTypeVC;
 
-@property (nonatomic, assign) BOOL isQuickLoad;
+//@property (nonatomic, assign) BOOL isQuickLoad;
 @property (nonatomic, copy) NSString *simDataString;
 @property (nonatomic, assign) BOOL isHasSimType;
 @property (nonatomic, copy) NSString *simTypeData;
@@ -108,6 +108,8 @@ typedef enum : NSUInteger {
 @property (nonatomic, copy) NSArray *sendICCIDCommands;
 
 @property (nonatomic, copy) NSString *iccidString;
+@property (nonatomic, assign) BOOL isQuickLoad;
+@property (nonatomic, assign) BOOL isNeedRegister;
 @end
 
 @implementation HomeViewController
@@ -277,6 +279,8 @@ typedef enum : NSUInteger {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];//接收PushKit消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLBEStatuWithPushKit) name:@"UpdateLBEStatuWithPushKit" object:nil];//通过PushKit启动程序更新蓝牙状态
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
     
@@ -1679,7 +1683,13 @@ typedef enum : NSUInteger {
                         [self checkUserIsExistAppointPackage];
                     });
                 } else {
-                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                    
+                    if ([BlueToothDataManager shareManager].isRegisted) {
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                    }else{
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+                    }
+//                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
                 }
             } else {
                 NSLog(@"注册状态有问题");
@@ -1707,7 +1717,12 @@ typedef enum : NSUInteger {
                         [self checkUserIsExistAppointPackage];
                     });
                 } else {
-                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+//                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                    if ([BlueToothDataManager shareManager].isRegisted) {
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                    }else{
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+                    }
                 }
             } else {
                 NSLog(@"注册状态有问题");
@@ -2515,8 +2530,12 @@ typedef enum : NSUInteger {
 - (void)updateLBEStatuWithPushKit
 {
     if (!self.isUpdatedLBEInfo) {
-        NSLog(@"更新蓝牙状态");
+        NSLog(@"更新蓝牙状态==============================");
+        [BlueToothDataManager shareManager].bleStatueForCard = 0;
+        [BlueToothDataManager shareManager].isTcpConnected = NO;
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
         [self sendLBEMessageNoPushKit];
+        self.isUpdatedLBEInfo = YES;
     }
 }
 
@@ -2584,15 +2603,33 @@ typedef enum : NSUInteger {
 
 - (void)sendLBEMessageWithPushKit
 {
+    [BlueToothDataManager shareManager].isRegisted = NO;
+    [BlueToothDataManager shareManager].isBeingRegisting = YES;
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"1"];
+//    [BlueToothDataManager shareManager].stepNumber = @"1";
+    
     self.isQuickLoad = YES;
     //对卡上电
     NSLog(@"对卡上电03");
     [self phoneCardToUpeLectrify:@"03"];
+    [self sendDataToVSW:self.simDataString];
+}
+
+//解析鉴权数据
+- (void)analysisAuthData:(NSNotification *)noti
+{
+    self.isQuickLoad = NO;
+    [self updataToCard];
+    [self sendDataToVSW:noti.object];
 }
 
 - (void)sendLBEMessageNoPushKit
 {
-    self.isUpdatedLBEInfo = YES;
+    [BlueToothDataManager shareManager].isRegisted = NO;
+    [BlueToothDataManager shareManager].isBeingRegisting = YES;
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"1"];
+//    [BlueToothDataManager shareManager].stepNumber = @"1";
+    
     self.isQuickLoad = NO;
     
     //告诉蓝牙是苹果设备
@@ -2685,7 +2722,10 @@ typedef enum : NSUInteger {
     } else {
         NSString *dataStr = [NSString stringWithFormat:@"%@", data];
         if (![dataStr isEqualToString:@"<88800310 0002>"]) {
-            HUDNormal(@"蓝牙未连接")
+            NSLog(@"蓝牙未连接");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                HUDNormal(@"蓝牙未连接")
+            });
         }
     }
 }
@@ -2866,9 +2906,9 @@ typedef enum : NSUInteger {
                     [self registFailAction];
                 } else if ([contentStr isEqualToString:@"03"]) {
                     NSLog(@"对卡上电3成功");
-                    if (self.isQuickLoad) {
-                        [self sendDataToVSW:self.simDataString];
-                    }
+//                    if (self.isQuickLoad) {
+//                        [self sendDataToVSW:self.simDataString];
+//                    }
                 }else if ([contentStr isEqualToString:@"13"]) {
                     NSLog(@"对卡上电3失败");
                     [BlueToothDataManager shareManager].isBeingRegisting = NO;
@@ -2984,53 +3024,20 @@ typedef enum : NSUInteger {
                                 }
                             }
                             NSLog(@"最终发送的数据包字符为：%@", self.totalString);
-                            if (self.isQuickLoad) {
-                                //手动解析
-                                //                               [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString];
-                                if (self.needSendDatas.count > self.currentSendIndex) {
-                                    NSString *currentSendStr = self.needSendDatas[self.currentSendIndex];
-                                    if (self.authenticationModel.isAddSendData) {
-                                        if ([currentSendStr isEqualToString:@"a0c0000003"] || [currentSendStr isEqualToString:@"a0c000000c"]) {
-                                            //最后一条额外数据
-                                            [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:2];
-                                            NSString *sendTcpStr = [self getStringToTcp];
-                                            [self sendTcpString:sendTcpStr];
-                                            NSLog(@"sendTcpStr====%@", sendTcpStr);
-                                        }else if([currentSendStr isEqualToString:self.authenticationModel.simData]){
-                                            [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
-                                            self.currentSendIndex += 1;
-                                            [self sendDataToLBEWithIndex:self.currentSendIndex];
-                                        }else{
-                                            self.currentSendIndex += 1;
-                                            [self sendDataToLBEWithIndex:self.currentSendIndex];
-                                        }
-                                    }else{
-                                        //如果不是a088,到这里结束
-                                        if ([currentSendStr isEqualToString:self.authenticationModel.simData]) {
-                                            [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
-                                            NSString *sendTcpStr = [self getStringToTcp];
-                                            [self sendTcpString:sendTcpStr];
-                                            NSLog(@"sendTcpStr====%@", sendTcpStr);
-                                        }else{
-                                            self.currentSendIndex += 1;
-                                            [self sendDataToLBEWithIndex:self.currentSendIndex];
-                                        }
-                                    }
-                                }
-                            }else{
                                 if (self.sendICCIDIndex < self.sendICCIDCommands.count) {
                                     self.sendICCIDIndex++;
                                     if (self.sendICCIDIndex == self.sendICCIDCommands.count) {
                                         //判断本地是否存在ICCID
                                         self.iccidString = [self getIccidWithString:self.totalString];
                                         
-                                        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:self.iccidString];
+                                        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[self.iccidString lowercaseString]];
                                         if (dict) {
                                             //创建tcp,建立连接
                                             [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:self.iccidString];
                                         }else{
                                             //创建udp,初始化操作
-                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:nil];
+                                            self.isNeedRegister = YES;
+                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
                                         }
                                         self.sendICCIDCommands = nil;
                                         self.sendICCIDIndex = 0;
@@ -3040,9 +3047,43 @@ typedef enum : NSUInteger {
                                         [self sendICCIDCommand:self.sendICCIDIndex];
                                     }
                                 }else{
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
+//                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
+                                    if (self.isNeedRegister) {
+                                        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
+                                    }else{
+                                        if (self.needSendDatas.count > self.currentSendIndex) {
+                                            NSString *currentSendStr = self.needSendDatas[self.currentSendIndex];
+                                            if (self.authenticationModel.isAddSendData) {
+                                                if ([currentSendStr isEqualToString:@"a0c0000003"] || [currentSendStr isEqualToString:@"a0c000000c"]) {
+                                                    //最后一条额外数据
+                                                    [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:2];
+                                                    NSString *sendTcpStr = [self getStringToTcp];
+                                                    [self sendTcpString:sendTcpStr];
+                                                    NSLog(@"sendTcpStr====%@", sendTcpStr);
+                                                }else if([currentSendStr isEqualToString:self.authenticationModel.simData]){
+                                                    [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
+                                                    self.currentSendIndex += 1;
+                                                    [self sendDataToLBEWithIndex:self.currentSendIndex];
+                                                }else{
+                                                    self.currentSendIndex += 1;
+                                                    [self sendDataToLBEWithIndex:self.currentSendIndex];
+                                                }
+                                            }else{
+                                                //如果不是a088,到这里结束
+                                                if ([currentSendStr isEqualToString:self.authenticationModel.simData]) {
+                                                    [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
+                                                    NSString *sendTcpStr = [self getStringToTcp];
+                                                    [self sendTcpString:sendTcpStr];
+                                                    NSLog(@"sendTcpStr====%@", sendTcpStr);
+                                                }else{
+                                                    self.currentSendIndex += 1;
+                                                    [self sendDataToLBEWithIndex:self.currentSendIndex];
+                                                }
+                                            }
+                                        }
+                                    
+                                    }
                                 }
-                            }
 //                            [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
                             [self.dataPacketArray removeAllObjects];
                             self.totalString = nil;
@@ -3396,7 +3437,14 @@ typedef enum : NSUInteger {
 //将组合的数据发送到tcp服务器
 - (void)sendTcpString:(NSString *)string
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"SendTcpDataFromPushKit" object:nil userInfo:@{@"tcpString" : string}];
+    if (self.isQuickLoad) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SendTcpDataFromPushKit" object:nil userInfo:@{@"tcpString" : string}];
+    }else{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDataStr" object:string];
+    }
+    self.authenticationModel = nil;
+    [self.needSendDatas removeAllObjects];
+    self.currentSendIndex = 0;
 }
 
 
@@ -3768,6 +3816,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceivePushKitMessage" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UpdateLBEStatuWithPushKit" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AnalysisAuthData" object:nil];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:CNContactStoreDidChangeNotification object:nil];

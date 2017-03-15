@@ -102,7 +102,6 @@
 
 #pragma mark 计时器
 - (void)startTimerAction {
-    
     if (!self.timer) {
         self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(startAnimation) userInfo:nil repeats:YES];
         //如果不添加下面这条语句，在UITableView拖动的时候，会阻塞定时器的调用
@@ -133,7 +132,13 @@
             if ([countStr floatValue] == 1) {
                 self.lblStatue.text = @"注册中99%";
             } else {
-                self.lblStatue.text = [NSString stringWithFormat:@"注册中%.0f%%", [countStr floatValue] * 100];
+                NSString *progress = [NSString stringWithFormat:@"%.0f", [countStr floatValue] * 100];
+                if ([progress isEqualToString:@"0"]) {
+                    self.lblStatue.text = @"注册中";
+                }else{
+                    self.lblStatue.text = [NSString stringWithFormat:@"注册中%@%%", progress];
+                }
+//                self.lblStatue.text = [NSString stringWithFormat:@"注册中%.0f%%", [countStr floatValue] * 100];
             }
         } else {
             self.lblStatue.text = @"注册中99%";
@@ -146,7 +151,13 @@
             if ([countStr floatValue] == 1) {
                 self.lblStatue.text = @"注册中99%";
             } else {
-                self.lblStatue.text = [NSString stringWithFormat:@"注册中%.0f%%", [countStr floatValue] * 100];
+                NSString *progress = [NSString stringWithFormat:@"%.0f", [countStr floatValue] * 100];
+                if ([progress isEqualToString:@"0"]) {
+                    self.lblStatue.text = @"注册中";
+                }else{
+                    self.lblStatue.text = [NSString stringWithFormat:@"注册中%@%%", progress];
+                }
+//                self.lblStatue.text = [NSString stringWithFormat:@"注册中%.0f%%", [countStr floatValue] * 100];
             }
         } else {
             self.lblStatue.text = @"注册中99%";

@@ -16,6 +16,8 @@
     if (authenticationString.length < 20) {
         return nil;
     }
+    
+//  authenticationString = 00010500001900023f007f206f070000a0c0000016
     UNSimCardAuthenticationModel *model = [UNSimCardAuthenticationModel new];
     model.chn = [authenticationString substringWithRange:NSMakeRange(0, 2)];
     model.cmdIndex = [authenticationString substringWithRange:NSMakeRange(2, 2)];
@@ -32,21 +34,32 @@
 //        model.simTypePrefix = [model.simData substringToIndex:4];
 //    }else{
         //有目录
+        NSInteger direCount = [[authenticationString substringWithRange:NSMakeRange(12, 4)] integerValue];
+    
         NSString *laterData = [authenticationString substringFromIndex:16];
+    //laterData = 3f007f206f070000a0c0000016
         if (laterData.length) {
 //            NSRange range = [laterData rangeOfString:@"0000"];
             //目录固定为12位
+            
             NSRange range = NSMakeRange(12, 4);
             NSString *simDirectoryString = [laterData substringToIndex:range.location];
-            NSInteger count = simDirectoryString.length/4;
-            NSMutableArray *directoryArray = [NSMutableArray arrayWithCapacity:count];
-            for (NSInteger i = 0; i < count; i++) {
+//            NSInteger count = simDirectoryString.length/4;
+            if (direCount == 0) {
+                direCount = simDirectoryString.length/4;
+            }else{
+                direCount = (direCount > simDirectoryString.length/4) ? simDirectoryString.length/4 : direCount;
+            }
+            
+            NSMutableArray *directoryArray = [NSMutableArray arrayWithCapacity:direCount];
+            for (NSInteger i = 0; i < direCount; i++) {
                 NSString *string = [simDirectoryString substringWithRange:NSMakeRange(i*4,4)];
                 [directoryArray addObject:string];
             }
             model.simdirectory = directoryArray;
             
             NSString *simDataString = [laterData substringFromIndex:(range.location+range.length)];
+            //simDataString = a0c0000016
             if ([[simDataString substringWithRange:NSMakeRange(2, 2)] isEqualToString:@"88"]) {
                 model.isAddSendData = YES;
             }

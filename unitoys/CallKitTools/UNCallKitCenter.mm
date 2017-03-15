@@ -187,9 +187,9 @@
         }
         callUUID = _currentCallUUID;
     }
-    if (self.isEndCall) {
-        return;
-    }
+//    if (self.isEndCall) {
+//        return;
+//    }
     self.isEndCall = YES;
     
     CXEndCallAction *action = [[CXEndCallAction alloc] initWithCallUUID:callUUID];
