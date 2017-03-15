@@ -1683,7 +1683,6 @@ typedef enum : NSUInteger {
                         [self checkUserIsExistAppointPackage];
                     });
                 } else {
-                    
                     if ([BlueToothDataManager shareManager].isRegisted) {
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
                     }else{

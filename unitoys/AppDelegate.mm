@@ -339,9 +339,9 @@
 
 #pragma mark - tcp相关
 - (void)creatAsocketTcp {
-    dispatch_queue_t dQueue = dispatch_queue_create("client tdp socket", NULL);
     // 1. 创建一个 udp socket用来和服务端进行通讯
     if (!self.sendTcpSocket) {
+        dispatch_queue_t dQueue = dispatch_queue_create("client tdp socket", NULL);
         self.sendTcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dQueue socketQueue:nil];
         // 2. 连接服务器端. 只有连接成功后才能相互通讯 如果60s连接不上就出错
         NSString *host = [VSWManager shareManager].vswIp;
@@ -495,18 +495,18 @@
     NSString *packteStr = [NSString stringWithFormat:@"%@", self.tcpStringWithPushKit];
     NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", packteStr.length/2]];
     NSString *newStr = [NSString stringWithFormat:@"%@%@%@",self.tlvFirstStr, packetLengthHex, packteStr];
-    NSString *countLengthStr = [newStr substringFromIndex:24];
-    NSLog(@"替换后面的文字之后 -- %@", newStr);
-    //    NSLog(@"jiequzhihoudes  -- %@", countLengthStr);
+    
+    NSString *appendString = [NSString stringWithFormat:@"%@%@", newStr, tokenHex];
+    
+    NSString *countLengthStr = [appendString substringFromIndex:24];
+    
+    NSLog(@"替换后面的文字之后 -- %@", appendString);
     NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%lu", countLengthStr.length/2]];
-    //    NSString *finalString = [newStr stringByReplacingOccurrencesOfString:[newStr substringWithRange:NSMakeRange(20, 4)] withString:countLengthHex];
-    NSString *tcpString = [newStr stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
-    //拼接token
-    NSString *finalString = [NSString stringWithFormat:@"%@%@", tcpString, tokenHex];
-    NSLog(@"发送给服务器的数据 -- %@", finalString);
-    self.tcpPacketStrWithPushKit = finalString;
-    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", finalString]];
-    [self sendMsgWithMessage:finalString];
+    NSString *tcpString = [appendString stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
+    NSLog(@"发送给服务器的数据 -- %@", tcpString);
+    self.tcpPacketStrWithPushKit = tcpString;
+    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", tcpString]];
+    [self sendMsgWithMessage:tcpString];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
 
 }
@@ -698,8 +698,6 @@
 //            }
 //        }
         [self checkManyPacketString:tempStr];
-//        NSString *lengthStr = [tempStr substringWithRange:NSMakeRange(20, 4)];
-//        NSInteger leng = strtoul([lengthStr UTF8String], 0, 16);
     }
 }
 
