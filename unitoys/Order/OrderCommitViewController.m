@@ -77,7 +77,7 @@
             self.ammountValue = [[[responseObj objectForKey:@"data"] objectForKey:@"amount"] floatValue];
             
             
-            self.lblAmmountValue.text = [NSString stringWithFormat:@"余额支付(剩余￥%.2f)",[[[responseObj objectForKey:@"data"] objectForKey:@"amount"] floatValue]];
+            self.lblAmmountValue.text = [NSString stringWithFormat:@"%@(%@￥%.2f)", INTERNATIONALSTRING(@"余额支付"), INTERNATIONALSTRING(@"剩余"),[[[responseObj objectForKey:@"data"] objectForKey:@"amount"] floatValue]];
             
             if (self.ammountValue>self.totalFee){
                 self.btnAccountpay.enabled = TRUE;
@@ -123,10 +123,10 @@
                 
                 paySuccessViewController.lblPayMethod.text = @"支付宝";
                 paySuccessViewController.lblPayAmount.text = [NSString stringWithFormat:@"￥%@",self.lblFactPayment.text];*/
-                paySuccessViewController.strHintInfo = @"充值成功";
-                paySuccessViewController.strPayMethod = @"支付宝";
+                paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+                paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"支付宝");
                 paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.lblOrderAmount.text];
-                paySuccessViewController.title = @"购买成功";
+                paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
                 [self.navigationController pushViewController:paySuccessViewController animated:YES];
                 
             }
@@ -155,10 +155,10 @@
                     
                     paySuccessViewController.lblPayMethod.text = @"微信支付";
                     paySuccessViewController.lblPayAmount.text = [NSString stringWithFormat:@"￥%@",_lblOrderAmount.text];*/
-                    paySuccessViewController.strHintInfo = @"充值成功";
-                    paySuccessViewController.strPayMethod = @"微信支付";
+                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"微信支付");
                     paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.lblOrderAmount.text];
-                    paySuccessViewController.title = @"购买成功";
+                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
                     
                     
                     
@@ -170,9 +170,9 @@
 
         }else{
             if (payResult) {
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:payResult delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:payResult delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             } else {
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"支付失败，可能已取消支付或者其他原因" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"支付失败，可能已取消支付或者其他原因") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             }
         }
     }
@@ -242,7 +242,7 @@
         
         [self calcFee];
     } else {
-        HUDNormal(@"已经不能再少了!")
+        HUDNormal(INTERNATIONALSTRING(@"已经不能再少了!"))
     }
     
 }
@@ -298,7 +298,7 @@
     } else {
         params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"3",@"PaymentMethod", nil];
     }
-    HUDNoStop1(@"正在提交订单...")
+    HUDNoStop1(INTERNATIONALSTRING(@"正在提交订单..."))
     [self getBasicHeader];
     NSLog(@"表演头：%@",self.headers);
     
@@ -319,7 +319,7 @@
         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
         
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络异常")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"啥都没：%@",[error description]);
         
     } headers:self.headers];
@@ -373,7 +373,7 @@
          [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
         
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络异常")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"啥都没：%@",[error description]);
         
     } headers:self.headers];
@@ -418,10 +418,10 @@
                 
                 if (paySuccessViewController) {
                     
-                    paySuccessViewController.strHintInfo = @"充值成功";
-                    paySuccessViewController.strPayMethod = @"余额支付";
+                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
                     paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%@",self.lblOrderAmount.text];
-                    paySuccessViewController.title = @"购买成功";
+                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
                     
                     
                     
@@ -435,13 +435,13 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
         
         
         
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络异常")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
     
@@ -520,13 +520,13 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
-            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
         
 
         
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络异常")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
     
@@ -555,10 +555,10 @@
         [seller length] == 0 ||
         [privateKey length] == 0)
     {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
-                                                        message:@"缺少partner或者seller或者私钥。"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示")
+                                                        message:INTERNATIONALSTRING(@"缺少partner或者seller或者私钥。")
                                                        delegate:self
-                                              cancelButtonTitle:@"确定"
+                                              cancelButtonTitle:INTERNATIONALSTRING(@"确定")
                                               otherButtonTitles:nil];
         [alert show];
 //        [tableView deselectRowAtIndexPath:indexPath animated:YES];

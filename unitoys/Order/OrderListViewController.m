@@ -25,8 +25,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     if (self.isAbroadMessage) {
-        self.title = @"已购境外套餐";
-        [self setRightButton:@"套餐超市"];
+        self.title = INTERNATIONALSTRING(@"已购境外套餐");
+        [self setRightButton:INTERNATIONALSTRING(@"套餐超市")];
     }else{
         //右边按钮
         UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mypackge_add"] style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
@@ -62,10 +62,10 @@
 
 - (void)rightButtonAction {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         
     }];
-    UIAlertAction *firstAlertAction = [UIAlertAction actionWithTitle:@"通话套餐" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+    UIAlertAction *firstAlertAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"通话套餐") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         CommunicatePackageViewController *communicateVC = [[CommunicatePackageViewController alloc] init];
         [self.navigationController pushViewController:communicateVC animated:YES];
     }];

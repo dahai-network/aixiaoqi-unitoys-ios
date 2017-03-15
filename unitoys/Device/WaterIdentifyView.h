@@ -5,6 +5,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "global.h"
 
 @interface WaterIdentifyView : UIView
 

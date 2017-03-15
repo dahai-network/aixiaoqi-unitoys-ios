@@ -42,7 +42,7 @@
 
 
 - (IBAction)resultConfrim:(id)sender {
-    if ([self.title isEqualToString:@"购买成功"]) {
+    if ([self.title isEqualToString:INTERNATIONALSTRING(@"购买成功")]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"BuyConfrim" object:nil];
         [self.navigationController popViewControllerAnimated:YES];
     } else {

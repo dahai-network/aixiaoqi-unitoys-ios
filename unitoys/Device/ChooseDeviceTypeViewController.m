@@ -40,10 +40,10 @@
     }
     switch (indexPath.row) {
             case 0:
-            cell.lbltype.text = @"绑定爱小器手环";
+            cell.lbltype.text = INTERNATIONALSTRING(@"绑定爱小器手环");
             break;
             case 1:
-            cell.lbltype.text = @"绑定钥匙扣";
+            cell.lbltype.text = INTERNATIONALSTRING(@"绑定钥匙扣");
             break;
         default:
             NSLog(@"绑定啥？");
@@ -75,7 +75,7 @@
         [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
         [self.navigationController pushViewController:self.isBoundingVC animated:YES];
     } else {
-        HUDNormal(@"请开启蓝牙")
+        HUDNormal(INTERNATIONALSTRING(@"请开启蓝牙"))
     }
 }
 

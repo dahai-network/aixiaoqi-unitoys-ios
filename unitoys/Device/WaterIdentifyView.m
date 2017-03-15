@@ -249,8 +249,7 @@
     
     NSMutableAttributedString *attriButedText = [self formatBatteryLevel:_percent * 100];
     CGRect textSize = [attriButedText boundingRectWithSize:CGSizeMake(400, 10000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
-    
-    NSMutableAttributedString *attriLabelText = [self formatLabel:@"剩余电量"];
+    NSMutableAttributedString *attriLabelText = [self formatLabel:INTERNATIONALSTRING(@"剩余电量")];
     CGRect labelSize = [attriLabelText boundingRectWithSize:CGSizeMake(400, 10000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
     
     CGPoint textPoint = CGPointMake(fullRect.size.width / 2 - textSize.size.width / 2, fullRect.size.height / 2 - textSize.size.height / 2 - labelSize.size.height / 2);

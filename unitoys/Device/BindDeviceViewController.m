@@ -31,14 +31,14 @@
         if (self.customView) {
             self.customView.hidden = YES;
         }
-        self.hintLabel.text = @"还没有连接设备，点击连接";
+        self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
         self.versionNumber.hidden = YES;
         self.macAddress.hidden = YES;
-        self.lblStatue.text = @"未连接";
+        self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
     }
     
     if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
-        self.lblStatue.text = @"信号强";
+        self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
 //        self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
     }
     if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
@@ -90,7 +90,7 @@
 - (void)changeStatueAll:(NSNotification *)sender {
     self.hintStrFirst = sender.object;
     if (![BlueToothDataManager shareManager].isBeingRegisting) {
-        self.lblStatue.text = self.hintStrFirst;
+        self.lblStatue.text = INTERNATIONALSTRING(self.hintStrFirst);
         NSLog(@"状态改变 --> %@ %@", self.hintStrFirst, self.lblStatue.text);
     }
     if (![self.hintStrFirst isEqualToString:HOMESTATUETITLE_REGISTING]) {
@@ -130,18 +130,18 @@
             float count = (float)[senderStr intValue]/160;
             NSString *countStr = [NSString stringWithFormat:@"%.2f", count];
             if ([countStr floatValue] == 1) {
-                self.lblStatue.text = @"注册中99%";
+                self.lblStatue.text = [NSString stringWithFormat:@"%@99%%", INTERNATIONALSTRING(@"注册中")];
             } else {
                 NSString *progress = [NSString stringWithFormat:@"%.0f", [countStr floatValue] * 100];
                 if ([progress isEqualToString:@"0"]) {
-                    self.lblStatue.text = @"注册中";
+                    self.lblStatue.text = INTERNATIONALSTRING(@"注册中");
                 }else{
-                    self.lblStatue.text = [NSString stringWithFormat:@"注册中%@%%", progress];
+                    self.lblStatue.text = [NSString stringWithFormat:@"%@%@%%", INTERNATIONALSTRING(@"注册中"), progress];
                 }
 //                self.lblStatue.text = [NSString stringWithFormat:@"注册中%.0f%%", [countStr floatValue] * 100];
             }
         } else {
-            self.lblStatue.text = @"注册中99%";
+            self.lblStatue.text = [NSString stringWithFormat:@"%@99%%", INTERNATIONALSTRING(@"注册中")];
         }
     }
     if ([[BlueToothDataManager shareManager].operatorType intValue] == 2) {
@@ -149,18 +149,18 @@
             float count = (float)[senderStr intValue]/340;
             NSString *countStr = [NSString stringWithFormat:@"%.2f", count];
             if ([countStr floatValue] == 1) {
-                self.lblStatue.text = @"注册中99%";
+                self.lblStatue.text = [NSString stringWithFormat:@"%@99%%", INTERNATIONALSTRING(@"注册中")];
             } else {
                 NSString *progress = [NSString stringWithFormat:@"%.0f", [countStr floatValue] * 100];
                 if ([progress isEqualToString:@"0"]) {
-                    self.lblStatue.text = @"注册中";
+                    self.lblStatue.text = INTERNATIONALSTRING(@"注册中");
                 }else{
-                    self.lblStatue.text = [NSString stringWithFormat:@"注册中%@%%", progress];
+                    self.lblStatue.text = [NSString stringWithFormat:@"%@%@%%", INTERNATIONALSTRING(@"注册中"), progress];
                 }
 //                self.lblStatue.text = [NSString stringWithFormat:@"注册中%.0f%%", [countStr floatValue] * 100];
             }
         } else {
-            self.lblStatue.text = @"注册中99%";
+            self.lblStatue.text = [NSString stringWithFormat:@"%@99%%", INTERNATIONALSTRING(@"注册中")];
         }
     }
 }
@@ -174,7 +174,7 @@
         [self countAndShowPercentage:senderStr];
     } else {
         NSLog(@"注册成功的时候处理");
-        self.lblStatue.text = @"信号强";
+        self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
         if (self.timer) {
             [self.timer setFireDate:[NSDate distantFuture]];
         }
@@ -185,7 +185,7 @@
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
         NSString *statueStr = [NSString stringWithFormat:@"%@", sender.object];
         if ([statueStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
-            self.lblStatue.text = @"信号强";
+            self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
             if (self.timer) {
                 [self.timer setFireDate:[NSDate distantFuture]];
             }
@@ -196,7 +196,7 @@
 }
 
 - (void)cardNumberNotTrueActionForBind:(NSNotification *)sender {
-    self.lblStatue.text = @"注册失败";
+    self.lblStatue.text = INTERNATIONALSTRING(@"注册失败");
     if (self.timer) {
         [self.timer setFireDate:[NSDate distantFuture]];
     }
@@ -207,10 +207,10 @@
         self.customView.hidden = YES;
     }
     self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
-    self.hintLabel.text = @"还没有连接设备，点击连接";
+    self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
     self.versionNumber.hidden = YES;
     self.macAddress.hidden = YES;
-    self.lblStatue.text = @"未连接";
+    self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
     if (self.timer) {
         [self.timer setFireDate:[NSDate distantFuture]];
     }
@@ -239,9 +239,9 @@
 //            self.hintLabel.text = [NSString stringWithFormat:@"设备还未充过电"];
 //        }
         if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-            self.hintLabel.text = @"已连接爱小器手环";
+            self.hintLabel.text = INTERNATIONALSTRING(@"已连接爱小器手环");
         } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
-            self.hintLabel.text = @"已连接爱小器钥匙扣";
+            self.hintLabel.text = INTERNATIONALSTRING(@"已连接爱小器钥匙扣");
         } else {
             NSLog(@"这是连接的什么？");
         }
@@ -251,13 +251,14 @@
             //            self.hintLabel.hidden = NO;
         }
         if (![BlueToothDataManager shareManager].isConnected) {
-            self.hintLabel.text = @"还没有连接设备，点击连接";
+            self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
         }
         if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBounded) {
-            self.hintLabel.text = @"还没有绑定设备，点击绑定";
+            self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击绑定");
         }
     }
     self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
+    [self.tableView reloadData];
 }
 
 #pragma mark 加载扫描图形
@@ -275,11 +276,11 @@
             //点击绑定设备
             [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
             [self addScanView];
-            self.hintLabel.text = @"正在搜索设备";
+            self.hintLabel.text = INTERNATIONALSTRING(@"正在搜索设备");
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![BlueToothDataManager shareManager].isConnected) {
                     self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
-                    self.hintLabel.text = @"还没有连接设备，点击连接";
+                    self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
                 }
             });
         } else if (![BlueToothDataManager shareManager].isConnected) {
@@ -287,24 +288,24 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
             [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
             [self addScanView];
-            self.hintLabel.text = @"正在搜索设备";
+            self.hintLabel.text = INTERNATIONALSTRING(@"正在搜索设备");
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![BlueToothDataManager shareManager].isConnected) {
                     self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
-                    self.hintLabel.text = @"还没有连接设备，点击连接";
+                    self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
                 }
             });
         } else {
             //已经绑定了
         }
     } else {
-        HUDNormal(@"请先开启蓝牙")
+        HUDNormal(INTERNATIONALSTRING(@"请开启蓝牙"))
     }
 }
 
 #pragma mark 解除绑定
 - (IBAction)relieveBoundButtonAction:(UIButton *)sender {
-    if ([BlueToothDataManager shareManager].isBounded) {
+    if ([BlueToothDataManager shareManager].isConnected) {
         //点击解除绑定,发送解除绑定通知
         [[NSNotificationCenter defaultCenter] postNotificationName:@"relieveBound" object:@"relieve"];
         [self unBindDevice];
@@ -328,17 +329,17 @@
                     [self unBindDevice];
                 }];
             } else {
-                HUDNormal(@"该账号没有绑定设备")
+                HUDNormal(INTERNATIONALSTRING(@"该账号没有绑定设备"))
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else if ([[responseObj objectForKey:@"status"] intValue]==0){
             //数据请求失败
             NSLog(@"没有设备");
-            HUDNormal(@"请求失败")
+            HUDNormal(INTERNATIONALSTRING(@"请求失败"))
         }
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络貌似有问题")
+        HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
         //
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -347,7 +348,7 @@
 #pragma mark 调用解除绑定接口
 - (void)unBindDevice {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        HUDNoStop1(@"正在解绑...")
+        HUDNoStop1(INTERNATIONALSTRING(@"正在解绑..."))
         self.checkToken = YES;
         [self getBasicHeader];
         NSLog(@"表头：%@",self.headers);
@@ -355,7 +356,7 @@
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 NSLog(@"解除绑定结果：%@", responseObj);
-                HUDNormal(@"已解除绑定")
+                HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))
                 self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
                 //发送解除绑定成功通知
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
@@ -373,8 +374,8 @@
                 }
                 self.versionNumber.hidden = YES;
                 self.macAddress.hidden = YES;
-                self.hintLabel.text = @"还没有连接设备，点击连接";
-                self.lblStatue.text = @"未绑定";
+                self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
+                self.lblStatue.text = INTERNATIONALSTRING(@"未绑定");
                 if (self.timer) {
                     [self.timer setFireDate:[NSDate distantFuture]];
                 }
@@ -401,17 +402,26 @@
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
     NSString *versionStr;
+    NSString *typeStr;
     if ([BlueToothDataManager shareManager].versionNumber) {
         versionStr= [BlueToothDataManager shareManager].versionNumber;
     } else {
-        versionStr = @"1";
+        versionStr = @"1.0.0";
     }
-    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:versionStr, @"Version", nil];
+    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        typeStr = @"0";
+    } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+        typeStr = @"1";
+    } else {
+        typeStr = @"0";
+        NSLog(@"连接的类型有问题");
+    }
+    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:versionStr, @"Version", typeStr, @"DeviceType", nil];
     [SSNetworkRequest getRequest:apiDeviceBraceletOTA params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"空中升级的请求结果 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
-                [self dj_alertAction:self alertTitle:@"手环固件有更新" actionTitle:@"升级" message:responseObj[@"data"][@"Descr"] alertAction:^{
+                [self dj_alertAction:self alertTitle:@"设备固件有更新" actionTitle:@"升级" message:responseObj[@"data"][@"Descr"] alertAction:^{
                     //点击升级
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"OTAAction" object:responseObj[@"data"][@"Url"]];
                 }];
@@ -425,7 +435,7 @@
             NSLog(@"请求失败");
         }
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络貌似有问题")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         //
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -469,7 +479,7 @@
                 }
             }
         } else {
-            HUDNormal(@"未连接手环")
+            HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
         }
     }
     if (indexPath.section == 1) {
@@ -477,14 +487,14 @@
             if ([BlueToothDataManager shareManager].isConnected) {
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"searchMyBluetooth" object:@"searchMyBluetooth"];
             } else {
-                HUDNormal(@"未连接手环")
+                HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
             }
         }
         if (indexPath.row == 1) {
             if ([BlueToothDataManager shareManager].isConnected) {
                 [self otaDownload];
             } else {
-                HUDNormal(@"未连接手环")
+                HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
             }
         }
     }

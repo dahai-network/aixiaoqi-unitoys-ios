@@ -1869,7 +1869,7 @@ typedef enum : NSUInteger {
     [SSNetworkRequest getRequest:apiUnBind params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"解除绑定结果：%@", responseObj);
-            HUDNormal(@"绑定失败")
+            HUDNormal(INTERNATIONALSTRING(@"绑定失败"))
             [BlueToothDataManager shareManager].isBounded = NO;
             [BlueToothDataManager shareManager].isConnected = NO;
             [BlueToothDataManager shareManager].isRegisted = NO;
@@ -2652,7 +2652,7 @@ typedef enum : NSUInteger {
             //发送绑定请求
             [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
 //             [self showAlertWithMessage:@"请点击钥匙扣按钮确认绑定"];
-            HUDNoStop1(@"请点击钥匙扣按钮确认绑定")
+            HUDNoStop1(INTERNATIONALSTRING(@"请点击钥匙扣按钮确认绑定"))
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![BlueToothDataManager shareManager].isAllowToBound) {
                     HUDStop
@@ -2862,7 +2862,7 @@ typedef enum : NSUInteger {
                 [BlueToothDataManager shareManager].isAllowToBound = YES;
                 [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"01"];
                 HUDStop
-                HUDNormal(@"绑定成功")
+                HUDNormal(INTERNATIONALSTRING(@"绑定成功"))
                 //对卡上电
                 [self phoneCardToUpeLectrify:@"01"];
                 break;

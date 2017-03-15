@@ -31,7 +31,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"正在绑定";
+    self.title = INTERNATIONALSTRING(@"正在绑定");
     
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectedSuccess) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
@@ -90,7 +90,7 @@
         self.time = 0;
         [self.timer setFireDate:[NSDate distantFuture]];
         self.tabBarController.tabBar.hidden = YES;
-        self.bindDeviceVC.hintStrFirst = @"连接中";
+        self.bindDeviceVC.hintStrFirst = INTERNATIONALSTRING(@"连接中");
         [self.navigationController pushViewController:self.bindDeviceVC animated:YES];
     }
 }
@@ -115,7 +115,7 @@
     if (self.time == BLESCANTIME * 2) {
         [self.timer setFireDate:[NSDate distantFuture]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
-        [self dj_alertAction:self alertTitle:nil actionTitle:@"重试" message:@"未能搜索到爱小器手环" alertAction:^{
+        [self dj_alertAction:self alertTitle:nil actionTitle:@"重试" message:@"未能搜索到爱小器设备" alertAction:^{
             self.time = 0;
             [self.timer setFireDate:[NSDate distantPast]];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
@@ -156,11 +156,11 @@
 }
 
 - (void)dj_alertAction:(UIViewController *)controller alertTitle:(NSString *)alertTitle actionTitle:(NSString *)actionTitle message:(NSString *)message alertAction:(void (^)())alertAction {
-    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:alertTitle message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [self.navigationController popViewControllerAnimated:YES];
     }];
-    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:actionTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(actionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         alertAction();
     }];
     [alertVC addAction:cancelAction];

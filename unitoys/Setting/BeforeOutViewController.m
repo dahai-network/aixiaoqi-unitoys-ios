@@ -24,7 +24,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     UIButton *btnBuyPackage = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 100, 44)];
-    [btnBuyPackage setTitle:@"购买套餐" forState:UIControlStateNormal];
+    [btnBuyPackage setTitle:INTERNATIONALSTRING(@"购买套餐") forState:UIControlStateNormal];
     [btnBuyPackage setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [btnBuyPackage addTarget:self action:@selector(buyPackage) forControlEvents:UIControlEventTouchUpInside];
     
@@ -118,28 +118,28 @@
         //order_actived
         switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
             case 0:
-                [cell.btnOrderStatus setTitle:@"未激活" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 break;
             case 1:
-                [cell.btnOrderStatus setTitle:@"已激活" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
                 break;
             case 2:
-                [cell.btnOrderStatus setTitle:@"已过期" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 break;
             case 3:
-                [cell.btnOrderStatus setTitle:@"已取消" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 break;
             case 4:
-                [cell.btnOrderStatus setTitle:@"激活失败" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 break;
                 
             default:
-                [cell.btnOrderStatus setTitle:@"未知状态" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 break;
         }
@@ -161,7 +161,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return @"已购套餐";
+    return INTERNATIONALSTRING(@"已购套餐");
 }
 
 @end
