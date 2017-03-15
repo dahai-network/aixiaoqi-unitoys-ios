@@ -176,12 +176,12 @@
     //判断定位权限
     if([UIApplication sharedApplication].backgroundRefreshStatus == UIBackgroundRefreshStatusDenied)
     {
-        alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"应用没有开启后台定位功能，需要在在设置->通用->后台应用刷新开启" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        alert = [[UIAlertView alloc]initWithTitle:INTERNATIONALSTRING(@"提示") message:INTERNATIONALSTRING(@"应用没有开启后台定位功能，需要在在设置->通用->后台应用刷新开启") delegate:nil cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil];
         [alert show];
     }
     else if ([UIApplication sharedApplication].backgroundRefreshStatus == UIBackgroundRefreshStatusRestricted)
     {
-        alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"设备不可以定位" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+        alert = [[UIAlertView alloc]initWithTitle:INTERNATIONALSTRING(@"提示") message:INTERNATIONALSTRING(@"设备不可以定位") delegate:nil cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil];
         [alert show];
     }
     else
@@ -411,7 +411,7 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"cardNumberNotTrue" object:HOMESTATUETITLE_NOSIGNAL];
-            [[[UIAlertView alloc] initWithTitle:@"卡注册失败" message:@"您的电话卡可能出问题了，请核查号码是否能正常使用" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         });
     }
 }
@@ -1088,7 +1088,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             
             //        [self loadLoginViewController];
             
-            HUDNormal(@"网络异常")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
             NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
             if (userdata) {
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -1194,14 +1194,14 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     if ([contentType isEqualToString:@"SMSReceiveNew"]) {
         //收到对方发送的短信
         NSString *name = [self checkLinkNameWithPhoneStr:extras[@"Tel"]];
-        [self addNotificationWithTitle:[NSString stringWithFormat:@"收到%@发送给你的短信", name] body:extras[@"SMSContent"] userInfo:userInfo];
+        [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:extras[@"SMSContent"] userInfo:userInfo];
     } if ([contentType isEqualToString:@"SMSSendResult"]) {
         //发送短信成功
         if ([extras[@"Status"] isEqualToString:@"1"]) {
-            [self addNotificationWithTitle:@"短信发送提醒" body:content userInfo:userInfo];
+            [self addNotificationWithTitle:INTERNATIONALSTRING(@"短信发送提醒") body:content userInfo:userInfo];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuChange" object:@"MessageStatu" userInfo:userInfo];
         } else if ([extras[@"Status"] isEqualToString:@"2"]) {
-            [self addNotificationWithTitle:@"短信发送提醒" body:@"短信发送失败！" userInfo:userInfo];
+            [self addNotificationWithTitle:INTERNATIONALSTRING(@"短信发送提醒") body:INTERNATIONALSTRING(@"短信发送失败！") userInfo:userInfo];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuChange" object:@"MessageStatu" userInfo:userInfo];
         } else {
             NSLog(@"收到短信发送结果的推送，状态码有问题");
@@ -1404,7 +1404,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"AlipayComplete" object:resultDic];//[resultDic objectForKey:@"result"]];
     }else{
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[resultDic objectForKey:@"memo"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[resultDic objectForKey:@"memo"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
     }
 }
 
@@ -1461,7 +1461,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
         NSString *name = [self checkLinkNameWithPhoneStr:userInfo[@"Tel"]];
-        [self addNotificationWithTitle:[NSString stringWithFormat:@"收到%@发来的短信", name] body:userInfo[@"SMSContent"] userInfo:userInfo];
+        [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:userInfo[@"SMSContent"] userInfo:userInfo];
     } else {
         // 本地通知
         completionHandler(UNNotificationPresentationOptionBadge|UNNotificationPresentationOptionSound|UNNotificationPresentationOptionAlert); // 需要执行这个方法，选择是否提醒用户，有Badge、Sound、Alert三种类型可以设置
@@ -1487,8 +1487,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     
     [JPUSHService handleRemoteNotification:userInfo];
     NSString *name = [self checkLinkNameWithPhoneStr:userInfo[@"Tel"]];
-    [self addNotificationWithTitle:[NSString stringWithFormat:@"收到%@发来的短信", name] body:userInfo[@"SMSContent"] userInfo:userInfo];
-    completionHandler(UIBackgroundFetchResultNewData);
+    [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:userInfo[@"SMSContent"] userInfo:userInfo];
     
     NSLog(@" -- %@", userInfo);
 }

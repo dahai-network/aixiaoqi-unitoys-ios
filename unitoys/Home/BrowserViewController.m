@@ -19,7 +19,7 @@
     if (self.titleStr && ![self.titleStr isEqualToString:@"null"]) {
         self.title = self.titleStr;
     } else {
-        self.title = @"广告";
+        self.title = INTERNATIONALSTRING(@"广告");
     }
     
     [self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.loadUrl]]];

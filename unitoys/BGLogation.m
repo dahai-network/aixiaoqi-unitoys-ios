@@ -8,6 +8,7 @@
 
 #import "BGLogation.h"
 #import "BGTask.h"
+#import "global.h"
 @interface BGLogation()
 {
     BOOL isCollect;
@@ -125,12 +126,12 @@
     {
         case kCLErrorNetwork: // general, network-related error
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"网络错误" message:@"请检查网络连接" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"网络错误") message:INTERNATIONALSTRING(@"请检查网络连接") delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
         }
             break;
         case kCLErrorDenied:{
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"请开启后台服务" message:@"应用没有不可以定位，需要在在设置/通用/后台应用刷新开启" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"请开启后台服务") message:INTERNATIONALSTRING(@"应用没有不可以定位，需要在在设置->通用->后台应用刷新开启") delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
             [alert show];
         }
             break;

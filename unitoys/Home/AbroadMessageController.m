@@ -31,7 +31,7 @@
 - (void)initData
 {
     self.tableView.tableFooterView = [UIView new];
-    self.title = @"已购境外套餐";
+    self.title = INTERNATIONALSTRING(@"已购境外套餐");
     [self.tableView registerNib:[UINib nibWithNibName:@"OrderCell" bundle:nil] forCellReuseIdentifier:@"OrderCell"];
 }
 
@@ -89,38 +89,38 @@
         //order_actived
         switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
             case 0:
-                [cell.btnOrderStatus setTitle:@"未激活" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 1:
                 if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                    [cell.btnOrderStatus setTitle:[NSString stringWithFormat:@"剩余%@分钟", dicOrder[@"RemainingCallMinutes"]] forState:UIControlStateNormal];
+                    [cell.btnOrderStatus setTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                     [cell.btnOrderStatus setImage:nil forState:UIControlStateNormal];
                 } else {
-                    [cell.btnOrderStatus setTitle:@"已激活" forState:UIControlStateNormal];
+                    [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
                     [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
                 }
                 [cell.btnOrderStatus setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
                 break;
             case 2:
-                [cell.btnOrderStatus setTitle:@"已过期" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 3:
-                [cell.btnOrderStatus setTitle:@"已取消" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 4:
-                [cell.btnOrderStatus setTitle:@"激活失败" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
                 
             default:
-                [cell.btnOrderStatus setTitle:@"未知状态" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;

@@ -377,7 +377,7 @@ typedef enum : NSUInteger {
             [self scanAndConnectDevice];
         }
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络貌似有问题")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiDeviceBracelet"];
         if (responseObj) {
             self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
@@ -498,7 +498,7 @@ typedef enum : NSUInteger {
             // 关闭文件
             [self.writeHandle closeFile];
             self.writeHandle = nil;
-            self.progressNumberLabel.text = @"正在重启蓝牙";
+            self.progressNumberLabel.text = INTERNATIONALSTRING(@"正在重启蓝牙");
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
                 
@@ -553,7 +553,7 @@ typedef enum : NSUInteger {
 
 - (void)didErrorOccur:(enum DFUError)error withMessage:(NSString *)message {
     NSLog(@"ERROR %ld:%@", (long)error, message);
-    self.progressNumberLabel.text = @"升级失败\n请重新启动爱小器App";
+    self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n请重新启动爱小器App");
 //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        self.progressWindow = nil;
 //    });
@@ -570,7 +570,7 @@ typedef enum : NSUInteger {
 //    NSLog(@"当前百分比%f", (float)progress/100);
     if (progress == 100) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.progressNumberLabel.text = @"升级成功\n请重新启动爱小器App";
+            self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级成功\n请重新启动爱小器App");
         });
     }
 }
@@ -601,7 +601,7 @@ typedef enum : NSUInteger {
         [self.progressWindow addSubview:littleView];
         
         self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, CGRectGetWidth(littleView.frame)-20, 21)];
-        self.titleLabel.text = @"固件升级";
+        self.titleLabel.text = INTERNATIONALSTRING(@"固件升级");
         self.titleLabel.textAlignment = NSTextAlignmentCenter;
         [littleView addSubview:self.titleLabel];
         
@@ -609,7 +609,7 @@ typedef enum : NSUInteger {
         self.progressNumberLabel.textAlignment = NSTextAlignmentCenter;
         self.progressNumberLabel.numberOfLines = 0;
         self.progressNumberLabel.font = [UIFont systemFontOfSize:17];
-        self.progressNumberLabel.text = @"正在下载升级文件";
+        self.progressNumberLabel.text = INTERNATIONALSTRING(@"正在下载升级文件");
         [littleView addSubview:self.progressNumberLabel];
         
         self.progressView = [[TTRangeSlider alloc] initWithFrame:CGRectMake(10, littleView.frame.size.height-30, CGRectGetWidth(littleView.frame)-20, 20)];
@@ -879,12 +879,12 @@ typedef enum : NSUInteger {
                             [self sendICCIDMessage];
                         }
                     } else {
-                        HUDNormal(@"电话卡运营商不属于三大运营商")
+                        HUDNormal(INTERNATIONALSTRING(@"电话卡运营商不属于三大运营商"))
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
                     }
                 });
             } else {
-                HUDNormal(@"您还没有购买通话套餐")
+                HUDNormal(INTERNATIONALSTRING(@"您还没有购买通话套餐"))
                 [BlueToothDataManager shareManager].isHavePackage = NO;
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOPACKAGE];
             }
@@ -909,17 +909,17 @@ typedef enum : NSUInteger {
                             [self sendICCIDMessage];
                         }
                     } else {
-                        HUDNormal(@"电话卡运营商不属于三大运营商")
+                        HUDNormal(INTERNATIONALSTRING(@"电话卡运营商不属于三大运营商"))
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
                     }
                 });
             } else {
-                HUDNormal(@"您还没有购买通话套餐")
+                HUDNormal(INTERNATIONALSTRING(@"您还没有购买通话套餐"))
                 [BlueToothDataManager shareManager].isHavePackage = NO;
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOPACKAGE];
             }
         }else{
-            HUDNormal(@"网络貌似有问题")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -953,7 +953,7 @@ typedef enum : NSUInteger {
             [self phoneCardToUpeLectrify:@"03"];
             [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:responseObj[@"data"][@"Data"]];
         }else{
-            HUDNormal(@"网络貌似有问题")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -972,7 +972,7 @@ typedef enum : NSUInteger {
             NSLog(@"%@", responseObj);
             HUDStop;
             [BlueToothDataManager shareManager].isShowHud = NO;
-            HUDNormal(@"激活成功")
+            HUDNormal(INTERNATIONALSTRING(@"激活成功"))
             [self paySuccess];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderSuccess" object:@"actionOrderSuccess"];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -1276,7 +1276,7 @@ typedef enum : NSUInteger {
     BrowserViewController *browserViewController = [mainStory instantiateViewControllerWithIdentifier:@"browserViewController"];
     if (browserViewController) {
         browserViewController.loadUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"dualSimStandbyTutorialUrl"];
-        browserViewController.titleStr = @"双卡双待使用教程";
+        browserViewController.titleStr = INTERNATIONALSTRING(@"双卡双待使用教程");
         [self.navigationController pushViewController:browserViewController animated:YES];
     }
 }
@@ -1337,7 +1337,7 @@ typedef enum : NSUInteger {
             [self viewOrders];
             [self.tableView reloadData];
         }else{
-            HUDNormal(@"网络貌似有问题")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
     } headers:self.headers];
 }
@@ -1390,7 +1390,7 @@ typedef enum : NSUInteger {
             [BlueToothDataManager shareManager].distance = _lblKM.text;
             [BlueToothDataManager shareManager].consume = _lblKcal.text;
         }else{
-            HUDNormal(@"网络貌似有问题")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
         
         NSLog(@"啥都没：%@",[error description]);
@@ -1432,33 +1432,33 @@ typedef enum : NSUInteger {
             }else{
                 switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
                     case 0:
-                        [self.btnOrderStatus1 setTitle:@"未激活" forState:UIControlStateNormal];
+                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
                         [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 1:
                         if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus1 setTitle:[NSString stringWithFormat:@"剩余%@分钟", dicOrder[@"RemainingCallMinutes"]] forState:UIControlStateNormal];
+                            [self.btnOrderStatus1 setTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                             [self.btnOrderStatus1 setImage:nil forState:UIControlStateNormal];
                         } else {
-                            [self.btnOrderStatus1 setTitle:@"已激活" forState:UIControlStateNormal];
+                            [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
                             [self.btnOrderStatus1 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
                         }
                         [self.btnOrderStatus1 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
                         break;
                     case 2:
-                        [self.btnOrderStatus1 setTitle:@"已过期" forState:UIControlStateNormal];
+                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
                         [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 3:
-                        [self.btnOrderStatus1 setTitle:@"已取消" forState:UIControlStateNormal];
+                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
                         [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 4:
-                        [self.btnOrderStatus1 setTitle:@"激活失败" forState:UIControlStateNormal];
+                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
                         [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     default:
-                        [self.btnOrderStatus1 setTitle:@"未知状态" forState:UIControlStateNormal];
+                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
                         [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                 }
@@ -1477,34 +1477,34 @@ typedef enum : NSUInteger {
             }else{
                 switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
                     case 0:
-                        [self.btnOrderStatus2 setTitle:@"未激活" forState:UIControlStateNormal];
+                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
                         [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 1:
                         if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus2 setTitle:[NSString stringWithFormat:@"剩余%@分钟", dicOrder[@"RemainingCallMinutes"]] forState:UIControlStateNormal];
+                            [self.btnOrderStatus2 setTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                             [self.btnOrderStatus2 setImage:nil forState:UIControlStateNormal];
                         } else {
-                            [self.btnOrderStatus2 setTitle:@"已激活" forState:UIControlStateNormal];
+                            [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
                             [self.btnOrderStatus2 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
                         }
                         [self.btnOrderStatus2 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
                         break;
                     case 2:
-                        [self.btnOrderStatus2 setTitle:@"已过期" forState:UIControlStateNormal];
+                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
                         [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 3:
-                        [self.btnOrderStatus2 setTitle:@"已取消" forState:UIControlStateNormal];
+                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
                         [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 4:
-                        [self.btnOrderStatus2 setTitle:@"激活失败" forState:UIControlStateNormal];
+                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
                         [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                         
                     default:
-                        [self.btnOrderStatus2 setTitle:@"未知状态" forState:UIControlStateNormal];
+                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
                         [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                 }
@@ -1524,34 +1524,34 @@ typedef enum : NSUInteger {
             }else{
                 switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
                     case 0:
-                        [self.btnOrderStatus3 setTitle:@"未激活" forState:UIControlStateNormal];
+                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
                         [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 1:
                         if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus3 setTitle:[NSString stringWithFormat:@"剩余%@分钟", dicOrder[@"RemainingCallMinutes"]] forState:UIControlStateNormal];
+                            [self.btnOrderStatus3 setTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                             [self.btnOrderStatus3 setImage:nil forState:UIControlStateNormal];
                         } else {
-                            [self.btnOrderStatus3 setTitle:@"已激活" forState:UIControlStateNormal];
+                            [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
                             [self.btnOrderStatus3 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
                         }
                         [self.btnOrderStatus3 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
                         break;
                     case 2:
-                        [self.btnOrderStatus3 setTitle:@"已过期" forState:UIControlStateNormal];
+                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
                         [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 3:
-                        [self.btnOrderStatus3 setTitle:@"已取消" forState:UIControlStateNormal];
+                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
                         [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                     case 4:
-                        [self.btnOrderStatus3 setTitle:@"激活失败" forState:UIControlStateNormal];
+                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
                         [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                         
                     default:
-                        [self.btnOrderStatus3 setTitle:@"未知状态" forState:UIControlStateNormal];
+                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
                         [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                         break;
                 }
@@ -1606,7 +1606,7 @@ typedef enum : NSUInteger {
             self.AdView.imageURLStringsGroup = self.arrPicUrls;
             self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
         }else{
-            HUDNormal(@"网络貌似有问题")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
 
         
@@ -1700,7 +1700,7 @@ typedef enum : NSUInteger {
             HUDNormal(responseObj[@"msg"])
         }
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络貌似有问题")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetRegStatus"];
         if (responseObj) {
@@ -1761,7 +1761,7 @@ typedef enum : NSUInteger {
             self.arrCountry = [responseObj objectForKey:@"data"];
             [self.hotCollectionView reloadData];
         }else{
-            HUDNormal(@"网络貌似有问题")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -1785,7 +1785,7 @@ typedef enum : NSUInteger {
                 [self bindBoundDevice];
             } else if ([responseObj[@"data"][@"BindStatus"] isEqualToString:@"1"]) {
                 //已绑定
-                HUDNormal(@"此设备已被其他用户绑定")
+                HUDNormal(INTERNATIONALSTRING(@"此设备已被其他用户绑定"))
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
             } else {
                 NSLog(@"无法识别的判断");
@@ -1798,14 +1798,14 @@ typedef enum : NSUInteger {
             HUDNormal(responseObj[@"msg"])
         }
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络貌似有问题")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
 - (void)showAlertViewWithMessage:(NSString *)message {
-    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"searchNoDevice" object:@"searchNoDevice"];
     }];
     [alertVC addAction:certailAction];
@@ -2075,7 +2075,7 @@ typedef enum : NSUInteger {
         [self checkDeviceIsBound];
 //        [self bindBoundDevice];
     } else {
-        [self showAlertWithMessage:@"还没有连接蓝牙，请先连接设备"];
+        [self showAlertWithMessage:@"还没有连接设备，请先连接设备"];
     }
 }
 
@@ -2088,7 +2088,7 @@ typedef enum : NSUInteger {
         }
         [BlueToothDataManager shareManager].isTcpConnected = NO;
     } else {
-        [self showAlertWithMessage:@"设备本没有绑定"];
+        [self showAlertWithMessage:@"该账号没有绑定设备"];
     }
 }
 
@@ -2366,7 +2366,7 @@ typedef enum : NSUInteger {
                                 self.peripheral = peripheral;
                                 [self.mgr connectPeripheral:self.peripheral options:nil];
                             } else {
-                                HUDNormal(@"请先忽略您之前的设备")
+                                HUDNormal(INTERNATIONALSTRING(@"请忽略您之前的设备"))
                             }
                         }
                     }
@@ -2385,7 +2385,7 @@ typedef enum : NSUInteger {
             if ([BlueToothDataManager shareManager].executeNum < 3) {
                 //第一次什么都不执行
             } else {
-                HUDNormal(@"连接蓝牙设备才能正常使用")
+                HUDNormal(INTERNATIONALSTRING(@"连接蓝牙设备才能正常使用"))
             }
         }
         [BlueToothDataManager shareManager].isOpened = NO;
@@ -2723,7 +2723,7 @@ typedef enum : NSUInteger {
         if (![dataStr isEqualToString:@"<88800310 0002>"]) {
             NSLog(@"蓝牙未连接");
             dispatch_async(dispatch_get_main_queue(), ^{
-                HUDNormal(@"蓝牙未连接")
+                HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
             });
         }
     }
@@ -2745,11 +2745,11 @@ typedef enum : NSUInteger {
 - (void)registFailAction {
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
     if ([BlueToothDataManager shareManager].isNeedToResert) {
-        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:@"注册失败，是否复位？" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:INTERNATIONALSTRING(@"注册失败，是否复位？") preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             [BlueToothDataManager shareManager].isNeedToResert = NO;
         }];
-        UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [BlueToothDataManager shareManager].isNeedToResert = YES;
             //发送复位请求
             [self sendMessageToBLEWithType:BLESystemReset validData:nil];
@@ -3161,7 +3161,7 @@ typedef enum : NSUInteger {
                             [self phoneCardToOutageNew];
                             NSLog(@"返回数据有问题");
                             HUDStop;
-                            HUDNormal(@"激活失败")
+                            HUDNormal(INTERNATIONALSTRING(@"激活失败"))
                             [self paySuccess];
                         }
                     }else {

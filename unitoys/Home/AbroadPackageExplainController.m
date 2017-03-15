@@ -26,21 +26,21 @@
 
 - (void)initData
 {
-    self.title = @"境外套餐教程";
+    self.title = INTERNATIONALSTRING(@"境外套餐教程");
     self.titlesArray = @[
                          @{
                              @"cellImage" : @"set_beforesetout",
-                             @"cellTitle" :@"出境前激活套餐",
+                             @"cellTitle" :INTERNATIONALSTRING(@"出境前激活套餐"),
                              @"cellAction" : @"activationAction",
                              },
                          @{
                              @"cellImage" : @"set_isout",
-                             @"cellTitle" :@"在境外使用",
+                             @"cellTitle" :INTERNATIONALSTRING(@"在境外使用"),
                              @"cellAction" : @"userAction",
                              },
                          @{
                              @"cellImage" : @"set_isback",
-                             @"cellTitle" :@"回国后恢复设置",
+                             @"cellTitle" :INTERNATIONALSTRING(@"回国后恢复设置"),
                              @"cellAction" : @"recoveryAction",
                              },
                          ];
@@ -80,7 +80,7 @@
     BrowserViewController *browserViewController = [mainStory instantiateViewControllerWithIdentifier:@"browserViewController"];
     if (browserViewController) {
         browserViewController.loadUrl = [[NSUserDefaults standardUserDefaults] objectForKey:@"beforeGoingAbroadTutorialUrl"];
-        browserViewController.titleStr = @"激活境外套餐教程";
+        browserViewController.titleStr = INTERNATIONALSTRING(@"激活境外套餐教程");
         [self.navigationController pushViewController:browserViewController animated:YES];
     }
 }

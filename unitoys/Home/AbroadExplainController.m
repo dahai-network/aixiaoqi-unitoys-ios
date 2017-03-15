@@ -76,34 +76,34 @@
     if (self.currentExplainType == ExplainTypeAbroad) {
         self.title = @"在境外";
         NSDictionary *page1 = @{
-                                @"nameTitle" : @"插电话卡",
-                                @"detailTitle" : @"手环和手机内置的SIM卡交换位置。",
+                                @"nameTitle" : INTERNATIONALSTRING(@"插电话卡"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"手环和手机内置的SIM卡交换位置。"),
                                 @"explainImage" : @"set_afteroutstep1",
                                 };
         NSDictionary *page2 = @{
-                                @"nameTitle" : @"设置APN",
-                                @"detailTitle" : @"点击“安装APN”按钮，跳转到系统设置的安装APN界面，然后点击右上角“安装”按钮，进入”同意“界面再点击右上角“安装”安装，选择安装。",
+                                @"nameTitle" : INTERNATIONALSTRING(@"设置APN"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"点击“安装APN”按钮，跳转到系统设置的安装APN界面，然后点击右上角“安装”按钮，进入”同意“界面再点击右上角“安装”安装，选择安装。"),
                                 @"explainImage" : @"set_afteroutstep2",
-                                @"buttonTitle" : @"安装APN",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"安装APN"),
                                 @"buttonAction" : @"apnSettingAction",
                                 };
         NSDictionary *page3 = @{
-                                @"nameTitle" : @"关闭4G网络。",
-                                @"detailTitle" : @"在手机的系统设置的网络连接方式中，关闭4G网络，选择2G或3G上网。",
+                                @"nameTitle" : INTERNATIONALSTRING(@"关闭4G网络。"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"在手机的系统设置的网络连接方式中，关闭4G网络，选择2G或3G上网。"),
                                 @"explainImage" : @"set_afteroutstep3",
-                                @"buttonTitle" : @"打开系统设置",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"打开系统设置"),
                                 @"buttonAction" : @"gotoSystemSettingAction",
                                 };
         NSDictionary *page4 = @{
-                                @"nameTitle" : @"开启数据漫游",
-                                @"detailTitle" : @"在手机的系统设置的数据漫游管理界面，开启数据漫游。",
+                                @"nameTitle" : INTERNATIONALSTRING(@"开启数据漫游"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"在手机的系统设置的数据漫游管理界面，开启数据漫游。"),
                                 @"explainImage" : @"set_afteroutstep4",
-                                @"buttonTitle" : @"打开系统设置",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"打开系统设置"),
                                 @"buttonAction" : @"gotoSystemSettingAction",
                                 };
         NSDictionary *page5 = @{
-                                @"nameTitle" : @"接打电话，收发短信",
-                                @"detailTitle" : @"确保手机能够上网后，重启APP，点击主页左上角按钮，查看手环内电话卡的状态，如果信号良好，即可接打电话，收发短信。",
+                                @"nameTitle" : INTERNATIONALSTRING(@"接打电话，收发短信"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"确保手机能够上网后，重启APP，点击主页左上角按钮，查看手环内电话卡的状态，如果信号良好，即可接打电话，收发短信。"),
                                 };
         //根据类型确定需要添加的页面
         [self.dataArray addObject:page1];
@@ -119,29 +119,29 @@
     }else if (self.currentExplainType == ExplainTypeInternal){
         self.title = @"回国后";
         NSDictionary *page1 = @{
-                                @"nameTitle" : @"插电话卡",
-                                @"detailTitle" : @"手环和手机内置的SIM卡交换位置",
+                                @"nameTitle" : INTERNATIONALSTRING(@"插电话卡"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"手环和手机内置的SIM卡交换位置"),
                                 @"explainImage" : @"set_afteroutstep1",
                                 };
         NSDictionary *page2 = @{
-                                @"nameTitle" : @"删除APN",
-                                @"detailTitle" : @"点击“删除APN”按钮，跳转到系统设置的“描述文件”界面，选择“爱小器APN”，再点击“删除描述文件”。",
+                                @"nameTitle" : INTERNATIONALSTRING(@"删除APN"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"点击“删除APN”按钮，跳转到系统设置的“描述文件”界面，选择“爱小器APN”，再点击“删除描述文件”。"),
                                 @"explainImage" : @"set_afteroutstep5",
-                                @"buttonTitle" : @"删除APN",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"删除APN"),
                                 @"buttonAction" : @"apnDeleteAction",
                                 };
         NSDictionary *page3 = @{
-                                @"nameTitle" : @"开启4G网络。",
-                                @"detailTitle" : @"在手机的系统设置的网络连接方式中，选择4G网络。",
+                                @"nameTitle" : INTERNATIONALSTRING(@"开启4G网络。"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"在手机的系统设置的网络连接方式中，选择4G网络。"),
                                 @"explainImage" : @"set_afteroutstep3",
-                                @"buttonTitle" : @"打开系统设置",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"打开系统设置"),
                                 @"buttonAction" : @"gotoSystemSettingAction",
                                 };
         NSDictionary *page4 = @{
-                                @"nameTitle" : @"关闭数据漫游",
-                                @"detailTitle" : @"在手机的系统设置的数据漫游管理界面，关闭数据漫游。",
+                                @"nameTitle" : INTERNATIONALSTRING(@"关闭数据漫游"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"在手机的系统设置的数据漫游管理界面，关闭数据漫游。"),
                                 @"explainImage" : @"set_afteroutstep4",
-                                @"buttonTitle" : @"打开系统设置",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"打开系统设置"),
                                 @"buttonAction" : @"gotoSystemSettingAction",
                                 };
         //根据类型确定需要添加的页面

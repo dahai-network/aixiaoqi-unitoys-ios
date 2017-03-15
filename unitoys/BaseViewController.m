@@ -556,13 +556,13 @@
     // 1.判断是否安装微信
     NSLog(@"%d",[WXApi isWXAppInstalled]);
     if (![WXApi isWXAppInstalled]) {
-        HUDNormal(@"您尚未安装\"微信App\",请先安装后再返回支付");
+        HUDNormal(INTERNATIONALSTRING(@"您尚未安装\"微信App\",请先安装后再返回支付"));
         return NO;
     }
     
     // 2.判断微信的版本是否支持最新Api
     if (![WXApi isWXAppSupportApi]) {
-        HUDNormal(@"您微信当前版本不支持此功能,请先升级微信应用");
+        HUDNormal(INTERNATIONALSTRING(@"您微信当前版本不支持此功能,请先升级微信应用"));
         return NO;
     }
     return YES;

@@ -309,8 +309,8 @@ withDateFormat:(NSString *)format
 }
 
 - (void)showAlertWithMessage:(NSString *)message {
-    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
     }];
     [alertVC addAction:certailAction];
     [self presentViewController:alertVC animated:YES completion:nil];
@@ -329,11 +329,11 @@ withDateFormat:(NSString *)format
 }
 
 - (void)dj_alertAction:(UIViewController *)controller alertTitle:(NSString *)alertTitle leftActionTitle:(NSString *)leftActionTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message leftAlertAction:(void (^)())leftAlertAction rightAlertAction:(void (^)())rightAlertAction {
-    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:alertTitle message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:leftActionTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(leftActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         leftAlertAction();
     }];
-    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:rightActionTitle style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         rightAlertAction();
     }];
     [alertVC addAction:cancelAction];
@@ -420,13 +420,13 @@ withDateFormat:(NSString *)format
     // 1.判断是否安装微信
     NSLog(@"%d",[WXApi isWXAppInstalled]);
     if (![WXApi isWXAppInstalled]) {
-        HUDNormal(@"您尚未安装\"微信App\",请先安装后再返回支付");
+        HUDNormal(INTERNATIONALSTRING(@"您尚未安装\"微信App\",请先安装后再返回支付"));
         return NO;
     }
     
     // 2.判断微信的版本是否支持最新Api
     if (![WXApi isWXAppSupportApi]) {
-        HUDNormal(@"您微信当前版本不支持此功能,请先升级微信应用");
+        HUDNormal(INTERNATIONALSTRING(@"您微信当前版本不支持此功能,请先升级微信应用"));
         return NO;
     }
     return YES;
