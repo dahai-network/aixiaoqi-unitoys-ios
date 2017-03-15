@@ -34,7 +34,7 @@
 - (void)initData
 {
     self.phoneDatas = [NSMutableArray array];
-    self.title = @"详情";
+    self.title = INTERNATIONALSTRING(@"详情");
     
     if ([self.toPhoneStr containsString:@","]) {
 //        self.phoneName = [self checkLinkNameWithPhoneStrMergeGroupName:self.toPhoneStr];
@@ -120,7 +120,7 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeUnitysCallAction" object:[weakSelf formatPhoneNum:number]];
                 }
             } else {
-                HUDNormal(@"手环内sim卡未注册或已掉线")
+                HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
             }
         }
     };

@@ -70,7 +70,7 @@
                                },
                            @{
                                @"TopTitle" : @"*",
-                               @"BottomTitle" : @"全键盘",
+                               @"BottomTitle" : INTERNATIONALSTRING(@"全键盘"),
                                },
                            @{
                                @"TopTitle" : @"0",
@@ -78,7 +78,7 @@
                                },
                            @{
                                @"TopTitle" : @"#",
-                               @"BottomTitle" : @"粘贴",
+                               @"BottomTitle" : INTERNATIONALSTRING(@"粘贴"),
                                },
                            ];
     }

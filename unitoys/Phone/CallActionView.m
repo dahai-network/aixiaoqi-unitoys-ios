@@ -7,6 +7,7 @@
 //
 
 #import "CallActionView.h"
+#import "global.h"
 
 @interface CallActionView ()
 
@@ -64,7 +65,7 @@
         self.btnNetworkCall.layer.cornerRadius = 4;
         self.btnNetworkCall.backgroundColor = [UIColor colorWithRed:54/255.0 green:189/255.0 blue:91/255.0 alpha:1];
         
-        [self.btnNetworkCall setTitle:@"网络电话" forState:UIControlStateNormal];
+        [self.btnNetworkCall setTitle:INTERNATIONALSTRING(@"网络电话") forState:UIControlStateNormal];
         
         [self.btnNetworkCall setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
@@ -74,7 +75,7 @@
         self.btnInteralCall.layer.cornerRadius = 4;
         self.btnInteralCall.backgroundColor = [UIColor colorWithRed:35/255.0 green:148/255.0 blue:220/255.0 alpha:1];
         
-        [self.btnInteralCall setTitle:@"手环电话" forState:UIControlStateNormal];
+        [self.btnInteralCall setTitle:INTERNATIONALSTRING(@"手环电话") forState:UIControlStateNormal];
         
         [self.btnInteralCall setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
@@ -84,7 +85,7 @@
         self.btnCancelCall.layer.cornerRadius = 4;
         self.btnCancelCall.backgroundColor = [UIColor colorWithRed:221/255.0 green:221/255.0 blue:221/255.0 alpha:1];
         
-        [self.btnCancelCall setTitle:@"取消" forState:UIControlStateNormal];
+        [self.btnCancelCall setTitle:INTERNATIONALSTRING(@"取消") forState:UIControlStateNormal];
         
         [self.btnCancelCall setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         

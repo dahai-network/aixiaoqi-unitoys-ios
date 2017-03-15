@@ -38,7 +38,7 @@
     self.tableView.dataSource = self;  //新增
     self.tableView.delegate = self; //控制器成为代理
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"详细信息" style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"详细信息") style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
     [self loadMessages];
     
     self.txtSendText.delegate = self;
@@ -200,7 +200,7 @@
             
             
         } failure:^(id dataObj, NSError *error) {
-            HUDNormalTop(@"网络请求出错")
+            HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
         
@@ -290,14 +290,14 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            HUDNormalTop(@"数据请求失败")
+            HUDNormalTop(INTERNATIONALSTRING(@"请求失败"))
             [self.tableView.mj_header endRefreshing];
         }
         
     } failure:^(id dataObj, NSError *error) {
         //        [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_header endRefreshing];
-        HUDNormalTop(@"网络异常")
+        HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
     } headers:self.headers];
 
 }
@@ -435,7 +435,7 @@
             }
             
         } failure:^(id dataObj, NSError *error) {
-            HUDNormalTop(@"网络请求出错")
+            HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
             NSLog(@"啥都没：%@",[error description]);
             self.btnSend.enabled = YES;
         } headers:self.headers];
@@ -475,7 +475,7 @@
 - (NSArray *)menusItems
 {
     NSMutableArray *items = [NSMutableArray array];
-    [items addObject:[[UIMenuItem alloc] initWithTitle:@"复制" action:@selector(copyText:)]];
+    [items addObject:[[UIMenuItem alloc] initWithTitle:INTERNATIONALSTRING(@"复制") action:@selector(copyText:)]];
     return items;
 }
 

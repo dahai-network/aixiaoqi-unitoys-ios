@@ -25,7 +25,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"套餐详情";
+    self.title = INTERNATIONALSTRING(@"套餐详情");
     
     self.communicateDetailInfo = [[NSDictionary alloc] init];
     self.tableView.tableFooterView = self.footView;
@@ -98,7 +98,7 @@
         if (!self.secondCell) {
             self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"CommunicateDetailTableViewCell" owner:nil options:nil] [1];
         }
-        self.secondCell.lblFirstName.text = @"使用介绍:";
+        self.secondCell.lblFirstName.text = INTERNATIONALSTRING(@"使用介绍:");
         self.secondCell.lblContent.text = self.communicateDetailInfo[@"Features"];
         return self.secondCell; 
     } else {
@@ -107,7 +107,7 @@
         if (!self.secondCell) {
             self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"CommunicateDetailTableViewCell" owner:nil options:nil][1];
         }
-        self.secondCell.lblFirstName.text = @"注意事项:";
+        self.secondCell.lblFirstName.text = INTERNATIONALSTRING(@"注意事项:");
         self.secondCell.lblContent.text = self.communicateDetailInfo[@"Details"];
         return self.secondCell;
     }

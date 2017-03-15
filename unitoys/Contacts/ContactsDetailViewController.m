@@ -62,7 +62,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ContactPhoneCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ContactPhoneCell"];
     
-    cell.lblPhoneLabel.text = @"电话";
+    cell.lblPhoneLabel.text = INTERNATIONALSTRING(@"电话");
     
     cell.lblPhoneNumber.text = [self.arrNumbers objectAtIndex:indexPath.row];
     
@@ -147,7 +147,7 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeUnitysCallAction" object:[weakSelf formatPhoneNum:number]];
                 }
             } else {
-                HUDNormal(@"手环内sim卡未注册或已掉线")
+                HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
             }
         }
     };
@@ -158,7 +158,7 @@
 }
 
 - (IBAction)deleteContact:(id)sender {
-    HUDNormal(@"此功能正在开发中")
+    HUDNormal(INTERNATIONALSTRING(@"此功能正在开发中"))
 }
 
 - (NSString *)formatPhoneNum:(NSString *)phone

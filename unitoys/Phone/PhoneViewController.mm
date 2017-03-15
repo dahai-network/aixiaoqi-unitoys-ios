@@ -438,14 +438,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            HUDNormal(@"数据请求失败")
+            HUDNormal(INTERNATIONALSTRING(@"请求失败"))
             [self.tableView.mj_footer endRefreshing];
         }
         
     } failure:^(id dataObj, NSError *error) {
 //        [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
-        HUDNormal(@"网络异常")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
     } headers:self.headers];
 }
 
@@ -543,7 +543,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     path = [path stringByAppendingPathComponent:@"callrecord2.db"];
     FMDatabase *db = [FMDatabase databaseWithPath:path];
     if (![db open]) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
         return;
     }else{
         //监测数据库中我要需要的表是否已经存在
@@ -746,7 +746,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     db = [FMDatabase databaseWithPath:path];
     
     if (![db open]) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
         return FALSE;
     }else{
         [self insertSqlData:dicPhoneRecord dataBase:db Calltime:timestemp];
@@ -1120,7 +1120,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             
             FMDatabase *db = [FMDatabase databaseWithPath:path];
             if (![db open]) {
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"创建通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
             }else{
                 //查找出错
 //                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
@@ -1399,7 +1399,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 /*呼叫失败，并返回错误代码，代码对应的含义，请参考common_types.h*/
 -(void) OnCallFailed:(CallErrorCode) error_code{
     NSLog([NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code],nil);
-    [[[UIAlertView alloc] initWithTitle:@"错误提示" message:[NSString stringWithFormat:@"呼叫异常,请确认网络或账号正常"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"错误提示") message:[NSString stringWithFormat:INTERNATIONALSTRING(@"呼叫异常,请确认网络或账号正常")] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
     //    [mStatus setText:[NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code]];
     
 }
@@ -1740,7 +1740,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 //电话记录，拨打电话
                 [weakSelf callUnitysNumber:phoneNumber];
             } else {
-                HUDNormal(@"手环内sim卡未注册或已掉线")
+                HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
             }
         }
     };
@@ -1807,11 +1807,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 //数据请求失败
                 NSLog(@"获取最大时长失败");
                 //                    HUDNormal(responseObj[@"msg"])
-                HUDNormal(@"获取通话时长失败")
+                HUDNormal(INTERNATIONALSTRING(@"获取通话时长失败"))
             }
         } failure:^(id dataObj, NSError *error) {
             NSLog(@"有异常：%@",[error description]);
-            HUDNormal(@"网络异常")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         } headers:self.headers];
         
     }
@@ -1820,7 +1820,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)callUnitysNumber :(NSString *)strNumber {
     if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable) {
-        HUDNormal(@"网络错误,请检查网络")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         return;
     }
     
@@ -1846,7 +1846,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 if ([VSWManager shareManager].callPort) {
                     theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
                 }else{
-                    HUDNormal(@"呼叫失败")
+                    HUDNormal(INTERNATIONALSTRING(@"呼叫失败"))
                 }
             }];
         }
@@ -2247,7 +2247,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                                 NSLog(@"%@", dicCallRecord[@"calltype"]);
                             }
                         } else {
-                            HUDNormal(@"手环内sim卡未注册或已掉线")
+                            HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
                         }
                     }
                 };
@@ -2308,7 +2308,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                             NSLog(@"%@", dicCallRecord[@"calltype"]);
                         }
                     } else {
-                        HUDNormal(@"手环内sim卡未注册或已掉线")
+                        HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
                     }
                 }
             };
@@ -2390,7 +2390,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     path = [path stringByAppendingPathComponent:@"callrecord2.db"];
     FMDatabase *db = [FMDatabase databaseWithPath:path];
     if (![db open]) {
-        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"删除通话记录失败" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil] show];
+        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"删除通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
     }else{
         BOOL isDeleteSuccess =[db executeUpdate:@"DELETE FROM CallRecord WHERE calltime = ?",[dicPhoneRecord objectForKey:@"calltime"]];
         if (isDeleteSuccess) {

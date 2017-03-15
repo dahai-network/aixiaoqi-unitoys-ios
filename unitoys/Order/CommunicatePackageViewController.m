@@ -27,7 +27,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"通话套餐";
+    self.title = INTERNATIONALSTRING(@"通话套餐");
     [self checkCommunicatePackageList];
     // Do any additional setup after loading the view from its nib.
 }
@@ -81,7 +81,7 @@
     }
     NSDictionary *dict = self.listArray[indexPath.row];
     cell.lblPackageName.text = dict[@"PackageName"];
-    cell.lblValideDate.text = [NSString stringWithFormat:@"有效期：%@天", dict[@"ExpireDays"]];
+    cell.lblValideDate.text = [NSString stringWithFormat:@"%@：%@%@", INTERNATIONALSTRING(@"有效期"), dict[@"ExpireDays"], INTERNATIONALSTRING(@"天")];
     cell.lblPackagePrice.text = [NSString stringWithFormat:@"￥%@", dict[@"Price"]];
     return cell;
 }

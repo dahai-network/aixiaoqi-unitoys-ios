@@ -49,20 +49,20 @@
             
             switch ([[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue]) {
                 case 0:
-                    [_lblOrderStatus setText:@"套餐状态：未激活"];
+                    [_lblOrderStatus setText:INTERNATIONALSTRING(@"套餐状态：未激活")];
                     self.btnOrderCancel.hidden = NO;
                     break;
                 case 1:
-                    [_lblOrderStatus setText:@"套餐状态：已激活"];
+                    [_lblOrderStatus setText:INTERNATIONALSTRING(@"套餐状态：已激活")];
                     break;
                 case 2:
-                    [_lblOrderStatus setText:@"套餐状态：已过期"];
+                    [_lblOrderStatus setText:INTERNATIONALSTRING(@"套餐状态：已过期")];
                     break;
                 case 3:
-                    [_lblOrderStatus setText:@"套餐状态：已取消"];
+                    [_lblOrderStatus setText:INTERNATIONALSTRING(@"套餐状态：已取消")];
                     break;
                 case 4:
-                    [_lblOrderStatus setText:@"套餐状态：激活失败"];
+                    [_lblOrderStatus setText:INTERNATIONALSTRING(@"套餐状态：激活失败")];
                     break;
                     
                 default:
@@ -74,20 +74,20 @@
             self.lblOrderNum.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"OrderNum"];
             self.lblOrderDate.text = [self formatTime:[self convertDate:[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"OrderDate"]]];
             if ([responseObj[@"data"][@"list"][@"OrderStatus"] isEqualToString:@"0"]) {
-                [self.actionButton setTitle:@"激活套餐" forState:UIControlStateNormal];
+                [self.actionButton setTitle:INTERNATIONALSTRING(@"激活套餐") forState:UIControlStateNormal];
                 self.actionButton.hidden = NO;
             } else if ([responseObj[@"data"][@"list"][@"OrderStatus"] isEqualToString:@"4"]) {
-                [self.actionButton setTitle:@"重新激活" forState:UIControlStateNormal];
+                [self.actionButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
                 self.actionButton.hidden = NO;
             } else {
                 self.actionButton.hidden = YES;
             }
             if ([responseObj[@"data"][@"list"][@"PaymentMethod"] intValue] == 1) {
-                self.lblPaymentMethod.text = @"支付宝支付";
+                self.lblPaymentMethod.text = INTERNATIONALSTRING(@"支付宝支付");
             }else if ([responseObj[@"data"][@"list"][@"PaymentMethod"] intValue] == 2) {
-                self.lblPaymentMethod.text = @"微信支付";
+                self.lblPaymentMethod.text = INTERNATIONALSTRING(@"微信支付");
             } else if ([responseObj[@"data"][@"list"][@"PaymentMethod"] intValue] == 3) {
-                self.lblPaymentMethod.text = @"余额支付";
+                self.lblPaymentMethod.text = INTERNATIONALSTRING(@"余额支付");
             }
             
             self.lblOrderPrice.text = [NSString stringWithFormat:@"￥%.2f",[[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"TotalPrice"] floatValue]];

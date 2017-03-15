@@ -161,7 +161,7 @@ UISearchBarDelegate,UISearchDisplayDelegate>
 //        [_searchBar setBackgroundImage:[UIImage imageNamed:@"ic_searchBar_bgImage"]];
         
         [_searchBar sizeToFit];
-        [_searchBar setPlaceholder:@"搜索"];
+        [_searchBar setPlaceholder:INTERNATIONALSTRING(@"搜索")];
         [_searchBar.layer setBorderWidth:0.5];
         [_searchBar.layer setBorderColor:[UIColor colorWithRed:229.0/255 green:229.0/255 blue:229.0/255 alpha:1].CGColor];
         [_searchBar setDelegate:self];
@@ -339,7 +339,7 @@ UISearchBarDelegate,UISearchDisplayDelegate>
     for (id view in subViews) {
         if ([view isKindOfClass:[UIButton class]]) {
             UIButton* cancelbutton = (UIButton* )view;
-            [cancelbutton setTitle:@"取消" forState:UIControlStateNormal];
+            [cancelbutton setTitle:INTERNATIONALSTRING(@"取消") forState:UIControlStateNormal];
             break;
         }
     }

@@ -70,7 +70,7 @@
         [self.navigationController pushViewController:communicateVC animated:YES];
     }];
     
-    UIAlertAction *secondAlertAction = [UIAlertAction actionWithTitle:@"国际流量套餐" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *secondAlertAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"国际流量套餐") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
         UIViewController *countryListViewController = [mainStory instantiateViewControllerWithIdentifier:@"countryListViewController"];
         if (countryListViewController) {
@@ -79,7 +79,7 @@
         }
     }];
     
-    UIAlertAction *thirdAlertAction = [UIAlertAction actionWithTitle:@"绑定套餐礼包卡" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    UIAlertAction *thirdAlertAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"绑定套餐礼包卡") style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         BindGiftBagCardViewController *bindVC = [[BindGiftBagCardViewController alloc] init];
         [self.navigationController pushViewController:bindVC animated:YES];
     }];
@@ -182,38 +182,38 @@
         //order_actived
         switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
             case 0:
-                [cell.btnOrderStatus setTitle:@"未激活" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 1:
                 if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                    [cell.btnOrderStatus setTitle:[NSString stringWithFormat:@"剩余%@分钟", dicOrder[@"RemainingCallMinutes"]] forState:UIControlStateNormal];
+                    [cell.btnOrderStatus setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                     [cell.btnOrderStatus setImage:nil forState:UIControlStateNormal];
                 } else {
-                    [cell.btnOrderStatus setTitle:@"已激活" forState:UIControlStateNormal];
+                    [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
                     [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
                 }
                 [cell.btnOrderStatus setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
                 break;
             case 2:
-                [cell.btnOrderStatus setTitle:@"已过期" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 3:
-                [cell.btnOrderStatus setTitle:@"已取消" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 4:
-                [cell.btnOrderStatus setTitle:@"激活失败" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
                 
             default:
-                [cell.btnOrderStatus setTitle:@"未知状态" forState:UIControlStateNormal];
+                [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
                 [cell.btnOrderStatus setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
                 [cell.btnOrderStatus setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
@@ -239,7 +239,7 @@
     [super viewDidAppear:animated];
     if (self.isAbroadMessage) {
         if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"isShowAbroadPackageDescView"] boolValue]) {
-            [AbroadPackageDescView showAbroadPackageDescViewWithTitle:@"使用简介" Desc:@"1）出国前在套餐超市中，购买需前往地的套餐，然后将它激活到爱小器国际卡。\n2）出国后将爱小器国际卡插入手机，实现上网，然后将国内电话卡插入爱小器智能设备，通过APP接打电话，收发短信。" SureButtonTitle:@"知道了,以后不再提醒"];
+            [AbroadPackageDescView showAbroadPackageDescViewWithTitle:INTERNATIONALSTRING(@"使用简介") Desc:INTERNATIONALSTRING(@"1）出国前在套餐超市中，购买需前往地的套餐，然后将它激活到爱小器国际卡。\n2）出国后将爱小器国际卡插入手机，实现上网，然后将国内电话卡插入爱小器智能设备，通过APP接打电话，收发短信。") SureButtonTitle:INTERNATIONALSTRING(@"知道了,以后不再提醒")];
             [[NSUserDefaults standardUserDefaults] setObject:@(1) forKey:@"isShowAbroadPackageDescView"];
         }
     }

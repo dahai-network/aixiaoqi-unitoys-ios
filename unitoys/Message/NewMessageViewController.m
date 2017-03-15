@@ -148,7 +148,7 @@
 //            }
             self.title = name;
         } else {
-            self.title = @"新信息";
+            self.title = INTERNATIONALSTRING(@"新信息");
         }
         NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber",self.linkManTele,@"Tel", nil];
         
@@ -491,7 +491,7 @@
                  self.btnSend.enabled = YES;
              }
          } failure:^(id dataObj, NSError *error) {
-             HUDNormalTop(@"网络请求出错")
+             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
             self.btnSend.enabled = YES;
          } headers:self.headers];
      }
@@ -692,7 +692,7 @@
         //判断号码是否重复
         for (NSDictionary *dict in self.arrLinkman) {
             if ([[arrNumberInfo objectAtIndex:1] isEqualToString:[dict objectForKey:@"number"]]) {
-                HUDNormal(@"请勿选择重复的联系人")
+                HUDNormal(INTERNATIONALSTRING(@"请勿选择重复的联系人"))
                 return;
             }
         }
@@ -802,7 +802,7 @@
 - (NSArray *)menusItems
 {
     NSMutableArray *items = [NSMutableArray array];
-    [items addObject:[[UIMenuItem alloc] initWithTitle:@"复制" action:@selector(copyText:)]];
+    [items addObject:[[UIMenuItem alloc] initWithTitle:INTERNATIONALSTRING(@"复制") action:@selector(copyText:)]];
     return items;
 }
 

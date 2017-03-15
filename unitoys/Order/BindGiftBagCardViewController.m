@@ -18,7 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.txtGiftCard becomeFirstResponder];
-    self.title = @"绑定礼包卡";
+    self.title = INTERNATIONALSTRING(@"绑定礼包卡");
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -50,7 +50,7 @@
             HUDNormal([error description])
         } headers:self.headers];
     } else {
-        HUDNormal(@"请填写卡密")
+        HUDNormal(INTERNATIONALSTRING(@"请填写卡密"))
     }
 }
 

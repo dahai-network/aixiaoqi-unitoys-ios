@@ -52,12 +52,12 @@
             
             
             if ([[responseObj objectForKey:@"status"] intValue]==0) {
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             } else {
-                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"发送成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"发送成功") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             }
         } failure:^(id dataObj, NSError *error) {
             //

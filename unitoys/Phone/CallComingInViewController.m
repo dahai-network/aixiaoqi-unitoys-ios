@@ -25,7 +25,7 @@
     self.lbName.text = self.nameStr;
     // Do any additional setup after loading the view from its nib.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
-    self.lbTime.text = @"新来电";
+    self.lbTime.text = INTERNATIONALSTRING(@"新来电");
     
     if (self.isPresentInCallKit) {
         self.connectView.hidden = YES;
@@ -56,7 +56,7 @@
 
 #pragma mark 接听按钮点击事件
 - (IBAction)answerButtonAction:(UIButton *)sender {
-    self.refuseLabel.text = @"挂断";
+    self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
     self.muteOffButton.hidden = NO;
     self.handfreeOffButton.hidden = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Answer"];
@@ -71,7 +71,7 @@
 //从callKit弹出通话界面
 - (void)acceptCallFromCallKit
 {
-    self.refuseLabel.text = @"挂断";
+    self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
     self.muteOffButton.hidden = NO;
     self.handfreeOffButton.hidden = NO;
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Answer"];

@@ -25,9 +25,9 @@
     // Do any additional setup after loading the view.
     self.lblExprieDays.text = [NSString stringWithFormat:@"%@",[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"ExpireDays"]];
     if ([BlueToothDataManager shareManager].isConnected) {
-        self.lblDeviceStatus.text = @"已连接";
+        self.lblDeviceStatus.text = INTERNATIONALSTRING(@"已连接");
     } else {
-        self.lblDeviceStatus.text = @"未连接";
+        self.lblDeviceStatus.text = INTERNATIONALSTRING(@"未连接");
     }
     
     UIView *valueView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -47,14 +47,14 @@
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(pickerview.frame) - 41, self.view.bounds.size.width, 40)];
     titleLabel.backgroundColor = [UIColor whiteColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.text = @"生效日期";
+    titleLabel.text = INTERNATIONALSTRING(@"生效日期");
     [valueView addSubview:titleLabel];
     self.titleLabel = titleLabel;
     
     UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(pickerview.frame) + 3, self.view.bounds.size.width, 35)];
     btnOK.hidden = NO;
     [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [btnOK setTitle:@"确定" forState:UIControlStateNormal];
+    [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
     [btnOK setBackgroundColor:[UIColor whiteColor]];
     
     [btnOK addTarget:self action:@selector(selectValue) forControlEvents:UIControlEventTouchUpInside];
@@ -77,7 +77,7 @@
 }
 
 - (void)actionOrderStatueFail {
-    [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
+    [self.activityOrderButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
 }
 
 - (void)selectValue {
@@ -143,7 +143,7 @@
         if ([BlueToothDataManager shareManager].isHaveCard) {
             //1.蓝牙连接之后才能走激活的接口
             [BlueToothDataManager shareManager].isShowHud = YES;
-            HUDNoStop1(@"正在激活...")
+            HUDNoStop1(INTERNATIONALSTRING(@"正在激活..."))
             self.checkToken = YES;
             NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.dicOrderDetail[@"list"][@"OrderID"],@"OrderID", self.selectedDateString,@"BeginTime", nil];
             
@@ -164,20 +164,20 @@
                     HUDStop
                     //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
                     HUDNormal(responseObj[@"msg"])
-                    [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
+                    [self.activityOrderButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
                 }
                 
             } failure:^(id dataObj, NSError *error) {
                 //
                 NSLog(@"啥都没：%@",[error description]);
                 HUDNormal(@"激活失败")
-                [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
+                [self.activityOrderButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
             } headers:self.headers];
         } else {
-            HUDNormal(@"请插入爱小器卡")
+            HUDNormal(INTERNATIONALSTRING(@"请插入爱小器卡"))
         }
     } else {
-        HUDNormal(@"请先连接蓝牙")
+        HUDNormal(INTERNATIONALSTRING(@"请连接蓝牙"))
     }
 }
 

@@ -38,13 +38,13 @@
     [super viewDidLoad];
     
     if (self.isAbroadMessage) {
-        self.title = @"已购套餐详情";
+        self.title = INTERNATIONALSTRING(@"已购套餐详情");
     }else{
-        self.title = @"套餐详情";
+        self.title = INTERNATIONALSTRING(@"套餐详情");
     }
     
     if (self.packageCategory != 2 && self.packageCategory != 3) {
-        [self setRightButton:@"使用教程"];
+        [self setRightButton:INTERNATIONALSTRING(@"使用教程")];
     }
     
 //    self.packageCategory = 4;
@@ -103,7 +103,7 @@
             self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
             [self.tableView reloadData];
         }else{
-            HUDNormal(@"网络貌似有问题")
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -218,20 +218,20 @@
             }
             if (self.packageCategory == 2 || self.packageCategory == 3) {
                 if (indexPath.row == 0) {
-                    self.secondCell.lblContentName.text = @"最晚激活日期";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"最晚激活日期");
                     self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"list"][@"LastCanActivationDate"]];
                 } else if (indexPath.row == 1) {
-                    self.secondCell.lblContentName.text = @"套餐状态";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
                     [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue]];
                 } else {
                     NSLog(@"又出问题了");
                 }
             } else {
                 if (indexPath.row == 0) {
-                    self.secondCell.lblContentName.text = @"订单编号";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"订单编号");
                     self.secondCell.lblContent.text = self.dicOrderDetail[@"list"][@"OrderNum"];
                 } else if (indexPath.row == 1) {
-                    self.secondCell.lblContentName.text = @"支付时间";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"支付时间");
                     self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"list"][@"PayDate"]];
                 } else {
                     NSLog(@"又出问题了");
@@ -246,10 +246,10 @@
                     self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil][1];
                 }
                 if (indexPath.row == 0) {
-                    self.secondCell.lblContentName.text = @"支付方式";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"支付方式");
                     self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"list"][@"PaymentMethod"]];
                 } else if (indexPath.row == 1) {
-                    self.secondCell.lblContentName.text = @"总价";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"总价");
                     self.secondCell.lblContent.text = [NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"list"][@"TotalPrice"]];
                 } else {
                     NSLog(@"又出问题了");
@@ -261,13 +261,13 @@
                     self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil][1];
                 }
                 if (indexPath.row == 0) {
-                    self.secondCell.lblContentName.text = @"支付方式";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"支付方式");
                     self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"list"][@"PaymentMethod"]];
                 } else if (indexPath.row == 1) {
-                    self.secondCell.lblContentName.text = @"有效期";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
                     self.secondCell.lblContent.text = self.dicOrderDetail[@"list"][@"ExpireDays"];
                 } else {
-                    self.secondCell.lblContentName.text = @"套餐状态";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
                     [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue]];
                 }
                 return self.secondCell;
@@ -285,10 +285,10 @@
                     self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil][1];
                 }
                 if (indexPath.row == 0) {
-                    self.secondCell.lblContentName.text = @"支付方式";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"支付方式");
                     self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"list"][@"PaymentMethod"]];
                 } else if (indexPath.row == 1) {
-                    self.secondCell.lblContentName.text = @"总价";
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"总价");
                     self.secondCell.lblContent.text = self.dicOrderDetail[@"list"][@"TotalPrice"];
                 } else {
                     NSLog(@"又出问题了");
@@ -302,13 +302,13 @@
                 self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil][1];
             }
             if (indexPath.row == 0) {
-                self.secondCell.lblContentName.text = @"有效期";
+                self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
                 self.secondCell.lblContent.text = self.dicOrderDetail[@"list"][@"ExpireDays"];
             } else if (indexPath.row == 1) {
-                self.secondCell.lblContentName.text = @"最晚激活日期";
+                self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"最晚激活日期");
                 self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"list"][@"LastCanActivationDate"]];
             } else {
-                self.secondCell.lblContentName.text = @"套餐状态";
+                self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
                 [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue]];
             }
             return self.secondCell;
@@ -339,7 +339,7 @@
 - (void)checkStatueWithLabel:(UILabel *)label Statue:(int)stastu {
     switch (stastu) {
         case 0:
-            [label setText:@"未激活"];
+            [label setText:INTERNATIONALSTRING(@"未激活")];
             self.activateButton.hidden = NO;
             if (self.packageCategory == 2) {
                 self.cancelButton.hidden = YES;
@@ -349,13 +349,13 @@
             break;
         case 1:
             if (self.packageCategory == 1) {
-                label.text = [NSString stringWithFormat:@"剩余%@分钟", self.dicOrderDetail[@"list"][@"RemainingCallMinutes"]];
+                label.text = [NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), self.dicOrderDetail[@"list"][@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")];
             } else {
-                [label setText:@"已激活"];
+                [label setText:INTERNATIONALSTRING(@"已激活")];
             }
             label.textColor = [UIColor orangeColor];
             if (self.packageCategory == 0) {
-                [self.activateButton setTitle:@"立即激活" forState:UIControlStateNormal];
+                [self.activateButton setTitle:INTERNATIONALSTRING(@"立即激活") forState:UIControlStateNormal];
                 self.activateButton.hidden = NO;
                 self.cancelButton.hidden = YES;
             } else {
@@ -364,18 +364,18 @@
             }
             break;
         case 2:
-            [label setText:@"已过期"];
+            [label setText:INTERNATIONALSTRING(@"已过期")];
             self.activateButton.hidden = YES;
             self.cancelButton.hidden = YES;
             break;
         case 3:
-            [label setText:@"已取消"];
+            [label setText:INTERNATIONALSTRING(@"已取消")];
             self.activateButton.hidden = YES;
             self.cancelButton.hidden = YES;
             break;
         case 4:
-            [label setText:@"激活失败"];
-            [self.activateButton setTitle:@"重新激活" forState:UIControlStateNormal];
+            [label setText:INTERNATIONALSTRING(@"激活失败")];
+            [self.activateButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
             self.activateButton.hidden = NO;
             self.cancelButton.hidden = YES;
             break;
@@ -411,24 +411,24 @@
 #pragma mark 激活按钮点击事件 //0流量/1通话/2大王卡/3双卡双待
 - (IBAction)avtivateAction:(UIButton *)sender {
     if (self.packageCategory == 2) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"list"][@"UnitPrice"]] message:@"领取大王卡礼包" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"list"][@"UnitPrice"]] message:INTERNATIONALSTRING(@"领取大王卡礼包") preferredStyle:UIAlertControllerStyleAlert];
         // 为防止block与控制器间循环引用，我们这里需用__weak来预防
         __weak typeof(alert) wAlert = alert;
-        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        [alert addAction:[UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
             // 点击确定按钮的时候, 会调用这个block
             NSLog(@"%@",[wAlert.textFields.firstObject text]);
             //非空判断，回调激活
             if (![self isBlankString:[wAlert.textFields.firstObject text]]) {
                 [self activateGiftRardActionWithTel:[wAlert.textFields.firstObject text]];
             } else {
-                HUDNormal(@"请输入手机号码")
+                HUDNormal(INTERNATIONALSTRING(@"请输入手机号码"))
             }
             
         }]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:nil]];
         // 添加文本框(只能添加到UIAlertControllerStyleAlert的样式，如果是preferredStyle:UIAlertControllerStyleActionSheet则会崩溃)
         [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            textField.placeholder = @"输入大王卡手机号码";
+            textField.placeholder = INTERNATIONALSTRING(@"请输入手机号码");
             textField.font = [UIFont systemFontOfSize:17];
             textField.keyboardType = UIKeyboardTypeNumberPad;
             //监听文字改变的方法
@@ -475,7 +475,7 @@
             HUDNormal(responseObj[@"msg"])
         }
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络异常")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -503,7 +503,7 @@
         }
         
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络异常")
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }

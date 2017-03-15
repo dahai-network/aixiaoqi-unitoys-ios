@@ -18,9 +18,9 @@
     
     if (self.isAbroadMessage) {
 //        self.title = self.currentTitle;
-        [self setRightButton:@"使用教程"];
+        [self setRightButton:INTERNATIONALSTRING(@"使用教程")];
     }else{
-        self.title = @"套餐详情";
+        self.title = INTERNATIONALSTRING(@"套餐详情");
     }
     
     self.tableView.estimatedRowHeight = 10;
