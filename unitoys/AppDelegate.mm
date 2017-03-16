@@ -83,9 +83,19 @@
 @property (nonatomic, copy) NSString *iccidString;
 @property (nonatomic, assign) BOOL isUdpSendFristMsg;
 @property (nonatomic, assign) BOOL isNeedRegister;
+
+@property (nonatomic, strong) NSMutableArray *pushKitMsgQueue;
 @end
 
 @implementation AppDelegate
+
+- (NSMutableArray *)pushKitMsgQueue
+{
+    if (!_pushKitMsgQueue) {
+        _pushKitMsgQueue = [NSMutableArray array];
+    }
+    return _pushKitMsgQueue;
+}
 
 - (void)redirectNSLogToDocumentFolder
 {
@@ -112,9 +122,6 @@
     
     //制定真机调试保存日志文件
 //    [self redirectNSLogToDocumentFolder];
-    
-//    self.isLoadDelegate = YES;
-//    [UNCreatLocalNoti createLocalNotiMessageString:@"didFinishLaunchingWithOptions"];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -507,7 +514,25 @@
     self.tcpPacketStrWithPushKit = tcpString;
     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", tcpString]];
     [self sendMsgWithMessage:tcpString];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
+    
+    if (self.isPushKit) {
+        NSLog(@"删除前当前队列消息====%@", self.pushKitMsgQueue);
+        NSLog(@"需要删除的队列消息====%@", self.receivePushKitDataFormServices);
+        
+        [self checkPushKitMessage:self.receivePushKitDataFormServices];
+//        if ([self.pushKitMsgQueue containsObject:self.receivePushKitDataFormServices]) {
+//            [self.pushKitMsgQueue removeObject:self.receivePushKitDataFormServices];
+//            NSLog(@"删除后当前队列消息====%@", self.pushKitMsgQueue);
+//            //发送新的pushkit消息
+//            if (self.pushKitMsgQueue.count) {
+//                [self sendPushKitMessage:self.pushKitMsgQueue.firstObject];
+//            }else{
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
+//            }
+//        }
+    }
+
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
 
 }
 
@@ -637,6 +662,9 @@
 #pragma mark - 消息发送成功 代理函数
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag {
     NSLog(@"tcp消息发送成功");
+//    if (self.isPushKit) {
+//        self.tcpStringWithPushKit = nil;
+//    }
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
@@ -864,7 +892,6 @@
 
 - (void)checkPacketDetailWithStringFromPushKit:(NSString *)string
 {
-//    if ([[string substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {
     NSLog(@"PushKit数据包消息-----%@",string);
     NSInteger leng;
     NSString *TLVdetail;
@@ -897,13 +924,18 @@
     string = [string stringByReplacingOccurrencesOfString:tempStr withString:TLVdetail];
     NSLog(@"替换之后的字符串 -- %@", string);
     
-//    self.tcpStringWithPushKit = nil;
-    self.isSendTcpString = YES;
     if (!self.sendTcpSocket) {
         [self creatAsocketTcp];
     }
+    
+    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", string]];
     [self sendMsgWithMessage:string];
-//    }
+    
+    if (self.isPushKit) {
+        NSLog(@"删除前当前队列消息====%@", self.pushKitMsgQueue);
+        NSLog(@"需要删除的队列消息====%@", self.receivePushKitDataFormServices);
+        [self checkPushKitMessage:self.receivePushKitDataFormServices];
+    }
 }
 
 - (void)timerAction {
@@ -943,7 +975,7 @@
     // 写这里代码
     NSString *s = message;
     NSData *data = [self convertHexStrToData:s];
-    NSLog(@"发送给服务端的数据 -- %@", data);
+    NSLog(@"sendMsgWithMessage发送给服务端的数据 -- %@", data);
     // 发送消息 这里不需要知道对象的ip地址和端口
     [self.sendTcpSocket writeData:data withTimeout:60 tag:100];
 }
@@ -1654,8 +1686,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 #pragma mark --- PuskKitDelegate
 - (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type {
     NSString *tokenString = [[[[credentials.token description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];
-    //将token传送到服务器
-//    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"tokenString--%@",tokenString]];
     NSLog(@"pushToken======%@=======", tokenString);
     NSString *newToken = [self hexStringFromString:tokenString];
     NSString *newTokenlength = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", newToken.length/2]];
@@ -1673,52 +1703,105 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             if ([dict[@"MessageType"] isEqualToString:@"10"]) {
                 //鉴权数据
                 if (dict[@"Data"]) {
+                    
                     NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
-                    if ([[servicePushKitData substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {
-                        [self checkPacketDetailWithStringFromPushKit:servicePushKitData];
-                    }else{
-                        if (![servicePushKitData isEqualToString:self.receivePushKitDataFormServices]) {
-                            self.receivePushKitDataFormServices = servicePushKitData;
-                            [self separatePushKitString:servicePushKitData];
-                            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
-                                [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
-                            }
-                            [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
-                            //创建网络电话服务
-                            [[UNSipEngineInitialize sharedInstance] initEngine];
-                            //加载蓝牙手环
-                            //    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
-                            //    NSString *servicePushKitData = @"108A1000300CBDE7000E002A010100C72500090510000200033F007F206F740000A088000010A458F84D016BD7C2A75F6A752D6E0FD9";
-                            self.isPushKit = YES;
-                            if (self.simDataString) {
-                                if ([self.sessionIdToVSWSDK isEqualToString:self.simDataString] && self.sessionIdToVSWSDK) {
-                                    self.isPushKit = NO;
-                                }else{
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
-                                }
-                            }
-                        }
+                    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
+                    //存储到队列中
+                    [self.pushKitMsgQueue addObject:servicePushKitData];
+                    if (self.pushKitMsgQueue.count == 1 || self.pushKitMsgQueue.count > 10) {
+                        [self sendPushKitMessage:self.pushKitMsgQueue.firstObject];
                     }
+                    
+//                    if ([[servicePushKitData substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {
+//                        [self checkPacketDetailWithStringFromPushKit:servicePushKitData];
+//                    }else{
+//                        if (![servicePushKitData isEqualToString:self.receivePushKitDataFormServices]) {
+//                            self.receivePushKitDataFormServices = servicePushKitData;
+//                            [self separatePushKitString:servicePushKitData];
+//                            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
+//                                [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
+//                            }
+//                            [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
+//                            //创建网络电话服务
+//                            [[UNSipEngineInitialize sharedInstance] initEngine];
+//                            //加载蓝牙手环
+//                            //    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
+//                            //    NSString *servicePushKitData = @"108A1000300CBDE7000E002A010100C72500090510000200033F007F206F740000A088000010A458F84D016BD7C2A75F6A752D6E0FD9";
+//                            self.isPushKit = YES;
+//                            if (self.simDataString) {
+//                                if ([self.sessionIdToVSWSDK isEqualToString:self.simDataString] && self.sessionIdToVSWSDK) {
+//                                    self.isPushKit = NO;
+//                                }else{
+//                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
+//                                }
+//                            }
+//                        }
+//                    }
                 }
             }else if ([dict[@"MessageType"] isEqualToString:@"06"]){
-                self.isSendTcpString = NO;
-                self.isPushKit = YES;
-                self.receivePushKitDataFormServices = nil;
-                self.tlvFirstStr = nil;
-                self.simDataString = nil;
                 if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
                     [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
                 }
                 [UNCreatLocalNoti createLocalNotiMessageString:@"pushKit消息唤醒网络电话"];
                 //创建网络电话服务
                 [[UNSipEngineInitialize sharedInstance] initEngine];
-//                [BlueToothDataManager shareManager].isBeingRegisting = NO;
-//                [BlueToothDataManager shareManager].stepNumber = @"0";
-//                [BlueToothDataManager shareManager].isRegisted = YES;
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
             }
         }else{
             
+        }
+    }
+}
+
+
+- (void)checkPushKitMessage:(NSString *)servicePushKitData
+{
+    if ([self.pushKitMsgQueue containsObject:servicePushKitData]) {
+        [self.pushKitMsgQueue removeObject:servicePushKitData];
+        NSLog(@"删除后当前队列消息====%@", self.pushKitMsgQueue);
+        //发送新的pushkit消息
+        if (self.pushKitMsgQueue.count) {
+            [self sendPushKitMessage:self.pushKitMsgQueue.firstObject];
+        }else{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
+        }
+    }else{
+        NSLog(@"不包含当前队列消息");
+        if (self.pushKitMsgQueue.count) {
+            [self sendPushKitMessage:self.pushKitMsgQueue.firstObject];
+        }else{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
+        }
+
+    }
+}
+
+- (void)sendPushKitMessage:(NSString *)servicePushKitData
+{
+    NSLog(@"当前队列需要发送的pushkit消息=====%@", servicePushKitData);
+
+    self.tcpStringWithPushKit = nil;
+    self.tlvFirstStr = nil;
+    self.isPushKit = YES;
+    self.simDataString = nil;
+    //创建网络电话服务
+    [[UNSipEngineInitialize sharedInstance] initEngine];
+    //解析并发送当前pushkit
+    if ([[servicePushKitData substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {
+        NSLog(@"发送01pushkit消息");
+        self.receivePushKitDataFormServices = servicePushKitData;
+        [self checkPacketDetailWithStringFromPushKit:servicePushKitData];
+    }else{
+        NSLog(@"发送正常pushkit消息");
+        self.receivePushKitDataFormServices = servicePushKitData;
+        [self separatePushKitString:servicePushKitData];
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
+            [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
+        }
+        //加载蓝牙手环
+        //    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
+        //    NSString *servicePushKitData = @"108A1000300CBDE7000E002A010100C72500090510000200033F007F206F740000A088000010A458F84D016BD7C2A75F6A752D6E0FD9";
+        if (self.simDataString) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
         }
     }
 }
