@@ -498,7 +498,7 @@ typedef enum : NSUInteger {
             // 关闭文件
             [self.writeHandle closeFile];
             self.writeHandle = nil;
-            self.progressNumberLabel.text = INTERNATIONALSTRING(@"正在重启蓝牙");
+            self.progressNumberLabel.text = INTERNATIONALSTRING(@"正在重启蓝牙\n升级过程中请勿退出程序");
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
                 
@@ -562,7 +562,7 @@ typedef enum : NSUInteger {
 - (void)onUploadProgress:(NSInteger)part totalParts:(NSInteger)totalParts progress:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
     //进度
     NSLog(@"dfuProgressChangedFor: %ld%% (part %ld/%ld).speed:%f bps, Avg speed:%f bps", (long)progress, (long)part, (long)totalParts, currentSpeedBytesPerSecond, avgSpeedBytesPerSecond);
-    self.progressNumberLabel.text = [NSString stringWithFormat:@"%ld%%", (long)progress];
+    self.progressNumberLabel.text = [NSString stringWithFormat:@"%ld%%\n%@", (long)progress, INTERNATIONALSTRING(@"升级过程中请勿退出程序")];
     if (self.progressView.hidden) {
         self.progressView.hidden = NO;
     }
@@ -609,7 +609,7 @@ typedef enum : NSUInteger {
         self.progressNumberLabel.textAlignment = NSTextAlignmentCenter;
         self.progressNumberLabel.numberOfLines = 0;
         self.progressNumberLabel.font = [UIFont systemFontOfSize:17];
-        self.progressNumberLabel.text = INTERNATIONALSTRING(@"正在下载升级文件");
+        self.progressNumberLabel.text = INTERNATIONALSTRING(@"正在下载升级文件\n升级过程中请勿退出程序");
         [littleView addSubview:self.progressNumberLabel];
         
         self.progressView = [[TTRangeSlider alloc] initWithFrame:CGRectMake(10, littleView.frame.size.height-30, CGRectGetWidth(littleView.frame)-20, 20)];
@@ -940,7 +940,9 @@ typedef enum : NSUInteger {
             //上电
             //对卡上电
             [self phoneCardToUpeLectrify:@"03"];
-            [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:responseObj[@"data"][@"Data"]];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:responseObj[@"data"][@"Data"]];
+            });
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -2886,6 +2888,7 @@ typedef enum : NSUInteger {
                     //判断卡类型
                     [self checkCardType];
                 } else if ([contentStr isEqualToString:@"11"]) {
+                    [BlueToothDataManager shareManager].isRegisted = NO;
                     NSLog(@"对卡上电1失败,没有卡");
                     if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
                         [self dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:@"未能检测到手环内有电话卡，您需要重启手环重新检测吗？" alertAction:^{
@@ -2904,6 +2907,7 @@ typedef enum : NSUInteger {
                     NSLog(@"对卡上电2成功");
                 } else if ([contentStr isEqualToString:@"12"]) {
                     NSLog(@"对卡上电2失败");
+                    [BlueToothDataManager shareManager].isRegisted = NO;
                     [BlueToothDataManager shareManager].isBeingRegisting = NO;
                     [self registFailAction];
                 } else if ([contentStr isEqualToString:@"03"]) {
@@ -2913,6 +2917,7 @@ typedef enum : NSUInteger {
 //                    }
                 }else if ([contentStr isEqualToString:@"13"]) {
                     NSLog(@"对卡上电3失败");
+                    [BlueToothDataManager shareManager].isRegisted = NO;
                     [BlueToothDataManager shareManager].isBeingRegisting = NO;
                     [self registFailAction];
                 }
@@ -3113,6 +3118,7 @@ typedef enum : NSUInteger {
                         [self phoneCardToOutageNew];
                         //是大王卡
                         NSLog(@"是大王卡");
+                        [BlueToothDataManager shareManager].isRegisted = NO;
                         [BlueToothDataManager shareManager].isActivityCard = YES;
                         [BlueToothDataManager shareManager].bleStatueForCard = 1;
                         [BlueToothDataManager shareManager].operatorType = @"2";
@@ -3132,6 +3138,7 @@ typedef enum : NSUInteger {
                             //注册卡
                             if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                    [BlueToothDataManager shareManager].isRegisted = NO;
                                     [self checkUserIsExistAppointPackage];
                                 });
                             } else {
@@ -3518,7 +3525,9 @@ typedef enum : NSUInteger {
     }
     [self phoneCardToUpeLectrify:@"03"];
     //    A0A4000002 3F00
-    [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0a40000023f00"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0a40000023f00"];
+    });
 }
 
 #pragma mark 判断卡类型第一步

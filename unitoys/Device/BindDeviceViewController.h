@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *versionNumber;//版本号
 @property (weak, nonatomic) IBOutlet UILabel *macAddress;//mac地址
 @property (nonatomic, copy) NSString *hintStrFirst;//提示文字前半段文字
+@property (nonatomic, assign) BOOL isBeingNet;//是否正在进行网络请求
 
 
 @end

@@ -406,6 +406,7 @@
 
 #pragma mark 调用空中升级接口
 - (void)otaDownload {
+    self.isBeingNet = YES;
     self.checkToken = YES;
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
@@ -442,7 +443,9 @@
             //数据请求失败
             NSLog(@"请求失败");
         }
+        self.isBeingNet = NO;
     } failure:^(id dataObj, NSError *error) {
+        self.isBeingNet = NO;
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         //
         NSLog(@"啥都没：%@",[error description]);
@@ -500,7 +503,9 @@
         }
         if (indexPath.row == 1) {
             if ([BlueToothDataManager shareManager].isConnected) {
-                [self otaDownload];
+                if (!self.isBeingNet) {
+                    [self otaDownload];
+                }
             } else {
                 HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
             }
