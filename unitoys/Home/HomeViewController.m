@@ -2624,8 +2624,8 @@ typedef enum : NSUInteger {
 
 - (void)sendLBEMessageNoPushKit
 {
-    [BlueToothDataManager shareManager].isRegisted = NO;
-    [BlueToothDataManager shareManager].isBeingRegisting = YES;
+//    [BlueToothDataManager shareManager].isRegisted = NO;
+//    [BlueToothDataManager shareManager].isBeingRegisting = YES;
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"1"];
 //    [BlueToothDataManager shareManager].stepNumber = @"1";
     
@@ -2679,6 +2679,8 @@ typedef enum : NSUInteger {
 //初始化ICCID指令
 - (void)sendICCIDMessage
 {
+    [BlueToothDataManager shareManager].isRegisted = NO;
+    [BlueToothDataManager shareManager].isBeingRegisting = YES;
     [BlueToothDataManager shareManager].bleStatueForCard = 2;
     self.sendICCIDCommands = @[@"a0a40000023f00",@"a0a40000022fe2",@"a0c000000f",@"a0b000000a"];
     self.sendICCIDIndex = 0;

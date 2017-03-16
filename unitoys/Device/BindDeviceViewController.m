@@ -24,30 +24,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.lblStatue.text = self.hintStrFirst;
-    if ([BlueToothDataManager shareManager].isConnected) {
-        [self addElectricQue];
-    } else {
-        if (self.customView) {
-            self.customView.hidden = YES;
-        }
-        self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
-        self.versionNumber.hidden = YES;
-        self.macAddress.hidden = YES;
-        self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
-    }
-    
-    if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
-        self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
-//        self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_StrongSinge"];
-    }
-    if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
-        //正在注册
-        NSString *senderStr = [BlueToothDataManager shareManager].stepNumber;
-        [self countAndShowPercentage:senderStr];
-        //开启动画
-        [self startTimerAction];
-    }
     
 //    if (![BlueToothDataManager shareManager].isBounded) {
 //        [self dj_alertAction:self alertTitle:nil actionTitle:@"去绑定" message:@"您还没有绑定设备，是否要绑定？" alertAction:^{
@@ -79,6 +55,32 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    self.lblStatue.text = self.hintStrFirst;
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self addElectricQue];
+    } else {
+        if (self.customView) {
+            self.customView.hidden = YES;
+        }
+        self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
+        self.versionNumber.hidden = YES;
+        self.macAddress.hidden = YES;
+        self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
+    }
+    
+    if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
+        self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
+    }
+    if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
+        //正在注册
+        NSString *senderStr = [BlueToothDataManager shareManager].stepNumber;
+        [self countAndShowPercentage:senderStr];
+        //开启动画
+        [self startTimerAction];
+    }
+}
+
 - (void)boundDeviceFail {
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
@@ -97,6 +99,9 @@
         if (self.timer) {
             [self.timer setFireDate:[NSDate distantFuture]];
         }
+    } else {
+        //开启动画
+        [self startTimerAction];
     }
 }
 
@@ -166,8 +171,9 @@
 }
 
 - (void)changeStatueAction:(NSNotification *)sender {
+    NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
+    NSLog(@"接收到传过来的通知 -- %@", senderStr);
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
-        NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
         if ([senderStr intValue] == 1) {
             [self startTimerAction];
         }
