@@ -27,7 +27,7 @@
 "KM5-rq-Xdx.text" = "Flow：---MB";
 
 /* Class = "UILabel"; text = "设备内电话卡"; ObjectID = "LHU-mq-qTU"; */
-"LHU-mq-qTU.text" = "Equipment within the phone card";
+"LHU-mq-qTU.text" = "Phone card";
 
 /* Class = "UITableViewController"; title = "设备"; ObjectID = "LkK-iw-huv"; */
 "LkK-iw-huv.title" = "Equipment";
@@ -66,7 +66,7 @@
 "rLT-LT-s0U.text" = "Search my Wristband";
 
 /* Class = "UILabel"; text = "设备MAC地址"; ObjectID = "w9O-Ff-xvu"; */
-"w9O-Ff-xvu.text" = "Device‘s Mac Address";
+"w9O-Ff-xvu.text" = "Mac Address";
 
 /* Class = "UILabel"; text = "设置APN"; ObjectID = "xK6-iL-XNz"; */
 "xK6-iL-XNz.text" = "Set up APN";

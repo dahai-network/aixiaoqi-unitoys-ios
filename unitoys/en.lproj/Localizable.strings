@@ -154,8 +154,8 @@
 "此功能正在开发中" = "This function is still under development";
 "激活境外套餐教程" = "Guidance to activate overseas package";
 "正在重启蓝牙" = "Restarting Bluetooth";
-"升级失败\n请重新启动爱小器App" = "Failed to upgrade\n Please reboot Unitoys App";
-"升级成功\n请重新启动爱小器App" = "Succeed to upgrade\n Please reboot Unitoys App";
+"升级失败\n请重新启动爱小器App" = "Failed to upgrade\n Please reboot APP";
+"升级成功\n请重新启动爱小器App" = "Succeed to upgrade\n Please reboot APP";
 "固件升级" = "Upgrade firmware";
 "正在下载升级文件" = "Downloading upgrade file";
 "电话卡运营商不属于三大运营商" = "SIM card is not belongs to three main Operators";
@@ -220,6 +220,7 @@
 "保存" = "Save";
 "性别" = "Gender";
 "绑定充值卡" = "Bind";
+"步" = "Steps";
 
 "插电话卡" = "Insert SIM card";
 "手环和手机内置的SIM卡交换位置。" = "Exchange SIM cards.";
@@ -239,5 +240,6 @@
 "在手机的系统设置的网络连接方式中，选择4G网络。" = "Select 4G Network from network connection in system settings.";
 "关闭数据漫游" = "Turn off data roaming";
 "在手机的系统设置的数据漫游管理界面，关闭数据漫游。" = "Turn off data roaming from data roaming management interface in system settings.";
+"升级过程中请勿退出程序" = "Do not exit the program";
 
 

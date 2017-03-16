@@ -65,7 +65,7 @@
     
     self.arrSource = self.arrSex;
     
-    self.arrSex=@[@"男",@"女"];
+    self.arrSex=@[INTERNATIONALSTRING(@"男"),INTERNATIONALSTRING(@"女")];
     
     NSMutableArray *arrTemp = [[NSMutableArray alloc] init];
     for (int i=0;i<=230;i++) {
@@ -103,7 +103,7 @@
     arrTemp = [[NSMutableArray alloc] init];
     
     for (int i=0;i<=31000;i=i+1000) {
-        [arrTemp addObject:[NSString stringWithFormat:@"%d步",i]];
+        [arrTemp addObject:[NSString stringWithFormat:@"%d%@",i, INTERNATIONALSTRING(@"步")]];
     }
     
     self.arrTarget = [[NSArray alloc] initWithArray:arrTemp];
@@ -231,7 +231,7 @@
         case 5:
             //
             
-            aValue= [[self.arrTarget objectAtIndex:[self.pickerView selectedRowInComponent:0]] stringByReplacingOccurrencesOfString:@"步" withString:@""];
+            aValue= [[self.arrTarget objectAtIndex:[self.pickerView selectedRowInComponent:0]] stringByReplacingOccurrencesOfString:INTERNATIONALSTRING(@"步") withString:@""];
             
             params = [[NSDictionary alloc] initWithObjectsAndKeys:aValue,@"MovingTarget", nil];
             
@@ -315,7 +315,7 @@
     self.lblHeight.text = [NSString stringWithFormat:@"%@cm",[userData objectForKey:@"Height"]];
     self.lblWeight.text = [NSString stringWithFormat:@"%@kg",[userData objectForKey:@"Weight"]];
     
-    self.lblTarget.text = [NSString stringWithFormat:@"%@步",[userData objectForKey:@"MovingTarget"]];
+    self.lblTarget.text = [NSString stringWithFormat:@"%@%@",[userData objectForKey:@"MovingTarget"], INTERNATIONALSTRING(@"步")];
     [BlueToothDataManager shareManager].movingTarget = [userData objectForKey:@"MovingTarget"];
     [self calcBMI];
     
@@ -647,7 +647,7 @@
         }else if (indexPath.section==2){
             if (indexPath.row==0) {
                 
-                [self.pickerView selectRow:[self.arrTarget indexOfObject:[NSString stringWithFormat:@"%d步",[[self.dicInfo objectForKey:@"MovingTarget"] intValue]]] inComponent:0 animated:YES];
+                [self.pickerView selectRow:[self.arrTarget indexOfObject:[NSString stringWithFormat:@"%d%@",[[self.dicInfo objectForKey:@"MovingTarget"] intValue], INTERNATIONALSTRING(@"步")]] inComponent:0 animated:YES];
                 
             }
         }

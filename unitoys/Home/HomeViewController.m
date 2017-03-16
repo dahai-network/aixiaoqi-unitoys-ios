@@ -498,7 +498,8 @@ typedef enum : NSUInteger {
             // 关闭文件
             [self.writeHandle closeFile];
             self.writeHandle = nil;
-            self.progressNumberLabel.text = INTERNATIONALSTRING(@"正在重启蓝牙\n升级过程中请勿退出程序");
+            NSString *showStr = [NSString stringWithFormat:@"%@\n%@", INTERNATIONALSTRING(@"正在重启蓝牙"), INTERNATIONALSTRING(@"升级过程中请勿退出程序")];
+            self.progressNumberLabel.text = showStr;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
                 
@@ -553,10 +554,10 @@ typedef enum : NSUInteger {
 
 - (void)didErrorOccur:(enum DFUError)error withMessage:(NSString *)message {
     NSLog(@"ERROR %ld:%@", (long)error, message);
-    self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n请重新启动爱小器App");
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        self.progressWindow = nil;
-//    });
+        self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n请重新启动爱小器App");
+    });
 }
 
 - (void)onUploadProgress:(NSInteger)part totalParts:(NSInteger)totalParts progress:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
@@ -569,7 +570,7 @@ typedef enum : NSUInteger {
     self.progressView.selectedMinimum = (float)progress/100;
 //    NSLog(@"当前百分比%f", (float)progress/100);
     if (progress == 100) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级成功\n请重新启动爱小器App");
         });
     }
@@ -609,7 +610,8 @@ typedef enum : NSUInteger {
         self.progressNumberLabel.textAlignment = NSTextAlignmentCenter;
         self.progressNumberLabel.numberOfLines = 0;
         self.progressNumberLabel.font = [UIFont systemFontOfSize:17];
-        self.progressNumberLabel.text = INTERNATIONALSTRING(@"正在下载升级文件\n升级过程中请勿退出程序");
+        NSString *showStr = [NSString stringWithFormat:@"%@\n%@", INTERNATIONALSTRING(@"正在下载升级文件"), INTERNATIONALSTRING(@"升级过程中请勿退出程序")];
+        self.progressNumberLabel.text = showStr;
         [littleView addSubview:self.progressNumberLabel];
         
         self.progressView = [[TTRangeSlider alloc] initWithFrame:CGRectMake(10, littleView.frame.size.height-30, CGRectGetWidth(littleView.frame)-20, 20)];
@@ -623,11 +625,11 @@ typedef enum : NSUInteger {
         self.progressView.minLabelFont = [UIFont systemFontOfSize:0];
         self.progressView.maxLabelFont = [UIFont systemFontOfSize:0];
         self.progressView.selectedHandleDiameterMultiplier = 1;
-        self.progressView.tintColorBetweenHandles = [UIColor redColor];
+        self.progressView.tintColorBetweenHandles = [UIColor whiteColor];
         self.progressView.lineHeight = 3;
         self.progressView.enabled = NO;
         //设置进度条颜色
-        self.progressView.tintColor = [UIColor yellowColor];
+        self.progressView.tintColor = [UIColor magentaColor];
         [littleView addSubview:self.progressView];
         
         [self.progressWindow makeKeyAndVisible];
