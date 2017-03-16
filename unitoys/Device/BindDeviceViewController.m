@@ -100,8 +100,10 @@
             [self.timer setFireDate:[NSDate distantFuture]];
         }
     } else {
-        //开启动画
-        [self startTimerAction];
+        if (!self.timer) {
+            //开启动画
+            [self startTimerAction];
+        }
     }
 }
 
