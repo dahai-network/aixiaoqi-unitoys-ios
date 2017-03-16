@@ -1703,13 +1703,15 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             if ([dict[@"MessageType"] isEqualToString:@"10"]) {
                 //鉴权数据
                 if (dict[@"Data"]) {
-                    
                     NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
                     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
                     //存储到队列中
                     [self.pushKitMsgQueue addObject:servicePushKitData];
-                    if (self.pushKitMsgQueue.count == 1 || self.pushKitMsgQueue.count > 10) {
+                    //防止和手环交互出现异常导致的卡住流程,当消息为7条时,再次发送第一条pushkit消息,当消息超过15条时,删除所有过期数据,重置Pushkit消息
+                    if (self.pushKitMsgQueue.count == 1 || self.pushKitMsgQueue.count == 7) {
                         [self sendPushKitMessage:self.pushKitMsgQueue.firstObject];
+                    }else if (self.pushKitMsgQueue.count > 15){
+                        [self.pushKitMsgQueue removeAllObjects];
                     }
                     
 //                    if ([[servicePushKitData substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {

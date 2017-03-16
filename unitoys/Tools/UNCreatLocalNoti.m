@@ -25,17 +25,6 @@
 + (void)creatLocalNoti:(NSDictionary *)dict
 {
     NSDictionary *infoDic = [NSDictionary dictionaryWithObject:dict[@"phone"] forKey:@"phone"];
-    //    NSArray *localnoti = [UIApplication sharedApplication].scheduledLocalNotifications;
-    //    if (localnoti.count) {
-    //        for (UILocalNotification *noti in localnoti) {
-    //            NSDictionary *info = noti.userInfo;
-    //            if (info) {
-    //                if ([info[@"phone"] isEqualToString:info[@"phone"]]) {
-    //                    [[UIApplication sharedApplication] cancelLocalNotification:noti];
-    //                }
-    //            }
-    //        }
-    //    }
     UILocalNotification *backgroudMsg = [[UILocalNotification alloc] init];
     if (backgroudMsg) {
         backgroudMsg.timeZone = [NSTimeZone defaultTimeZone];
