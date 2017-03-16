@@ -16,6 +16,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *muteOffButton;//静音按钮
 @property (weak, nonatomic) IBOutlet UIButton *handfreeOffButton;//扩音按钮
 
+@property (nonatomic, assign) BOOL isDismissing;
+
 @end
 
 @implementation CallComingInViewController
@@ -39,9 +41,11 @@
 
 #pragma mark 拒绝按钮点击事件
 - (IBAction)refuseButtonAction:(UIButton *)sender {
+    sender.enabled = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
     //直接挂断
     [self endCallPhone];
+    sender.enabled = YES;
 }
 
 #pragma mark 拒绝按钮动画
@@ -102,10 +106,16 @@
 }
 - (void)endCallPhone
 {
+    if (self.isDismissing) {
+        return;
+    }
+    self.isDismissing = YES;
     if (self.callTimer) {
         [self.callTimer setFireDate:[NSDate distantFuture]];
     }
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self dismissViewControllerAnimated:NO completion:^{
+        self.isDismissing = NO;
+    }];
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
@@ -151,6 +161,7 @@
 }
 
 - (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
     if (self.isNeedToRefresh) {
         self.refuseView.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2, self.refuseView.center.y);
     }

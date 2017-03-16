@@ -121,7 +121,7 @@
 //    self.isPushKit = YES;
     
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -152,8 +152,6 @@
             self.currentNumber = 8;
             
             self.communicateID = @"00000000";
-            
-            //                        [self presentViewController:mainViewController animated:YES completion:nil];
         }
     }
     
@@ -176,7 +174,7 @@
         ABAddressBookRef addresBook = ABAddressBookCreateWithOptions(NULL, NULL);
         ABAddressBookRegisterExternalChangeCallback(addresBook, addressBookChanged, (__bridge void *)(self));
     }
-    
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     //定位相关
     _task = [BGTask shareBGTask];
     UIAlertView *alert;
@@ -755,7 +753,13 @@
         return;
     }
     NSString *classStr = [string substringWithRange:NSMakeRange(4, 2)];
+    NSString *errorStr = [string substringWithRange:NSMakeRange(6, 2)];
     if ([classStr isEqualToString:@"84"]) {
+        if (![errorStr isEqualToString:@"00"]) {
+            NSLog(@"电话端口错误");
+            return;
+        }
+        
         NSLog(@"建立连接");
         self.communicateID = [string substringWithRange:NSMakeRange(8, 8)];
         NSLog(@"会话id -- %@", self.communicateID);
@@ -771,8 +775,7 @@
         if ([newString isEqualToString:@"n Failed"]) {
             NSLog(@"截取电话端口出错 -- %@", newString);
             return;
-        }
-        if ([newString isEqualToString:@"Timeout"]) {
+        }else if ([newString isEqualToString:@"Timeout"]) {
             NSLog(@"截取电话端口出错 -- %@", newString);
             return;
         }
@@ -1351,7 +1354,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     });
     
     NSLog(@"后台backgroundTaskIdentifier--------  %lu",(unsigned long)backgroundTaskIdentifier);
-    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -1773,7 +1775,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         }else{
             [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
         }
-
     }
 }
 

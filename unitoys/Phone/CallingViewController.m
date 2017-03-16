@@ -9,7 +9,7 @@
 #import "CallingViewController.h"
 
 @interface CallingViewController ()
-
+@property (nonatomic, assign) BOOL isDismissing;
 @end
 
 @implementation CallingViewController
@@ -125,16 +125,24 @@
 
 - (void)endCallPhone
 {
+    if (self.isDismissing) {
+        return;
+    }
+    self.isDismissing = YES;
     //关掉当前
     if (self.callTimer) {
         [self.callTimer setFireDate:[NSDate distantFuture]];
     }
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self dismissViewControllerAnimated:NO completion:^{
+        self.isDismissing = NO;
+    }];
 }
 
-- (IBAction)hungupCalling:(id)sender {
+- (IBAction)hungupCalling:(UIButton *)sender {
+    sender.enabled = NO;
     self.hadRing = NO;
      [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
     [self endCallPhone];
+    sender.enabled = YES;
 }
 @end

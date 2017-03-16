@@ -16,7 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -5)];
+//    [self.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -5)];
     self.interactivePopGestureRecognizer.delegate = self;
 }
 /**

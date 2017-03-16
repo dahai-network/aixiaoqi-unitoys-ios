@@ -1737,7 +1737,6 @@ typedef enum : NSUInteger {
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"16",@"pageSize", nil];
-    
     [self getBasicHeader];
     NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest getRequest:apiCountryHot params:params success:^(id responseObj) {
@@ -2230,6 +2229,7 @@ typedef enum : NSUInteger {
 #pragma mark 发现外围设备的时候调用,RSSI为负值，越接近0，信号越强
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
+    NSLog(@"发现设备");
     // 添加外围设备
     if (![self.peripherals containsObject:peripheral]) {
         // 设置外设的代理
@@ -2372,6 +2372,7 @@ typedef enum : NSUInteger {
                     }
                 }
             } else {
+                NSLog(@"没有配对设备");
                 [self.mgr scanForPeripheralsWithServices:nil options:nil];
             }
         });

@@ -31,7 +31,7 @@
         backgroudMsg.alertBody = [NSString stringWithFormat:@"%@来电", dict[@"name"]];
         backgroudMsg.alertAction = dict[@"phone"];
         backgroudMsg.repeatInterval = 0;
-        backgroudMsg.applicationIconBadgeNumber = 1;
+        backgroudMsg.applicationIconBadgeNumber = 0;
         //标记通知信息
         backgroudMsg.userInfo = infoDic;
         //        [[UIApplication sharedApplication] presentLocalNotificationNow:backgroudMsg];

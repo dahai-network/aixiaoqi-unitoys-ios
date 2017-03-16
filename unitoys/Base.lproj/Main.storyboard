@@ -2414,7 +2414,7 @@
         <image name="home_mall" width="23" height="23"/>
         <image name="home_sportback" width="360" height="94"/>
         <image name="index_call_packet" width="148" height="147"/>
-        <image name="index_inland_save" width="148" height="147"/>
+        <image name="index_inland_save" width="49" height="49"/>
         <image name="index_internetional_save" width="148" height="147"/>
         <image name="log_hidewords" width="33" height="32"/>
         <image name="logo" width="48" height="48"/>
