@@ -1322,6 +1322,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnCallProcessing{
     //    NSLog(@"正在接续...");
     //    [mStatus setText:@"正在接续..."];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在呼叫..."];
 }
 

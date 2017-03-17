@@ -121,7 +121,7 @@
 //    self.isPushKit = YES;
     
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -730,6 +730,10 @@
 - (void)checkManyPacketString:(NSString *)tempStr
 {
     NSLog(@"处理数据包");
+    if (tempStr.length < 24) {
+        NSLog(@"数据包异常----%@", tempStr);
+        return;
+    }
     NSString *lengthStr = [tempStr substringWithRange:NSMakeRange(20, 4)];
     NSInteger leng = strtoul([lengthStr UTF8String], 0, 16);
     if (tempStr.length>= 24 + leng * 2) {
