@@ -71,7 +71,7 @@
 - (void)getCallingMessage :(NSNotification *)notification {
     if (notification.object) {
         NSString *notiText = notification.object;
-        if([notiText isEqualToString:@"通话结束"]){
+        if([notiText isEqualToString:INTERNATIONALSTRING(@"通话结束")]){
             //关掉当前
             [self endCall:_currentCallUUID completion:^(NSError * _Nullable error) {
                 NSLog(@"挂断通话");

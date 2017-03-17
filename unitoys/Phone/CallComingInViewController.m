@@ -177,11 +177,11 @@
         self.lbTime.text = notification.object;
 
         
-        if ([self.lbTime.text isEqualToString:@"呼叫接通"]) {
+        if ([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"呼叫接通")]) {
             
-        }else if ([self.lbTime.text isEqualToString:@"正在通话"]) {
+        }else if ([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"正在通话")]) {
        
-        }else if([self.lbTime.text isEqualToString:@"通话结束"]){
+        }else if([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"通话结束")]){
             //关掉当前
             [self endCallPhone];
         }else{

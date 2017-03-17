@@ -299,25 +299,24 @@ typedef enum : NSUInteger {
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
 }
-
 -(void) OnCallProcessing{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在呼叫..."];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 
 /*对方振铃*/
 -(void) OnCallRinging{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"对方振铃..."];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"对方振铃...")];
 }
 
 /*呼叫接通*/
 -(void) OnCallStreamsRunning:(bool)is_video_call{
     NSLog(@"接通...");
     //在接通时更新扩音状态
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在通话"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
 -(void) OnCallMediaStreamsConnected:(MediaTransMode)mode{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在呼叫..."];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 
 -(void) OnCallResume {
@@ -343,7 +342,7 @@ typedef enum : NSUInteger {
 
 /*呼叫接通知识*/
 -(void) OnCallConnected{
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在通话"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
 /*话单*/
@@ -356,7 +355,7 @@ typedef enum : NSUInteger {
     NSLog(@"结束通话");
     
 //    [self loadPhoneRecord];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"通话结束"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"通话结束")];
 //    self.speakerStatus = NO;
 }
 

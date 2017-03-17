@@ -1323,14 +1323,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     //    NSLog(@"正在接续...");
     //    [mStatus setText:@"正在接续..."];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在呼叫..."];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 
 /*对方振铃*/
 -(void) OnCallRinging{
 //        NSLog(@"对方振铃...");
     //    [mStatus setText:@"对方振铃..."];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"对方振铃..."];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"对方振铃...")];
 }
 
 /*呼叫接通*/
@@ -1341,12 +1341,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
     theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
     theSipEngine->MuteMic(self.muteStatus);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在通话"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
 -(void) OnCallMediaStreamsConnected:(MediaTransMode)mode{
     //    NSLog(@"接通...");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在呼叫..."];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
     //    [mStatus setText:@"媒体接通"];
 }
 
@@ -1374,7 +1374,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 /*呼叫接通知识*/
 -(void) OnCallConnected{
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"正在通话"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
 /*话单*/
@@ -1389,7 +1389,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     [self loadPhoneRecord];
     self.speakerStatus = NO;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:@"通话结束"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"通话结束")];
     /*
     //移除来电页面
     if (self.callCominginVC) {
@@ -1400,7 +1400,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 /*呼叫失败，并返回错误代码，代码对应的含义，请参考common_types.h*/
 -(void) OnCallFailed:(CallErrorCode) error_code{
     NSLog([NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code],nil);
-    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"错误提示") message:[NSString stringWithFormat:INTERNATIONALSTRING(@"呼叫异常,请确认网络或账号正常")] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"错误提示") message:[NSString stringWithFormat:@"%@", INTERNATIONALSTRING(@"呼叫异常,请确认网络或账号正常")] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
     //    [mStatus setText:[NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code]];
     
 }

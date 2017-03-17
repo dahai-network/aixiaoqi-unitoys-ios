@@ -19,7 +19,7 @@
 
 
 
-#define DEBUGMODE 1
+#define DEBUGMODE 0
 
 #if DEBUGMODE
 

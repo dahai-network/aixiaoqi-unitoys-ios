@@ -242,4 +242,10 @@
 "在手机的系统设置的数据漫游管理界面，关闭数据漫游。" = "Turn off data roaming from data roaming management interface in system settings.";
 "升级过程中请勿退出程序" = "Do not exit the program";
 
+"正在呼叫..." = "Calling";
+"对方振铃..." = "Dialed phone is in vibration mode";
+"正在通话..." = "Dialed person is busy now";
+"正在通话" = "Dialed person is busy now";
+"通话结束" = "Call ended";
+"呼叫接通" = "Call through";
 

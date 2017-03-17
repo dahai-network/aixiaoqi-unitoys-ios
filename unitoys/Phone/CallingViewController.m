@@ -25,7 +25,7 @@
 - (void)getCallingMessage :(NSNotification *)notification {
     if (notification.object) {
         self.lblCallingHint.text = notification.object;
-        if ([self.lblCallingHint.text isEqualToString:@"对方振铃..."]) {
+        if ([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"对方振铃...")]) {
 //            self.hadRing = YES;
 //            
 //            if (self.isHandfree) {
@@ -36,9 +36,9 @@
 //            }
         }
         
-        if ([self.lblCallingHint.text isEqualToString:@"呼叫接通"]) {
+        if ([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"呼叫接通")]) {
             self.callingStatus = YES;
-        }else if ([self.lblCallingHint.text isEqualToString:@"正在通话"]) {
+        }else if ([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"正在通话")]) {
             self.callingStatus = YES;
             
             if (!self.callTimer) {
@@ -46,7 +46,7 @@
                 self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
             }
             
-        }else if([self.lblCallingHint.text isEqualToString:@"通话结束"]){
+        }else if([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"通话结束")]){
             [self endCallPhone];
         }else{
             self.callingStatus = NO;
