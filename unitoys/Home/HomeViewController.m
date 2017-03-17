@@ -307,24 +307,52 @@ typedef enum : NSUInteger {
 
 #pragma mark 刷新卡状态
 - (void)refreshStatueToCard {
-    [BlueToothDataManager shareManager].bleStatueForCard = 0;
-    //对卡上电
-    [self phoneCardToUpeLectrify:@"01"];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [BlueToothDataManager shareManager].bleStatueForCard = 0;
+        //对卡上电
+        [self phoneCardToUpeLectrify:@"01"];
+    }else{
+        NSLog(@"蓝牙未连接");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
+        });
+    }
 }
 
 #pragma mark 对卡上电
 - (void)updataToCard {
-    [self phoneCardToUpeLectrify:@"03"];
+    if ([BlueToothDataManager shareManager].isConnected) {
+         [self phoneCardToUpeLectrify:@"03"];
+    }else{
+        NSLog(@"蓝牙未连接");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
+        });
+    }
 }
 
 #pragma mark 对卡断电
 - (void)downElectToCard {
-    [self phoneCardToOutageNew];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self phoneCardToOutageNew];
+    }else{
+        NSLog(@"蓝牙未连接");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
+        });
+    }
 }
 
 #pragma mark 查找手环
 - (void)searchMyBluetooth {
-    [self sendMessageToBLEWithType:BLESearchDevice validData:nil];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self sendMessageToBLEWithType:BLESearchDevice validData:nil];
+    }else{
+        NSLog(@"蓝牙未连接");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
+        });
+    }
 }
 
 - (void)unBindSuccess {
@@ -491,46 +519,53 @@ typedef enum : NSUInteger {
 
 #pragma mark - 空中升级
 - (void)oatUpdataAction:(NSNotification *)sender {
-    if (sender && ![sender.object isEqualToString:@"<null>"]) {
-        [self sendMessageToBLEWithType:BLEUpdataFromOTA validData:@"b1"];
-        [self showProgress];
-        NSURL *downloadURL = [NSURL URLWithString:sender.object];
-        [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:downloadURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-            //下载完成之后的回调
-            // 文件路径
-            NSString* ceches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
-            NSString* filepath = [ceches stringByAppendingPathComponent:response.suggestedFilename];
-            NSLog(@"文件路径 --> %@", filepath);
-            
-            // 创建一个空的文件到沙盒中
-            NSFileManager *mgr = [NSFileManager defaultManager];
-            [mgr createFileAtPath:filepath contents:nil attributes:nil];
-            
-            // 创建一个用来写数据的文件句柄对象
-            self.writeHandle = [NSFileHandle fileHandleForWritingAtPath:filepath];
-            // 将数据写入沙盒
-            [self.writeHandle writeData:data];
-            // 关闭文件
-            [self.writeHandle closeFile];
-            self.writeHandle = nil;
-            NSString *showStr = [NSString stringWithFormat:@"%@\n%@", INTERNATIONALSTRING(@"正在重启蓝牙"), INTERNATIONALSTRING(@"升级过程中请勿退出程序")];
-            self.progressNumberLabel.text = showStr;
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                //            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        if (sender && ![sender.object isEqualToString:@"<null>"]) {
+            [self sendMessageToBLEWithType:BLEUpdataFromOTA validData:@"b1"];
+            [self showProgress];
+            NSURL *downloadURL = [NSURL URLWithString:sender.object];
+            [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:downloadURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                //下载完成之后的回调
+                // 文件路径
+                NSString* ceches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
+                NSString* filepath = [ceches stringByAppendingPathComponent:response.suggestedFilename];
+                NSLog(@"文件路径 --> %@", filepath);
                 
-                NSURL *fileURL = [NSURL fileURLWithPath:filepath];
-                //            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
-                DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
-                DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:self.mgr target:self.peripheral];
-                [initiator withFirmwareFile:selectedFirmware];
-                initiator.delegate = self;
-                initiator.logger = self;
-                initiator.progressDelegate = self;
-                self.myController = [initiator start];//开始升级
-            });
-        }];
-    } else {
-        NSLog(@"URL有问题");
+                // 创建一个空的文件到沙盒中
+                NSFileManager *mgr = [NSFileManager defaultManager];
+                [mgr createFileAtPath:filepath contents:nil attributes:nil];
+                
+                // 创建一个用来写数据的文件句柄对象
+                self.writeHandle = [NSFileHandle fileHandleForWritingAtPath:filepath];
+                // 将数据写入沙盒
+                [self.writeHandle writeData:data];
+                // 关闭文件
+                [self.writeHandle closeFile];
+                self.writeHandle = nil;
+                NSString *showStr = [NSString stringWithFormat:@"%@\n%@", INTERNATIONALSTRING(@"正在重启蓝牙"), INTERNATIONALSTRING(@"升级过程中请勿退出程序")];
+                self.progressNumberLabel.text = showStr;
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    //            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
+                    
+                    NSURL *fileURL = [NSURL fileURLWithPath:filepath];
+                    //            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
+                    DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
+                    DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:self.mgr target:self.peripheral];
+                    [initiator withFirmwareFile:selectedFirmware];
+                    initiator.delegate = self;
+                    initiator.logger = self;
+                    initiator.progressDelegate = self;
+                    self.myController = [initiator start];//开始升级
+                });
+            }];
+        } else {
+            NSLog(@"URL有问题");
+        }
+    }else{
+        NSLog(@"蓝牙未连接");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
+        });
     }
 }
 
@@ -689,13 +724,27 @@ typedef enum : NSUInteger {
 - (void)senderNewMessageToBLE:(NSNotification *)sender {
     NSString *tempStr = sender.object;
     NSLog(@"获取卡数据---%@", tempStr);
-    [self sendMessageToBLEWithType:BLECardData validData:tempStr];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self sendMessageToBLEWithType:BLECardData validData:tempStr];
+    }else{
+        NSLog(@"蓝牙未连接");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
+        });
+    }
 }
 
 - (void)sendNewMessageToBLEWithPushKit:(NSString *)sendString
 {
-    NSLog(@"获取卡数据从pushkit---%@", sendString);
-    [self sendMessageToBLEWithType:BLECardData validData:sendString];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        NSLog(@"获取卡数据从pushkit---%@", sendString);
+        [self sendMessageToBLEWithType:BLECardData validData:sendString];
+    }else{
+        NSLog(@"蓝牙未连接");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
+        });
+    }
 }
 
 #pragma mark 新协议发送数据包的方法
@@ -2793,13 +2842,13 @@ typedef enum : NSUInteger {
         }
         NSLog(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
     } else {
-        NSString *dataStr = [NSString stringWithFormat:@"%@", data];
-        if (![dataStr isEqualToString:@"<88800310 0002>"]) {
-            NSLog(@"蓝牙未连接");
-            dispatch_async(dispatch_get_main_queue(), ^{
-                HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
-            });
-        }
+//        NSString *dataStr = [NSString stringWithFormat:@"%@", data];
+//        if (![dataStr isEqualToString:@"<88800310 0002>"]) {
+//            NSLog(@"蓝牙未连接");
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
+//            });
+//        }
     }
 }
 
