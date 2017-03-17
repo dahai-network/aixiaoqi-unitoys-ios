@@ -1753,11 +1753,42 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 [UNCreatLocalNoti createLocalNotiMessageString:@"pushKit消息唤醒网络电话"];
                 //创建网络电话服务
                 [[UNSipEngineInitialize sharedInstance] initEngine];
+            }else if ([dict[@"MessageType"] isEqualToString:@"05"]){
+                if (dict[@"Data"]) {
+                    self.isSendTcpString = YES;
+                    NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
+                    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"接收服务器的心跳包数据--%@", servicePushKitData]];
+                    if (!self.sendTcpSocket) {
+                        [self creatAsocketTcp];
+                    }
+                    [self sendPingPacketWithPushKitMessage:servicePushKitData];
+                }
             }
         }else{
             
         }
     }
+}
+
+- (void)sendPingPacketWithPushKitMessage:(NSString *)message
+{
+    NSString *pingMessage = [message stringByReplacingCharactersInRange:NSMakeRange(4, 2) withString:@"85"];
+    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+    NSString *token;
+    if (userdata) {
+        token = userdata[@"Token"];
+    }
+    NSString *ascHex = [self hexStringFromString:token];
+    NSString *lengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%lu", ascHex.length/2]];
+    NSString *tokenHex = [NSString stringWithFormat:@"78%@%@", lengthHex, ascHex];
+    
+    NSString *appendString = [NSString stringWithFormat:@"%@%@", pingMessage, tokenHex];
+    NSString *countLengthStr = [appendString substringFromIndex:24];
+    NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%lu", countLengthStr.length/2]];
+    NSString *tcpString = [appendString stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
+    NSLog(@"发送给服务器的数据 -- %@", tcpString);
+    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送PushKit心跳包给服务器的数据--%@", tcpString]];
+    [self sendMsgWithMessage:tcpString];
 }
 
 
@@ -1785,7 +1816,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 - (void)sendPushKitMessage:(NSString *)servicePushKitData
 {
     NSLog(@"当前队列需要发送的pushkit消息=====%@", servicePushKitData);
-
     self.tcpStringWithPushKit = nil;
     self.tlvFirstStr = nil;
     self.isPushKit = YES;

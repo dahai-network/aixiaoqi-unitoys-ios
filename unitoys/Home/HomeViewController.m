@@ -360,6 +360,7 @@ typedef enum : NSUInteger {
         if (responseObj) {
             self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
         }
+        NSLog(@"直接扫描蓝牙设备");
         //扫描蓝牙设备
         [self scanAndConnectDevice];
     }else{
@@ -1322,33 +1323,8 @@ typedef enum : NSUInteger {
 }
 
 - (void)loadOrderList {
-    self.checkToken = YES;
     
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"3",@"PageSize",@"1",@"PageNumber", nil];
-    
-    [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
-    
-    
-    [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
-        
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiOrderList" dictData:responseObj];
-            self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
-            [self viewOrders];
-        
-            [self.tableView reloadData];
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-
-        }
-        NSLog(@"查询到的套餐数据：%@",responseObj);
-    } failure:^(id dataObj, NSError *error) {
-        //
-        NSLog(@"啥都没：%@",[error description]);
+    if (self.isPushKitStatu) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiOrderList"];
         if (responseObj) {
             self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
@@ -1357,7 +1333,44 @@ typedef enum : NSUInteger {
         }else{
             HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
-    } headers:self.headers];
+    }else{
+        self.checkToken = YES;
+        
+        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"3",@"PageSize",@"1",@"PageNumber", nil];
+        
+        [self getBasicHeader];
+        NSLog(@"表头：%@",self.headers);
+        
+        
+        [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
+            
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiOrderList" dictData:responseObj];
+                self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+                [self viewOrders];
+                
+                [self.tableView reloadData];
+                
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                
+            }
+            NSLog(@"查询到的套餐数据：%@",responseObj);
+        } failure:^(id dataObj, NSError *error) {
+            //
+            NSLog(@"啥都没：%@",[error description]);
+            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiOrderList"];
+            if (responseObj) {
+                self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+                [self viewOrders];
+                [self.tableView reloadData];
+            }else{
+                HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+            }
+        } headers:self.headers];
+    }
 }
 
 - (void)loadSportData {
@@ -1582,34 +1595,7 @@ typedef enum : NSUInteger {
 - (void)loadAdvertisment {
 //    self.AdView.imageURLStringsGroup = [responseObj objectForKey:@"data"];
  
-    [SSNetworkRequest getRequest:[apiGetBannerList stringByAppendingString:[self getParamStr]] params:nil success:^(id responseObj){
-       
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetBannerList" dictData:responseObj];
-            
-            self.arrPicUrls = [[NSMutableArray alloc] init];
-            self.arrPicJump = [[NSMutableArray alloc] init];
-            self.arrPicTitles = [[NSMutableArray alloc] init];
-            //构造图片列表和链接列表
-            for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
-                [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
-                [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
-                [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
-            }
-        
-        
-            self.AdView.imageURLStringsGroup = self.arrPicUrls;
-            self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-        }
-        
-        
-        
-    }failure:^(id dataObj, NSError *error) {
+    if (self.isPushKitStatu) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetBannerList"];
         if (responseObj) {
             self.arrPicUrls = [[NSMutableArray alloc] init];
@@ -1626,57 +1612,101 @@ typedef enum : NSUInteger {
         }else{
             HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
-
-        
-        NSLog(@"数据错误：%@",[error description]);
-        
-    } headers:nil];
-    self.AdView.delegate = self;
+    }else{
+        [SSNetworkRequest getRequest:[apiGetBannerList stringByAppendingString:[self getParamStr]] params:nil success:^(id responseObj){
+            
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetBannerList" dictData:responseObj];
+                
+                self.arrPicUrls = [[NSMutableArray alloc] init];
+                self.arrPicJump = [[NSMutableArray alloc] init];
+                self.arrPicTitles = [[NSMutableArray alloc] init];
+                //构造图片列表和链接列表
+                for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
+                    [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
+                    [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
+                    [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
+                }
+                
+                
+                self.AdView.imageURLStringsGroup = self.arrPicUrls;
+                self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+            }
+        }failure:^(id dataObj, NSError *error) {
+            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetBannerList"];
+            if (responseObj) {
+                self.arrPicUrls = [[NSMutableArray alloc] init];
+                self.arrPicJump = [[NSMutableArray alloc] init];
+                self.arrPicTitles = [[NSMutableArray alloc] init];
+                //构造图片列表和链接列表
+                for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
+                    [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
+                    [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
+                    [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
+                }
+                self.AdView.imageURLStringsGroup = self.arrPicUrls;
+                self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
+            }else{
+                HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+            }
+            NSLog(@"数据错误：%@",[error description]);
+            
+        } headers:nil];
+        self.AdView.delegate = self;
+    }
 }
 
 - (void)loadBasicConfig {
-    [SSNetworkRequest getRequest:apiGetBasicConfig params:nil success:^(id responseObj){
-        
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetBasicConfig" dictData:responseObj];
+    if (!self.isPushKitStatu) {
+        [SSNetworkRequest getRequest:apiGetBasicConfig params:nil success:^(id responseObj){
             
-            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
-            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
-            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
-            //双卡双待教程
-            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
-            //出国前教程
-            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetBasicConfig" dictData:responseObj];
+                
+                [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
+                [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
+                [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
+                //双卡双待教程
+                [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
+                //出国前教程
+                [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+            }
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-        }
-        
-        
-        
-    }failure:^(id dataObj, NSError *error) {
-//        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetBasicConfig"];
-//        if (responseObj) {
-//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
-//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
-//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
-//            //双卡双待教程
-//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
-//            //出国前教程
-//            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
-//            [[NSUserDefaults standardUserDefaults] synchronize];
-//        }else{
-//            HUDNormal(@"网络貌似有问题")
-//        }
-
-        NSLog(@"数据错误：%@",[error description]);
-        
-    } headers:nil];
-    self.AdView.delegate = self;
+            
+            
+        }failure:^(id dataObj, NSError *error) {
+            //        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetBasicConfig"];
+            //        if (responseObj) {
+            //            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
+            //            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
+            //            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
+            //            //双卡双待教程
+            //            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
+            //            //出国前教程
+            //            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
+            //            [[NSUserDefaults standardUserDefaults] synchronize];
+            //        }else{
+            //            HUDNormal(@"网络貌似有问题")
+            //        }
+            
+            NSLog(@"数据错误：%@",[error description]);
+            
+        } headers:nil];
+        self.AdView.delegate = self;
+    }
+    
 }
 
 #pragma mark 获取手环注册状态
@@ -1752,27 +1782,7 @@ typedef enum : NSUInteger {
 
 #pragma mark 热门套餐
 - (void)loadHotCountry {
-    self.checkToken = YES;
-    
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"16",@"pageSize", nil];
-    [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
-    [SSNetworkRequest getRequest:apiCountryHot params:params success:^(id responseObj) {
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCountryHot" dictData:responseObj];
-            self.arrCountry = [responseObj objectForKey:@"data"];
-        
-            [self.hotCollectionView reloadData];
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-        }
-        
-        NSLog(@"查询到的用户数据：%@",responseObj);
-    } failure:^(id dataObj, NSError *error) {
+    if (self.isPushKitStatu) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiCountryHot"];
         if (responseObj) {
             self.arrCountry = [responseObj objectForKey:@"data"];
@@ -1780,8 +1790,37 @@ typedef enum : NSUInteger {
         }else{
             HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
-        NSLog(@"啥都没：%@",[error description]);
-    } headers:self.headers];
+    }else{
+        self.checkToken = YES;
+        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"16",@"pageSize", nil];
+        [self getBasicHeader];
+        NSLog(@"表演头：%@",self.headers);
+        [SSNetworkRequest getRequest:apiCountryHot params:params success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCountryHot" dictData:responseObj];
+                self.arrCountry = [responseObj objectForKey:@"data"];
+                
+                [self.hotCollectionView reloadData];
+                
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+            }
+            
+            NSLog(@"查询到的用户数据：%@",responseObj);
+        } failure:^(id dataObj, NSError *error) {
+            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiCountryHot"];
+            if (responseObj) {
+                self.arrCountry = [responseObj objectForKey:@"data"];
+                [self.hotCollectionView reloadData];
+            }else{
+                HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+            }
+            NSLog(@"啥都没：%@",[error description]);
+        } headers:self.headers];
+    }
 }
 
 #pragma mark 查询手环设备是否已被绑定
@@ -2565,7 +2604,7 @@ typedef enum : NSUInteger {
         self.isQuickLoad = NO;
         [BlueToothDataManager shareManager].bleStatueForCard = 0;
         [BlueToothDataManager shareManager].isTcpConnected = NO;
-        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+//        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
         [self sendLBEMessageNoPushKit];
         self.isUpdatedLBEInfo = YES;
     }

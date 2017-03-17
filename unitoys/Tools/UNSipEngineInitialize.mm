@@ -155,7 +155,6 @@ typedef enum : NSUInteger {
 }
 
 - (void)initEngine {
-    
     [[SipEngineManager instance] Init];
     [[SipEngineManager instance] LoadConfig];
     if ([SipEngineManager instance].callDelegate == nil) {
@@ -164,10 +163,9 @@ typedef enum : NSUInteger {
     if ([SipEngineManager instance].registrationDelegate == nil) {
         [[SipEngineManager instance] setRegistrationDelegate:self];
     }
-
     [self doRegister];
+
 //    [self getMaxPhoneCall];
-    
     //读取本地缓存的账号信息
 //    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
 //    self.userInfo = [[NSDictionary alloc] initWithDictionary:userdata];
