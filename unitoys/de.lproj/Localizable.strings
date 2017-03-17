@@ -1,10 +1,10 @@
 /*
-  Localizable.strings
-  unitoys
-
-  Created by 董杰 on 2017/3/14.
-  Copyright © 2017年 sumars. All rights reserved.
-*/
+ Localizable.strings
+ unitoys
+ 
+ Created by 董杰 on 2017/3/14.
+ Copyright © 2017年 sumars. All rights reserved.
+ */
 "首页" = "Home";
 "拨打" = "Call";
 "通讯录" = "Contacts";

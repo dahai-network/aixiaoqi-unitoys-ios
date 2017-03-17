@@ -99,7 +99,7 @@
 "KAi-Bz-db3.title" = "Contacts";
 
 /* Class = "UILabel"; text = "总共步行/步"; ObjectID = "LhS-ro-ryz"; */
-"LhS-ro-ryz.text" = "Total steps/step";
+"LhS-ro-ryz.text" = "Total/steps";
 
 /* Class = "UILabel"; text = "微信消息提醒"; ObjectID = "Lq8-GF-cl6"; */
 "Lq8-GF-cl6.text" = "Remind WeChat news";
@@ -138,7 +138,7 @@
 "XRI-Rn-oDt.text" = "Temporarily not to buy package";
 
 /* Class = "UILabel"; text = "通话套餐"; ObjectID = "aRg-av-5EC"; */
-"aRg-av-5EC.text" = "Call Packages";
+"aRg-av-5EC.text" = "Packages";
 
 /* Class = "UIButton"; normalTitle = "充值"; ObjectID = "aSg-jc-95q"; */
 "aSg-jc-95q.normalTitle" = "Recharge";
@@ -204,7 +204,7 @@
 "nKV-Hv-CpV.text" = "Label";
 
 /* Class = "UILabel"; text = "境外通讯"; ObjectID = "pZK-e0-bEG"; */
-"pZK-e0-bEG.text" = "Overseas Comm";
+"pZK-e0-bEG.text" = "Abroad";
 
 /* Class = "UILabel"; text = "我的设备"; ObjectID = "pfB-eP-eIa"; */
 "pfB-eP-eIa.text" = "My Device";
