@@ -46,7 +46,8 @@
 
 #define kSystemVersionValue [[UIDevice currentDevice].systemVersion floatValue]
 
-#define INTERNATIONALSTRING(str) NSLocalizedString(str, nil)
+//#define INTERNATIONALSTRING(str) NSLocalizedString(str, nil)
+#define INTERNATIONALSTRING(str) (([[[NSLocale preferredLanguages] objectAtIndex:0] isEqual:@"zh-Hans"])?([[NSBundle mainBundle] localizedStringForKey:(str) value:@"" table:nil]):([[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"en" ofType:@"lproj"]] localizedStringForKey:str value:@"" table:nil]))
 
 //如果不使用签名则按partner、expires、sign三个参数直接作为URL参数，其他则Post或是Get根据需要写入
 //如果使用签名则按partner、expires、sign和TOKEN（登录后获得，12天失效）四个参数写进Header进行签名认证。其他则Post或是Get根据需要写入

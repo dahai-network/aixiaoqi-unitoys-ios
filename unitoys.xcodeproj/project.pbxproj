@@ -362,6 +362,8 @@
 		04472ABB1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivateGiftCardTableViewCell.h; sourceTree = "<group>"; };
 		04472ABC1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivateGiftCardTableViewCell.m; sourceTree = "<group>"; };
 		04472ABD1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivateGiftCardTableViewCell.xib; sourceTree = "<group>"; };
+		044E02391E7B7C5F00FCC563 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		044E023A1E7B7C7700FCC563 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		04553F2D1E70EE980025CA34 /* ChooseDeviceTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseDeviceTypeViewController.h; sourceTree = "<group>"; };
 		04553F2E1E70EE980025CA34 /* ChooseDeviceTypeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseDeviceTypeViewController.m; sourceTree = "<group>"; };
 		04553F2F1E70EE980025CA34 /* ChooseDeviceTypeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChooseDeviceTypeViewController.xib; sourceTree = "<group>"; };
@@ -381,6 +383,23 @@
 		046BF6FF1E27A544008C10C7 /* YBPopupMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBPopupMenu.m; sourceTree = "<group>"; };
 		048ACFFF1E0A576800421F67 /* NSString+Addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Addition.h"; sourceTree = "<group>"; };
 		048AD0001E0A576800421F67 /* NSString+Addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Addition.m"; sourceTree = "<group>"; };
+		04A0EC931E7B83A500F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/IsBoundingViewController.strings; sourceTree = "<group>"; };
+		04A0EC941E7B83A500F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/BindGiftBagCardViewController.strings; sourceTree = "<group>"; };
+		04A0EC951E7B83A500F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ActivateGiftCardViewController.strings; sourceTree = "<group>"; };
+		04A0EC961E7B83A500F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CommunicateDetailViewController.strings; sourceTree = "<group>"; };
+		04A0EC971E7B83A500F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CallComingInViewController.strings; sourceTree = "<group>"; };
+		04A0EC981E7B83A500F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ExplainDetailsChildController.strings; sourceTree = "<group>"; };
+		04A0EC991E7B83A500F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/BindChargeCardViewController.strings; sourceTree = "<group>"; };
+		04A0EC9A1E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Profile.strings; sourceTree = "<group>"; };
+		04A0EC9B1E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Device.strings; sourceTree = "<group>"; };
+		04A0EC9C1E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Phone.strings; sourceTree = "<group>"; };
+		04A0EC9D1E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Order.strings; sourceTree = "<group>"; };
+		04A0EC9E1E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Package.strings; sourceTree = "<group>"; };
+		04A0EC9F1E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Setting.strings; sourceTree = "<group>"; };
+		04A0ECA01E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Main.strings; sourceTree = "<group>"; };
+		04A0ECA11E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		04A0ECA21E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		04A0ECA31E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		04D90E871DEEDC5C00035C46 /* BlueToothDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlueToothDataManager.h; sourceTree = "<group>"; };
 		04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlueToothDataManager.m; sourceTree = "<group>"; };
 		04D90E8A1DF172FD00035C46 /* WaterIdentifyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterIdentifyView.h; sourceTree = "<group>"; };
@@ -1924,6 +1943,7 @@
 				en,
 				Base,
 				"zh-Hans",
+				de,
 			);
 			mainGroup = 95F337081D853255000B5461;
 			productRefGroup = 95F337121D853256000B5461 /* Products */;
@@ -2250,6 +2270,8 @@
 			children = (
 				04440CEF1E77887000206877 /* en */,
 				04440CF11E77887B00206877 /* zh-Hans */,
+				044E023A1E7B7C7700FCC563 /* Base */,
+				04A0ECA21E7B83A600F155A3 /* de */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2259,6 +2281,8 @@
 			children = (
 				04440CF51E778A2E00206877 /* en */,
 				04440CF71E778A3200206877 /* zh-Hans */,
+				044E02391E7B7C5F00FCC563 /* Base */,
+				04A0ECA31E7B83A600F155A3 /* de */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2269,6 +2293,7 @@
 				04440CF91E77905500206877 /* Base */,
 				04440CFC1E77905900206877 /* en */,
 				04440CFE1E77905B00206877 /* zh-Hans */,
+				04A0EC9F1E7B83A600F155A3 /* de */,
 			);
 			name = Setting.storyboard;
 			sourceTree = "<group>";
@@ -2279,6 +2304,7 @@
 				04440D001E77910F00206877 /* Base */,
 				04440D031E77911300206877 /* en */,
 				04440D051E77911800206877 /* zh-Hans */,
+				04A0EC9E1E7B83A600F155A3 /* de */,
 			);
 			name = Package.storyboard;
 			sourceTree = "<group>";
@@ -2289,6 +2315,7 @@
 				04440D071E779AD500206877 /* Base */,
 				04440D0A1E779ADA00206877 /* en */,
 				04440D0C1E779AE000206877 /* zh-Hans */,
+				04A0EC9D1E7B83A600F155A3 /* de */,
 			);
 			name = Order.storyboard;
 			sourceTree = "<group>";
@@ -2299,6 +2326,7 @@
 				04440D0E1E779B5D00206877 /* Base */,
 				04440D111E779B6000206877 /* en */,
 				04440D131E779B6300206877 /* zh-Hans */,
+				04A0EC9C1E7B83A600F155A3 /* de */,
 			);
 			name = Phone.storyboard;
 			sourceTree = "<group>";
@@ -2309,6 +2337,7 @@
 				04440D151E779CF900206877 /* Base */,
 				04440D181E779D0000206877 /* en */,
 				04440D1A1E779D0300206877 /* zh-Hans */,
+				04A0EC9B1E7B83A600F155A3 /* de */,
 			);
 			name = Device.storyboard;
 			sourceTree = "<group>";
@@ -2319,6 +2348,7 @@
 				04440D1C1E77BBF000206877 /* Base */,
 				04440D1F1E77BBF400206877 /* en */,
 				04440D211E77BBF700206877 /* zh-Hans */,
+				04A0EC9A1E7B83A600F155A3 /* de */,
 			);
 			name = Profile.storyboard;
 			sourceTree = "<group>";
@@ -2329,6 +2359,7 @@
 				04440D231E77C4C400206877 /* Base */,
 				04440D261E77C4C700206877 /* en */,
 				04440D281E77C4CC00206877 /* zh-Hans */,
+				04A0EC991E7B83A500F155A3 /* de */,
 			);
 			name = BindChargeCardViewController.xib;
 			sourceTree = "<group>";
@@ -2339,6 +2370,7 @@
 				04440D2A1E77C6BA00206877 /* Base */,
 				04440D2D1E77C6BE00206877 /* en */,
 				04440D2F1E77C6C100206877 /* zh-Hans */,
+				04A0EC981E7B83A500F155A3 /* de */,
 			);
 			name = ExplainDetailsChildController.xib;
 			sourceTree = "<group>";
@@ -2349,6 +2381,7 @@
 				04440D311E77C98F00206877 /* Base */,
 				04440D341E77C99100206877 /* en */,
 				04440D361E77C99200206877 /* zh-Hans */,
+				04A0EC971E7B83A500F155A3 /* de */,
 			);
 			name = CallComingInViewController.xib;
 			sourceTree = "<group>";
@@ -2359,6 +2392,7 @@
 				04440D381E77CE2800206877 /* Base */,
 				04440D3B1E77CE2C00206877 /* en */,
 				04440D3D1E77CE2E00206877 /* zh-Hans */,
+				04A0EC961E7B83A500F155A3 /* de */,
 			);
 			name = CommunicateDetailViewController.xib;
 			sourceTree = "<group>";
@@ -2369,6 +2403,7 @@
 				04440D3F1E77CE9500206877 /* Base */,
 				04440D421E77CE9C00206877 /* en */,
 				04440D441E77CE9D00206877 /* zh-Hans */,
+				04A0EC951E7B83A500F155A3 /* de */,
 			);
 			name = ActivateGiftCardViewController.xib;
 			sourceTree = "<group>";
@@ -2379,6 +2414,7 @@
 				04440D461E77CEE000206877 /* Base */,
 				04440D491E77CEE500206877 /* en */,
 				04440D4B1E77CEE700206877 /* zh-Hans */,
+				04A0EC941E7B83A500F155A3 /* de */,
 			);
 			name = BindGiftBagCardViewController.xib;
 			sourceTree = "<group>";
@@ -2389,6 +2425,7 @@
 				04440D4D1E77D15900206877 /* Base */,
 				04440D501E77D15D00206877 /* en */,
 				04440D521E77D15E00206877 /* zh-Hans */,
+				04A0EC931E7B83A500F155A3 /* de */,
 			);
 			name = IsBoundingViewController.xib;
 			sourceTree = "<group>";
@@ -2399,6 +2436,7 @@
 				95F337211D853256000B5461 /* Base */,
 				04440CE61E77858700206877 /* zh-Hans */,
 				04440CE91E7785CA00206877 /* en */,
+				04A0ECA01E7B83A600F155A3 /* de */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -2409,6 +2447,7 @@
 				95F337261D853256000B5461 /* Base */,
 				04440CE71E77858700206877 /* zh-Hans */,
 				04440CEB1E77864800206877 /* en */,
+				04A0ECA11E7B83A600F155A3 /* de */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

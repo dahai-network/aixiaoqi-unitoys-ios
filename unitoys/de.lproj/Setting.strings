@@ -1,0 +1,45 @@
+
+/* Class = "UILabel"; text = "用户许可及服务协议"; ObjectID = "1Dn-oi-FKu"; */
+"1Dn-oi-FKu.text" = "User license and service agreement";
+
+/* Class = "UIButton"; normalTitle = "service@unitoys.com"; ObjectID = "4t8-jh-xCn"; */
+"4t8-jh-xCn.normalTitle" = "service@unitoys.com";
+
+/* Class = "UILabel"; text = "联系我们"; ObjectID = "BYT-sV-9jB"; */
+"BYT-sV-9jB.text" = "Contact Us";
+
+/* Class = "UILabel"; text = "售后客服时间：7x24小时"; ObjectID = "DyX-E0-YGC"; */
+"DyX-E0-YGC.text" = "After-sale Service：7x24hours";
+
+/* Class = "UIButton"; normalTitle = "0755-32979727"; ObjectID = "HFN-1P-UIn"; */
+"HFN-1P-UIn.normalTitle" = "0755-32979727";
+
+/* Class = "UIViewController"; title = "用户反馈"; ObjectID = "LKf-uS-grq"; */
+"LKf-uS-grq.title" = "Feedback";
+
+/* Class = "UILabel"; text = "用户反馈"; ObjectID = "NZm-H5-Lrq"; */
+"NZm-H5-Lrq.text" = "Feedback";
+
+/* Class = "UILabel"; text = "App版本"; ObjectID = "PyL-ff-CC3"; */
+"PyL-ff-CC3.text" = "App Version";
+
+/* Class = "UIButton"; normalTitle = "发送"; ObjectID = "ZDN-R1-g1B"; */
+"ZDN-R1-g1B.normalTitle" = "Send";
+
+/* Class = "UIButton"; normalTitle = "退出登录"; ObjectID = "fCP-XO-INQ"; */
+"fCP-XO-INQ.normalTitle" = "Log out";
+
+/* Class = "UITableViewController"; title = "设置"; ObjectID = "fUR-bd-mDi"; */
+"fUR-bd-mDi.title" = "Setting";
+
+/* Class = "UIViewController"; title = "用户许可协议及服务协议"; ObjectID = "iPo-9S-MEB"; */
+"iPo-9S-MEB.title" = "User license and service agreement";
+
+/* Class = "UIViewController"; title = "联系我们"; ObjectID = "owu-Ya-7cd"; */
+"owu-Ya-7cd.title" = "Contact Us";
+
+/* Class = "UILabel"; text = "微信公众号：爱小器"; ObjectID = "tDB-aN-M1N"; */
+"tDB-aN-M1N.text" = "Wechat Official Account：爱小器";
+
+/* Class = "UILabel"; text = "1.0.0"; ObjectID = "tPJ-E8-Re9"; */
+"tPJ-E8-Re9.text" = "1.0.0";

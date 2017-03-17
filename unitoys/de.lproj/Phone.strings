@@ -1,0 +1,27 @@
+
+/* Class = "UILabel"; text = "移动号码"; ObjectID = "3Kf-a9-bQ5"; */
+"3Kf-a9-bQ5.text" = "Mobile number, ";
+
+/* Class = "UITableViewController"; title = "详情"; ObjectID = "3lY-za-7jh"; */
+"3lY-za-7jh.title" = "Detail";
+
+/* Class = "UILabel"; text = "收件人："; ObjectID = "4hQ-Ud-srq"; */
+"4hQ-Ud-srq.text" = "Addressee：";
+
+/* Class = "UIButton"; normalTitle = "发送"; ObjectID = "bq9-oS-Jdl"; */
+"bq9-oS-Jdl.normalTitle" = "Send";
+
+/* Class = "UILabel"; text = "phoneName"; ObjectID = "emd-Hl-N9k"; */
+"emd-Hl-N9k.text" = "PhoneName";
+
+/* Class = "UIViewController"; title = "新信息"; ObjectID = "hmv-SC-xl2"; */
+"hmv-SC-xl2.title" = "New Message";
+
+/* Class = "UILabel"; text = "0999-99999999"; ObjectID = "m1M-TF-bsp"; */
+"m1M-TF-bsp.text" = "0999-99999999";
+
+/* Class = "UIButton"; normalTitle = "删除联系人"; ObjectID = "ubK-At-37H"; */
+"ubK-At-37H.normalTitle" = "Delete the contact";
+
+/* Class = "UIButton"; normalTitle = "发送"; ObjectID = "xma-is-zqo"; */
+"xma-is-zqo.normalTitle" = "Send";
