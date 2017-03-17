@@ -1960,6 +1960,10 @@ typedef enum : NSUInteger {
                 }
                 NSLog(@"啥都没：%@",[error description]);
             } headers:self.headers];
+        } else {
+            HUDNormal(INTERNATIONALSTRING(@"请先在设置->蓝牙中忽略已配对的设备"))
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"needToIgnore" object:@"needToIgnore"];
+            return;
         }
     } else {
         NSLog(@"绑定蓝牙接口出问题 -- %s:%d", __func__, __LINE__);
@@ -2299,9 +2303,9 @@ typedef enum : NSUInteger {
             //绑定设备
             if ([BlueToothDataManager shareManager].isOpened) {
                 if (!self.boundedDeviceInfo[@"IMEI"]) {
-                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
                     //扫描蓝牙设备
                     if ([BlueToothDataManager shareManager].isNeedToBoundDevice) {
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
                         //调用绑定设备接口
                         [self checkDeviceIsBound];
                         [BlueToothDataManager shareManager].isNeedToBoundDevice = NO;
@@ -2428,6 +2432,7 @@ typedef enum : NSUInteger {
             if (!self.pairedArr) {
                 self.pairedArr = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
             } else {
+                self.pairedArr = nil;
                 self.pairedArr = [self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]];
             }
 //            NSArray *arr = [self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]];
@@ -2470,7 +2475,8 @@ typedef enum : NSUInteger {
                                 self.strongestRssiPeripheral = peripheral;
                                 [self.macAddressDict setObject:[BlueToothDataManager shareManager].deviceMacAddress forKey:peripheral.identifier];
                                 [self checkDeviceIsBound];
-                                [BlueToothDataManager shareManager].isConnectedPairedDevice = YES;
+                                [BlueToothDataManager shareManager].isNeedToBoundDevice = NO;
+                                [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
                             } else {
                                 NSLog(@"啥都不做");
                                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];

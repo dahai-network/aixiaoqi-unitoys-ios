@@ -43,12 +43,13 @@
 "注册中" = "Registering";
 "注册失败" = "Failed";
 "信号强" = "Stable";
+"选择绑定设备" = "Binding";
 "绑定" = "Binding";
 "正在绑定" = "Binding";
 "重试" = "Retry";
 "未能搜索到爱小器设备" = "None Unitoys' device was found";
-"绑定爱小器手环" = "Bind Uniband";
-"绑定钥匙扣" = "Bind Unibox";
+"爱小器手环" = "Bind Uniband";
+"爱小器双待王" = "Bind Unibox";
 "请开启蓝牙" = "Please turn on Bluetooth";
 "还没有连接设备，点击连接" = "Not connected, click";
 "正在搜索设备" = "Searching";
@@ -251,6 +252,7 @@
 "正在通话" = "Dialed person is busy now";
 "通话结束" = "Call ended";
 "呼叫接通" = "Call through";
-"轨迹" = "Trace";
+"轨迹" = "Track";
 "爱小器" = "Unitoys";
+"请先在设置->蓝牙中忽略已配对的设备" = "Please ignore the paired devices in Settings - > bluetooth";
 

@@ -37,6 +37,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectedSuccess) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectFail) name:@"connectFail" object:@"connectFail"];//绑定失败
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchNoDevice) name:@"searchNoDevice" object:@"searchNoDevice"];//没有搜索到手环
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchNoDevice) name:@"needToIgnore" object:@"needToIgnore"];//需要先忽略
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -173,6 +174,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"connectFail" object:@"connectFail"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"searchNoDevice" object:@"searchNoDevice"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"needToIgnore" object:@"needToIgnore"];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

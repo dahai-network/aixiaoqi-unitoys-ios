@@ -21,7 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = INTERNATIONALSTRING(@"绑定");
+    self.title = INTERNATIONALSTRING(@"选择绑定设备");
     self.tableView.tableFooterView = [UIView new];
     // Do any additional setup after loading the view from its nib.
 }
@@ -40,10 +40,10 @@
     }
     switch (indexPath.row) {
             case 0:
-            cell.lbltype.text = INTERNATIONALSTRING(@"绑定爱小器手环");
+            cell.lbltype.text = INTERNATIONALSTRING(@"爱小器手环");
             break;
             case 1:
-            cell.lbltype.text = INTERNATIONALSTRING(@"绑定钥匙扣");
+            cell.lbltype.text = INTERNATIONALSTRING(@"爱小器双待王");
             break;
         default:
             NSLog(@"绑定啥？");
