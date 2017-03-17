@@ -36,7 +36,7 @@
 "U86-gF-Dlh.text" = "Weight";
 
 /* Class = "UILabel"; text = "选择充值金额（元）"; ObjectID = "UqS-vK-hwO"; */
-"UqS-vK-hwO.text" = "Ammount（yuan）";
+"UqS-vK-hwO.text" = "Ammount（RMB）";
 
 /* Class = "UIButton"; normalTitle = "50"; ObjectID = "Wj0-Lc-0xB"; */
 "Wj0-Lc-0xB.normalTitle" = "50";

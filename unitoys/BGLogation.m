@@ -108,16 +108,72 @@
 #pragma mark --delegate
 //定位回调里执行重启定位和关闭定位
 -(void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations
-{
-    NSLog(@"定位收集");
-    //如果正在10秒定时收集的时间，不需要执行延时开启和关闭定位
-    if (isCollect) {
-        return;
+    {
+        // 设备的当前位置
+        CLLocation *currLocation = [locations lastObject];
+        NSString *latitude = [NSString stringWithFormat:@"%3.5f",currLocation.coordinate.latitude];
+        NSString *longitude = [NSString stringWithFormat:@"%3.5f",currLocation.coordinate.longitude];
+        NSString *altitude = [NSString stringWithFormat:@"%3.5f",currLocation.altitude];
+        NSString *speed = [NSString stringWithFormat:@"%3.5f", currLocation.speed];
+        NSString *timeS = [NSString stringWithFormat:@"%@", currLocation.timestamp];
+        NSString *currentDayTime = [timeS substringToIndex:10];
+        NSLog(@"截取到的当前时间 -- %@",currentDayTime);
+        NSLog(@"定位收集: -- %@", locations);
+        NSLog(@"定位收集:纬度:%@,经度:%@,高度:%@,速度:%@,时间:%@",latitude,longitude,altitude,speed,timeS);
+        
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  //保存定位信息
+        NSData *locationListArrData = [userDefaults objectForKey:@"locationList"];
+        NSMutableArray *locationListArr = [NSMutableArray array];
+        if (locationListArrData) {
+            locationListArr = [NSKeyedUnarchiver unarchiveObjectWithData:locationListArrData];
+            NSLog(@"存储在本地的定位信息 -- %@", locationListArr);
+        }
+        if (locationListArr.count) {
+            //有存储数据
+            CLLocation *firstLocation = locationListArr[0];
+            NSString *timeStr = [NSString stringWithFormat:@"%@", firstLocation.timestamp];
+            NSString *dayTime = [timeStr substringToIndex:10];
+            NSLog(@"截取到的存储时间 -- %@",dayTime);
+            if (![dayTime isEqualToString:currentDayTime]) {
+                //不是同一天
+                [locationListArr removeAllObjects];
+                [locationListArr addObject:currLocation];
+            } else {
+                //是同一天
+                CLLocation *beforLocation = locationListArr.lastObject;
+                NSString *latitudeStr = [NSString stringWithFormat:@"%3.5f",beforLocation.coordinate.latitude];
+                NSString *longitudeStr = [NSString stringWithFormat:@"%3.5f",beforLocation.coordinate.longitude];
+                CLLocationCoordinate2D startCoordinate = CLLocationCoordinate2DMake([latitudeStr doubleValue], [longitudeStr doubleValue]);
+                //当前确定到的位置数据
+                CLLocationCoordinate2D endCoordinate;
+                endCoordinate.latitude = currLocation.coordinate.latitude;
+                endCoordinate.longitude = currLocation.coordinate.longitude;
+                //移动距离的计算
+                double meters = [self calculateDistanceWithStart:startCoordinate end:endCoordinate];
+                NSLog(@"计算的位移为%f米",meters);
+                if (meters >= 5){
+                    NSLog(@"添加进位置数组");
+                    [locationListArr addObject:currLocation];
+                }else{
+                    NSLog(@"不添加进位置数组");
+                }
+            }
+        } else {
+            //没有存储数据
+            [locationListArr addObject:currLocation];
+        }
+        NSData *listData = [NSKeyedArchiver archivedDataWithRootObject:locationListArr];
+        [userDefaults setObject:listData forKey:@"locationList"];
+        [userDefaults synchronize];
+        
+        //如果正在10秒定时收集的时间，不需要执行延时开启和关闭定位
+        if (isCollect) {
+            return;
+        }
+        [self performSelector:@selector(restartLocation) withObject:nil afterDelay:120];
+        [self performSelector:@selector(stopLocation) withObject:nil afterDelay:10];
+        isCollect = YES;//标记正在定位
     }
-    [self performSelector:@selector(restartLocation) withObject:nil afterDelay:120];
-    [self performSelector:@selector(stopLocation) withObject:nil afterDelay:10];
-    isCollect = YES;//标记正在定位
-}
 - (void)locationManager: (CLLocationManager *)manager didFailWithError: (NSError *)error
 {
     // NSLog(@"locationManager error:%@",error);
@@ -141,6 +197,28 @@
         }
             break;
     }
+}
+    
+#pragma mark - 距离测算
+- (double)calculateDistanceWithStart:(CLLocationCoordinate2D)start end:(CLLocationCoordinate2D)end {
+    
+    double meter = 0;
+    
+    double startLongitude = start.longitude;
+    double startLatitude = start.latitude;
+    double endLongitude = end.longitude;
+    double endLatitude = end.latitude;
+    
+    double radLatitude1 = startLatitude * M_PI / 180.0;
+    double radLatitude2 = endLatitude * M_PI / 180.0;
+    double a = fabs(radLatitude1 - radLatitude2);
+    double b = fabs(startLongitude * M_PI / 180.0 - endLongitude * M_PI / 180.0);
+    
+    double s = 22 * asin(sqrt(pow(sin(a/2),2) + cos(radLatitude1) * cos(radLatitude2) * pow(sin(b/2),2)));
+    s = s * 6378137;
+    
+    meter = round(s * 10000) / 10000;
+    return meter;
 }
 
 @end

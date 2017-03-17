@@ -54,7 +54,7 @@
 
 - (void)configurationCallProvider
 {
-    NSString *localName = @"爱小器";
+    NSString *localName = INTERNATIONALSTRING(@"爱小器");
     CXProviderConfiguration *config = [[CXProviderConfiguration alloc] initWithLocalizedName:localName];
     config.supportsVideo = NO;
     config.maximumCallsPerCallGroup = 1;

@@ -12,6 +12,7 @@
 #import "IsBoundingViewController.h"
 
 #import "AFNetworking.h"
+#import "ShowPathViewController.h"
 
 
 
@@ -20,6 +21,7 @@
 @property (nonatomic, strong) NSMutableArray *rainbowColors;
 @property (weak, nonatomic) IBOutlet UIView *noDataView;
 @property (nonatomic, copy)NSString *todayDate;
+@property (weak, nonatomic) IBOutlet UIButton *showPathButton;
 
 @end
 
@@ -35,6 +37,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.leftBarButtonItem = nil;
+    
+    self.showPathButton.layer.borderWidth = 2;
+    self.showPathButton.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.showPathButton.layer.masksToBounds = YES;
+    self.showPathButton.layer.cornerRadius = 3;
     
     NSDate *todayDate= [NSDate date];
     NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
@@ -75,6 +82,12 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshSStepDataWithNoti:) name:@"stepChanged" object:@"toSport"];
     // Do any additional setup after loading the view.
+}
+
+#pragma mark 显示轨迹
+- (IBAction)jumpToShowPath:(UIButton *)sender {
+    ShowPathViewController *showPathVC = [[ShowPathViewController alloc] init];
+    [self.navigationController pushViewController:showPathVC animated:YES];
 }
 
 #pragma mark 计算当日总步数

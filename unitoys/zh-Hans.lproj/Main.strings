@@ -265,3 +265,6 @@
 
 /* Class = "UITextField"; placeholder = "请输入验证码"; ObjectID = "zL6-cc-V4v"; */
 "zL6-cc-V4v.placeholder" = "请输入验证码";
+
+/* Class = "UIButton"; normalTitle = "轨迹"; ObjectID = "7Pj-7E-U6p"; */
+"7Pj-7E-U6p.normalTitle" = "轨迹";

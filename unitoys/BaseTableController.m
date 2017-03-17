@@ -96,7 +96,7 @@
         return @"-";
     }
     else if (object==nil){
-        return @"无";
+        return @"0";
     }
     return object;
     

@@ -30,7 +30,7 @@
 "LHU-mq-qTU.text" = "Phone card";
 
 /* Class = "UITableViewController"; title = "设备"; ObjectID = "LkK-iw-huv"; */
-"LkK-iw-huv.title" = "Equipment";
+"LkK-iw-huv.title" = "Device";
 
 /* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "Lwu-EN-SN8"; */
 "Lwu-EN-SN8.normalTitle" = "Stateless";

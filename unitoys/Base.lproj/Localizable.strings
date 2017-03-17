@@ -1,10 +1,10 @@
 /*
-  Localizable.strings
-  unitoys
-
-  Created by 董杰 on 2017/3/14.
-  Copyright © 2017年 sumars. All rights reserved.
-*/
+ Localizable.strings
+ unitoys
+ 
+ Created by 董杰 on 2017/3/14.
+ Copyright © 2017年 sumars. All rights reserved.
+ */
 "首页" = "Home";
 "拨打" = "Call";
 "通讯录" = "Contacts";
@@ -33,20 +33,20 @@
 "请输入正确的密码" = "Please input correct password";
 "登录失败" = "Login failed";
 "网络连接失败" = "Network connection failed";
-"爱小器卡" = "Unitoys’ Cloud Card";
+"爱小器卡" = "Cloud Card";
 "未绑定" = "Not bound";
-"蓝牙未开" = "Bluetooth is off";
+"蓝牙未开" = "is off";
 "连接中" = "Connecting";
 "未连接" = "Disconnected";
 "未插卡" = "No Card";
 "无套餐" = "No Packages";
 "注册中" = "Registering";
-"注册失败" = "Failed to register";
-"信号强" = "High signal intensity";
+"注册失败" = "Failed";
+"信号强" = "Stable";
 "绑定" = "Binding";
 "正在绑定" = "Binding";
 "重试" = "Retry";
-"未能搜索到爱小器设备" = "None Unitoys' Device was found";
+"未能搜索到爱小器设备" = "None Unitoys' device was found";
 "绑定爱小器手环" = "Bind Uniband";
 "绑定钥匙扣" = "Bind Unibox";
 "请开启蓝牙" = "Please turn on Bluetooth";
@@ -55,7 +55,7 @@
 "已连接爱小器手环" = "Uniband connected";
 "已连接爱小器钥匙扣" = "Unibox connected";
 "继续" = "Continue";
-"没有连接绑定的设备，是否要解除已绑定的设备？" = "No bound device be found, wether to remove bound device?";
+"没有连接绑定的设备，是否要解除已绑定的设备？" = "No bound device be found, whether to remove bound device?";
 "该账号没有绑定设备" = "No device is bound by this account";
 "请求失败" = "Request unsuccessfully";
 "正在解绑..." = "Unbundling...";
@@ -65,31 +65,32 @@
 "网络貌似有问题" = "Network seems to have a problem";
 "未连接手环" = "Device is not connected";
 "套餐状态" = "Package Status";
-"套餐状态：未激活" = "Package Status:Nonactivated";
+"套餐状态：未激活" = "Package Status:Unactivated";
 "套餐状态：已激活" = "Package Status:Activated";
 "套餐状态：已过期" = "Package Status:Expired";
 "套餐状态：已取消" = "Package Status:Canceled";
 "套餐状态：激活失败" = "Package Status:Failed to activate";
-"未激活" = "Nonactivated";
+"未激活" = "Unactivated";
 "已激活" = "Activated";
 "已过期" = "Expired";
-"激活失败" = "Failed to activate";
+"激活失败" = "Activation Failed";
 "已购套餐" = "Purchaced Package";
 "请点击钥匙扣按钮确认绑定" = "Click 'Key-ring' button to confirm binding";
 "绑定成功" = "Binding success";
 "绑定失败" = "Binding failure";
 "剩余电量" = "Power";
 "余额支付" = "Balance";
+"官方赠送" = "Gift";
 "支付宝" = "Alipay";
 "支付宝支付" = "Alipay";
 "微信支付" = "Wechat";
-"购买成功" = "Success";
-"已购境外套餐" = "Purchased Overseas Packages";
-"套餐超市" = "Packages Store";
+"购买成功" = "Succeed";
+"已购境外套餐" = "Purchased";
+"套餐超市" = "Store";
 "通话套餐" = "Call Packages";
 "国际流量套餐" = "Traffic Packages";
 "绑定套餐礼包卡" = "Bind Gift Card";
-"分钟" = "minutes";
+"分钟" = "mins";
 "剩余" = "Remain";
 "已取消" = "Canceled";
 "未知状态" = "Unknown Status";
@@ -105,12 +106,12 @@
 "激活套餐" = "Activate Package";
 "已连接" = "Connected";
 "生效日期" = "Effective Date";
-"已购套餐详情" = "Purchaced Package Details";
+"已购套餐详情" = "Details";
 "套餐详情" = "Package Details";
-"使用教程" = "Guide to Use";
+"使用教程" = "Guidance";
 "订单编号" = "Order Number";
-"支付时间" = "Time of payment";
-"支付方式" = "Payement Methods";
+"支付时间" = "Time of Payment";
+"支付方式" = "Payment Methods";
 "总价" = "Total Price";
 "有效期" = "Expiry Date";
 "立即激活" = "Activat now";
@@ -123,7 +124,7 @@
 "请连接蓝牙" = "Please connect the Bluetooth";
 "绑定礼包卡" = "Bind gift card";
 "请填写卡密" = "Please input password";
-"最晚激活日期" = "Latest date of activation";
+"最晚激活日期" = "Activate before";
 "天" = "day(s)";
 "使用介绍:" = "Instruction:";
 "注意事项:" = "Notes";
@@ -134,13 +135,15 @@
 "粘贴" = "Paste";
 "搜索" = "Search";
 "电话" = "Phone";
-"双卡双待使用教程" = "Guidance to DSDS";//(Dual Sims Dual Standby)
+"双卡双待使用教程" = "Guidance";//(Dual Sims Dual Standby)
 "广告" = "Advertisement";
-"境外套餐教程" = "Guidance to Overseas Packages";
-"出境前激活套餐" = "Activate package before going abroad";
+"境外套餐教程" = "Guidance";
+"出境前激活套餐" = "Activate before traveling";
 "在境外使用" = "Using abroad";
+"在境外" = "Abroad";
+"回国后" = "Return";
 "回国后恢复设置" = "Reset settings after return";
-"详细信息" = "Detail Information";
+"详细信息" = "Detail";
 "请勿选择重复的联系人" = "Please don't select the same contact";
 "发送成功" = "Sent successfully";
 "创建通话记录失败" = "Failed to create call log";
@@ -152,7 +155,7 @@
 "挂断" = "End call";
 "手环内sim卡未注册或已掉线" = "Unregistered SIM card or it is offline";
 "此功能正在开发中" = "This function is still under development";
-"激活境外套餐教程" = "Guidance to activate overseas package";
+"激活境外套餐教程" = "Guidance";
 "正在重启蓝牙" = "Restarting Bluetooth";
 "升级失败\n请重新启动爱小器App" = "Failed to upgrade\n Please reboot APP";
 "升级成功\n请重新启动爱小器App" = "Succeed to upgrade\n Please reboot APP";
@@ -248,4 +251,6 @@
 "正在通话" = "Dialed person is busy now";
 "通话结束" = "Call ended";
 "呼叫接通" = "Call through";
+"轨迹" = "Trace";
+"爱小器" = "Unitoys";
 

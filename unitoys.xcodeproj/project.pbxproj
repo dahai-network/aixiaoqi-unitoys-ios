@@ -52,6 +52,8 @@
 		046BD6461E0B7C3F008A958A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD6451E0B7C3F008A958A /* CoreFoundation.framework */; };
 		046BD6481E0B7C5F008A958A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD6471E0B7C5F008A958A /* CFNetwork.framework */; };
 		046BF7001E27A544008C10C7 /* YBPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 046BF6FF1E27A544008C10C7 /* YBPopupMenu.m */; };
+		0480E1671E7BD88900FCC33B /* ShowPathViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0480E1651E7BD88900FCC33B /* ShowPathViewController.m */; };
+		0480E1681E7BD88900FCC33B /* ShowPathViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0480E1661E7BD88900FCC33B /* ShowPathViewController.xib */; };
 		048AD0011E0A576800421F67 /* NSString+Addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 048AD0001E0A576800421F67 /* NSString+Addition.m */; };
 		04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */; };
 		04D90E8C1DF172FD00035C46 /* WaterIdentifyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */; };
@@ -381,6 +383,9 @@
 		046BD6491E0B7DBC008A958A /* unitoys.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = unitoys.entitlements; sourceTree = "<group>"; };
 		046BF6FE1E27A544008C10C7 /* YBPopupMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBPopupMenu.h; sourceTree = "<group>"; };
 		046BF6FF1E27A544008C10C7 /* YBPopupMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBPopupMenu.m; sourceTree = "<group>"; };
+		0480E1641E7BD88900FCC33B /* ShowPathViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowPathViewController.h; sourceTree = "<group>"; };
+		0480E1651E7BD88900FCC33B /* ShowPathViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowPathViewController.m; sourceTree = "<group>"; };
+		0480E1661E7BD88900FCC33B /* ShowPathViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ShowPathViewController.xib; sourceTree = "<group>"; };
 		048ACFFF1E0A576800421F67 /* NSString+Addition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Addition.h"; sourceTree = "<group>"; };
 		048AD0001E0A576800421F67 /* NSString+Addition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Addition.m"; sourceTree = "<group>"; };
 		04A0EC931E7B83A500F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/IsBoundingViewController.strings; sourceTree = "<group>"; };
@@ -1785,6 +1790,9 @@
 		95F1ED5D1DE70BC1002E9259 /* Sport */ = {
 			isa = PBXGroup;
 			children = (
+				0480E1641E7BD88900FCC33B /* ShowPathViewController.h */,
+				0480E1651E7BD88900FCC33B /* ShowPathViewController.m */,
+				0480E1661E7BD88900FCC33B /* ShowPathViewController.xib */,
 				95F1ED5E1DE70CCE002E9259 /* SportDataViewController.h */,
 				95F1ED5F1DE70CCE002E9259 /* SportDataViewController.m */,
 				95F1ED611DE718B0002E9259 /* SportDataCell.h */,
@@ -1984,6 +1992,7 @@
 				04F727A11E641CE4002EB54C /* README.txt in Resources */,
 				952B2B071DC22D75006A7C69 /* messages.plist in Resources */,
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
+				0480E1681E7BD88900FCC33B /* ShowPathViewController.xib in Resources */,
 				04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
 				3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */,
@@ -2104,6 +2113,7 @@
 				95E596601DC478A700B3F4F8 /* ContactPhoneCell.m in Sources */,
 				9562EEA31DD3672F00E10C98 /* NewMessageViewController.m in Sources */,
 				953CF9D01DCCF16A0001CE8E /* PaySuccessViewController.m in Sources */,
+				0480E1671E7BD88900FCC33B /* ShowPathViewController.m in Sources */,
 				954A87DC1D99136300570843 /* BrowserViewController.m in Sources */,
 				3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */,
 				3CCA72DE1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m in Sources */,

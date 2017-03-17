@@ -95,7 +95,7 @@
                 break;
             case 1:
                 if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                    [cell.btnOrderStatus setTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+                    [cell.btnOrderStatus setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                     [cell.btnOrderStatus setImage:nil forState:UIControlStateNormal];
                 } else {
                     [cell.btnOrderStatus setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];

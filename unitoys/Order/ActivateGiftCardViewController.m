@@ -390,16 +390,16 @@
     NSString *paymentString;
     switch ([payment intValue]) {
         case 1:
-            paymentString = @"支付宝支付";
+            paymentString = INTERNATIONALSTRING(@"支付宝支付");
             break;
         case 2:
-            paymentString = @"微信支付";
+            paymentString = INTERNATIONALSTRING(@"微信支付");
             break;
         case 3:
-            paymentString = @"余额支付";
+            paymentString = INTERNATIONALSTRING(@"余额支付");
             break;
         case 4:
-            paymentString = @"官方赠送";
+            paymentString = INTERNATIONALSTRING(@"官方赠送");
             break;
         default:
 //            paymentString = @"支付方式";

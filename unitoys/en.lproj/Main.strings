@@ -1,6 +1,6 @@
 
 /* Class = "UIButton"; normalTitle = "我已阅读"; ObjectID = "0ZQ-dh-vcp"; */
-"0ZQ-dh-vcp.normalTitle" = "I have read";
+"0ZQ-dh-vcp.normalTitle" = "Agree";
 
 /* Class = "UILabel"; text = "当日步数"; ObjectID = "1ui-Ky-fG5"; */
 "1ui-Ky-fG5.text" = "Today step";
@@ -12,7 +12,7 @@
 "2y9-0r-E0g.normalTitle" = "Sign in";
 
 /* Class = "UIButton"; normalTitle = "发送验证码"; ObjectID = "3DP-zF-yJH"; */
-"3DP-zF-yJH.normalTitle" = "Send verification code";
+"3DP-zF-yJH.normalTitle" = "Send code";
 
 /* Class = "UILabel"; text = "有效期：--天"; ObjectID = "3b8-8D-gTu"; */
 "3b8-8D-gTu.text" = "Expiry：--day";
@@ -51,7 +51,7 @@
 "9Ft-9M-ixF.text" = "0";
 
 /* Class = "UIButton"; normalTitle = "《用户许可及使用协议》"; ObjectID = "A2s-cu-8fU"; */
-"A2s-cu-8fU.normalTitle" = "《User license and use agreement》";
+"A2s-cu-8fU.normalTitle" = "Usage Agreement";
 
 /* Class = "UILabel"; text = "0"; ObjectID = "Aaa-Vd-8cf"; */
 "Aaa-Vd-8cf.text" = "0";
@@ -66,7 +66,7 @@
 "C5B-0N-FGx.title" = "Personal";
 
 /* Class = "UIButton"; normalTitle = "11月11"; ObjectID = "DOA-nY-aqS"; */
-"DOA-nY-aqS.normalTitle" = "11月11";
+"DOA-nY-aqS.normalTitle" = "11-11";
 
 /* Class = "UINavigationController"; title = "首页"; ObjectID = "DbG-xP-2CW"; */
 "DbG-xP-2CW.title" = "Home";
@@ -87,10 +87,10 @@
 "Hwv-72-5FX.text" = ">";
 
 /* Class = "UILabel"; text = "消耗/千卡"; ObjectID = "I1E-Y7-lMD"; */
-"I1E-Y7-lMD.text" = "Consumption/kcal";
+"I1E-Y7-lMD.text" = "Consumed/kcal";
 
 /* Class = "UILabel"; text = "已购套餐"; ObjectID = "Icg-WE-vyi"; */
-"Icg-WE-vyi.text" = "Purchased Packages";
+"Icg-WE-vyi.text" = "Purchased";
 
 /* Class = "UILabel"; text = "手环闹钟"; ObjectID = "JAv-Nd-PC8"; */
 "JAv-Nd-PC8.text" = "Alarm clock for bracelet";
@@ -144,7 +144,7 @@
 "aSg-jc-95q.normalTitle" = "Recharge";
 
 /* Class = "UITextField"; placeholder = "请输入6-12位密码"; ObjectID = "b2F-d2-48i"; */
-"b2F-d2-48i.placeholder" = "Enter the password for 6 to 12";
+"b2F-d2-48i.placeholder" = "6 to 12 digits";
 
 /* Class = "UILabel"; text = "0"; ObjectID = "bDB-xK-ZcB"; */
 "bDB-xK-ZcB.text" = "0";
@@ -156,7 +156,7 @@
 "cAW-Zz-6aP.normalTitle" = "More>";
 
 /* Class = "UILabel"; text = "设置"; ObjectID = "cQM-8y-MA7"; */
-"cQM-8y-MA7.text" = "Setting";
+"cQM-8y-MA7.text" = "Settings";
 
 /* Class = "UIBarButtonItem"; title = "Item"; ObjectID = "dYk-7g-8dR"; */
 "dYk-7g-8dR.title" = "Item";
@@ -219,13 +219,13 @@
 "qkZ-aM-vtd.text" = "0";
 
 /* Class = "UITextField"; placeholder = "请输入手机号码"; ObjectID = "r4o-kn-caO"; */
-"r4o-kn-caO.placeholder" = "Please enter the phone number";
+"r4o-kn-caO.placeholder" = "Input phone number";
 
 /* Class = "UILabel"; text = "流量：---MB"; ObjectID = "rhT-bS-3Qp"; */
 "rhT-bS-3Qp.text" = "Flow：---MB";
 
 /* Class = "UILabel"; text = "消耗/千卡"; ObjectID = "rhx-hb-oRA"; */
-"rhx-hb-oRA.text" = "Consumption/kcal";
+"rhx-hb-oRA.text" = "Consumed/kcal";
 
 /* Class = "UILabel"; text = "更多>"; ObjectID = "s0D-2Z-1VP"; */
 "s0D-2Z-1VP.text" = "More>";
@@ -240,7 +240,7 @@
 "uq2-kU-12W.text" = "Addressee：";
 
 /* Class = "UIButton"; normalTitle = "忘记密码？"; ObjectID = "vY5-lb-LgB"; */
-"vY5-lb-LgB.normalTitle" = "Forgot the password？";
+"vY5-lb-LgB.normalTitle" = "Forgot？";
 
 /* Class = "UILabel"; text = "距离/公里"; ObjectID = "wS3-hf-Isa"; */
 "wS3-hf-Isa.text" = "Distance/km";
@@ -264,4 +264,7 @@
 "zL2-et-yt6.title" = "Personal";
 
 /* Class = "UITextField"; placeholder = "请输入验证码"; ObjectID = "zL6-cc-V4v"; */
-"zL6-cc-V4v.placeholder" = "Please enter the verification code";
+"zL6-cc-V4v.placeholder" = "Input code";
+
+/* Class = "UIButton"; normalTitle = "轨迹"; ObjectID = "7Pj-7E-U6p"; */
+"7Pj-7E-U6p.normalTitle" = "Trace";

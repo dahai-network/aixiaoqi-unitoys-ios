@@ -74,7 +74,7 @@
 {
     self.dataArray = [NSMutableArray array];
     if (self.currentExplainType == ExplainTypeAbroad) {
-        self.title = @"在境外";
+        self.title = INTERNATIONALSTRING(@"在境外");
         NSDictionary *page1 = @{
                                 @"nameTitle" : INTERNATIONALSTRING(@"插电话卡"),
                                 @"detailTitle" : INTERNATIONALSTRING(@"手环和手机内置的SIM卡交换位置。"),
@@ -117,10 +117,10 @@
         [self.dataArray addObject:page5];
 
     }else if (self.currentExplainType == ExplainTypeInternal){
-        self.title = @"回国后";
+        self.title = INTERNATIONALSTRING(@"回国后");
         NSDictionary *page1 = @{
                                 @"nameTitle" : INTERNATIONALSTRING(@"插电话卡"),
-                                @"detailTitle" : INTERNATIONALSTRING(@"手环和手机内置的SIM卡交换位置"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"手环和手机内置的SIM卡交换位置。"),
                                 @"explainImage" : @"set_afteroutstep1",
                                 };
         NSDictionary *page2 = @{

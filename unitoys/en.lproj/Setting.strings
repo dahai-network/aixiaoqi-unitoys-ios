@@ -1,6 +1,6 @@
 
 /* Class = "UILabel"; text = "用户许可及服务协议"; ObjectID = "1Dn-oi-FKu"; */
-"1Dn-oi-FKu.text" = "User license and service agreement";
+"1Dn-oi-FKu.text" = "Service Agreement";
 
 /* Class = "UIButton"; normalTitle = "service@unitoys.com"; ObjectID = "4t8-jh-xCn"; */
 "4t8-jh-xCn.normalTitle" = "service@unitoys.com";
@@ -33,7 +33,7 @@
 "fUR-bd-mDi.title" = "Setting";
 
 /* Class = "UIViewController"; title = "用户许可协议及服务协议"; ObjectID = "iPo-9S-MEB"; */
-"iPo-9S-MEB.title" = "User license and service agreement";
+"iPo-9S-MEB.title" = "Service Agreement";
 
 /* Class = "UIViewController"; title = "联系我们"; ObjectID = "owu-Ya-7cd"; */
 "owu-Ya-7cd.title" = "Contact Us";

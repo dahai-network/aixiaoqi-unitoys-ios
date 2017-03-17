@@ -18,7 +18,7 @@
 "53b-ue-mRw.text" = "Payment";
 
 /* Class = "UILabel"; text = "购买数量"; ObjectID = "90q-lZ-Yev"; */
-"90q-lZ-Yev.text" = "Payement Methods";
+"90q-lZ-Yev.text" = "Ammount";
 
 /* Class = "UILabel"; text = "x1"; ObjectID = "AQp-W6-ynd"; */
 "AQp-W6-ynd.text" = "x1";
@@ -81,7 +81,7 @@
 "WiB-Qt-l35.text" = "Total Price";
 
 /* Class = "UILabel"; text = "套餐状态：未激活"; ObjectID = "ae7-w8-9Jd"; */
-"ae7-w8-9Jd.text" = "Package Status：Nonactivated";
+"ae7-w8-9Jd.text" = "Package Status：Unactivated";
 
 /* Class = "UITableViewController"; title = "订单详情"; ObjectID = "bON-r6-NIX"; */
 "bON-r6-NIX.title" = "Order details";
@@ -147,7 +147,7 @@
 "rze-0M-LvA.text" = "Effecitve Time";
 
 /* Class = "UIButton"; normalTitle = "购买成功"; ObjectID = "tC3-PL-e9l"; */
-"tC3-PL-e9l.normalTitle" = "purchase succeeds";
+"tC3-PL-e9l.normalTitle" = "Purchased Succeed";
 
 /* Class = "UILabel"; text = "30天"; ObjectID = "ten-HV-zkI"; */
 "ten-HV-zkI.text" = "30day(s)";
@@ -156,10 +156,10 @@
 "uR4-IS-pg6.text" = "Amount";
 
 /* Class = "UILabel"; text = "支付方式"; ObjectID = "wfs-6H-hSK"; */
-"wfs-6H-hSK.text" = "Payement Methods";
+"wfs-6H-hSK.text" = "Payment Methods";
 
 /* Class = "UILabel"; text = "购买方式"; ObjectID = "yZw-3u-fj1"; */
-"yZw-3u-fj1.text" = "Ways of purchase";
+"yZw-3u-fj1.text" = "Purchase Methods";
 
 /* Class = "UILabel"; text = "最晚激活日期：2018年12月31日"; ObjectID = "zSX-89-Zqf"; */
-"zSX-89-Zqf.text" = "Latest date of activation：2018年12月31日";
+"zSX-89-Zqf.text" = "Activate before：2018年12月31日";

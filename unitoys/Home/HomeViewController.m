@@ -239,7 +239,7 @@ typedef enum : NSUInteger {
     [self.sportView addGestureRecognizer:tapSport];
     
     //左边按钮
-    self.leftButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,100,30)];
+    self.leftButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,120,30)];//原来宽是100
     NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     if (userData[@"BraceletIMEI"]) {
         if (![BlueToothDataManager shareManager].isOpened) {
@@ -1468,7 +1468,7 @@ typedef enum : NSUInteger {
                         break;
                     case 1:
                         if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus1 setTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+                            [self.btnOrderStatus1 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                             [self.btnOrderStatus1 setImage:nil forState:UIControlStateNormal];
                         } else {
                             [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
@@ -1513,7 +1513,7 @@ typedef enum : NSUInteger {
                         break;
                     case 1:
                         if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus2 setTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+                            [self.btnOrderStatus2 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                             [self.btnOrderStatus2 setImage:nil forState:UIControlStateNormal];
                         } else {
                             [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
@@ -1560,7 +1560,7 @@ typedef enum : NSUInteger {
                         break;
                     case 1:
                         if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus3 setTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+                            [self.btnOrderStatus3 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
                             [self.btnOrderStatus3 setImage:nil forState:UIControlStateNormal];
                         } else {
                             [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
@@ -2150,16 +2150,16 @@ typedef enum : NSUInteger {
 
 #pragma mark 请求历史步数
 - (void)checkPastStep {
-    if ([BlueToothDataManager shareManager].isBounded) {
-        //请求历史步数
-        [self.todays removeAllObjects];
-        [self.yesterdays removeAllObjects];
-        [self.berforeYesterdays removeAllObjects];
-        [self.threeDaysAgo removeAllObjects];
-        [self sendMessageToBLEWithType:BLECheckHistoryStep validData:nil];
-    } else {
-        [self showAlertWithMessage:@"请先绑定设备"];
-    }
+//    if ([BlueToothDataManager shareManager].isBounded) {
+//        //请求历史步数
+//        [self.todays removeAllObjects];
+//        [self.yesterdays removeAllObjects];
+//        [self.berforeYesterdays removeAllObjects];
+//        [self.threeDaysAgo removeAllObjects];
+//        [self sendMessageToBLEWithType:BLECheckHistoryStep validData:nil];
+//    } else {
+//        [self showAlertWithMessage:@"请先绑定设备"];
+//    }
 }
 
 #pragma mark 请求当前步数
