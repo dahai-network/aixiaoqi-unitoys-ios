@@ -1438,8 +1438,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (void)processAlipayResult:(NSDictionary *)resultDic {
     if ([[resultDic objectForKey:@"resultStatus"] intValue]==9000) {
-
-        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"AlipayComplete" object:resultDic];//[resultDic objectForKey:@"result"]];
     }else{
         [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[resultDic objectForKey:@"memo"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];

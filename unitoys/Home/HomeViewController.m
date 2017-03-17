@@ -1052,7 +1052,6 @@ typedef enum : NSUInteger {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
         }
     } failure:^(id dataObj, NSError *error) {
-        
         NSLog(@"啥都没：%@",[error description]);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
     } headers:self.headers];
@@ -1141,7 +1140,8 @@ typedef enum : NSUInteger {
         }
         return contacts;
     }else{//无权限访问
-        NSLog(@"无权限访问通讯录"); return nil;
+        NSLog(@"无权限访问通讯录");
+        return nil;
     }
 }
 
