@@ -31,6 +31,10 @@
     return 2;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
+    return 195;
+}
+
 //0流量/1通话/2大王卡/3双卡双待
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *identifier = @"ChooseDeviceTypeTableViewCell";
@@ -41,9 +45,11 @@
     switch (indexPath.row) {
             case 0:
             cell.lbltype.text = INTERNATIONALSTRING(@"爱小器手环");
+            cell.imgType.image = [UIImage imageNamed:@"image_bound_shouhuan"];
             break;
             case 1:
             cell.lbltype.text = INTERNATIONALSTRING(@"爱小器双待王");
+            cell.imgType.image = [UIImage imageNamed:@"image_bound_shuangdaiwang"];
             break;
         default:
             NSLog(@"绑定啥？");

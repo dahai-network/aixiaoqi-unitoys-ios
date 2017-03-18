@@ -10,5 +10,7 @@
 
 @interface ChooseDeviceTypeTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *lbltype;
+@property (weak, nonatomic) IBOutlet UILabel *lblTypeDis;
+@property (weak, nonatomic) IBOutlet UIImageView *imgType;
 
 @end

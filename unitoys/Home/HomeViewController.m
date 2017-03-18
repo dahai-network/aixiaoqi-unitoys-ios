@@ -942,7 +942,9 @@ typedef enum : NSUInteger {
 //                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
                             
                             [self updataToCard];
-                            [self sendICCIDMessage];
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                [self sendICCIDMessage];
+                            });
                         }
                     } else {
                         HUDNormal(INTERNATIONALSTRING(@"电话卡运营商不属于三大运营商"))
@@ -1774,19 +1776,21 @@ typedef enum : NSUInteger {
             } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
                 //未注册成功
 //                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
+                [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                [self checkUserIsExistAppointPackage];
                 //注册卡
-                if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [self checkUserIsExistAppointPackage];
-                    });
-                } else {
-                    if ([BlueToothDataManager shareManager].isRegisted) {
-                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-                    }else{
-                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
-                    }
-//                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-                }
+//                if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
+//                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                        [self checkUserIsExistAppointPackage];
+//                    });
+//                } else {
+//                    if ([BlueToothDataManager shareManager].isRegisted) {
+//                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+//                    }else{
+//                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+//                    }
+////                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+//                }
             } else {
                 NSLog(@"注册状态有问题");
             }
@@ -2799,7 +2803,7 @@ typedef enum : NSUInteger {
         [self phoneCardToUpeLectrify:@"01"];
     }
     //是否是能通知
-    [self sendDataToCheckIsAllowToNotificationWithPhoneCall:YES Message:NO WeiChart:NO QQ:NO];
+    [self sendDataToCheckIsAllowToNotificationWithPhoneCall:YES Message:YES WeiChart:YES QQ:YES];
     [self refreshBLEStatue];
 }
 

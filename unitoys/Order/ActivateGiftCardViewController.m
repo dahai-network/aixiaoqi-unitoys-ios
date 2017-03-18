@@ -12,6 +12,7 @@
 #import "PackageDetailViewController.h"
 #import "AbroadPackageExplainController.h"
 #import "UNDatabaseTools.h"
+#import "BlueToothDataManager.h"
 
 @interface ActivateGiftCardViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *footView;
@@ -437,12 +438,35 @@
         // 3.显示alertController:presentViewController
         [self presentViewController:alert animated:YES completion:nil];
     } else {
-        UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-        OrderActivationViewController *orderActivationViewController = [mainStory instantiateViewControllerWithIdentifier:@"orderActivationViewController"];
-        if (orderActivationViewController) {
-            orderActivationViewController.dicOrderDetail = self.dicOrderDetail;
-            [self.navigationController pushViewController:orderActivationViewController animated:YES];
+        if ([[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue] == 1) {
+            //已激活
+            [self activityOrderActivited];
+        } else {
+            //未激活
+            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+            OrderActivationViewController *orderActivationViewController = [mainStory instantiateViewControllerWithIdentifier:@"orderActivationViewController"];
+            if (orderActivationViewController) {
+                orderActivationViewController.dicOrderDetail = self.dicOrderDetail;
+                [self.navigationController pushViewController:orderActivationViewController animated:YES];
+            }
         }
+    }
+}
+
+- (void)activityOrderActivited {
+    if ([BlueToothDataManager shareManager].isConnected) {
+        if ([BlueToothDataManager shareManager].isHaveCard) {
+            //1.蓝牙连接之后才能走激活的接口
+            [BlueToothDataManager shareManager].isShowHud = YES;
+            HUDNoStop1(INTERNATIONALSTRING(@"正在激活..."))
+            //2.套餐激活完成之后获取蓝牙发送的序列号
+            [BlueToothDataManager shareManager].bleStatueForCard = 1;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"list"][@"OrderID"]];
+        } else {
+            HUDNormal(INTERNATIONALSTRING(@"请插入爱小器卡"))
+        }
+    } else {
+        HUDNormal(INTERNATIONALSTRING(@"请连接蓝牙"))
     }
 }
 
