@@ -133,6 +133,7 @@
 		3CD9134E1E70E59F00434465 /* UNSimCardAuthenticationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */; };
 		3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */; };
 		3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */; };
+		3CE5CC881E7F63F100FCEA81 /* UNBlueToothTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
 		3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */; };
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
@@ -540,6 +541,8 @@
 		3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTouchAreaButton.m; sourceTree = "<group>"; };
 		3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageContactsInfoController.h; sourceTree = "<group>"; };
 		3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageContactsInfoController.m; sourceTree = "<group>"; };
+		3CE5CC861E7F63F100FCEA81 /* UNBlueToothTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNBlueToothTool.h; sourceTree = "<group>"; };
+		3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNBlueToothTool.m; sourceTree = "<group>"; };
 		3CEA93911E5C537B00205C29 /* UNCallKitCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCallKitCenter.h; sourceTree = "<group>"; };
 		3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UNCallKitCenter.mm; sourceTree = "<group>"; };
 		3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+UnExtension.h"; sourceTree = "<group>"; };
@@ -1119,6 +1122,8 @@
 				3CD913491E70E59F00434465 /* UNGetSimData.m */,
 				3CD9134A1E70E59F00434465 /* UNSimCardAuthenticationModel.h */,
 				3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */,
+				3CE5CC861E7F63F100FCEA81 /* UNBlueToothTool.h */,
+				3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -2192,6 +2197,7 @@
 				7402B3311E5597FF00DC73B9 /* UIView+Extension.m in Sources */,
 				952B2AFC1DC228F2006A7C69 /* MJMessageCell.m in Sources */,
 				04F727AC1E641CE4002EB54C /* HTTPAsyncFileResponse.m in Sources */,
+				3CE5CC881E7F63F100FCEA81 /* UNBlueToothTool.m in Sources */,
 				95CD33ED1D9CE4F300EE5DD3 /* DataSigner.m in Sources */,
 				95E9185A1DDC7EB6005DABC0 /* BeforeOutViewController.m in Sources */,
 				04F727AB1E641CE4002EB54C /* MultipartMessageHeaderField.m in Sources */,

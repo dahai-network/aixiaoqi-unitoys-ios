@@ -337,10 +337,15 @@
     NSLog(@"didActivateAudioSession---%s", __func__);
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
     theSipEngine->MuteMic(NO);
+//    theSipEngine->AnswerCall();
+//    theSipEngine->StopRinging();
 }
 
 - (void)provider:(CXProvider *)provider didDeactivateAudioSession:(AVAudioSession *)audioSession{
     NSLog(@"didDeactivateAudioSession---%s", __func__);
+//    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+//    if(theSipEngine->InCalling())
+//        theSipEngine->TerminateCall();
 }
 
 - (void)dealloc

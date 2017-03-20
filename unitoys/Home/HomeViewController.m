@@ -431,7 +431,6 @@ typedef enum : NSUInteger {
     }
 }
 
-
 - (void)leftButtonAction {
     if ([BlueToothDataManager shareManager].isBounded) {
         //有绑定
@@ -725,6 +724,7 @@ typedef enum : NSUInteger {
     NSString *tempStr = sender.object;
     NSLog(@"获取卡数据---%@", tempStr);
     if ([BlueToothDataManager shareManager].isConnected) {
+        //给蓝牙发送消息
         [self sendMessageToBLEWithType:BLECardData validData:tempStr];
     }else{
         NSLog(@"蓝牙未连接");
