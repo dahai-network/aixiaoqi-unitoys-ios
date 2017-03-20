@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CutomButton.h"
 
 @interface ChooseDeviceTypeTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *lbltype;
 @property (weak, nonatomic) IBOutlet UILabel *lblTypeDis;
 @property (weak, nonatomic) IBOutlet UIImageView *imgType;
+@property (weak, nonatomic) IBOutlet CutomButton *backGroundButton;
 
 @end

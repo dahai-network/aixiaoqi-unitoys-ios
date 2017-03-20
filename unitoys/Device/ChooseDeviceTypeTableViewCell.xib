@@ -16,26 +16,27 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="195"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="195"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="194.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="image_chooseBound_unselected" translatesAutoresizingMaskIntoConstraints="NO" id="ORg-ZZ-nwN">
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yOj-MB-n4E" customClass="CutomButton">
                         <rect key="frame" x="15" y="15" width="290" height="179.5"/>
-                    </imageView>
+                        <state key="normal" title="Button" backgroundImage="image_chooseBound_unselected"/>
+                    </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LhQ-pp-wqV">
-                        <rect key="frame" x="140.5" y="34" width="39.5" height="19.5"/>
+                        <rect key="frame" x="140" y="34" width="39.5" height="19.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="点击链接" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gnp-bj-Lif">
-                        <rect key="frame" x="140" y="61" width="41" height="12"/>
+                        <rect key="frame" x="139.5" y="61" width="41" height="12"/>
                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                         <color key="textColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WaS-PZ-pBf">
-                        <rect key="frame" x="130.5" y="93" width="60" height="60"/>
+                        <rect key="frame" x="130" y="93" width="60" height="60"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="60" id="4Hk-ec-rgV"/>
                             <constraint firstAttribute="width" secondItem="WaS-PZ-pBf" secondAttribute="height" multiplier="1:1" id="M0N-S8-fsg"/>
@@ -44,18 +45,19 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="WaS-PZ-pBf" firstAttribute="centerX" secondItem="LhQ-pp-wqV" secondAttribute="centerX" id="2ll-hr-yw0"/>
+                    <constraint firstAttribute="bottom" secondItem="yOj-MB-n4E" secondAttribute="bottom" id="3YG-em-gnr"/>
                     <constraint firstItem="LhQ-pp-wqV" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="34" id="9eh-0w-Xpz"/>
+                    <constraint firstItem="yOj-MB-n4E" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="BDg-DE-RnJ"/>
                     <constraint firstItem="Gnp-bj-Lif" firstAttribute="top" secondItem="LhQ-pp-wqV" secondAttribute="bottom" constant="7" id="GgV-D5-gu3"/>
-                    <constraint firstItem="ORg-ZZ-nwN" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="LPb-PG-X0s"/>
-                    <constraint firstAttribute="trailing" secondItem="ORg-ZZ-nwN" secondAttribute="trailing" constant="15" id="RI8-gH-8in"/>
-                    <constraint firstAttribute="bottom" secondItem="ORg-ZZ-nwN" secondAttribute="bottom" id="S1w-LH-gfZ"/>
+                    <constraint firstAttribute="trailing" secondItem="yOj-MB-n4E" secondAttribute="trailing" constant="15" id="RED-6u-97b"/>
+                    <constraint firstItem="yOj-MB-n4E" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="15" id="VZa-lE-y2b"/>
                     <constraint firstItem="WaS-PZ-pBf" firstAttribute="top" secondItem="Gnp-bj-Lif" secondAttribute="bottom" constant="20" id="j7J-iv-KGh"/>
                     <constraint firstItem="Gnp-bj-Lif" firstAttribute="centerX" secondItem="LhQ-pp-wqV" secondAttribute="centerX" id="lss-by-lIz"/>
-                    <constraint firstItem="LhQ-pp-wqV" firstAttribute="centerX" secondItem="ORg-ZZ-nwN" secondAttribute="centerX" id="qYu-HK-VKe"/>
-                    <constraint firstItem="ORg-ZZ-nwN" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="sth-hn-hsj"/>
+                    <constraint firstItem="LhQ-pp-wqV" firstAttribute="centerX" secondItem="yOj-MB-n4E" secondAttribute="centerX" id="nIt-bz-Mo5"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="backGroundButton" destination="yOj-MB-n4E" id="Tqy-0N-JRz"/>
                 <outlet property="imgType" destination="WaS-PZ-pBf" id="wLz-2v-mxH"/>
                 <outlet property="lblTypeDis" destination="Gnp-bj-Lif" id="mWU-VY-OWr"/>
                 <outlet property="lbltype" destination="LhQ-pp-wqV" id="7tq-Vi-xde"/>

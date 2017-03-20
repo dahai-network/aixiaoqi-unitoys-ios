@@ -50,6 +50,8 @@
 "未能搜索到爱小器设备" = "None Unitoys' device was found";
 "爱小器手环" = "Bind Uniband";
 "爱小器双待王" = "Bind Unibox";
+"请点击搜索爱小器手环进行绑定" = "Click to search And Bind Uniband";
+"请点击搜索爱小器双待王进行绑定" = "Click to search And Bind Unibox";
 "请开启蓝牙" = "Please turn on Bluetooth";
 "还没有连接设备，点击连接" = "Not connected, click";
 "正在搜索设备" = "Searching";

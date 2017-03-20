@@ -45,6 +45,7 @@
 #import "UNSipEngineInitialize.h"
 
 #import "UNCreatLocalNoti.h"
+#import "HWNewfeatureViewController.h"
 
 #endif
 // 如果需要使 idfa功能所需要引 的头 件(可选) #import <AdSupport/AdSupport.h>
@@ -133,26 +134,26 @@
         pushRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
     }
     
-    //存储版本号
-    [self checkCurrentVersion];
-    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
-    //[NSThread sleepForTimeInterval:1.0];
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    // 2.设置根控制器
+    NSString *key = @"CFBundleVersion";
+    // 上一次的使用版本（存储在沙盒中的版本号）
+    NSString *lastVersion = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    // 当前软件的版本号（从Info.plist中获得）
+    NSString *currentVersion = [NSBundle mainBundle].infoDictionary[key];
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
-    if (storyboard) {
-        UIViewController *launchScreen = [storyboard instantiateViewControllerWithIdentifier:@"launchScreen"];
-        if (launchScreen) {
-            self.window.rootViewController = launchScreen;
-            
-            [self.window makeKeyAndVisible];
-            
-            self.currentNumber = 8;
-            
-            self.communicateID = @"00000000";
-        }
+    if ([currentVersion isEqualToString:lastVersion]) { // 版本号相同：这次打开和上次打开的是同一个版本
+        [self showLaunchView];
+        [self checkLogin];
+    } else { // 这次打开的版本和上一次不一样，显示新特性
+        self.window.rootViewController = [[HWNewfeatureViewController alloc] init];
+        [self.window makeKeyAndVisible];
+        
+        // 将当前的版本号存进沙盒
+        [[NSUserDefaults standardUserDefaults] setObject:currentVersion forKey:key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self checkDatabase];
     }
     
     [WXApi registerApp:@"wxff7e7ee82cd9afc4" withDescription:@"爱小器微信支付"];
@@ -168,7 +169,7 @@
     config.delegate = self;
     self.window.backgroundColor = [UIColor colorWithRed:234/255.0 green:236/255.0 blue:240/255.0 alpha:1.0];
     
-    [self checkLogin];
+//    [self checkLogin];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] < 9.0) {
         ABAddressBookRef addresBook = ABAddressBookCreateWithOptions(NULL, NULL);
@@ -229,6 +230,24 @@
     return YES;
 }
 
+- (void)showLaunchView {
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+    if (storyboard) {
+        UIViewController *launchScreen = [storyboard instantiateViewControllerWithIdentifier:@"launchScreen"];
+        if (launchScreen) {
+            self.window.rootViewController = launchScreen;
+            
+            [self.window makeKeyAndVisible];
+            
+            self.currentNumber = 8;
+            
+            self.communicateID = @"00000000";
+        }
+    }
+}
+
 - (void)createUDPSocketToBLE:(NSNotification *)noti
 {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -274,30 +293,6 @@
 
 - (void)dicConnectedBLE {
     self.currentPacketNumber = @"001";
-}
-
-- (void)checkCurrentVersion
-{
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"kCurrentVersionValue"]) {
-        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"kCurrentVersionValue"] floatValue] != kSystemVersionValue) {
-            //清空数据
-            [self clearCacheData];
-            //存储当前版本号
-            [[NSUserDefaults standardUserDefaults] setObject:@(kSystemVersionValue) forKey:@"kCurrentVersionValue"];
-        }
-    }else{
-        //清空数据
-         [self clearCacheData];
-        [[NSUserDefaults standardUserDefaults] setObject:@(kSystemVersionValue) forKey:@"kCurrentVersionValue"];
-    }
-    
-}
-
-//清空数据
-- (void)clearCacheData
-{
-    //清除数据库
-    [self checkDatabase];
 }
 
 - (void)checkDatabase

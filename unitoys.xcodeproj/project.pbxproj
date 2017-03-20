@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0404BB901E7FCDE6009DEA1D /* DJPageControl.m */; };
+		040FC5161E7F81EE0056745D /* CutomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FC5151E7F81EE0056745D /* CutomButton.m */; };
+		040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FC51A1E7FB0A50056745D /* HWNewfeatureViewController.m */; };
 		041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */; };
 		0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0430A04F1E69623800FFE611 /* Default-568h@2x.png */; };
 		0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */; };
@@ -286,6 +289,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0404BB8F1E7FCDE6009DEA1D /* DJPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPageControl.h; sourceTree = "<group>"; };
+		0404BB901E7FCDE6009DEA1D /* DJPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPageControl.m; sourceTree = "<group>"; };
+		040FC5141E7F81EE0056745D /* CutomButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CutomButton.h; sourceTree = "<group>"; };
+		040FC5151E7F81EE0056745D /* CutomButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CutomButton.m; sourceTree = "<group>"; };
+		040FC5191E7FB0A50056745D /* HWNewfeatureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HWNewfeatureViewController.h; sourceTree = "<group>"; };
+		040FC51A1E7FB0A50056745D /* HWNewfeatureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HWNewfeatureViewController.m; sourceTree = "<group>"; };
 		041BB4B61E5C1F05001C4841 /* TTRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSlider.h; sourceTree = "<group>"; };
 		041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRangeSlider.m; sourceTree = "<group>"; };
 		041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSliderDelegate.h; sourceTree = "<group>"; };
@@ -1244,6 +1253,8 @@
 		95334A651D8A89B9002C1CFB /* customize */ = {
 			isa = PBXGroup;
 			children = (
+				040FC5191E7FB0A50056745D /* HWNewfeatureViewController.h */,
+				040FC51A1E7FB0A50056745D /* HWNewfeatureViewController.m */,
 				041BB4B61E5C1F05001C4841 /* TTRangeSlider.h */,
 				041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */,
 				041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */,
@@ -1297,6 +1308,10 @@
 				3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */,
 				3C66D0DB1E66714F00A7B125 /* UNDatabaseTools.h */,
 				3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */,
+				040FC5141E7F81EE0056745D /* CutomButton.h */,
+				040FC5151E7F81EE0056745D /* CutomButton.m */,
+				0404BB8F1E7FCDE6009DEA1D /* DJPageControl.h */,
+				0404BB901E7FCDE6009DEA1D /* DJPageControl.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -2115,6 +2130,7 @@
 				95938D351D933FFA008A0A21 /* CountryCell.m in Sources */,
 				9520BCB01DA1048100F0B286 /* RechargeViewController.m in Sources */,
 				04F7279F1E641CE4002EB54C /* ContextFilterLogFormatter.m in Sources */,
+				040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */,
 				95E596601DC478A700B3F4F8 /* ContactPhoneCell.m in Sources */,
 				9562EEA31DD3672F00E10C98 /* NewMessageViewController.m in Sources */,
 				953CF9D01DCCF16A0001CE8E /* PaySuccessViewController.m in Sources */,
@@ -2125,6 +2141,7 @@
 				952B2B021DC229E0006A7C69 /* MJMessage.m in Sources */,
 				95938D411D93ABF0008A0A21 /* PackageDetailViewController.m in Sources */,
 				95BAED651D87A5D4005A6402 /* BaseViewController.m in Sources */,
+				0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */,
 				952B2AEE1DC224F4006A7C69 /* UIImage+Extension.m in Sources */,
 				04F7279B1E641CE4002EB54C /* DDASLLogger.m in Sources */,
 				04D90E8C1DF172FD00035C46 /* WaterIdentifyView.m in Sources */,
@@ -2249,6 +2266,7 @@
 				95C575F41DA77AB200F459DF /* PhoneRecordCell.m in Sources */,
 				95F1ED5C1DE6BC6A002E9259 /* LineProgressView.m in Sources */,
 				3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */,
+				040FC5161E7F81EE0056745D /* CutomButton.m in Sources */,
 				04F727AD1E641CE4002EB54C /* HTTPDataResponse.m in Sources */,
 				3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */,
 				95938D4D1D93EBF1008A0A21 /* ConerView.m in Sources */,
