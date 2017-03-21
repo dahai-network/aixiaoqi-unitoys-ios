@@ -13,4 +13,5 @@
 @property (nonatomic, assign) int packageCategory;
 
 @property (nonatomic, assign) BOOL isAbroadMessage;
+@property (nonatomic, assign) BOOL isPaySuccess;
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "PaySuccessViewController.h"
+#import "ActivateGiftCardViewController.h"
 
 @interface PaySuccessViewController ()
 
@@ -44,7 +45,11 @@
 - (IBAction)resultConfrim:(id)sender {
     if ([self.title isEqualToString:INTERNATIONALSTRING(@"购买成功")]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"BuyConfrim" object:nil];
-        [self.navigationController popViewControllerAnimated:YES];
+        ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
+        giftCardVC.packageCategory = self.packageCategory;
+        giftCardVC.idOrder = self.orderID;
+        giftCardVC.isPaySuccess = YES;
+        [self.navigationController pushViewController:giftCardVC animated:YES];
     } else {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"NeedRefreshAmount" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ChargeConfrim" object:nil];

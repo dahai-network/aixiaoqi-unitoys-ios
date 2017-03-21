@@ -20,7 +20,7 @@
 
     
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     
     [self.collectionView registerNib:[UINib nibWithNibName:@"headCollectionReusableView" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"headCollectionReusableView"];

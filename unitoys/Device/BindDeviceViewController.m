@@ -81,6 +81,10 @@
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
 - (void)boundDeviceFail {
     [self.navigationController popToRootViewControllerAnimated:YES];
 }

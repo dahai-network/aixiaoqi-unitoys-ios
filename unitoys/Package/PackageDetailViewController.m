@@ -31,7 +31,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.idPackage,@"id", nil];
     
     NSString *apiNameStr = [NSString stringWithFormat:@"%@idPackage%@", @"apiPackageByID", self.idPackage];
-    
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     [self getBasicHeader];
     NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageByID params:params success:^(id responseObj) {
@@ -87,7 +87,7 @@
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(payConfrim) name:@"BuyConfrim" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(payConfrim) name:@"BuyConfrim" object:nil];
 }
 
 - (void)rightButtonClick
@@ -101,9 +101,9 @@
     }
 }
 
-- (void)payConfrim {
-    [self.navigationController popToViewController:self animated:YES];
-}
+//- (void)payConfrim {
+//    [self.navigationController popToViewController:self animated:YES];
+//}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row==0) {

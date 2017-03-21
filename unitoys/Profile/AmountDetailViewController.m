@@ -19,6 +19,7 @@
     [super viewDidLoad];
     self.tableView.tableFooterView = [UIView new];
     // Do any additional setup after loading the view.
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber", nil];

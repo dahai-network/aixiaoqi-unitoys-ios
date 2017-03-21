@@ -96,6 +96,7 @@
 }
 
 - (void)checkOrderList {
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     NSString *type;
     if (self.isAbroadMessage) {

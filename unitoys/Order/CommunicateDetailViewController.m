@@ -38,8 +38,17 @@
     // Do any additional setup after loading the view from its nib.
 }
 
+//- (void)leftButtonAction {
+//    [self.navigationController popToRootViewControllerAnimated:YES];
+//}
+
+//- (void)viewWillDisappear:(BOOL)animated {
+//    [self.navigationController popToRootViewControllerAnimated:YES];
+//}
+
 #pragma mark 根据ID查询套餐详情
 - (void)checkCommunicateDetailById {
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.communicateDetailID,@"id", nil];

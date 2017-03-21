@@ -15,6 +15,8 @@
 #import "PaySuccessViewController.h"
 
 @interface OrderCommitViewController ()
+@property (nonatomic, copy)NSString *orderID;
+@property (nonatomic, assign)int packageCategory;
 
 @end
 
@@ -127,6 +129,8 @@
                 paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"支付宝");
                 paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.lblOrderAmount.text];
                 paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
+                paySuccessViewController.orderID = self.orderID;
+                paySuccessViewController.packageCategory = self.packageCategory;
                 [self.navigationController pushViewController:paySuccessViewController animated:YES];
                 
             }
@@ -159,9 +163,8 @@
                     paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"微信支付");
                     paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.lblOrderAmount.text];
                     paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
-                    
-                    
-                    
+                    paySuccessViewController.orderID = self.orderID;
+                    paySuccessViewController.packageCategory = self.packageCategory;
                     
                     [self.navigationController pushViewController:paySuccessViewController animated:YES];
                     
@@ -306,6 +309,8 @@
         NSLog(@"查询到的订单数据：%@",responseObj);
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             self.dicOrder = [[responseObj objectForKey:@"data"] objectForKey:@"order"];
+            self.orderID = self.dicOrder[@"OrderID"];
+            self.packageCategory = [self.dicOrder[@"PackageCategory"] intValue];
             [self payAction];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             
@@ -422,6 +427,8 @@
                     paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
                     paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%@",self.lblOrderAmount.text];
                     paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
+                    paySuccessViewController.orderID = self.orderID;
+                    paySuccessViewController.packageCategory = self.packageCategory;
                     
                     
                     

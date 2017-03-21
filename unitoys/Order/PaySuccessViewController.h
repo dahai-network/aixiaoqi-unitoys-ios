@@ -16,6 +16,8 @@
 @property (readwrite) NSString *strHintInfo;
 @property (readwrite) NSString *strPayMethod;
 @property (readwrite) NSString *strPayAmount;
+@property (nonatomic, copy) NSString *orderID;
+@property (nonatomic, assign) int packageCategory;
 
 - (IBAction)resultConfrim:(id)sender;
 @end

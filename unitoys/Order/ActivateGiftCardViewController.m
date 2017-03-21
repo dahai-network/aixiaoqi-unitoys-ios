@@ -13,6 +13,7 @@
 #import "AbroadPackageExplainController.h"
 #import "UNDatabaseTools.h"
 #import "BlueToothDataManager.h"
+#import "CommunicateDetailViewController.h"
 
 @interface ActivateGiftCardViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *footView;
@@ -20,6 +21,7 @@
 @property (nonatomic, strong)ActivateGiftCardTableViewCell *firstCell;
 @property (nonatomic, strong)ActivateGiftCardTableViewCell *secondCell;
 @property (nonatomic, strong)ActivateGiftCardTableViewCell *thirdCell;
+@property (nonatomic, strong)CommunicateDetailViewController *communicateDetailVC;
 @property (nonatomic, strong)NSDictionary *dicOrderDetail;
 @property (weak, nonatomic) IBOutlet UIButton *activateButton;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
@@ -61,9 +63,24 @@
     // Do any additional setup after loading the view from its nib.
 }
 
+- (void)leftButtonAction {
+    if (self.isPaySuccess) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    if (self.isPaySuccess) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
+}
+
 
 #pragma mark 获取大王卡信息
 - (void)cehckOrderInfo {
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.idOrder,@"id", nil];
@@ -317,22 +334,39 @@
     }
 }
 
+//0流量/1通话/2大王卡/3双卡双待
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     if (indexPath.section == 0) {
-        if (self.packageCategory != 2 && self.packageCategory != 3) {
-            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
-            PackageDetailViewController *packageDetailViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageDetailViewController"];
-            if (packageDetailViewController) {
-                packageDetailViewController.isAbroadMessage = YES;
-                packageDetailViewController.idPackage = self.packageId;
-                packageDetailViewController.currentTitle = self.packageName;
-                packageDetailViewController.isSupport4G = [self.IsSupport4G boolValue];
-                packageDetailViewController.isApn = [self.IsApn boolValue];
-                [self.navigationController pushViewController:packageDetailViewController animated:YES];
-            }
+        UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+        PackageDetailViewController *packageDetailViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageDetailViewController"];
+        switch (self.packageCategory) {
+            case 0:
+                if (packageDetailViewController) {
+                    packageDetailViewController.isAbroadMessage = YES;
+                    packageDetailViewController.idPackage = self.packageId;
+                    packageDetailViewController.currentTitle = self.packageName;
+                    packageDetailViewController.isSupport4G = [self.IsSupport4G boolValue];
+                    packageDetailViewController.isApn = [self.IsApn boolValue];
+                    [self.navigationController pushViewController:packageDetailViewController animated:YES];
+                }
+                break;
+            case 1:
+                self.communicateDetailVC = [[CommunicateDetailViewController alloc] init];
+                self.communicateDetailVC.communicateDetailID = self.packageId;
+                [self.navigationController pushViewController:self.communicateDetailVC animated:YES];
+                break;
+            case 2:
+                NSLog(@"大王卡套餐");
+                break;
+            case 3:
+                NSLog(@"双卡双待套餐");
+                break;
+            default:
+                break;
         }
+        
     }
 }
 

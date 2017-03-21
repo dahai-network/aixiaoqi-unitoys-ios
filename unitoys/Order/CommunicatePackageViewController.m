@@ -34,6 +34,7 @@
 
 #pragma mark 获取通话套餐列表数据
 - (void)checkCommunicatePackageList {
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"1",@"pageNumber", @"20",@"pageSize",@"1", @"category", nil];
