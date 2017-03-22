@@ -88,6 +88,12 @@
 @property (nonatomic, assign) BOOL isNeedRegister;
 
 @property (nonatomic, strong) NSMutableArray *pushKitMsgQueue;
+
+//PushKit消息类型
+@property (nonatomic, assign) PushKitMessageType pushKitMsgType;
+
+//TCP是否为第一次连接
+//@property (nonatomic, assign) BOOL isTcpFristConnect;
 @end
 
 @implementation AppDelegate
@@ -114,6 +120,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    self.pushKitMsgType = PushKitMessageTypeNone;
     
 //    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
     
@@ -356,15 +363,22 @@
         [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
     }else{
         if (self.isPushKit) {
-            NSLog(@"tcp pushkit数据---%@",self.tcpStringWithPushKit);
-            if (self.tcpStringWithPushKit) {
-                self.communicateID = @"00000000";
-                [BlueToothDataManager shareManager].isTcpConnected = YES;
-                // 等待数据来啊
-                [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
-                //发送数据
-                [self setUpTcppacketFromPushKit];
-                NSLog(@"最终发送给tcp的pushkit数据 -- %@", self.tcpPacketStrWithPushKit);
+            if (self.sendTcpSocket.isConnected) {
+                NSLog(@"tcp pushkit数据---%@",self.tcpStringWithPushKit);
+                if (self.tcpStringWithPushKit) {
+                    self.communicateID = @"00000000";
+                    [BlueToothDataManager shareManager].isTcpConnected = YES;
+                    // 等待数据来啊
+                    [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
+                    //发送数据
+                    [self setUpTcppacketFromPushKit];
+                    NSLog(@"最终发送给tcp的pushkit数据 -- %@", self.tcpPacketStrWithPushKit);
+                }
+            }else{
+                self.isSendTcpString = NO;
+                NSString *host = [VSWManager shareManager].vswIp;
+                uint16_t port = [VSWManager shareManager].vswPort;
+                [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
             }
         }else{
             if (![BlueToothDataManager shareManager].isReseted) {
@@ -662,13 +676,15 @@
 // 如果对象关闭了 这里也会调用
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
     NSLog(@"tcp连接失败 %@", err);
-    
     [BlueToothDataManager shareManager].isTcpConnected = NO;
-    // 断线重连
-    NSString *host = [VSWManager shareManager].vswIp;
-    uint16_t port = [VSWManager shareManager].vswPort;
-    NSLog(@"tcp断线重连---[%@:%d]",host, port);
-    [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
+    if (!self.isPushKit) {
+        // 断线重连
+        NSString *host = [VSWManager shareManager].vswIp;
+        uint16_t port = [VSWManager shareManager].vswPort;
+        NSLog(@"tcp断线重连---[%@:%d]",host, port);
+        [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
+    }
+
 }
 
 #pragma mark - 消息发送成功 代理函数
@@ -686,12 +702,12 @@
         uint16_t port = [sock connectedPort];
         //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-//        [BlueToothDataManager shareManager].isBeingRegisting = NO;
-//        [BlueToothDataManager shareManager].stepNumber = @"0";
-//        [BlueToothDataManager shareManager].isRegisted = YES;
-//        [BlueToothDataManager shareManager].isConnected = YES;
-//        [BlueToothDataManager shareManager].isTcpConnected = YES;
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
+        //        [BlueToothDataManager shareManager].isBeingRegisting = NO;
+        //        [BlueToothDataManager shareManager].stepNumber = @"0";
+        //        [BlueToothDataManager shareManager].isRegisted = YES;
+        //        [BlueToothDataManager shareManager].isConnected = YES;
+        //        [BlueToothDataManager shareManager].isTcpConnected = YES;
+        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (!self.timer) {
@@ -705,7 +721,7 @@
     }else{
         NSString *ip = [sock connectedHost];
         uint16_t port = [sock connectedPort];
-    //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
         NSString *tempStr = [NSString stringWithFormat:@"%@", data];
         if ([tempStr containsString:@"<"]) {
@@ -718,25 +734,6 @@
             tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
         }
 
-        
-//        NSString *lengthStr = [tempStr substringWithRange:NSMakeRange(20, 4)];
-//        NSInteger leng = strtoul([lengthStr UTF8String], 0, 16);
-//        if (24+leng*2 != tempStr.length) {
-//            if (tempStr.length >= (24+leng*2)) {
-//                NSString *firstStr= [tempStr substringWithRange:NSMakeRange(0, 24+leng*2)];
-//                NSLog(@"第一个包 -- %@", firstStr);
-//                [self checkPacketDetailWithString:firstStr];
-//                NSString *lastStr = [tempStr substringFromIndex:24+leng*2];
-//                NSLog(@"剩下的一个包 -- %@", lastStr);
-//                [self checkPacketDetailWithString:lastStr];
-//            }
-//        } else {
-//            if (tempStr.length >= (24+leng*2)) {
-//                NSString *firstStr= [tempStr substringWithRange:NSMakeRange(0, 24+leng*2)];
-//                NSLog(@"只有一个包 -- %@", firstStr);
-//                [self checkPacketDetailWithString:firstStr];
-//            }
-//        }
         [self checkManyPacketString:tempStr];
     }
 }
@@ -801,7 +798,7 @@
         cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
         NSLog(@"最终的电话端口 -- %@", cutStr);
         [VSWManager shareManager].callPort = cutStr;
-        
+        [[NSUserDefaults standardUserDefaults] setObject:cutStr forKey:@"VSWCallPort"];
         //保存端口到本地
 //        NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
 //        if (userData) {
@@ -950,6 +947,9 @@
     }
     
     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", string]];
+    if (!self.sendTcpSocket.isConnected) {
+        
+    }
     [self sendMsgWithMessage:string];
     
     if (self.isPushKit) {
@@ -1720,9 +1720,12 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         }
         if (payload.dictionaryPayload) {
             NSDictionary *dict = payload.dictionaryPayload;
-            if ([dict[@"MessageType"] isEqualToString:@"10"]) {
+            NSString *messageType = [dict[@"MessageType"] lowercaseString];
+            if ([messageType isEqualToString:@"10"]) {
+                NSLog(@"鉴权数据PushKit消息");
                 //鉴权数据
                 if (dict[@"Data"]) {
+                    self.pushKitMsgType = PushKitMessageTypeAuthSimData;
                     NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
                     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
                     //存储到队列中
@@ -1764,14 +1767,18 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //                        }
 //                    }
                 }
-            }else if ([dict[@"MessageType"] isEqualToString:@"06"]){
+            }else if ([messageType isEqualToString:@"06"]){
+                NSLog(@"唤醒网络电话PushKit消息");
+                self.pushKitMsgType = PushKitMessageTypeNetCall;
                 if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
                     [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
                 }
                 [UNCreatLocalNoti createLocalNotiMessageString:@"pushKit消息唤醒网络电话"];
                 //创建网络电话服务
                 [[UNSipEngineInitialize sharedInstance] initEngine];
-            }else if ([dict[@"MessageType"] isEqualToString:@"05"]){
+            }else if ([messageType isEqualToString:@"05"]){
+                NSLog(@"心跳包PushKit消息");
+                self.pushKitMsgType = PushKitMessageTypePingPacket;
                 if (dict[@"Data"]) {
                     self.isSendTcpString = YES;
                     NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
@@ -1779,8 +1786,38 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     if (!self.sendTcpSocket) {
                         [self creatAsocketTcp];
                     }
-                    [self sendPingPacketWithPushKitMessage:servicePushKitData];
+                    if (!self.sendTcpSocket.isConnected) {
+                        NSString *host = [VSWManager shareManager].vswIp;
+                        uint16_t port = [VSWManager shareManager].vswPort;
+                        NSLog(@"tcp断线重连---[%@:%d]",host, port);
+                        [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
+                    }
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [self sendPingPacketWithPushKitMessage:servicePushKitData];
+                    });
                 }
+            }else if ([messageType isEqualToString:@"0f"]){
+                NSLog(@"SIM卡断开连接PushKit消息");
+                if (!self.sendTcpSocket) {
+                    self.pushKitMsgType = PushKitMessageTypeSimDisconnect;
+                    self.isPushKit = NO;
+                    NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
+                    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"SIM卡断开连接--%@", servicePushKitData]];
+                }else{
+                    if (self.tcpPacketStr) {
+                        [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                        [BlueToothDataManager shareManager].stepNumber = @"0";
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [BlueToothDataManager shareManager].isRegisted = NO;
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                self.communicateID = @"00000000";
+                                //发送数据
+                                [self sendMsgWithMessage:self.tcpPacketStr];
+                            });
+                        });
+                    }
+                }
+
             }
         }else{
             

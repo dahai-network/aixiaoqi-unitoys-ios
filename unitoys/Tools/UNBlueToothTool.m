@@ -71,15 +71,15 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong) NSMutableArray *needSendDatas;
 
 @property (nonatomic, strong)NSString *connectedDeviceName;//连接的设备名称（用于区分连接的是什么设备）
-@property (nonatomic, assign) NSInteger sendICCIDIndex;
-@property (nonatomic, copy) NSArray *sendICCIDCommands;
+@property (nonatomic, assign) NSInteger sendICCIDIndex;//当前发送ICCID序号
+@property (nonatomic, copy) NSArray *sendICCIDCommands;//ICCID命令数组
 
 @property (nonatomic, copy) NSString *iccidString;
-@property (nonatomic, assign) BOOL isQuickLoad;
-@property (nonatomic, assign) BOOL isNeedRegister;
+@property (nonatomic, assign) BOOL isQuickLoad;//是否快速加载
+@property (nonatomic, assign) BOOL isNeedRegister;//是否需要重新注册
 
-@property (nonatomic, assign) BOOL isInitInstance;
-@property (nonatomic, assign) BOOL isPushKitStatu;
+@property (nonatomic, assign) BOOL isInitInstance;//是否初始化过
+@property (nonatomic, assign) BOOL isPushKitStatu;//是否为PushKit
 
 @end
 
@@ -157,7 +157,7 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].bleStatueForCard = 0;
     self.macAddressDict = [NSMutableDictionary new];
     self.RSSIDict = [NSMutableDictionary new];
-
+    
     self.simtype = [self checkSimType];
     [BlueToothDataManager shareManager].isNeedToResert = YES;
     [BlueToothDataManager shareManager].currentStep = @"0";

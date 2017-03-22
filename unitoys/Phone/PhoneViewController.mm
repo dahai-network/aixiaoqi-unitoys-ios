@@ -1826,7 +1826,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         return;
     }
     
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     if (storyboard) {
         if (!strNumber) {
@@ -1846,6 +1845,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 SipEngine *theSipEngine = [SipEngineManager getSipEngine];
                 callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
                 if ([VSWManager shareManager].callPort) {
+                    theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
+                }else if([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]){
+                    [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
                     theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
                 }else{
                     HUDNormal(INTERNATIONALSTRING(@"呼叫失败"))
