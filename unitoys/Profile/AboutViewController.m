@@ -9,9 +9,10 @@
 #import "AboutViewController.h"
 #import "UIimageView+WebCache.h"
 #import "BindDeviceViewController.h"
-#import "AlarmListViewController.h"
+//#import "AlarmListViewController.h"
 #import "BlueToothDataManager.h"
 #import "ChooseDeviceTypeViewController.h"
+#import "WristbandSettingViewController.h"
 
 #define CELLHEIGHT 44
 
@@ -173,33 +174,36 @@
         }
     }
     if (indexPath.section == 2) {
-        AlarmListViewController *alarmListVC;
-        switch (indexPath.row) {
-            case 0:
-                //来电提醒
-                HUDNormal(INTERNATIONALSTRING(@"来电提醒"))
-                break;
-            case 1:
-                //手环闹钟
-//                HUDNormal(@"手环闹钟")
-                alarmListVC = [[AlarmListViewController alloc] init];
-                [self.navigationController pushViewController:alarmListVC animated:YES];
-                break;
-            case 2:
-                //短信提醒
-                HUDNormal(INTERNATIONALSTRING(@"短信提醒"))
-                break;
-            case 3:
-                //微信消息提醒
-                HUDNormal(INTERNATIONALSTRING(@"微信消息提醒"))
-                break;
-            case 4:
-                //QQ消息提醒
-                HUDNormal(INTERNATIONALSTRING(@"QQ消息提醒"))
-                break;
-            default:
-                break;
-        }
+//        HUDNormal(@"手环设置")
+        WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
+        [self.navigationController pushViewController:wristbandSettingVC animated:YES];
+//        AlarmListViewController *alarmListVC;
+//        switch (indexPath.row) {
+//            case 0:
+//                //来电提醒
+//                HUDNormal(INTERNATIONALSTRING(@"来电提醒"))
+//                break;
+//            case 1:
+//                //手环闹钟
+////                HUDNormal(@"手环闹钟")
+//                alarmListVC = [[AlarmListViewController alloc] init];
+//                [self.navigationController pushViewController:alarmListVC animated:YES];
+//                break;
+//            case 2:
+//                //短信提醒
+//                HUDNormal(INTERNATIONALSTRING(@"短信提醒"))
+//                break;
+//            case 3:
+//                //微信消息提醒
+//                HUDNormal(INTERNATIONALSTRING(@"微信消息提醒"))
+//                break;
+//            case 4:
+//                //QQ消息提醒
+//                HUDNormal(INTERNATIONALSTRING(@"QQ消息提醒"))
+//                break;
+//            default:
+//                break;
+//        }
     }
     if (indexPath.section==3) {
         //开始调用设置
@@ -220,17 +224,17 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     //有闹钟时注销此方法
-    if (section == 3 || section == 2) {
-        return 0.01;
-    } else {
-        return 10;
-    }
-    //有闹钟时打开此方法
-//    if (section == 3) {
+//    if (section == 3 || section == 2) {
 //        return 0.01;
 //    } else {
 //        return 10;
 //    }
+    //有闹钟时打开此方法
+    if (section == 3) {
+        return 0.01;
+    } else {
+        return 10;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -248,7 +252,7 @@
             return 2; //如果没有内容有可能只能显示一行并提示用户购买，如果有还得算出有多少已购
             break;
         case 2:
-            return 5;
+            return 1;
             break;
         case 3:
             return 1;
@@ -269,9 +273,9 @@
         
     }else if(indexPath.section==2){
         //有闹钟时打开此行
-//        return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
+        return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
         //有闹钟时注销此行
-        return 0;
+//        return 0;
         
     }else if(indexPath.section==3){
         

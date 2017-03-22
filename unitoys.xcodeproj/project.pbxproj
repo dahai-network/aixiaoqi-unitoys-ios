@@ -58,6 +58,10 @@
 		0480E1671E7BD88900FCC33B /* ShowPathViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0480E1651E7BD88900FCC33B /* ShowPathViewController.m */; };
 		0480E1681E7BD88900FCC33B /* ShowPathViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0480E1661E7BD88900FCC33B /* ShowPathViewController.xib */; };
 		048AD0011E0A576800421F67 /* NSString+Addition.m in Sources */ = {isa = PBXBuildFile; fileRef = 048AD0001E0A576800421F67 /* NSString+Addition.m */; };
+		04A9497D1E826875007611F7 /* WristbandSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A9497B1E826875007611F7 /* WristbandSettingViewController.m */; };
+		04A9497E1E826875007611F7 /* WristbandSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04A9497C1E826875007611F7 /* WristbandSettingViewController.xib */; };
+		04A949821E82691F007611F7 /* WristbandSettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A949801E82691F007611F7 /* WristbandSettingTableViewCell.m */; };
+		04A949831E82691F007611F7 /* WristbandSettingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04A949811E82691F007611F7 /* WristbandSettingTableViewCell.xib */; };
 		04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */; };
 		04D90E8C1DF172FD00035C46 /* WaterIdentifyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */; };
 		04DA1B971E12958C00C50904 /* CallComingInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA1B951E12958C00C50904 /* CallComingInViewController.m */; };
@@ -415,6 +419,12 @@
 		04A0ECA11E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		04A0ECA21E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		04A0ECA31E7B83A600F155A3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		04A9497A1E826875007611F7 /* WristbandSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WristbandSettingViewController.h; sourceTree = "<group>"; };
+		04A9497B1E826875007611F7 /* WristbandSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WristbandSettingViewController.m; sourceTree = "<group>"; };
+		04A9497C1E826875007611F7 /* WristbandSettingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WristbandSettingViewController.xib; sourceTree = "<group>"; };
+		04A9497F1E82691F007611F7 /* WristbandSettingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WristbandSettingTableViewCell.h; sourceTree = "<group>"; };
+		04A949801E82691F007611F7 /* WristbandSettingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WristbandSettingTableViewCell.m; sourceTree = "<group>"; };
+		04A949811E82691F007611F7 /* WristbandSettingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WristbandSettingTableViewCell.xib; sourceTree = "<group>"; };
 		04D90E871DEEDC5C00035C46 /* BlueToothDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlueToothDataManager.h; sourceTree = "<group>"; };
 		04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlueToothDataManager.m; sourceTree = "<group>"; };
 		04D90E8A1DF172FD00035C46 /* WaterIdentifyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterIdentifyView.h; sourceTree = "<group>"; };
@@ -1523,6 +1533,12 @@
 				958159491DCB7DB7004474FF /* ProfileViewController.m */,
 				9581594E1DCCC31D004474FF /* SetValueViewController.h */,
 				9581594F1DCCC31D004474FF /* SetValueViewController.m */,
+				04A9497A1E826875007611F7 /* WristbandSettingViewController.h */,
+				04A9497B1E826875007611F7 /* WristbandSettingViewController.m */,
+				04A9497C1E826875007611F7 /* WristbandSettingViewController.xib */,
+				04A9497F1E82691F007611F7 /* WristbandSettingTableViewCell.h */,
+				04A949801E82691F007611F7 /* WristbandSettingTableViewCell.m */,
+				04A949811E82691F007611F7 /* WristbandSettingTableViewCell.xib */,
 				04EAB8B91E2787F6000D3D13 /* AlarmListViewController.h */,
 				04EAB8BA1E2787F6000D3D13 /* AlarmListViewController.m */,
 				3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */,
@@ -1988,6 +2004,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04A949831E82691F007611F7 /* WristbandSettingTableViewCell.xib in Resources */,
 				04440D061E779AD500206877 /* Order.storyboard in Resources */,
 				04553F311E70EE980025CA34 /* ChooseDeviceTypeViewController.xib in Resources */,
 				3CC3E0A81E63C22F00A62F8C /* CustomOrderCell.xib in Resources */,
@@ -2036,6 +2053,7 @@
 				04440CF41E778A2E00206877 /* Localizable.strings in Resources */,
 				04440D301E77C98F00206877 /* CallComingInViewController.xib in Resources */,
 				04440D451E77CEE000206877 /* BindGiftBagCardViewController.xib in Resources */,
+				04A9497E1E826875007611F7 /* WristbandSettingViewController.xib in Resources */,
 				0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */,
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
 				3C52B2031E5EF87A001E67C4 /* number_location.zip in Resources */,
@@ -2176,6 +2194,7 @@
 				0436C36F1E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.m in Sources */,
 				95CD33F21D9CE4F300EE5DD3 /* RSADataSigner.m in Sources */,
 				0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */,
+				04A949821E82691F007611F7 /* WristbandSettingTableViewCell.m in Sources */,
 				9581594A1DCB7DB8004474FF /* ProfileViewController.m in Sources */,
 				3CC3E0A71E63C22F00A62F8C /* CustomOrderCell.m in Sources */,
 				95E918601DDC91DD005DABC0 /* BeforeBackPageViewController.m in Sources */,
@@ -2207,6 +2226,7 @@
 				95C575F01DA7750000F459DF /* ConerSegment.m in Sources */,
 				740FD3B91E2A58CB009413F1 /* Test.m in Sources */,
 				04F727AF1E641CE4002EB54C /* HTTPErrorResponse.m in Sources */,
+				04A9497D1E826875007611F7 /* WristbandSettingViewController.m in Sources */,
 				04553F351E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m in Sources */,
 				952AB0091DF8DA8900C5A927 /* PhoneOperationPad.m in Sources */,
 				95C575FC1DA77C1000F459DF /* MessageRecordCell.m in Sources */,

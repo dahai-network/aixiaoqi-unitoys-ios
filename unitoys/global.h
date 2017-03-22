@@ -213,6 +213,12 @@
 //短信发送错误-重试
 #define apiSendRetryForError  defaultHost@"api/SMS/SendRetryForError"
 
+//使用签名，获取用户配置
+#define apiCheckUserConfig defaultHost@"api/UsersConfig/Get"
+
+//使用签名，上传用户设置
+#define apiUploadConfig defaultHost@"api/UsersConfig/UploadConfig"
+
 //环形进度条密集度系数
 #define AnnularProgressBar @"60"
 

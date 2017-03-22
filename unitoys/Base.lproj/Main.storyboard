@@ -2116,54 +2116,21 @@
                             </tableViewSection>
                             <tableViewSection id="N6o-Jt-S9j">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="42" id="ykU-DG-7wL">
-                                        <rect key="frame" x="0.0" y="256" width="375" height="42"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ykU-DG-7wL" id="qkU-rD-gbY">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="41"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="来电提醒" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Xi-s8-IZn">
-                                                    <rect key="frame" x="42" y="10" width="120" height="21"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="QND-3q-eZE"/>
-                                                        <constraint firstAttribute="width" constant="120" id="bwd-Ya-zpI"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pro_call" translatesAutoresizingMaskIntoConstraints="NO" id="nuM-ed-5eW">
-                                                    <rect key="frame" x="17" y="11" width="20" height="20"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="VFC-Db-4Z0"/>
-                                                        <constraint firstAttribute="width" constant="20" id="eYR-KG-aRg"/>
-                                                    </constraints>
-                                                </imageView>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="nuM-ed-5eW" firstAttribute="leading" secondItem="qkU-rD-gbY" secondAttribute="leadingMargin" constant="9" id="6aT-Mh-Fui"/>
-                                                <constraint firstItem="6Xi-s8-IZn" firstAttribute="leading" secondItem="nuM-ed-5eW" secondAttribute="trailing" constant="5" id="DlH-74-aSv"/>
-                                                <constraint firstItem="6Xi-s8-IZn" firstAttribute="centerY" secondItem="qkU-rD-gbY" secondAttribute="centerY" id="Drv-TY-vo9"/>
-                                                <constraint firstItem="nuM-ed-5eW" firstAttribute="centerY" secondItem="qkU-rD-gbY" secondAttribute="centerY" id="UkP-JV-6ES"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" id="Tg1-v9-v3s">
-                                        <rect key="frame" x="0.0" y="298" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="256" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Tg1-v9-v3s" id="8LZ-io-z3k">
                                             <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pro_alarm" translatesAutoresizingMaskIntoConstraints="NO" id="ccv-BB-wH8">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pro_device" translatesAutoresizingMaskIntoConstraints="NO" id="ccv-BB-wH8">
                                                     <rect key="frame" x="18" y="12" width="20" height="20"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="20" id="A5D-EN-KT5"/>
                                                         <constraint firstAttribute="height" constant="20" id="QYP-v9-xcc"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="手环闹钟" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JAv-Nd-PC8">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="手环设置" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JAv-Nd-PC8">
                                                     <rect key="frame" x="43" y="11" width="120" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="120" id="mQP-Gr-nef"/>
@@ -2182,111 +2149,12 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" id="i9Y-Vr-HUv">
-                                        <rect key="frame" x="0.0" y="342" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="i9Y-Vr-HUv" id="Nnv-xw-qCa">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pro_message" translatesAutoresizingMaskIntoConstraints="NO" id="cVY-Kf-QfL">
-                                                    <rect key="frame" x="18" y="12" width="20" height="20"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="4YL-8i-ef0"/>
-                                                        <constraint firstAttribute="width" constant="20" id="TPn-AD-tON"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="短信提醒" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zAU-TR-hDJ">
-                                                    <rect key="frame" x="43" y="11" width="120" height="21"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="Xgg-qG-7hg"/>
-                                                        <constraint firstAttribute="width" constant="120" id="vFc-8U-1Kb"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="cVY-Kf-QfL" firstAttribute="centerY" secondItem="Nnv-xw-qCa" secondAttribute="centerY" id="6k9-z3-vkO"/>
-                                                <constraint firstItem="zAU-TR-hDJ" firstAttribute="leading" secondItem="cVY-Kf-QfL" secondAttribute="trailing" constant="5" id="Azx-ha-AHV"/>
-                                                <constraint firstItem="cVY-Kf-QfL" firstAttribute="leading" secondItem="Nnv-xw-qCa" secondAttribute="leading" constant="18" id="KS5-kE-f9u"/>
-                                                <constraint firstItem="zAU-TR-hDJ" firstAttribute="centerY" secondItem="Nnv-xw-qCa" secondAttribute="centerY" id="ZEO-z8-vog"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" id="uqb-Pc-JNa">
-                                        <rect key="frame" x="0.0" y="386" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uqb-Pc-JNa" id="eWA-PP-o45">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pro_weichart" translatesAutoresizingMaskIntoConstraints="NO" id="eJM-5x-Mvf">
-                                                    <rect key="frame" x="18" y="12" width="20" height="20"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="20" id="FOg-gj-FAf"/>
-                                                        <constraint firstAttribute="width" constant="20" id="hJR-Zo-heg"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="微信消息提醒" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lq8-GF-cl6">
-                                                    <rect key="frame" x="43" y="11" width="120" height="21"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="1xB-ou-iRd"/>
-                                                        <constraint firstAttribute="width" constant="120" id="WRu-Ar-YkQ"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="Lq8-GF-cl6" firstAttribute="leading" secondItem="eJM-5x-Mvf" secondAttribute="trailing" constant="5" id="0OP-wv-CIr"/>
-                                                <constraint firstItem="eJM-5x-Mvf" firstAttribute="leading" secondItem="eWA-PP-o45" secondAttribute="leading" constant="18" id="1r1-k1-1OI"/>
-                                                <constraint firstItem="eJM-5x-Mvf" firstAttribute="centerY" secondItem="eWA-PP-o45" secondAttribute="centerY" id="Tcf-NE-Tun"/>
-                                                <constraint firstItem="Lq8-GF-cl6" firstAttribute="centerY" secondItem="eWA-PP-o45" secondAttribute="centerY" id="uJs-eF-R0P"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" id="MPt-Oj-5qW">
-                                        <rect key="frame" x="0.0" y="430" width="375" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MPt-Oj-5qW" id="vfM-OX-IUh">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pro_qq" translatesAutoresizingMaskIntoConstraints="NO" id="wGb-6x-PKf">
-                                                    <rect key="frame" x="18" y="12" width="20" height="20"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="20" id="gyb-21-9UT"/>
-                                                        <constraint firstAttribute="height" constant="20" id="y8d-3R-iHV"/>
-                                                    </constraints>
-                                                </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="QQ消息提醒" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6mS-Z9-4kH">
-                                                    <rect key="frame" x="43" y="11" width="120" height="21"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="Pa4-4D-tZy"/>
-                                                        <constraint firstAttribute="width" constant="120" id="b3T-on-a55"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="6mS-Z9-4kH" firstAttribute="centerY" secondItem="vfM-OX-IUh" secondAttribute="centerY" id="9ga-dz-q0h"/>
-                                                <constraint firstItem="wGb-6x-PKf" firstAttribute="centerY" secondItem="vfM-OX-IUh" secondAttribute="centerY" id="LO1-6M-erH"/>
-                                                <constraint firstItem="6mS-Z9-4kH" firstAttribute="leading" secondItem="wGb-6x-PKf" secondAttribute="trailing" constant="5" id="c3x-25-BcI"/>
-                                                <constraint firstItem="wGb-6x-PKf" firstAttribute="leading" secondItem="vfM-OX-IUh" secondAttribute="leading" constant="18" id="x2m-97-1Av"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="" id="aF7-up-i81">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="42" id="azt-LD-Yca">
-                                        <rect key="frame" x="0.0" y="474" width="375" height="42"/>
+                                        <rect key="frame" x="0.0" y="300" width="375" height="42"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="azt-LD-Yca" id="2wL-ND-FUV">
                                             <rect key="frame" x="0.0" y="0.0" width="342" height="41"/>
@@ -2444,16 +2312,11 @@
         <image name="nav_sport" width="24" height="24"/>
         <image name="nav_sportSelected" width="24" height="24"/>
         <image name="order_unactive" width="23" height="23"/>
-        <image name="pro_alarm" width="22" height="28"/>
         <image name="pro_background" width="360" height="142"/>
-        <image name="pro_call" width="22" height="28"/>
         <image name="pro_device" width="22" height="28"/>
-        <image name="pro_message" width="22" height="28"/>
         <image name="pro_package" width="22" height="28"/>
-        <image name="pro_qq" width="22" height="28"/>
         <image name="pro_recharge" width="22" height="18"/>
         <image name="pro_setting" width="22" height="28"/>
-        <image name="pro_weichart" width="22" height="28"/>
         <image name="reg_checked" width="14" height="14"/>
         <image name="reg_hidewords" width="33" height="32"/>
         <image name="sport_background" width="1080" height="1039"/>

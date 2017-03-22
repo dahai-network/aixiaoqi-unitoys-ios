@@ -430,7 +430,7 @@ typedef enum : NSUInteger {
         // 设置外设的代理
         //        peripheral.delegate = self;
         if (peripheral.name) {
-            NSLog(@"设备名称：%@", peripheral.name);
+            NSLog(@"发现设备名称：%@", peripheral.name);
             NSString *imeiStr = self.boundedDeviceInfo[@"IMEI"];
             NSString *imeiLowStr = imeiStr.lowercaseString;
             NSString *nameStr = peripheral.name;
@@ -956,7 +956,7 @@ typedef enum : NSUInteger {
         [self phoneCardToUpeLectrify:@"01"];
     }
     //是否是能通知
-    [self sendDataToCheckIsAllowToNotificationWithPhoneCall:YES Message:YES WeiChart:YES QQ:YES];
+    [self checkUserConfig];
     [self refreshBLEStatue];
 }
 
@@ -1778,6 +1778,7 @@ typedef enum : NSUInteger {
                 [self scanAndConnectDevice];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+                [self scanAndConnectDevice];
             }else if ([[responseObj objectForKey:@"status"] intValue]==0){
                 //数据请求失败
                 NSLog(@"没有设备");
@@ -1790,9 +1791,9 @@ typedef enum : NSUInteger {
             NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiDeviceBracelet"];
             if (responseObj) {
                 self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
-                //扫描蓝牙设备
-                [self scanAndConnectDevice];
             }
+            //扫描蓝牙设备
+            [self scanAndConnectDevice];
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }
@@ -2167,6 +2168,53 @@ typedef enum : NSUInteger {
 #pragma mark 判断卡类型第一步
 - (void)checkCardType {
     [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0a40000023f00"];
+}
+
+#pragma mark 请求是否使能通知
+- (void)checkUserConfig {
+    NSMutableDictionary *dict1 = [NSMutableDictionary dictionaryWithDictionary:@{@"img":@"pro_call", @"lblName":@"来电通知", @"status":@"0"}];
+    NSMutableDictionary *dict2 = [NSMutableDictionary dictionaryWithDictionary:@{@"img":@"pro_message", @"lblName":@"短信通知", @"status":@"0"}];
+    NSMutableDictionary *dict3 = [NSMutableDictionary dictionaryWithDictionary:@{@"img":@"pro_weichart", @"lblName":@"微信通知", @"status":@"0"}];
+    NSMutableDictionary *dict4 = [NSMutableDictionary dictionaryWithDictionary:@{@"img":@"pro_qq", @"lblName":@"QQ通知", @"status":@"0"}];
+    self.dataArr = [NSMutableArray arrayWithObjects:dict1, dict2, dict3, dict4, nil];
+    self.checkToken = YES;
+    [self getBasicHeader];
+    NSLog(@"表头：%@",self.headers);
+    [SSNetworkRequest getRequest:apiCheckUserConfig params:nil success:^(id responseObj) {
+        
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"获取到的用户配置信息 --> %@", responseObj);
+            NSArray *arr = responseObj[@"data"];
+            if (arr.count) {
+                for (NSDictionary *dict in arr) {
+                    if ([dict[@"Name"] isEqualToString:@"NotificaCall"]) {
+                        //来电
+                        [self.dataArr[0] setObject:[dict[@"Status"] intValue]?@"1":@"0" forKey:@"status"];
+                    } else if ([dict[@"Name"] isEqualToString:@"NotificaSMS"]) {
+                        //短信
+                        [self.dataArr[1] setObject:[dict[@"Status"] intValue]?@"1":@"0" forKey:@"status"];
+                    } else if ([dict[@"Name"] isEqualToString:@"NotificaWeChat"]) {
+                        //微信
+                        [self.dataArr[2] setObject:[dict[@"Status"] intValue]?@"1":@"0" forKey:@"status"];
+                    }else if ([dict[@"Name"] isEqualToString:@"NotificaQQ"]) {
+                        //QQ消息
+                        [self.dataArr[3] setObject:[dict[@"Status"] intValue]?@"1":@"0" forKey:@"status"];
+                    } else {
+                        NSLog(@"这是什么消息？");
+                    }
+                }
+            }
+            [self sendDataToCheckIsAllowToNotificationWithPhoneCall:[self.dataArr[0][@"status"] boolValue] Message:[self.dataArr[1][@"status"] boolValue] WeiChart:[self.dataArr[2][@"status"] boolValue] QQ:[self.dataArr[3][@"status"] boolValue]];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+        }
+    } failure:^(id dataObj, NSError *error) {
+        //
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
 }
 
 #pragma mark 是否使能通知

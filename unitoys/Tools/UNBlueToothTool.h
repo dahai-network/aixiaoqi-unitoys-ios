@@ -63,6 +63,8 @@ typedef void(^PaySuccessBlock)();
 @property (nonatomic, assign) int dataPackegType;
 //已连接的配对设备
 @property (nonatomic, strong) NSArray *pairedArr;
+//是否使能通知的数据数组
+@property (nonatomic, strong) NSMutableArray *dataArr;
 
 + (instancetype)shareBlueToothTool;
 - (void)initBlueTooth;
@@ -102,5 +104,7 @@ typedef void(^PaySuccessBlock)();
 - (void)sendBLESystemResetCommand;
 //获取空卡序列号
 - (void)checkEmptyCardSerialNumberFirstWithString:(NSString *)string;
+//是否使能通知
+- (void)sendDataToCheckIsAllowToNotificationWithPhoneCall:(BOOL)phoneCall Message:(BOOL)message WeiChart:(BOOL)weiChart QQ:(BOOL)QQ;
 
 @end
