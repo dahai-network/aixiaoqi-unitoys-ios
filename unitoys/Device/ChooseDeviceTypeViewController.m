@@ -99,7 +99,7 @@
 //    return indexPath;
 //}
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 //    if ([BlueToothDataManager shareManager].isOpened) {
 //        switch (indexPath.row) {
 //                case 0:
@@ -123,7 +123,7 @@
 //    } else {
 //        HUDNormal(INTERNATIONALSTRING(@"请开启蓝牙"))
 //    }
-}
+//}
 
 //- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
 //    self.cell.imgBackGroundView.image = [UIImage imageNamed:@"image_chooseBound_unselected"];

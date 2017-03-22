@@ -445,6 +445,7 @@
 
 #pragma mark 激活按钮点击事件 //0流量/1通话/2大王卡/3双卡双待
 - (IBAction)avtivateAction:(UIButton *)sender {
+    self.isPaySuccess = NO;
     if (self.packageCategory == 2) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"list"][@"UnitPrice"]] message:INTERNATIONALSTRING(@"领取大王卡礼包") preferredStyle:UIAlertControllerStyleAlert];
         // 为防止block与控制器间循环引用，我们这里需用__weak来预防

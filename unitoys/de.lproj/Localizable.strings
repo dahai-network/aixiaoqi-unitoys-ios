@@ -255,4 +255,6 @@
 "轨迹" = "Track";
 "爱小器" = "Unitoys";
 "正在加载..." = "Loading...";
+"解绑成功" = "Unbound successfully";
+"已解除绑定，请打开蓝牙设置界面忽略蓝牙设备" = "Please open the bluetooth Settings to ignore the bluetooth device";
 

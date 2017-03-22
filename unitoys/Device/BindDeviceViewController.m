@@ -368,7 +368,9 @@
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 NSLog(@"解除绑定结果：%@", responseObj);
-                HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))
+                if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+                    HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))
+                }
                 self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
                 //发送解除绑定成功通知
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
