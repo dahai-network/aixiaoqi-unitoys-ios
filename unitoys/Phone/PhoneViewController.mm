@@ -1269,6 +1269,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnNewCall:(CallDir)dir
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
+    NSLog(@"新呼叫");
 //    NSString *msg = @"";
     NSString *newcid;
     

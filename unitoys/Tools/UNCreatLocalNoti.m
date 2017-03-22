@@ -19,7 +19,7 @@
 + (void)createLocalNotiMessageString:(NSString *)string
 {
     NSLog(@"Noti---%@", string);
-//    [self creatLocalNoti:@{@"name" : string, @"phone" : @"123456789"}];
+    [self creatLocalNoti:@{@"name" : string, @"phone" : @"123456789"}];
 }
 
 + (void)creatLocalNoti:(NSDictionary *)dict

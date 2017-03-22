@@ -9,21 +9,24 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
+//更新左上角状态
+typedef void(^UpdateButtonImageAndTitleBlock)(NSString *title);
+//弹出提示信息
+typedef void(^ShowHudNormalBlock)(NSInteger hudType, NSString *string);
+//关闭提示信息
+typedef void(^EndHudBlock)();
+//未检测到卡提示是否重置
+typedef void(^CheckBLEAndResetBlock)();
+//注册失败
+typedef void(^RegistFailActionBlock)();
+//支付成功
+typedef void(^PaySuccessBlock)();
+
+
 @interface UNBlueToothTool : NSObject<CBCentralManagerDelegate,CBPeripheralDelegate>
 
-//存放mac地址的字典
-@property (nonatomic, strong) NSMutableDictionary *macAddressDict;
-//存放RSSI的字典
-@property (nonatomic, strong) NSMutableDictionary *RSSIDict;
-//存放绑定的设备的信息
-@property (nonatomic, strong) NSDictionary *boundedDeviceInfo;
-//存放数据包的数组
-@property (nonatomic, strong) NSMutableArray *dataPacketArray;
-//存放最终总数据的字符串
-@property (nonatomic, copy) NSString *totalString;
 //sim卡类型
 @property (nonatomic, copy) NSString *simtype;
-
 /*蓝牙相关*/
 @property (nonatomic, strong) CBCentralManager *mgr;
 @property (nonatomic, strong) NSMutableArray *peripherals;
@@ -39,47 +42,65 @@
 @property (nonatomic, strong) CBCharacteristic *notifyCharacteristic3;
 //存储uuid的数组
 @property (nonatomic, strong) NSMutableArray *uuidArray;
-//已连接的配对设备
-@property (nonatomic, strong) NSArray *pairedArr;
+//存放mac地址的字典
+@property (nonatomic, strong) NSMutableDictionary *macAddressDict;
+//存放RSSI的字典
+@property (nonatomic, strong) NSMutableDictionary *RSSIDict;
+//存放数据包的数组
+@property (nonatomic, strong) NSMutableArray *dataPacketArray;
+//存放最终总数据的字符串
+@property (nonatomic, copy) NSString *totalString;
+//存放绑定的设备的信息
+@property (nonatomic, strong) NSDictionary *boundedDeviceInfo;
+//记录需要激活的大王卡的序列号(空卡序列号)
+@property (nonatomic, copy) NSString *bigKingCardNumber;
+//激活的订单id
+@property (nonatomic, copy) NSString *activityOrderId;
 //计时器相关
 @property (nonatomic, strong)NSTimer *timer;
 @property (nonatomic, assign)int time;
-//激活的订单id
-@property (nonatomic, copy) NSString *activityOrderId;
 //记录接收到包的类型
 @property (nonatomic, assign) int dataPackegType;
-//记录需要激活的大王卡的序列号(空卡序列号)
-@property (nonatomic, copy) NSString *bigKingCardNumber;
-
-@property (nonatomic, assign) BOOL isInitInstance;
-@property (nonatomic, assign) BOOL isPushKitStatu;
+//已连接的配对设备
+@property (nonatomic, strong) NSArray *pairedArr;
 
 + (instancetype)shareBlueToothTool;
 - (void)initBlueTooth;
 
-//发送卡数据
-- (void)sendBLECardDataWithValidData:(NSString *)data;
+@property (nonatomic, copy) UpdateButtonImageAndTitleBlock updateButtonImageAndTitleBlock;
+@property (nonatomic, copy) ShowHudNormalBlock showHudNormalBlock;
+@property (nonatomic, copy) EndHudBlock endHudBlock;
+@property (nonatomic, copy) CheckBLEAndResetBlock checkBLEAndResetBlock;
+@property (nonatomic, copy) RegistFailActionBlock registFailActionBlock;
+@property (nonatomic, copy) PaySuccessBlock paySuccessBlock;
 
-//空中升级指令
-- (void)oatUpdateCommand;
-
+//查询绑定设备
+- (void)checkBindedDeviceFromNet;
 //对卡上电
 - (void)phoneCardToUpeLectrifyWithType:(NSString *)type;
-
 //对卡断电
-- (void)phoneCardToOutageNew;
-
+- (void)downElectToCard;
 //查找手环
 - (void)searchBluetooth;
-
 //停止扫描蓝牙
 - (void)stopScanBluetooth;
-
-//获取ICCID消息
-- (void)sendICCIDMessage;
-
-//发送爱小器国际卡卡数据
-- (void)sendBLEAixiaoqiCardDataWithValidData:(NSString *)data;
-
+//空中升级指令
+- (void)oatUpdateCommand;
+//发送卡数据
+- (void)sendBLECardDataWithValidData:(NSString *)data;
+//检查是否绑定
+- (void)checkDeviceIsBound;
+//设置是否快速加载
+- (void)setQuickLoadStatu:(BOOL)isQuickLoad;
+//设置是否PushKit
+- (void)setPushKitStatu:(BOOL)isPushKit;
+//正常加载
+- (void)sendLBEMessageNoPushKit;
+//解析鉴权数据
+- (void)analysisAuthDataWithString:(NSString *)string;
+//发送复位请求
+- (void)sendBLESystemResetCommand;
+//获取空卡序列号
+- (void)checkEmptyCardSerialNumberFirstWithString:(NSString *)string;
 
 @end
