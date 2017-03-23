@@ -85,7 +85,7 @@
 
 @property (nonatomic, copy) NSString *iccidString;
 @property (nonatomic, assign) BOOL isUdpSendFristMsg;
-@property (nonatomic, assign) BOOL isNeedRegister;
+//@property (nonatomic, assign) BOOL isNeedRegister;
 
 @property (nonatomic, strong) NSMutableArray *pushKitMsgQueue;
 
@@ -129,6 +129,7 @@
 //    [self separatePushKitString:servicePushKitData];
 //    
 //    self.isPushKit = YES;
+    
     
     //制定真机调试保存日志文件
     [self redirectNSLogToDocumentFolder];
@@ -900,13 +901,18 @@
             NSLog(@"两位leng = %zd  需要传入的字符串 -- %@", leng, TLVdetail);
             self.sessionIdToVSWSDK = TLVdetail;
             
-            if (self.isNeedRegister) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"updataElectic" object:@"updataElectic"];//发送对卡上电通知
-                //发送给sdk
-                [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
+            if ([BlueToothDataManager shareManager].isConnected) {
+                if (self.isNeedRegister) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updataElectic" object:@"updataElectic"];//发送对卡上电通知
+                    //发送给sdk
+                    [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
+                }else{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"AnalysisAuthData" object:TLVdetail];
+                }
             }else{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"AnalysisAuthData" object:TLVdetail];
+            
             }
+
             //发送给sdk
 //            [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
         }
@@ -1739,6 +1745,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 NSLog(@"鉴权数据PushKit消息");
                 //鉴权数据
                 if (dict[@"Data"]) {
+                    self.isPushKit = YES;
                     self.pushKitMsgType = PushKitMessageTypeAuthSimData;
                     NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
                     NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
@@ -1748,11 +1755,12 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     //存储到队列中
                     if (self.pushKitMsgQueue.count > 0) {
                         NSString *timeString = self.pushKitMsgQueue.lastObject[@"time"];
+                        
                         CGFloat dataTime = [timeString doubleValue];
                         NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
                         NSTimeInterval timeValue = [dataDate timeIntervalSinceNow];
-                        NSLog(@"时间差为---%f", timeValue);
-                        if (timeValue > 15.0) {
+                        NSLog(@"时间差为---%.f", timeValue);
+                        if (timeValue < -9.0){
                             NSLog(@"时间太久,清空PushKit数据");
                             [self.pushKitMsgQueue removeAllObjects];
                             self.simDataDict = nil;
@@ -1864,6 +1872,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
                     }else{
                         NSLog(@"当前没有注册过,需要重新注册");
+                        self.isPushKit = NO;
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
                     }
                 }

@@ -29,7 +29,7 @@ typedef NS_ENUM(NSUInteger, PushKitMessageType) {
 @property (nonatomic, assign) int currentNumber;//记录心跳包次数，从08开始
 
 @property (nonatomic, readonly) BOOL isPushKit;
-@property (nonatomic, readonly) BOOL isNeedRegister;
+@property (nonatomic, assign) BOOL isNeedRegister;
 @property (nonatomic, copy) NSDictionary *simDataDict;
 
 @property (nonatomic, readonly) PushKitMessageType pushKitMsgType;

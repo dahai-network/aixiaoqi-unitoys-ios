@@ -755,6 +755,10 @@ typedef enum : NSUInteger {
 #pragma mark 跟某个外设失去连接
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
+    self.isNeedRegister = NO;
+    AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    appdelegate.isNeedRegister = NO;
+    
     NSLog(@"跟外设失去连接");
     //    [BlueToothDataManager shareManager].isRegisted = NO;
     [BlueToothDataManager shareManager].isBounded = NO;
@@ -1407,11 +1411,16 @@ typedef enum : NSUInteger {
                 int isHaveCardStatue = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
                 switch (isHaveCardStatue) {
                     case 0:
+                    {
                         NSLog(@"卡状态改变 -- 无卡");
+                        self.isNeedRegister = NO;
+                        AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+                        appdelegate.isNeedRegister = NO;
                         [BlueToothDataManager shareManager].isHaveCard = NO;
                         [BlueToothDataManager shareManager].isBeingRegisting = NO;
                         [BlueToothDataManager shareManager].isChangeSimCard = YES;
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
+                    }
                         break;
                     case 1:
                         NSLog(@"卡状态改变 -- 有卡");
