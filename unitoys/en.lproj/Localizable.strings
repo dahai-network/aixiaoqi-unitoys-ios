@@ -56,7 +56,7 @@
 "还没有连接设备，点击连接" = "Not connected, click";
 "正在搜索设备" = "Searching";
 "已连接爱小器手环" = "Uniband connected";
-"已连接爱小器钥匙扣" = "Unibox connected";
+"已连接爱小器双待王" = "Unibox connected";
 "继续" = "Continue";
 "没有连接绑定的设备，是否要解除已绑定的设备？" = "No bound device be found, whether to remove bound device?";
 "该账号没有绑定设备" = "No device is bound by this account";

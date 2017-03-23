@@ -253,7 +253,7 @@
         if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
             self.hintLabel.text = INTERNATIONALSTRING(@"已连接爱小器手环");
         } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
-            self.hintLabel.text = INTERNATIONALSTRING(@"已连接爱小器钥匙扣");
+            self.hintLabel.text = INTERNATIONALSTRING(@"已连接爱小器双待王");
         } else {
             NSLog(@"这是连接的什么？");
         }
