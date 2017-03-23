@@ -30,8 +30,11 @@ typedef NS_ENUM(NSUInteger, PushKitMessageType) {
 
 @property (nonatomic, readonly) BOOL isPushKit;
 @property (nonatomic, readonly) BOOL isNeedRegister;
-@property (nonatomic, readonly) NSString *simDataString;
+@property (nonatomic, copy) NSDictionary *simDataDict;
 
 @property (nonatomic, readonly) PushKitMessageType pushKitMsgType;
+
+
+@property (nonatomic, assign) BOOL isAppAlreadyLoad;//APP是否已加载(是否加载过HomeVC)
 @end
 

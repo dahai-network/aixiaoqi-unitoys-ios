@@ -15,9 +15,4 @@
 //初始化网络电话
 - (void)initEngine;
 
-//扫描蓝牙设备
-- (void)scanLBEDevice;
-
-- (void)setUpUdpSocket;
-
 @end

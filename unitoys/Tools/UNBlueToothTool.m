@@ -62,7 +62,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) BOOL checkToken;
 @property (nonatomic, strong) NSMutableDictionary *headers;
 
-@property (nonatomic, copy) NSString *simDataString;
+@property (nonatomic, copy) NSDictionary *simDataDict;
 @property (nonatomic, assign) BOOL isHasSimType;
 @property (nonatomic, copy) NSString *simTypeData;
 @property (nonatomic, strong) UNSimCardAuthenticationModel *authenticationModel;
@@ -150,6 +150,7 @@ typedef enum : NSUInteger {
     if (self.isInitInstance) {
         return;
     }
+    NSLog(@"初始化蓝牙");
     self.isInitInstance = YES;
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     self.isPushKitStatu = appDelegate.isPushKit;
@@ -180,6 +181,7 @@ typedef enum : NSUInteger {
     if ([BlueToothDataManager shareManager].isConnected) {
         [self sendInitMessageToBLE];
     }else{
+        NSLog(@"蓝牙未连接,重连设备");
         [self checkBindedDeviceFromNet];
     }
 }
@@ -753,6 +755,7 @@ typedef enum : NSUInteger {
 #pragma mark 跟某个外设失去连接
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
+    NSLog(@"跟外设失去连接");
     //    [BlueToothDataManager shareManager].isRegisted = NO;
     [BlueToothDataManager shareManager].isBounded = NO;
     [BlueToothDataManager shareManager].isConnected = NO;
@@ -877,11 +880,16 @@ typedef enum : NSUInteger {
     AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     if (appdelegate.isPushKit) {
         //        [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"appdelegate.isPushKit===%zd", appdelegate.isPushKit]];
-        if (appdelegate.simDataString) {
-            self.simDataString = appdelegate.simDataString;
-            [self sendLBEMessageWithPushKit];
-        }
         NSLog(@"发送pushkit消息到蓝牙");
+        if (appdelegate.pushKitMsgType == PushKitMessageTypeSimDisconnect) {
+            NSLog(@"SIM断开连接消息类型");
+            [self sendLBEMessageNoPushKit];
+        }else{
+            if (appdelegate.simDataDict) {
+                self.simDataDict = appdelegate.simDataDict;
+                [self sendLBEMessageWithPushKit];
+            }
+        }
     }else{
         [self sendLBEMessageNoPushKit];
     }
@@ -890,25 +898,54 @@ typedef enum : NSUInteger {
 
 - (void)sendLBEMessageWithPushKit
 {
-    [BlueToothDataManager shareManager].isRegisted = NO;
-    [BlueToothDataManager shareManager].isBeingRegisting = YES;
-    //    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"1"];
-    //    [BlueToothDataManager shareManager].stepNumber = @"1";
-    
-    self.isQuickLoad = YES;
-    //告诉蓝牙是苹果设备
-    [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
-    //同步时间
-    [self checkNowTime];
-    //对卡上电
-    NSLog(@"对卡上电03");
-    [self phoneCardToUpeLectrify:@"03"];
-    [self sendDataToVSW:self.simDataString];
+    NSLog(@"sendLBEMessageWithPushKit");
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [BlueToothDataManager shareManager].isRegisted = NO;
+        [BlueToothDataManager shareManager].isBeingRegisting = YES;
+        //    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"1"];
+        //    [BlueToothDataManager shareManager].stepNumber = @"1";
+        
+        self.isQuickLoad = YES;
+        //告诉蓝牙是苹果设备
+        [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
+        //同步时间
+        [self checkNowTime];
+        //请求基本信息
+        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+        //请求电量
+        [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
+        //仅钥匙扣能连接
+        [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+        //对卡上电
+        NSLog(@"对卡上电03");
+        [self phoneCardToUpeLectrify:@"03"];
+        
+        if (self.simDataDict[@"time"]) {
+            NSString *timeString = self.simDataDict[@"time"];
+            CGFloat dataTime = [timeString doubleValue];
+            NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
+            NSTimeInterval timeValue = [dataDate timeIntervalSinceNow];
+            NSLog(@"时间差为---%f", timeValue);
+            if (timeValue > 15.0) {
+                NSLog(@"时间太久,丢弃当前数据");
+                self.simDataDict = nil;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"PushKitMessageDataTimeout" object:nil];
+            }else{
+                NSLog(@"在规定时间内发送数据");
+                [self sendDataToVSW:self.simDataDict[@"dataString"]];
+            }
+        }
+        
+    }else{
+        NSLog(@"蓝牙未连接");
+        [self checkBindedDeviceFromNet];
+    }
 }
 
 //解析鉴权数据
 - (void)analysisAuthDataWithString:(NSString *)string
 {
+    NSLog(@"解析鉴权数据");
     self.isQuickLoad = NO;
     [self updataToCard];
     [self sendDataToVSW:string];
@@ -916,52 +953,61 @@ typedef enum : NSUInteger {
 
 - (void)sendLBEMessageNoPushKit
 {
-    self.isQuickLoad = NO;
-    
-    //告诉蓝牙是苹果设备
-    [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
-    //同步时间
-    [self checkNowTime];
-    //请求基本信息
-    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
-    //请求电量
-    [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
-    //仅钥匙扣能连接
-    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
-    if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
-        //连接的是手环
-        //对卡上电
-        [self phoneCardToUpeLectrify:@"01"];
-    } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
-        //连接的是钥匙扣
-        if (!self.boundedDeviceInfo[@"IMEI"]) {
-            //发送绑定请求
-            [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
-            [self showHudNormalTop1String:INTERNATIONALSTRING(@"请点击钥匙扣按钮确认绑定")];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                if (![BlueToothDataManager shareManager].isAllowToBound) {
-                    [self hideHud];
-                    [BlueToothDataManager shareManager].isAccordBreak = YES;
-                    [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
-                    [self.mgr cancelPeripheralConnection:self.peripheral];
-                    [self sendDataToUnBoundDevice];
-                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
-                }
-            });
+    NSLog(@"sendLBEMessageNoPushKit");
+    if ([BlueToothDataManager shareManager].isConnected) {
+        self.isQuickLoad = NO;
+        //告诉蓝牙是苹果设备
+        [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
+        //同步时间
+        [self checkNowTime];
+        //请求基本信息
+        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+        //请求电量
+        [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
+        //仅钥匙扣能连接
+        [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+        if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
+            //连接的是手环
+            //对卡上电
+            [self phoneCardToUpeLectrify:@"01"];
+        } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
+            //连接的是钥匙扣
+            if (!self.boundedDeviceInfo[@"IMEI"]) {
+                //发送绑定请求
+                [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
+                [self showHudNormalTop1String:INTERNATIONALSTRING(@"请点击钥匙扣按钮确认绑定")];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (![BlueToothDataManager shareManager].isAllowToBound) {
+                        [self hideHud];
+                        [BlueToothDataManager shareManager].isAccordBreak = YES;
+                        [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
+                        [self.mgr cancelPeripheralConnection:self.peripheral];
+                        [self sendDataToUnBoundDevice];
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+                    }
+                });
+            } else {
+                //对卡上电
+                [self phoneCardToUpeLectrify:@"01"];
+            }
         } else {
+            NSLog(@"已绑定过之后上电");
             //对卡上电
             [self phoneCardToUpeLectrify:@"01"];
         }
-    } else {
-        NSLog(@"已绑定过之后上电");
-        //对卡上电
-        [self phoneCardToUpeLectrify:@"01"];
-    }
-    //是否是能通知
-    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        //是否是能通知
         [self checkUserConfig];
+        [self refreshBLEStatue];
+        //是否是能通知
+        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+            [self checkUserConfig];
+        }
+        [self refreshBLEStatue];
+    }else{
+        NSLog(@"蓝牙未连接重连蓝牙");
+        [self checkBindedDeviceFromNet];
     }
-    [self refreshBLEStatue];
+
 }
 
 //初始化ICCID指令
@@ -1298,9 +1344,10 @@ typedef enum : NSUInteger {
                             [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                         } else {
                             //注册卡
-                            if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
+                            if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                     [BlueToothDataManager shareManager].isRegisted = NO;
+                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
                                     NSLog(@"判断用户是否存在指定套餐");
                                     [self checkUserIsExistAppointPackage];
                                 });
@@ -1363,6 +1410,7 @@ typedef enum : NSUInteger {
                         NSLog(@"卡状态改变 -- 无卡");
                         [BlueToothDataManager shareManager].isHaveCard = NO;
                         [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                        [BlueToothDataManager shareManager].isChangeSimCard = YES;
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
                         break;
                     case 1:
@@ -1480,10 +1528,10 @@ typedef enum : NSUInteger {
     return mutaleString;
 }
 
-#pragma mark --在pushkit下发送蓝牙数据
+#pragma mark --解析鉴权数据并发送蓝牙数据
 - (void)sendDataToVSW:(NSString *)string
 {
-    NSLog(@"%@", string);
+    NSLog(@"sendDataToVSW--%@", string);
     if (!string) {
         return;
     }
@@ -1669,8 +1717,11 @@ typedef enum : NSUInteger {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDataStr" object:string];
     }
     self.authenticationModel = nil;
+    self.simDataDict = nil;
     [self.needSendDatas removeAllObjects];
     self.currentSendIndex = 0;
+    AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    appdelegate.simDataDict = nil;
 }
 
 #pragma mark 判断用户是否存在指定套餐
@@ -1766,6 +1817,7 @@ typedef enum : NSUInteger {
             }
         }
         NSLog(@"直接扫描蓝牙设备");
+        NSLog(@"当前本地绑定设备----%@",self.boundedDeviceInfo);
         //扫描蓝牙设备
         [self scanAndConnectDevice];
     }else{
@@ -1859,7 +1911,7 @@ typedef enum : NSUInteger {
             [SSNetworkRequest postRequest:apiBind params:info success:^(id responseObj) {
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
                     NSLog(@"绑定结果：%@", responseObj);
-                    [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiBind" dictData:responseObj];
+                    [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:responseObj];
                     
                     //绑定成功之后再绑定蓝牙
                     if (self.strongestRssiPeripheral) {
@@ -1879,7 +1931,7 @@ typedef enum : NSUInteger {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"connectFail" object:@"connectFail"];
                 }
             } failure:^(id dataObj, NSError *error) {
-                NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiBind"];
+                NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiDeviceBracelet"];
                 if (responseObj) {
                     if (self.strongestRssiPeripheral) {
                         self.peripheral = self.strongestRssiPeripheral;

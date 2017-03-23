@@ -73,14 +73,14 @@
 
 @property (nonatomic, assign) BOOL isPushKit;
 //@property (nonatomic, assign) BOOL isLoadDelegate;
-@property (nonatomic, copy) NSString *simDataString;
+//@property (nonatomic, copy) NSString *simDataString;
 @property (nonatomic, copy) NSString *tcpStringWithPushKit;
 @property (nonatomic, copy) NSString *tcpPacketStrWithPushKit;
 //@property (nonatomic, assign) BOOL isPoweroffWithPushKit;
 
 @property (nonatomic, copy) NSString *sessionIdToVSWSDK;
 @property (nonatomic, copy) NSString *pushKitTokenString;
-@property (nonatomic, copy) NSString *receivePushKitDataFormServices;
+@property (nonatomic, copy) NSDictionary *receivePushKitDataFormServices;
 @property (nonatomic, assign) BOOL isSendTcpString;
 
 @property (nonatomic, copy) NSString *iccidString;
@@ -131,7 +131,7 @@
 //    self.isPushKit = YES;
     
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -240,6 +240,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTcpDataFromPushKit:) name:@"SendTcpDataFromPushKit" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createUDPSocketToBLE:) name:@"CreateUDPSocketToBLE" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createTCPSocketToBLE:) name:@"CreateTCPSocketToBLE" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearTimeoutPushKitMessage) name:@"PushKitMessageDataTimeout" object:nil];
+    
     return YES;
 }
 
@@ -286,6 +289,7 @@
         self.packetTotalLengthHex = simData[@"packetTotalLengthHex"];
         self.packetFinalHex = simData[@"packetFinalHex"];
     }
+    NSLog(@"simData====%@", simData);
     [self groupPacket];
 }
 
@@ -354,12 +358,17 @@
 - (void)creatAsocketTcp {
     // 1. 创建一个 udp socket用来和服务端进行通讯
     if (!self.sendTcpSocket) {
-        NSLog(@"创建tcp");
+        NSLog(@"首次创建tcpSocket");
         dispatch_queue_t dQueue = dispatch_queue_create("client tdp socket", NULL);
         self.sendTcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dQueue socketQueue:nil];
         // 2. 连接服务器端. 只有连接成功后才能相互通讯 如果60s连接不上就出错
         NSString *host = [VSWManager shareManager].vswIp;
         uint16_t port = [VSWManager shareManager].vswPort;
+        NSLog(@"host---%@,port---%hu", host, port);
+        if (!host) {
+            host = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerIp"];
+            port = [[[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerPort"] intValue];
+        }
         [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
     }else{
         if (self.isPushKit) {
@@ -373,6 +382,7 @@
                     //发送数据
                     [self setUpTcppacketFromPushKit];
                     NSLog(@"最终发送给tcp的pushkit数据 -- %@", self.tcpPacketStrWithPushKit);
+                    self.isSendTcpString = YES;
                 }
             }else{
                 self.isSendTcpString = NO;
@@ -540,16 +550,6 @@
         NSLog(@"需要删除的队列消息====%@", self.receivePushKitDataFormServices);
         
         [self checkPushKitMessage:self.receivePushKitDataFormServices];
-//        if ([self.pushKitMsgQueue containsObject:self.receivePushKitDataFormServices]) {
-//            [self.pushKitMsgQueue removeObject:self.receivePushKitDataFormServices];
-//            NSLog(@"删除后当前队列消息====%@", self.pushKitMsgQueue);
-//            //发送新的pushkit消息
-//            if (self.pushKitMsgQueue.count) {
-//                [self sendPushKitMessage:self.pushKitMsgQueue.firstObject];
-//            }else{
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
-//            }
-//        }
     }
 
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
@@ -837,9 +837,15 @@
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOSIGNAL];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                self.communicateID = @"00000000";
-                //发送数据
-                [self sendMsgWithMessage:self.tcpPacketStr];
+                if ([BlueToothDataManager shareManager].isConnected) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
+                    [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                    self.communicateID = @"00000000";
+                    //发送数据
+                    [self sendMsgWithMessage:self.tcpPacketStr];
+                }else{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOSIGNAL];
+                }
             });
         });
     }else if ([classStr isEqualToString:@"10"]) {
@@ -887,7 +893,7 @@
         } else if ([[string substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"00"]) {
             //00
             NSLog(@"这是00的执行方法");
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updataElectic" object:@"updataElectic"];//发送对卡上电通知
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"updataElectic" object:@"updataElectic"];//发送对卡上电通知
             NSString *lengthStr = [string substringWithRange:NSMakeRange(32, 2)];
             leng = strtoul([lengthStr UTF8String], 0, 16);
             TLVdetail = [string substringWithRange:NSMakeRange(34, leng * 2)];
@@ -895,6 +901,7 @@
             self.sessionIdToVSWSDK = TLVdetail;
             
             if (self.isNeedRegister) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"updataElectic" object:@"updataElectic"];//发送对卡上电通知
                 //发送给sdk
                 [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
             }else{
@@ -908,9 +915,10 @@
     }
 }
 
-- (void)checkPacketDetailWithStringFromPushKit:(NSString *)string
+- (void)checkPacketDetailWithStringFromPushKit:(NSDictionary *)dictString
 {
-    NSLog(@"PushKit数据包消息-----%@",string);
+    NSLog(@"PushKit数据包消息-----%@",dictString);
+    NSString *string = dictString[@"dataString"];
     NSInteger leng;
     NSString *TLVdetail;
     NSString *tempStr;
@@ -944,13 +952,21 @@
     
     if (!self.sendTcpSocket) {
         [self creatAsocketTcp];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self sendMsgWithMessage:string];
+        });
+    }else{
+        if (!self.sendTcpSocket.isConnected) {
+            [self reConnectTcp];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self sendMsgWithMessage:string];
+            });
+        }else{
+            [self sendMsgWithMessage:string];
+        }
     }
     
     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", string]];
-    if (!self.sendTcpSocket.isConnected) {
-        
-    }
-    [self sendMsgWithMessage:string];
     
     if (self.isPushKit) {
         NSLog(@"删除前当前队列消息====%@", self.pushKitMsgQueue);
@@ -1386,9 +1402,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     if (self.isPushKit) {
         self.isPushKit = NO;
         NSLog(@"进入前台");
-//        if (!_udpSocket) {
-//            [self setUpUdpSocket];
-//        }
+        [self.pushKitMsgQueue removeAllObjects];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
     }
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
@@ -1727,12 +1741,29 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 if (dict[@"Data"]) {
                     self.pushKitMsgType = PushKitMessageTypeAuthSimData;
                     NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
+                    NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
+                     NSString *timeString = [NSString stringWithFormat:@"%f", time];
+                    NSDictionary *serviceTimeData = @{@"time" : timeString, @"dataString" : servicePushKitData};
                     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
                     //存储到队列中
-                    [self.pushKitMsgQueue addObject:servicePushKitData];
+                    if (self.pushKitMsgQueue.count > 0) {
+                        NSString *timeString = self.pushKitMsgQueue.lastObject[@"time"];
+                        CGFloat dataTime = [timeString doubleValue];
+                        NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
+                        NSTimeInterval timeValue = [dataDate timeIntervalSinceNow];
+                        NSLog(@"时间差为---%f", timeValue);
+                        if (timeValue > 15.0) {
+                            NSLog(@"时间太久,清空PushKit数据");
+                            [self.pushKitMsgQueue removeAllObjects];
+                            self.simDataDict = nil;
+                        }
+                        [self.pushKitMsgQueue addObject:serviceTimeData];
+                    }else{
+                        [self.pushKitMsgQueue addObject:serviceTimeData];
+                    }
                     //防止和手环交互出现异常导致的卡住流程,当消息为7条时,再次发送第一条pushkit消息,当消息超过15条时,删除所有过期数据,重置Pushkit消息
                     NSLog(@"pushkit队列消息数量--%zd", self.pushKitMsgQueue.count);
-                    if (self.pushKitMsgQueue.count == 1 || self.pushKitMsgQueue.count == 7) {
+                    if (self.pushKitMsgQueue.count == 1) {
                         [self sendPushKitMessage:self.pushKitMsgQueue.firstObject];
                     }else if (self.pushKitMsgQueue.count > 15){
                         [self.pushKitMsgQueue removeAllObjects];
@@ -1770,6 +1801,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             }else if ([messageType isEqualToString:@"06"]){
                 NSLog(@"唤醒网络电话PushKit消息");
                 self.pushKitMsgType = PushKitMessageTypeNetCall;
+                _simDataDict = nil;
                 if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
                     [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
                 }
@@ -1785,38 +1817,65 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"接收服务器的心跳包数据--%@", servicePushKitData]];
                     if (!self.sendTcpSocket) {
                         [self creatAsocketTcp];
+                    }else{
+                        if (!self.sendTcpSocket.isConnected) {
+                            NSString *host = [VSWManager shareManager].vswIp;
+                            uint16_t port = [VSWManager shareManager].vswPort;
+                            NSLog(@"心跳包--tcp断线重连---[%@:%d]",host, port);
+                            [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
+                        }
                     }
-                    if (!self.sendTcpSocket.isConnected) {
-                        NSString *host = [VSWManager shareManager].vswIp;
-                        uint16_t port = [VSWManager shareManager].vswPort;
-                        NSLog(@"tcp断线重连---[%@:%d]",host, port);
-                        [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
-                    }
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [self sendPingPacketWithPushKitMessage:servicePushKitData];
                     });
                 }
             }else if ([messageType isEqualToString:@"0f"]){
                 NSLog(@"SIM卡断开连接PushKit消息");
-                if (!self.sendTcpSocket) {
-                    self.pushKitMsgType = PushKitMessageTypeSimDisconnect;
-                    self.isPushKit = NO;
-                    NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
-                    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"SIM卡断开连接--%@", servicePushKitData]];
-                }else{
+                [self.pushKitMsgQueue removeAllObjects];
+                self.simDataDict = nil;
+                
+                self.pushKitMsgType = PushKitMessageTypeSimDisconnect;
+                [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"SIM卡断开连接--"]];
+                if (self.isAppAlreadyLoad) {
+                    NSLog(@"已创建TCP");
                     if (self.tcpPacketStr) {
+                        NSLog(@"注册过,重新发送注册信息");
                         [BlueToothDataManager shareManager].isBeingRegisting = NO;
                         [BlueToothDataManager shareManager].stepNumber = @"0";
                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                             [BlueToothDataManager shareManager].isRegisted = NO;
-                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                self.communicateID = @"00000000";
-                                //发送数据
-                                [self sendMsgWithMessage:self.tcpPacketStr];
+                            if (!self.sendTcpSocket.isConnected) {
+                                [self reConnectTcp];
+                            }
+                            
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                if ([BlueToothDataManager shareManager].isConnected) {
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
+                                    [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                                    self.communicateID = @"00000000";
+                                    //发送数据
+                                    [self sendMsgWithMessage:self.tcpPacketStr];
+                                }else{
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOSIGNAL];
+                                }
                             });
                         });
+
+                    }else{
+                        NSLog(@"当前没有注册过,需要重新注册");
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
                     }
                 }
+                
+//                if (!self.sendTcpSocket) {
+//                    NSLog(@"没有创建TCP");
+////                    self.isPushKit = NO;
+//                    NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
+//                    [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"SIM卡断开连接重连TCP--%@", servicePushKitData]];
+//                }else{
+//
+//                }
 
             }
         }else{
@@ -1825,6 +1884,17 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
+- (void)reConnectTcp
+{
+    if (self.sendTcpSocket && !self.sendTcpSocket.isConnected) {
+        NSString *host = [VSWManager shareManager].vswIp;
+        uint16_t port = [VSWManager shareManager].vswPort;
+        NSLog(@"心跳包--tcp断线重连---[%@:%d]",host, port);
+        [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:nil];
+    }
+}
+
+//发送心跳包
 - (void)sendPingPacketWithPushKitMessage:(NSString *)message
 {
     NSString *pingMessage = [message stringByReplacingCharactersInRange:NSMakeRange(4, 2) withString:@"85"];
@@ -1847,7 +1917,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 }
 
 
-- (void)checkPushKitMessage:(NSString *)servicePushKitData
+- (void)checkPushKitMessage:(NSDictionary *)servicePushKitData
 {
     if ([self.pushKitMsgQueue containsObject:servicePushKitData]) {
         [self.pushKitMsgQueue removeObject:servicePushKitData];
@@ -1870,17 +1940,17 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
-- (void)sendPushKitMessage:(NSString *)servicePushKitData
+- (void)sendPushKitMessage:(NSDictionary *)servicePushKitData
 {
     NSLog(@"当前队列需要发送的pushkit消息=====%@", servicePushKitData);
     self.tcpStringWithPushKit = nil;
     self.tlvFirstStr = nil;
     self.isPushKit = YES;
-    self.simDataString = nil;
+    self.simDataDict = nil;
     //创建网络电话服务
     [[UNSipEngineInitialize sharedInstance] initEngine];
     //解析并发送当前pushkit
-    if ([[servicePushKitData substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {
+    if ([[servicePushKitData[@"dataString"] substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {
         NSLog(@"发送01pushkit消息");
         self.receivePushKitDataFormServices = servicePushKitData;
         [self checkPacketDetailWithStringFromPushKit:servicePushKitData];
@@ -1894,35 +1964,51 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         //加载蓝牙手环
         //    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
         //    NSString *servicePushKitData = @"108A1000300CBDE7000E002A010100C72500090510000200033F007F206F740000A088000010A458F84D016BD7C2A75F6A752D6E0FD9";
-        if (self.simDataString) {
+        if (self.simDataDict) {
             NSLog(@"发送ReceivePushKitMessage通知");
+//            if (![BlueToothDataManager shareManager].isConnected) {
+//                NSLog(@"蓝牙设备未连接");
+//                [self.pushKitMsgQueue removeObjectAtIndex:0];
+//                self.simDataDict = nil;
+//            }
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
         }
     }
 }
 
-- (void)separatePushKitString:(NSString *)servicePushKitData
+- (void)clearTimeoutPushKitMessage
 {
-    if (servicePushKitData.length < 70) {
+    NSLog(@"清除超时数据");
+    if (self.pushKitMsgQueue.count) {
+        [self.pushKitMsgQueue removeObjectAtIndex:0];
+        self.simDataDict = nil;
+    }
+}
+
+- (void)separatePushKitString:(NSDictionary *)serviceData
+{
+    NSString *dataString = serviceData[@"dataString"];
+    if (dataString.length < 70) {
         return;
     }
-    NSString *classStr = [servicePushKitData substringWithRange:NSMakeRange(4, 2)];
+    NSString *classStr = [dataString substringWithRange:NSMakeRange(4, 2)];
     if ([classStr isEqualToString:@"10"]) {
         NSInteger leng;
         //        NSString *TLVdetail;
-        servicePushKitData = [servicePushKitData stringByReplacingCharactersInRange:NSMakeRange(4, 2) withString:@"90"];
-        self.tlvFirstStr = [servicePushKitData substringWithRange:NSMakeRange(0, 32)];
+        dataString = [dataString stringByReplacingCharactersInRange:NSMakeRange(4, 2) withString:@"90"];
+        self.tlvFirstStr = [dataString substringWithRange:NSMakeRange(0, 32)];
         NSLog(@"截取Pushkit消息前面的数据 -- %@", self.tlvFirstStr);
         
-        if ([[servicePushKitData substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"00"]) {
+        if ([[dataString substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"00"]) {
 //            00
-            NSString *lengthStr = [servicePushKitData substringWithRange:NSMakeRange(32, 2)];
+            NSString *lengthStr = [dataString substringWithRange:NSMakeRange(32, 2)];
             //74
             leng = strtoul([lengthStr UTF8String], 0, 16);
-            if (servicePushKitData.length >= (34+leng * 2)) {
-                self.simDataString = [servicePushKitData substringWithRange:NSMakeRange(34, leng * 2)];
+            if (dataString.length >= (34+leng * 2)) {
+//                self.simDataString = [dataString substringWithRange:NSMakeRange(34, leng * 2)];
+                self.simDataDict = @{@"time" : serviceData[@"time"], @"dataString" : [dataString substringWithRange:NSMakeRange(34, leng * 2)]};
             }
-            NSLog(@"两位leng = %zd  需要传入的字符串 -- %@", leng, self.simDataString);
+            NSLog(@"两位leng = %zd  需要传入的字符串 -- %@", leng, self.simDataDict);
         }
     }
 }
@@ -1944,5 +2030,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SendTcpDataFromPushKit" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CreateUDPSocketToBLE" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CreateTCPSocketToBLE" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PushKitMessageDataTimeout" object:nil];
 }
 @end

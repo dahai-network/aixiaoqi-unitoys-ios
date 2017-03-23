@@ -193,6 +193,7 @@
     [super viewDidLoad];
     
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    appDelegate.isAppAlreadyLoad = YES;
     self.isPushKitStatu = appDelegate.isPushKit;
     self.navigationItem.leftBarButtonItem = nil;
     
@@ -350,6 +351,7 @@
 
 #pragma mark 刷新卡状态
 - (void)refreshStatueToCard {
+    NSLog(@"刷新卡状态");
     if ([BlueToothDataManager shareManager].isConnected) {
         [BlueToothDataManager shareManager].bleStatueForCard = 0;
         //对卡上电
@@ -2865,8 +2867,13 @@
         [BlueToothDataManager shareManager].isTcpConnected = NO;
         [BlueToothDataManager shareManager].isRegisted = NO;
         [BlueToothDataManager shareManager].isBeingRegisting = NO;
-//        [self sendLBEMessageNoPushKit];
-        [[UNBlueToothTool shareBlueToothTool] sendLBEMessageNoPushKit];
+
+        if ([UNBlueToothTool shareBlueToothTool].isInitInstance) {
+            [[UNBlueToothTool shareBlueToothTool] sendLBEMessageNoPushKit];
+        }else{
+            [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+        }
+
         self.isUpdatedLBEInfo = YES;
     }
 }

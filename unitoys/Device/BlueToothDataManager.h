@@ -51,6 +51,7 @@
 @property (nonatomic, copy) NSString *deviceType;//需要绑定的设备类型
 @property (nonatomic, copy) NSString *connectedDeviceName;//连接上的设备类型名称
 @property (nonatomic, copy) NSString *boundedDeviceName;//已经绑定过的设备类型名称，手环解绑成功之后提示用
+@property (nonatomic, assign) BOOL isChangeSimCard; //是否换过SIM卡
 //@property (nonatomic, assign) BOOL isAccordTocheckCard;//是否主动查询是否有卡
 //@property (nonatomic, assign) int blutoothStatue;//蓝牙状态 0:蓝牙未开 1:蓝牙已开启但未连接 2: 蓝牙已连接但未绑定 3:蓝牙已绑定设备但未插卡 4:设备已插卡
 
