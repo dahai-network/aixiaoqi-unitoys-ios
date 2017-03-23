@@ -140,7 +140,7 @@
 
 - (IBAction)activationOrder:(id)sender {
     if ([BlueToothDataManager shareManager].isConnected) {
-        if ([BlueToothDataManager shareManager].isHaveCard) {
+        if ([BlueToothDataManager shareManager].isHaveCard && [[BlueToothDataManager shareManager].cardType isEqualToString:@"1"]) {
             //1.蓝牙连接之后才能走激活的接口
             [BlueToothDataManager shareManager].isShowHud = YES;
             HUDNoStop1(INTERNATIONALSTRING(@"正在激活..."))
@@ -156,12 +156,14 @@
                     [BlueToothDataManager shareManager].bleStatueForCard = 1;
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"list"][@"OrderID"]];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                    [BlueToothDataManager shareManager].isShowHud = NO;
                     HUDStop
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                     [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
                 }else{
                     //数据请求失败
                     HUDStop
+                    [BlueToothDataManager shareManager].isShowHud = NO;
                     //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
                     HUDNormal(responseObj[@"msg"])
                     [self.activityOrderButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
@@ -171,6 +173,7 @@
                 //
                 NSLog(@"啥都没：%@",[error description]);
                 HUDNormal(@"激活失败")
+                [BlueToothDataManager shareManager].isShowHud = NO;
                 [self.activityOrderButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
             } headers:self.headers];
         } else {

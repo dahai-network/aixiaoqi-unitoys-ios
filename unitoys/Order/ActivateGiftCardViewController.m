@@ -33,6 +33,8 @@
 @property (nonatomic, assign) NSNumber *IsSupport4G;
 //是否需要APN
 @property (nonatomic, assign) NSNumber *IsApn;
+//APN证书名称
+@property (nonatomic, copy)NSString *apnName;
 @end
 
 @implementation ActivateGiftCardViewController
@@ -75,6 +77,7 @@
     if (self.isPaySuccess) {
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
+    self.isPaySuccess = YES;
 }
 
 
@@ -100,6 +103,7 @@
             self.IsApn = responseObj[@"data"][@"list"][@"PackageIsApn"];
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
             self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
+            self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
             [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             
@@ -119,6 +123,7 @@
             self.IsApn = responseObj[@"data"][@"list"][@"PackageIsApn"];
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
             self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
+            self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
             [self.tableView reloadData];
         }else{
             HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
@@ -130,10 +135,11 @@
 - (void)rightButtonClick
 {
     NSLog(@"使用教程");
-    
+    self.isPaySuccess = NO;
     AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
     abroadVc.isSupport4G = [self.IsSupport4G boolValue];
     abroadVc.isApn = [self.IsApn boolValue];
+    abroadVc.apnName = self.apnName;
     [self .navigationController pushViewController:abroadVc animated:YES];
 }
 
@@ -473,7 +479,7 @@
         // 3.显示alertController:presentViewController
         [self presentViewController:alert animated:YES completion:nil];
     } else {
-        if ([[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue] == 1) {
+        if ([[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue] == 1 || [[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue] == 4) {
             //已激活
             [self activityOrderActivited];
         } else {
@@ -490,7 +496,7 @@
 
 - (void)activityOrderActivited {
     if ([BlueToothDataManager shareManager].isConnected) {
-        if ([BlueToothDataManager shareManager].isHaveCard) {
+        if ([BlueToothDataManager shareManager].isHaveCard && [[BlueToothDataManager shareManager].cardType isEqualToString:@"1"]) {
             //1.蓝牙连接之后才能走激活的接口
             [BlueToothDataManager shareManager].isShowHud = YES;
             HUDNoStop1(INTERNATIONALSTRING(@"正在激活..."))

@@ -43,6 +43,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(queryAmount) name:@"NeedRefreshInfo" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chargeConfrim) name:@"ChargeConfrim" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeDeviceStatue) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeDeviceStatue) name:@"boundSuccess" object:@"boundSuccess"];
+}
+
+- (void)changeDeviceStatue {
+    [self.tableView reloadData];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -229,11 +235,19 @@
 //    } else {
 //        return 10;
 //    }
-    //有闹钟时打开此方法
-    if (section == 3) {
-        return 0.01;
+    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        //有闹钟时打开此方法
+        if (section == 3) {
+            return 0.01;
+        } else {
+            return 10;
+        }
     } else {
-        return 10;
+        if (section == 2 || section == 3) {
+            return 0.01;
+        } else {
+            return 10;
+        }
     }
 }
 
@@ -273,10 +287,12 @@
         
     }else if(indexPath.section==2){
         //有闹钟时打开此行
-        return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
-        //有闹钟时注销此行
-//        return 0;
-        
+        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+            return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
+        } else {
+            //有闹钟时注销此行
+            return 0;
+        }
     }else if(indexPath.section==3){
         
         return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
@@ -305,5 +321,13 @@
             [self.navigationController pushViewController:profileViewController animated:YES];
         }
     }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"NeedRefreshAmount" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"NeedRefreshInfo" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ChargeConfrim" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
 }
 @end

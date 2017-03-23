@@ -52,7 +52,7 @@
     [self.ivPic sd_setImageWithURL:[NSURL URLWithString:[self.dicCountry objectForKey:@"Pic"]]];
     
     self.title = [self.dicCountry objectForKey:@"CountryName"];
-    
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载"))
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.CountryID,@"CountryID", nil];

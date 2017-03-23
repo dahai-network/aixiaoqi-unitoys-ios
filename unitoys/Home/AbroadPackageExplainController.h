@@ -11,4 +11,5 @@
 @interface AbroadPackageExplainController :BaseTableController
 @property (nonatomic,assign) BOOL isSupport4G;
 @property (nonatomic,assign) BOOL isApn;
+@property (nonatomic, copy) NSString *apnName;
 @end

@@ -92,6 +92,7 @@
     abroadVc.currentExplainType = ExplainTypeAbroad;
     abroadVc.isSupport4G = self.isSupport4G;
     abroadVc.isApn = self.isApn;
+    abroadVc.apnName = self.apnName;
     [self.navigationController pushViewController:abroadVc animated:YES];
 }
 
@@ -102,6 +103,7 @@
     abroadVc.currentExplainType = ExplainTypeInternal;
     abroadVc.isSupport4G = self.isSupport4G;
     abroadVc.isApn = self.isApn;
+    abroadVc.apnName = self.apnName;
     [self.navigationController pushViewController:abroadVc animated:YES];
 }
 

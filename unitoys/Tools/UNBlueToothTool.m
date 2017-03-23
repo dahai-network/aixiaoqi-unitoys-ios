@@ -764,6 +764,8 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].bleStatueForCard = 0;
     [BlueToothDataManager shareManager].isBeingRegisting = NO;
     [BlueToothDataManager shareManager].stepNumber = @"000";
+    [BlueToothDataManager shareManager].boundedDeviceName = [BlueToothDataManager shareManager].connectedDeviceName;
+    [BlueToothDataManager shareManager].connectedDeviceName = nil;
     if ([self.connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
     } else if ([self.connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
@@ -956,7 +958,9 @@ typedef enum : NSUInteger {
         [self phoneCardToUpeLectrify:@"01"];
     }
     //是否是能通知
-    [self checkUserConfig];
+    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        [self checkUserConfig];
+    }
     [self refreshBLEStatue];
 }
 
@@ -1274,6 +1278,7 @@ typedef enum : NSUInteger {
                         [self phoneCardToOutageNew];
                         //是大王卡
                         NSLog(@"是大王卡");
+                        [BlueToothDataManager shareManager].cardType = @"1";
                         [BlueToothDataManager shareManager].isRegisted = NO;
                         [BlueToothDataManager shareManager].isActivityCard = YES;
                         [BlueToothDataManager shareManager].bleStatueForCard = 1;
@@ -1284,6 +1289,7 @@ typedef enum : NSUInteger {
                         //对卡断电
                         [self phoneCardToOutageNew];
                         NSLog(@"不是大王卡");
+                        [BlueToothDataManager shareManager].cardType = @"2";
                         //判断是否有指定套餐，并创建连接
                         [BlueToothDataManager shareManager].bleStatueForCard = 2;
                         if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
@@ -1330,6 +1336,7 @@ typedef enum : NSUInteger {
                             NSLog(@"返回数据有问题");
                             [self hideHud];
                             [self showHudNormalString:INTERNATIONALSTRING(@"激活失败")];
+                            [BlueToothDataManager shareManager].isShowHud = NO;
                             
                             [self paySuccess];
                         }
@@ -1440,14 +1447,17 @@ typedef enum : NSUInteger {
             [self paySuccess];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderSuccess" object:@"actionOrderSuccess"];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [BlueToothDataManager shareManager].isShowHud = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
         }else{
             //数据请求失败
+            [BlueToothDataManager shareManager].isShowHud = NO;
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
         }
     } failure:^(id dataObj, NSError *error) {
+        [BlueToothDataManager shareManager].isShowHud = NO;
         NSLog(@"啥都没：%@",[error description]);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
     } headers:self.headers];

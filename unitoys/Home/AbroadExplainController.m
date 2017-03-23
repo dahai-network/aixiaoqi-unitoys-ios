@@ -283,7 +283,7 @@
 - (void)apnSettingAction
 {
     //访问描述文件
-    NSString *textURL = [NSString stringWithFormat:@"http://localhost:%@/aixiaoqi.mobileconfig", [BlueToothDataManager shareManager].localServicePort];
+    NSString *textURL = [NSString stringWithFormat:@"http://localhost:%@/%@.mobileconfig", [BlueToothDataManager shareManager].localServicePort, self.apnName];
     NSURL *cleanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@", textURL]];
     NSLog(@"访问的连接为 -- %@", cleanURL);
     if (kSystemVersionValue >= 10.0) {

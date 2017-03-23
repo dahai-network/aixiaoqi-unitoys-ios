@@ -137,7 +137,7 @@
                 break;
         }
     } else {
-        HUDNormal(@"请连接设备")
+        HUDNormal(INTERNATIONALSTRING(@"请连接蓝牙"))
         [self.tableView reloadData];
     }
 }
@@ -173,13 +173,16 @@
             [[UNBlueToothTool shareBlueToothTool] sendDataToCheckIsAllowToNotificationWithPhoneCall:[self.dataArr[0][@"status"] boolValue] Message:[self.dataArr[1][@"status"] boolValue] WeiChart:[self.dataArr[2][@"status"] boolValue] QQ:[self.dataArr[3][@"status"] boolValue]];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            [self.tableView reloadData];
         }else{
             //数据请求失败
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
             HUDNormal(responseObj[@"msg"])
+            [self.tableView reloadData];
         }
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"啥都没：%@",[error description]);
+        [self.tableView reloadData];
     } headers:self.headers];
 }
 

@@ -36,6 +36,7 @@
 @property (nonatomic, assign) BOOL isTcpConnected;//tcp是否连接成功
 @property (nonatomic, assign) BOOL isActivityCard;//是否点击激活大王卡操作
 @property (nonatomic, assign) BOOL isHaveCard;//判断是否有卡
+@property (nonatomic, copy) NSString *cardType;//卡类型，激活的时候用，1：爱小器卡，2：电话卡
 @property (nonatomic, assign) BOOL isBeingRegisting;//是否正在注册
 @property (nonatomic, copy) NSString *stepNumber;//记录注册的步数多少
 @property (nonatomic, assign) BOOL isShowHud;//激活大王卡的时候是否显示hud
@@ -49,6 +50,7 @@
 @property (nonatomic, assign) BOOL isAllowToBound;//是否同意绑定
 @property (nonatomic, copy) NSString *deviceType;//需要绑定的设备类型
 @property (nonatomic, copy) NSString *connectedDeviceName;//连接上的设备类型名称
+@property (nonatomic, copy) NSString *boundedDeviceName;//已经绑定过的设备类型名称，手环解绑成功之后提示用
 //@property (nonatomic, assign) BOOL isAccordTocheckCard;//是否主动查询是否有卡
 //@property (nonatomic, assign) int blutoothStatue;//蓝牙状态 0:蓝牙未开 1:蓝牙已开启但未连接 2: 蓝牙已连接但未绑定 3:蓝牙已绑定设备但未插卡 4:设备已插卡
 

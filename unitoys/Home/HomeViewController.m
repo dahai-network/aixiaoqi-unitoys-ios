@@ -410,7 +410,7 @@
         [UNBlueToothTool shareBlueToothTool].boundedDeviceInfo = nil;
     }
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        if ([[BlueToothDataManager shareManager].boundedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
             [self showAlertWithMessageUnbound:@"已解除绑定，请打开蓝牙设置界面忽略蓝牙设备"];
         }
     });
