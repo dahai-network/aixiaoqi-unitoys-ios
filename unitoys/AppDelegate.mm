@@ -901,16 +901,12 @@
             NSLog(@"两位leng = %zd  需要传入的字符串 -- %@", leng, TLVdetail);
             self.sessionIdToVSWSDK = TLVdetail;
             
-            if ([BlueToothDataManager shareManager].isConnected) {
-                if (self.isNeedRegister) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updataElectic" object:@"updataElectic"];//发送对卡上电通知
-                    //发送给sdk
-                    [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
-                }else{
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"AnalysisAuthData" object:TLVdetail];
-                }
+            if (self.isNeedRegister) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"updataElectic" object:@"updataElectic"];//发送对卡上电通知
+                //发送给sdk
+                [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
             }else{
-            
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"AnalysisAuthData" object:TLVdetail];
             }
 
             //发送给sdk

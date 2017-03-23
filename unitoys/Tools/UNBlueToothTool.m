@@ -81,6 +81,8 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) BOOL isInitInstance;//是否初始化过
 @property (nonatomic, assign) BOOL isPushKitStatu;//是否为PushKit
 
+@property (nonatomic, copy) NSString *normalAuthSimString;
+
 @end
 
 @implementation UNBlueToothTool
@@ -847,7 +849,7 @@ typedef enum : NSUInteger {
     }
 }
 
-
+#pragma mark 获取到外设特征
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)service error:(NSError *)error
 {
     // 遍历所有的特征
@@ -875,7 +877,15 @@ typedef enum : NSUInteger {
     }
     [BlueToothDataManager shareManager].isConnected = YES;
     
-    [self sendInitMessageToBLE];
+    if (self.normalAuthSimString) {
+        self.isQuickLoad = NO;
+        [self updataToCard];
+        [self sendDataToVSW:self.normalAuthSimString];
+        self.normalAuthSimString = nil;
+    }else{
+        [self sendInitMessageToBLE];
+    }
+    
 }
 
 //第一次发送蓝牙消息
@@ -949,10 +959,16 @@ typedef enum : NSUInteger {
 //解析鉴权数据
 - (void)analysisAuthDataWithString:(NSString *)string
 {
-    NSLog(@"解析鉴权数据");
-    self.isQuickLoad = NO;
-    [self updataToCard];
-    [self sendDataToVSW:string];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        NSLog(@"解析鉴权数据");
+        self.isQuickLoad = NO;
+        [self updataToCard];
+        [self sendDataToVSW:string];
+    }else{
+        self.normalAuthSimString = string;
+        [self checkBindedDeviceFromNet];
+    }
+
 }
 
 - (void)sendLBEMessageNoPushKit
