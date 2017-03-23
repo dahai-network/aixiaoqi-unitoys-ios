@@ -1016,9 +1016,6 @@ typedef enum : NSUInteger {
             [self phoneCardToUpeLectrify:@"01"];
         }
         //是否是能通知
-        [self checkUserConfig];
-        [self refreshBLEStatue];
-        //是否是能通知
         if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
             [self checkUserConfig];
         }
@@ -1367,7 +1364,7 @@ typedef enum : NSUInteger {
                             if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                     [BlueToothDataManager shareManager].isRegisted = NO;
-                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
+//                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
                                     NSLog(@"判断用户是否存在指定套餐");
                                     [self checkUserIsExistAppointPackage];
                                 });
@@ -1767,11 +1764,11 @@ typedef enum : NSUInteger {
                 dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
                 dispatch_async(global, ^{
                     if ([self.simtype isEqualToString:@"1"] || [self.simtype isEqualToString:@"2"]) {
-                        if ([BlueToothDataManager shareManager].isTcpConnected) {
+                        if ([BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isChangeSimCard) {
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
                         } else {
                             //                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
-                            
+                            [BlueToothDataManager shareManager].isChangeSimCard = NO;
                             [self updataToCard];
                             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                 [self sendICCIDMessage];
