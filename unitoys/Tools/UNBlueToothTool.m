@@ -635,7 +635,6 @@ typedef enum : NSUInteger {
                     [self showHudNormalString:INTERNATIONALSTRING(@"连接蓝牙设备才能正常使用")];
                 }
             }
-<<<<<<< Updated upstream
             [BlueToothDataManager shareManager].isOpened = NO;
             break;
         case CBManagerStatePoweredOn:
@@ -675,35 +674,6 @@ typedef enum : NSUInteger {
                         NSString *allDeviceStr = MYDEVICENAME;
                         if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
                             nameStr = MYDEVICENAMEUNITOYS;
-=======
-            //            NSArray *arr = [self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]];
-            if(self.pairedArr.count>0) {
-                NSLog(@"连接的配对设备 - %@", self.pairedArr);
-                for (CBPeripheral* peripheral in self.pairedArr) {
-                    NSString *nameStr = peripheral.name;
-                    NSString *allDeviceStr = MYDEVICENAME;
-                    if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
-                        nameStr = MYDEVICENAMEUNITOYS;
-                    }
-                    if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
-                        nameStr = MYDEVICENAMEUNIBOX;
-                    }
-                    if ([BlueToothDataManager shareManager].deviceType) {
-                        if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
-                            //手环
-                            allDeviceStr = MYDEVICENAMEUNITOYS;
-                        } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
-                            //钥匙扣
-                            allDeviceStr = MYDEVICENAMEUNIBOX;
-                        } else {
-                            NSLog(@"类型错了");
-                        }
-                    }
-                    if (peripheral != nil && [allDeviceStr containsString:nameStr.lowercaseString]) {
-                        //获取mac地址
-                        if (!self.boundedDeviceInfo[@"IMEI"] && peripheral.name.length > nameStr.length+1) {
-                            [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1].lowercaseString];
->>>>>>> Stashed changes
                         }
                         if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
                             nameStr = MYDEVICENAMEUNIBOX;
