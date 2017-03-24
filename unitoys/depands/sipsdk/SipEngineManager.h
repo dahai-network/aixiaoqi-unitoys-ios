@@ -54,7 +54,6 @@ typedef enum ScheduleNotificationType{
 } ScheduleNotificationType;
 
 @interface SipEngineManager : NSObject {
-    
 @private
 	SCNetworkReachabilityContext proxyReachabilityContext;
 	SCNetworkReachabilityRef proxyReachability;
@@ -69,6 +68,8 @@ typedef enum ScheduleNotificationType{
 	SipEventObserver *theEventObserver;
 
 	BOOL first_run_;
+    
+
 @public
 	Connectivity connectivity;
 }
@@ -103,4 +104,6 @@ typedef enum ScheduleNotificationType{
 @property (retain, nonatomic) NSTimer* vibrateTimer;
 @property (nonatomic, assign) int resignStatue;//电话注册状态
 
+
+@property (nonatomic, strong) NSTimer *repeatScheNotiTimer;
 @end

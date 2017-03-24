@@ -94,6 +94,9 @@
 
 //TCP是否为第一次连接
 //@property (nonatomic, assign) BOOL isTcpFristConnect;
+
+//是否已经进入过前台
+@property (nonatomic, assign) BOOL isAlreadyInForeground;
 @end
 
 @implementation AppDelegate
@@ -132,7 +135,7 @@
     
     
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -1401,12 +1404,16 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
     
     //进入前台重新注册
-    if (self.isPushKit) {
-        self.isPushKit = NO;
-        NSLog(@"进入前台");
-        [self.pushKitMsgQueue removeAllObjects];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+    if (!self.isAlreadyInForeground) {
+        if (self.isPushKit) {
+            self.isPushKit = NO;
+            NSLog(@"进入前台");
+            [self.pushKitMsgQueue removeAllObjects];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+        }
+        self.isAlreadyInForeground = YES;
     }
+
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 

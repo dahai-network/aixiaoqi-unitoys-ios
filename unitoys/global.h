@@ -319,5 +319,7 @@
 //蓝牙扫描时间
 #define BLESCANTIME 20
 
+
+#define LBEUUID @"F9D77679-66D1-15A7-1052-EAD426D72C61"
 /*
 #endif */

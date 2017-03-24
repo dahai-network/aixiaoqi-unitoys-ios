@@ -62,10 +62,26 @@ void SipEventObserver::OnNewCall(CallDir dir, const char *peer_caller, bool is_v
         if (kSystemVersionValue >= 10.0 && isUseCallKit) {
             
         }else{
+            isStop = NO;
             if ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)]
                 && [UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
                 /*程序在后台使用通知中心提示来电*/
                 [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (!isStop) {
+                          [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
+                    }
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        if (!isStop) {
+                              [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
+                        }
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            if (!isStop) {
+                                [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
+                            }
+                        });
+                    });
+                });
             }else{
                 /*前台模式，播放声音或震动*/
                 //大于10.0通过系统调用
@@ -98,6 +114,7 @@ void SipEventObserver::OnNewCall(CallDir dir, const char *peer_caller, bool is_v
              withVideo:is_video_call];
     }
 }
+
 
 void SipEventObserver::startVibrate() {
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
@@ -216,6 +233,7 @@ void SipEventObserver::OnCallEnded(){
     
     if ([UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
 		// cancel local notif if needed
+        NSLog(@"取消全部通知");
 		[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	}
 }
@@ -234,6 +252,10 @@ void SipEventObserver::OnCallFailed(CallErrorCode status){
 	}
 
     if ([UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
+        if (_repeatTimer) {
+            [_repeatTimer invalidate];
+            _repeatTimer = nil;
+        }
 		// cancel local notif if needed
 		[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	}

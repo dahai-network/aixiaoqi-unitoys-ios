@@ -251,6 +251,17 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
     return theSipEngine;
 }
 
+//- (void)repeatScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
+//{
+//    _repeatScheNotiTimer = [NSTimer timerWithTimeInterval:10 repeats:YES block:^(NSTimer * _Nonnull timer) {
+//        [self doScheduleNotification:from types:type content:content];
+//    }];
+//}
+//
+//+ (void)stopRepeatSchedule
+//{
+//    
+//}
 
 +(void)doScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
 {
@@ -262,8 +273,8 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
     if ([oldNotifications count] > 0)
         [theApp cancelAllLocalNotifications];
     
-    NSDate *fireDate = [NSDate dateWithTimeInterval:1 sinceDate:[NSDate dateWithTimeIntervalSinceNow:0]];
-    
+    NSDate *fireDate = [NSDate dateWithTimeInterval:0.1 sinceDate:[NSDate dateWithTimeIntervalSinceNow:0]];
+//    NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
     if (alarm)
     {
         alarm.fireDate = fireDate;

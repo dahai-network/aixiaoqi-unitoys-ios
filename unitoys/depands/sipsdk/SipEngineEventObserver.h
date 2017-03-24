@@ -1,6 +1,7 @@
 #import "common_types.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import <Foundation/Foundation.h>
 
 #import "global.h"
 
@@ -14,6 +15,7 @@ public:
 	~SipEventObserver();
     AVAudioPlayer *ringPlayer;
     BOOL isStop;//是否停止
+    NSTimer *_repeatTimer;
 	
 public:/*引擎状态回调*/
 	virtual void OnSipEngineState(SipEngineState code);
@@ -70,4 +72,5 @@ public:
 
 private:
 	SipEngineManager *sip_engine_manager_;
+    
 };

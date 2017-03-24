@@ -96,7 +96,9 @@
 - (void)changeStatueAll:(NSNotification *)sender {
     self.hintStrFirst = sender.object;
     if (![BlueToothDataManager shareManager].isBeingRegisting) {
-        self.lblStatue.text = INTERNATIONALSTRING(self.hintStrFirst);
+        if (![self.lblStatue.text containsString:INTERNATIONALSTRING(self.hintStrFirst)]) {
+            self.lblStatue.text = INTERNATIONALSTRING(self.hintStrFirst);
+        }
         NSLog(@"状态改变 --> %@ %@", self.hintStrFirst, self.lblStatue.text);
     }
     if (![self.hintStrFirst isEqualToString:HOMESTATUETITLE_REGISTING]) {
