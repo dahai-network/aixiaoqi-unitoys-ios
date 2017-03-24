@@ -62,7 +62,20 @@
     
     //接收重新登入通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloginAction) name:@"reloginNotify" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appIsKilled) name:@"appIsKilled" object:@"appIsKilled"];
 
+}
+
+#pragma mark app被杀死，注销电话
+- (void)appIsKilled {
+    navHomeViewController *navPhoneViewController = [self.childViewControllers objectAtIndex:1];
+    PhoneViewController *phoneViewController = [[PhoneViewController alloc] init];
+    phoneViewController = [navPhoneViewController.childViewControllers objectAtIndex:0];
+    
+    if (phoneViewController) {
+        [phoneViewController unregister];  //注销电话登入账号
+        NSLog(@"电话注销了");
+    }
 }
 
 - (void)reloginAction {
@@ -90,10 +103,10 @@
         }
     }
     
-    navHomeViewController *navPhoneViewController = [self.childViewControllers objectAtIndex:1];
-    PhoneViewController *phoneViewController = [[PhoneViewController alloc] init];
-    phoneViewController = [navPhoneViewController.childViewControllers objectAtIndex:0];
-    
+//    navHomeViewController *navPhoneViewController = [self.childViewControllers objectAtIndex:1];
+//    PhoneViewController *phoneViewController = [[PhoneViewController alloc] init];
+//    phoneViewController = [navPhoneViewController.childViewControllers objectAtIndex:0];
+//    
 //    if (phoneViewController) {
 //        [phoneViewController unregister];  //注销电话登入账号
 //    }
@@ -164,6 +177,7 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"jumpToSport" object:@"jump"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"jumpToMessage" object:@"jumpToMessage"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"appIsKilled" object:@"appIsKilled"];
 }
 
 @end

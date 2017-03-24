@@ -53,6 +53,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"disconnectTCP" object:@"disconnectTCP"];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"appIsKilled" object:@"appIsKilled"];
     }];
     [alertVC addAction:cancelAction];
     [alertVC addAction:certailAction];
