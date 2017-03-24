@@ -878,6 +878,15 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].isConnected = YES;
     
     if (self.normalAuthSimString) {
+        //告诉蓝牙是苹果设备
+        [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
+        //同步时间
+        [self checkNowTime];
+        //请求基本信息
+//        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+        //请求电量
+//        [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
+
         self.isQuickLoad = NO;
         [self updataToCard];
         [self sendDataToVSW:self.normalAuthSimString];
@@ -1930,10 +1939,11 @@ typedef enum : NSUInteger {
             [self getBasicHeader];
             NSLog(@"表演头：%@",self.headers);
             
+            NSDictionary *saveData = @{@"data":info, @"status" : @1};
             [SSNetworkRequest postRequest:apiBind params:info success:^(id responseObj) {
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
                     NSLog(@"绑定结果：%@", responseObj);
-                    [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:responseObj];
+                    [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:saveData];
                     
                     //绑定成功之后再绑定蓝牙
                     if (self.strongestRssiPeripheral) {
@@ -1953,14 +1963,14 @@ typedef enum : NSUInteger {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"connectFail" object:@"connectFail"];
                 }
             } failure:^(id dataObj, NSError *error) {
-                NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiDeviceBracelet"];
-                if (responseObj) {
-                    if (self.strongestRssiPeripheral) {
-                        self.peripheral = self.strongestRssiPeripheral;
-                        [self.mgr connectPeripheral:self.peripheral options:nil];
-                    }
-                    [BlueToothDataManager shareManager].isBounded = YES;
-                }
+//                NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiDeviceBracelet"];
+//                if (responseObj) {
+//                    if (self.strongestRssiPeripheral) {
+//                        self.peripheral = self.strongestRssiPeripheral;
+//                        [self.mgr connectPeripheral:self.peripheral options:nil];
+//                    }
+//                    [BlueToothDataManager shareManager].isBounded = YES;
+//                }
                 NSLog(@"啥都没：%@",[error description]);
             } headers:self.headers];
         } else {
