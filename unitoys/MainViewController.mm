@@ -94,9 +94,9 @@
     PhoneViewController *phoneViewController = [[PhoneViewController alloc] init];
     phoneViewController = [navPhoneViewController.childViewControllers objectAtIndex:0];
     
-    if (phoneViewController) {
-        [phoneViewController unregister];  //注销电话登入账号
-    }
+//    if (phoneViewController) {
+//        [phoneViewController unregister];  //注销电话登入账号
+//    }
 }
 
 - (void)selectedSport {

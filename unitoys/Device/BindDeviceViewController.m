@@ -368,6 +368,16 @@
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 NSLog(@"解除绑定结果：%@", responseObj);
+                
+                //将连接的信息存储到本地
+                NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+                NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+                if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+                    [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
+                }
+                [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
                 if ([[BlueToothDataManager shareManager].boundedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
                     HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))
                 }
@@ -480,7 +490,7 @@
             return 44;
         }
     } else {
-        NSLog(@"连接的设备类型有问题");
+        NSLog(@"连接的设备类型有问题 %@", [BlueToothDataManager shareManager].connectedDeviceName);
         return 44;
     }
 }
