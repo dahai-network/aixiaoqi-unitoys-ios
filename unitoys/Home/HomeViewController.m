@@ -195,8 +195,10 @@
     self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
     self.navigationItem.leftBarButtonItem = nil;
     
+    if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+        [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+    }
     kWeakSelf
-    [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
     [UNBlueToothTool shareBlueToothTool].updateButtonImageAndTitleBlock = ^(NSString *title){
         [weakSelf setButtonImageAndTitleWithTitle:title];
     };
