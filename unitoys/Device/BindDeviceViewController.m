@@ -10,6 +10,7 @@
 #import "BlueToothDataManager.h"
 #import "WaterIdentifyView.h"
 #import "UIImage+GIF.h"
+#import "WristbandSettingViewController.h"
 
 @interface BindDeviceViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *lblStatue;
@@ -17,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *relieveBoundButton;
 @property (nonatomic, strong)NSTimer *timer;
 @property (weak, nonatomic) IBOutlet UIImageView *disconnectedImageView;
+@property (nonatomic, assign) BOOL isNeedToPushNextVC;
 
 @end
 
@@ -82,7 +84,10 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    if (!self.isNeedToPushNextVC) {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+        self.isNeedToPushNextVC = NO;
+    }
 }
 
 - (void)boundDeviceFail {
@@ -244,7 +249,7 @@
         }
         self.customView.hidden = NO;
         NSString *num = [BlueToothDataManager shareManager].electricQuantity;
-        CGFloat a = (float)[num intValue]/100;
+        CGFloat a = (float)[num intValue]/100.00;
         self.customView.percent = a;
         //        self.hintLabel.hidden = YES;
 //        if ([BlueToothDataManager shareManager].lastChargTime) {
@@ -493,7 +498,11 @@
         }
     } else {
         NSLog(@"连接的设备类型有问题 %@", [BlueToothDataManager shareManager].connectedDeviceName);
-        return 44;
+        if (indexPath.section == 1 && indexPath.row == 0) {
+            return 0;
+        } else {
+            return 44;
+        }
     }
 }
 
@@ -520,6 +529,11 @@
             }
         }
         if (indexPath.row == 1) {
+            self.isNeedToPushNextVC = YES;
+            WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
+            [self.navigationController pushViewController:wristbandSettingVC animated:YES];
+        }
+        if (indexPath.row == 2) {
             if ([BlueToothDataManager shareManager].isConnected) {
                 if (!self.isBeingNet) {
                     [self otaDownload];

@@ -230,25 +230,26 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     //有闹钟时注销此方法
-//    if (section == 3 || section == 2) {
-//        return 0.01;
-//    } else {
-//        return 10;
-//    }
-    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-        //有闹钟时打开此方法
-        if (section == 3) {
-            return 0.01;
-        } else {
-            return 10;
-        }
+    if (section == 3 || section == 2) {
+        return 0.01;
     } else {
-        if (section == 2 || section == 3) {
-            return 0.01;
-        } else {
-            return 10;
-        }
+        return 10;
     }
+    
+//    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+//        //有闹钟时打开此方法
+//        if (section == 3) {
+//            return 0.01;
+//        } else {
+//            return 10;
+//        }
+//    } else {
+//        if (section == 2 || section == 3) {
+//            return 0.01;
+//        } else {
+//            return 10;
+//        }
+//    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -287,12 +288,13 @@
         
     }else if(indexPath.section==2){
         //有闹钟时打开此行
-        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-            return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
-        } else {
-            //有闹钟时注销此行
-            return 0;
-        }
+//        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+//            return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
+//        } else {
+//            //有闹钟时注销此行
+//            return 0;
+//        }
+        return 0;
     }else if(indexPath.section==3){
         
         return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
