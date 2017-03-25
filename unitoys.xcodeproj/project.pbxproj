@@ -135,6 +135,7 @@
 		3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D81E65754000931B20 /* MessagePhoneDetailCell.xib */; };
 		3CCA72DE1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */; };
 		3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */; };
+		3CD0C8A01E864BDB00ABD21B /* UNPushKitMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */; };
 		3CD9134C1E70E59F00434465 /* UNBLEDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD913471E70E59F00434465 /* UNBLEDataManager.m */; };
 		3CD9134D1E70E59F00434465 /* UNGetSimData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD913491E70E59F00434465 /* UNGetSimData.m */; };
 		3CD9134E1E70E59F00434465 /* UNSimCardAuthenticationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */; };
@@ -550,6 +551,8 @@
 		3CCA72DB1E6576E300931B20 /* MessagePhoneDetailHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailHeaderCell.h; sourceTree = "<group>"; };
 		3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailHeaderCell.m; sourceTree = "<group>"; };
 		3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessagePhoneDetailHeaderCell.xib; sourceTree = "<group>"; };
+		3CD0C89E1E864BDB00ABD21B /* UNPushKitMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPushKitMessageManager.h; sourceTree = "<group>"; };
+		3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPushKitMessageManager.m; sourceTree = "<group>"; };
 		3CD913461E70E59F00434465 /* UNBLEDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNBLEDataManager.h; sourceTree = "<group>"; };
 		3CD913471E70E59F00434465 /* UNBLEDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNBLEDataManager.m; sourceTree = "<group>"; };
 		3CD913481E70E59F00434465 /* UNGetSimData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNGetSimData.h; sourceTree = "<group>"; };
@@ -1143,6 +1146,8 @@
 				3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */,
 				3CE5CC861E7F63F100FCEA81 /* UNBlueToothTool.h */,
 				3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */,
+				3CD0C89E1E864BDB00ABD21B /* UNPushKitMessageManager.h */,
+				3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -2159,6 +2164,7 @@
 				952B2B021DC229E0006A7C69 /* MJMessage.m in Sources */,
 				95938D411D93ABF0008A0A21 /* PackageDetailViewController.m in Sources */,
 				95BAED651D87A5D4005A6402 /* BaseViewController.m in Sources */,
+				3CD0C8A01E864BDB00ABD21B /* UNPushKitMessageManager.m in Sources */,
 				0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */,
 				952B2AEE1DC224F4006A7C69 /* UIImage+Extension.m in Sources */,
 				04F7279B1E641CE4002EB54C /* DDASLLogger.m in Sources */,

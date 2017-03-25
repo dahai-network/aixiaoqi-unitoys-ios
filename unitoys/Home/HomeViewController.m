@@ -32,11 +32,10 @@
 #import "ChooseDeviceTypeViewController.h"
 
 #import "UNCreatLocalNoti.h"
-#import "AppDelegate.h"
-//#import "UNGetSimData.h"
-//#import "UNBLEDataManager.h"
+//#import "AppDelegate.h"
 
 #import "UNBlueToothTool.h"
+#import "UNPushKitMessageManager.h"
 
 //#import "AbroadMessageController.h"
 
@@ -192,9 +191,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    appDelegate.isAppAlreadyLoad = YES;
-    self.isPushKitStatu = appDelegate.isPushKit;
+    [UNPushKitMessageManager shareManager].isAppAlreadyLoad = YES;
+    self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
     self.navigationItem.leftBarButtonItem = nil;
     
     kWeakSelf
@@ -2862,7 +2860,8 @@
         self.isPushKitStatu = NO;
 //        self.isQuickLoad = NO;
         [[UNBlueToothTool shareBlueToothTool] setPushKitStatu:NO];
-        [[UNBlueToothTool shareBlueToothTool] setQuickLoadStatu:NO];
+//        [[UNBlueToothTool shareBlueToothTool] setQuickLoadStatu:NO];
+        [UNPushKitMessageManager shareManager].isQuickLoad = NO;
         [BlueToothDataManager shareManager].bleStatueForCard = 0;
         [BlueToothDataManager shareManager].isTcpConnected = NO;
         [BlueToothDataManager shareManager].isRegisted = NO;

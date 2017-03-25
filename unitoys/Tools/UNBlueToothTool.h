@@ -94,8 +94,6 @@ typedef void(^PaySuccessBlock)();
 - (void)sendBLECardDataWithValidData:(NSString *)data;
 //检查是否绑定
 - (void)checkDeviceIsBound;
-//设置是否快速加载
-- (void)setQuickLoadStatu:(BOOL)isQuickLoad;
 //设置是否PushKit
 - (void)setPushKitStatu:(BOOL)isPushKit;
 //正常加载

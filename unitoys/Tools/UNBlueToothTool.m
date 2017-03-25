@@ -12,10 +12,10 @@
 #import "global.h"
 #import "SSNetworkRequest.h"
 #import <CommonCrypto/CommonDigest.h>
-#import "AppDelegate.h"
 #import "UNSimCardAuthenticationModel.h"
 #import "UNBLEDataManager.h"
 #import "UNGetSimData.h"
+#import "UNPushKitMessageManager.h"
 
 //app发送给蓝牙
 typedef enum : NSUInteger {
@@ -62,21 +62,21 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) BOOL checkToken;
 @property (nonatomic, strong) NSMutableDictionary *headers;
 
-@property (nonatomic, copy) NSDictionary *simDataDict;
-@property (nonatomic, assign) BOOL isHasSimType;
-@property (nonatomic, copy) NSString *simTypeData;
+//@property (nonatomic, copy) NSDictionary *simDataDict;
+//@property (nonatomic, assign) BOOL isHasSimType;
+//@property (nonatomic, copy) NSString *simTypeData;
 @property (nonatomic, strong) UNSimCardAuthenticationModel *authenticationModel;
 @property (nonatomic, assign) NSInteger maxSendCount;
 @property (nonatomic, assign) NSInteger currentSendIndex;
 @property (nonatomic, strong) NSMutableArray *needSendDatas;
 
 @property (nonatomic, strong)NSString *connectedDeviceName;//连接的设备名称（用于区分连接的是什么设备）
-@property (nonatomic, assign) NSInteger sendICCIDIndex;//当前发送ICCID序号
-@property (nonatomic, copy) NSArray *sendICCIDCommands;//ICCID命令数组
+//@property (nonatomic, assign) NSInteger sendICCIDIndex;//当前发送ICCID序号
+//@property (nonatomic, copy) NSArray *sendICCIDCommands;//ICCID命令数组
 
-@property (nonatomic, copy) NSString *iccidString;
-@property (nonatomic, assign) BOOL isQuickLoad;//是否快速加载
-@property (nonatomic, assign) BOOL isNeedRegister;//是否需要重新注册
+//@property (nonatomic, copy) NSString *iccidString;
+//@property (nonatomic, assign) BOOL isQuickLoad;//是否快速加载
+//@property (nonatomic, assign) BOOL isNeedRegister;//是否需要重新注册
 
 @property (nonatomic, assign) BOOL isInitInstance;//是否初始化过
 @property (nonatomic, assign) BOOL isPushKitStatu;//是否为PushKit
@@ -87,23 +87,12 @@ typedef enum : NSUInteger {
 
 @implementation UNBlueToothTool
 
-- (void)setQuickLoadStatu:(BOOL)isQuickLoad
-{
-    _isQuickLoad = isQuickLoad;
-}
-
 - (void)setPushKitStatu:(BOOL)isPushKit
 {
     _isPushKitStatu = isPushKit;
 }
 
-- (NSArray *)sendICCIDCommands
-{
-    if (!_sendICCIDCommands) {
-        _sendICCIDCommands = [NSArray array];
-    }
-    return _sendICCIDCommands;
-}
+
 
 - (NSMutableArray *)needSendDatas
 {
@@ -154,8 +143,7 @@ typedef enum : NSUInteger {
     }
     NSLog(@"初始化蓝牙");
     self.isInitInstance = YES;
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    self.isPushKitStatu = appDelegate.isPushKit;
+    self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
     
     [BlueToothDataManager shareManager].bleStatueForCard = 0;
     self.macAddressDict = [NSMutableDictionary new];
@@ -807,9 +795,7 @@ typedef enum : NSUInteger {
 #pragma mark 跟某个外设失去连接
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
-    self.isNeedRegister = NO;
-    AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    appdelegate.isNeedRegister = NO;
+    [UNPushKitMessageManager shareManager].isNeedRegister = NO;
     
     NSLog(@"跟外设失去连接");
     //    [BlueToothDataManager shareManager].isRegisted = NO;
@@ -930,7 +916,7 @@ typedef enum : NSUInteger {
     if (self.normalAuthSimString) {
         [self sendLBEConnectData];
 
-        self.isQuickLoad = NO;
+        [UNPushKitMessageManager shareManager].isQuickLoad = NO;
         [self updataToCard];
         [self sendDataToVSW:self.normalAuthSimString];
         self.normalAuthSimString = nil;
@@ -943,15 +929,13 @@ typedef enum : NSUInteger {
 //第一次发送蓝牙消息
 - (void)sendInitMessageToBLE
 {
-    AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    if (appdelegate.isPushKit) {
+    if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
         NSLog(@"发送pushkit消息到蓝牙");
-        if (appdelegate.pushKitMsgType == PushKitMessageTypeSimDisconnect) {
+        if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect) {
             NSLog(@"SIM断开连接消息类型");
             [self sendLBEMessageNoPushKit];
         }else{
-            if (appdelegate.simDataDict) {
-                self.simDataDict = appdelegate.simDataDict;
+            if ([UNPushKitMessageManager shareManager].simDataDict) {
                 [self sendLBEMessageWithPushKit];
             }else{
                 [self sendLBEConnectData];
@@ -987,24 +971,23 @@ typedef enum : NSUInteger {
         
         [self sendLBEConnectData];
         
-        self.isQuickLoad = YES;
+        [UNPushKitMessageManager shareManager].isQuickLoad = YES;
         //对卡上电
         NSLog(@"对卡上电03");
         [self phoneCardToUpeLectrify:@"03"];
         
-        if (self.simDataDict[@"time"]) {
-            NSString *timeString = self.simDataDict[@"time"];
+        if ([UNPushKitMessageManager shareManager].simDataDict[@"time"]) {
+            NSString *timeString = [UNPushKitMessageManager shareManager].simDataDict[@"time"];
             CGFloat dataTime = [timeString doubleValue];
             NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
             NSTimeInterval timeValue = [dataDate timeIntervalSinceNow];
             NSLog(@"时间差为---%f", timeValue);
             if (timeValue > 15.0) {
                 NSLog(@"时间太久,丢弃当前数据");
-                self.simDataDict = nil;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"PushKitMessageDataTimeout" object:nil];
             }else{
                 NSLog(@"在规定时间内发送数据");
-                [self sendDataToVSW:self.simDataDict[@"dataString"]];
+                [self sendDataToVSW:[UNPushKitMessageManager shareManager].simDataDict[@"dataString"]];
             }
         }
         
@@ -1019,7 +1002,7 @@ typedef enum : NSUInteger {
 {
     if ([BlueToothDataManager shareManager].isConnected) {
         NSLog(@"解析鉴权数据");
-        self.isQuickLoad = NO;
+        [UNPushKitMessageManager shareManager].isQuickLoad = NO;
         [self updataToCard];
         [self sendDataToVSW:string];
     }else{
@@ -1033,7 +1016,7 @@ typedef enum : NSUInteger {
 {
     NSLog(@"sendLBEMessageNoPushKit");
     if ([BlueToothDataManager shareManager].isConnected) {
-        self.isQuickLoad = NO;
+        [UNPushKitMessageManager shareManager].isQuickLoad = NO;
         
         [self sendLBEConnectData];
         
@@ -1084,16 +1067,16 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].isRegisted = NO;
     [BlueToothDataManager shareManager].isBeingRegisting = YES;
     [BlueToothDataManager shareManager].bleStatueForCard = 2;
-    self.sendICCIDCommands = @[@"a0a40000023f00",@"a0a40000022fe2",@"a0c000000f",@"a0b000000a"];
-    self.sendICCIDIndex = 0;
-    [self sendICCIDCommand:self.sendICCIDIndex];
+    [UNPushKitMessageManager shareManager].sendICCIDCommands = @[@"a0a40000023f00",@"a0a40000022fe2",@"a0c000000f",@"a0b000000a"];
+    [UNPushKitMessageManager shareManager].sendICCIDIndex = 0;
+    [self sendICCIDCommand:[UNPushKitMessageManager shareManager].sendICCIDIndex];
 }
 
 //发送ICCID指令
 - (void)sendICCIDCommand:(NSInteger)index
 {
-    if (index < self.sendICCIDCommands.count) {
-        [self sendMessageToBLEWithType:BLECardData validData:self.sendICCIDCommands[index]];
+    if (index < [UNPushKitMessageManager shareManager].sendICCIDCommands.count) {
+        [self sendMessageToBLEWithType:BLECardData validData:[UNPushKitMessageManager shareManager].sendICCIDCommands[index]];
     }
 }
 
@@ -1306,31 +1289,31 @@ typedef enum : NSUInteger {
                                 }
                             }
                             NSLog(@"最终发送的数据包字符为：%@", self.totalString);
-                            if (self.sendICCIDIndex < self.sendICCIDCommands.count) {
-                                self.sendICCIDIndex++;
-                                if (self.sendICCIDIndex == self.sendICCIDCommands.count) {
+                            if ([UNPushKitMessageManager shareManager].sendICCIDIndex < [UNPushKitMessageManager shareManager].sendICCIDCommands.count) {
+                                [UNPushKitMessageManager shareManager].sendICCIDIndex++;
+                                if ([UNPushKitMessageManager shareManager].sendICCIDIndex == [UNPushKitMessageManager shareManager].sendICCIDCommands.count) {
                                     //判断本地是否存在ICCID
-                                    self.iccidString = [self getIccidWithString:self.totalString];
+                                    [UNPushKitMessageManager shareManager].iccidString = [self getIccidWithString:self.totalString];
                                     
-                                    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[self.iccidString lowercaseString]];
-                                    NSLog(@"iccid======%@", self.iccidString);
+                                    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
+                                    NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
                                     if (dict) {
                                         //创建tcp,建立连接
-                                        [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:self.iccidString];
+                                        [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
                                     }else{
                                         //创建udp,初始化操作
-                                        self.isNeedRegister = YES;
+                                        [UNPushKitMessageManager shareManager].isNeedRegister = YES;
                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
                                     }
-                                    self.sendICCIDCommands = nil;
-                                    self.sendICCIDIndex = 0;
+                                    [UNPushKitMessageManager shareManager].sendICCIDCommands = nil;
+                                    [UNPushKitMessageManager shareManager].sendICCIDIndex = 0;
                                     //对卡断电
                                     [self downElectToCard];
                                 }else{
-                                    [self sendICCIDCommand:self.sendICCIDIndex];
+                                    [self sendICCIDCommand:[UNPushKitMessageManager shareManager].sendICCIDIndex];
                                 }
                             }else{
-                                if (self.isNeedRegister) {
+                                if ([UNPushKitMessageManager shareManager].isNeedRegister) {
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDtaaPacket" object:self.totalString];
                                 }else{
                                     if (self.needSendDatas.count > self.currentSendIndex) {
@@ -1477,9 +1460,7 @@ typedef enum : NSUInteger {
                     case 0:
                     {
                         NSLog(@"卡状态改变 -- 无卡");
-                        self.isNeedRegister = NO;
-                        AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-                        appdelegate.isNeedRegister = NO;
+                        [UNPushKitMessageManager shareManager].isNeedRegister = NO;
                         [BlueToothDataManager shareManager].isHaveCard = NO;
                         [BlueToothDataManager shareManager].isBeingRegisting = NO;
                         [BlueToothDataManager shareManager].isChangeSimCard = YES;
@@ -1615,16 +1596,16 @@ typedef enum : NSUInteger {
     if (model.simTypePrefix.length == 4) {
         NSString *simType = [model.simTypePrefix substringFromIndex:2];
         if ([simType isEqualToString:@"88"]) {
-            self.isHasSimType = YES;
-            self.simTypeData = @"C0";
+            [UNPushKitMessageManager shareManager].isHasSimType = YES;
+            [UNPushKitMessageManager shareManager].simTypeData = @"C0";
         }else{
             NSArray *simArray = @[@"C0",@"B0",@"B2",@"F2",@"12"];
             if ([simArray containsObject:simType.uppercaseString]) {
-                self.isHasSimType = YES;
-                self.simTypeData = simType;
+                [UNPushKitMessageManager shareManager].isHasSimType = YES;
+                [UNPushKitMessageManager shareManager].simTypeData = simType;
             }else{
-                self.isHasSimType = NO;
-                self.simTypeData = nil;
+                [UNPushKitMessageManager shareManager].isHasSimType = NO;
+                [UNPushKitMessageManager shareManager].simTypeData = nil;
             }
         }
     }
@@ -1693,8 +1674,8 @@ typedef enum : NSUInteger {
     
     //卡类型
     NSString *simtTypeStr;
-    if (self.isHasSimType && self.simTypeData) {
-        simtTypeStr = self.simTypeData;
+    if ([UNPushKitMessageManager shareManager].isHasSimType && [UNPushKitMessageManager shareManager].simTypeData) {
+        simtTypeStr = [UNPushKitMessageManager shareManager].simTypeData;
     }
     
     //卡类型返回的数据(短数据,只有a088时才有)
@@ -1782,7 +1763,7 @@ typedef enum : NSUInteger {
 //将组合的数据发送到tcp服务器
 - (void)sendTcpString:(NSString *)string
 {
-    if (self.isQuickLoad) {
+    if ([UNPushKitMessageManager shareManager].isQuickLoad) {
         NSLog(@"SendTcpDataFromPushKit");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"SendTcpDataFromPushKit" object:nil userInfo:@{@"tcpString" : string}];
     }else{
@@ -1790,11 +1771,9 @@ typedef enum : NSUInteger {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDataStr" object:string];
     }
     self.authenticationModel = nil;
-    self.simDataDict = nil;
+    [UNPushKitMessageManager shareManager].simDataDict = nil;
     [self.needSendDatas removeAllObjects];
     self.currentSendIndex = 0;
-    AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    appdelegate.simDataDict = nil;
 }
 
 #pragma mark 判断用户是否存在指定套餐
