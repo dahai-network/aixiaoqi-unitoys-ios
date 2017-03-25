@@ -234,6 +234,7 @@ void SipEventObserver::OnCallEnded(){
     
     if ([UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
 		// cancel local notif if needed
+        [[SipEngineManager instance] stopScheNotiTimer];
         NSLog(@"取消全部通知");
 		[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	}

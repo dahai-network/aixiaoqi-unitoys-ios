@@ -76,7 +76,7 @@ typedef enum ScheduleNotificationType{
 
 +(SipEngineManager*) instance;
 +(SipEngine*) getSipEngine;
--(void)doScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content;
+-(void)doScheduleNotification:(NSString*)from types:(NSInteger)type content:(NSString*)content;
 
 -(void)Init;
 -(void)LoadConfig;
@@ -108,6 +108,6 @@ typedef enum ScheduleNotificationType{
 @property (nonatomic, strong) NSTimer *repeatScheNotiTimer;
 
 - (void)repeatScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content;
-- (void)repeatScheNotiAction;
+- (void)stopScheNotiTimer;
 
 @end

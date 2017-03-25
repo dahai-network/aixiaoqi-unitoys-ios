@@ -126,7 +126,7 @@
         NSMutableArray *locationListArr = [NSMutableArray array];
         if (locationListArrData) {
             locationListArr = [NSKeyedUnarchiver unarchiveObjectWithData:locationListArrData];
-            NSLog(@"存储在本地的定位信息 -- %@", locationListArr);
+//            NSLog(@"存储在本地的定位信息 -- %@", locationListArr);
         }
         if (locationListArr.count) {
             //有存储数据

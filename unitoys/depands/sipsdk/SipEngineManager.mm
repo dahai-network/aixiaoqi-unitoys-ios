@@ -253,19 +253,38 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
 
 - (void)repeatScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
 {
-    kWeakSelf
-    _repeatScheNotiTimer = [NSTimer timerWithTimeInterval:10 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        [weakSelf doScheduleNotification:from types:type content:content];
-    }];
+    NSInteger typeValue;
+    if (type == kNotifyAudioCall) {
+        typeValue = 0;
+    }else if (type == kNotifyVideoCall){
+        typeValue = 1;
+    }else if (type == kNotifyTextMessage){
+        typeValue = 2;
+    }
+    
+    _repeatScheNotiTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(doScheduleNotification:) userInfo:@{@"from" : from, @"type" : [NSNumber numberWithInteger:typeValue], @"content" : content ? content : @""} repeats:YES];
+    [_repeatScheNotiTimer fire];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self stopScheNotiTimer];
+    });
 }
 
 - (void)stopScheNotiTimer
 {
-    [_repeatScheNotiTimer invalidate];
-    _repeatScheNotiTimer = nil;
+    if (self.repeatScheNotiTimer) {
+        [_repeatScheNotiTimer invalidate];
+        _repeatScheNotiTimer = nil;
+    }
 }
 
--(void)doScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
+- (void)doScheduleNotification:(NSTimer *)timer
+{
+    NSDictionary *userInfo = timer.userInfo;
+    [self doScheduleNotification:userInfo[@"from"] types:[userInfo[@"type"] integerValue] content:userInfo[@"content"]];
+}
+
+-(void)doScheduleNotification:(NSString*)from types:(NSInteger)type content:(NSString*)content
 {
     UILocalNotification* alarm = [[UILocalNotification alloc] init];
     
@@ -316,12 +335,12 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
             }
         }
         
-        if (type == kNotifyAudioCall) {
+        if (type == 0) {
             //incoming call
 //            alertBody =[NSString  stringWithFormat:@"%@ %@", NSLocalizedString(@"Incoming Call",@""),from];
             alertBody =[NSString  stringWithFormat:@"%@ %@", NSLocalizedString(@"新来电",@""),from];
             alarm.alertAction = NSLocalizedString(@"Answer",@"");
-        } else if (type == kNotifyVideoCall){
+        } else if (type == 1){
             alertBody =[NSString  stringWithFormat:NSLocalizedString(@"Incoming Video Call %@",@""),from];
             alarm.alertAction = NSLocalizedString(@"Answer",@"");
         }
@@ -335,7 +354,7 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
         alarm.hasAction = YES;
 //        alarm.soundName = @"default.wav";
         NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [NSNumber numberWithInt:type],    @"type",
+                              [NSNumber numberWithInteger:type],    @"type",
                               from,                             @"from",
                               nil];
         [alarm setUserInfo:dict];

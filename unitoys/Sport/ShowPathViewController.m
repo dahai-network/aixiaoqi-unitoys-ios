@@ -39,7 +39,7 @@
     _locationMutableArray = [NSMutableArray array];
     if (locationListArrData) {
         _locationMutableArray = [NSKeyedUnarchiver unarchiveObjectWithData:locationListArrData];
-        NSLog(@"存储在本地的定位信息 -- %@", _locationMutableArray);
+//        NSLog(@"存储在本地的定位信息 -- %@", _locationMutableArray);
     }
     [self showPath];
     
