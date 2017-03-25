@@ -251,19 +251,21 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
     return theSipEngine;
 }
 
-//- (void)repeatScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
-//{
-//    _repeatScheNotiTimer = [NSTimer timerWithTimeInterval:10 repeats:YES block:^(NSTimer * _Nonnull timer) {
-//        [self doScheduleNotification:from types:type content:content];
-//    }];
-//}
-//
-//+ (void)stopRepeatSchedule
-//{
-//    
-//}
+- (void)repeatScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
+{
+    kWeakSelf
+    _repeatScheNotiTimer = [NSTimer timerWithTimeInterval:10 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        [weakSelf doScheduleNotification:from types:type content:content];
+    }];
+}
 
-+(void)doScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
+- (void)stopScheNotiTimer
+{
+    [_repeatScheNotiTimer invalidate];
+    _repeatScheNotiTimer = nil;
+}
+
+-(void)doScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
 {
     UILocalNotification* alarm = [[UILocalNotification alloc] init];
     

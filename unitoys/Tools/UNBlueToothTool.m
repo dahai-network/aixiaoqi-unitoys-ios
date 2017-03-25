@@ -729,11 +729,7 @@ typedef enum : NSUInteger {
                     }
                 } else {
                     NSLog(@"没有配对设备");
-                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-                        //在前台
-                        NSLog(@"执行在前台的连接方法");
-                        [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
-                    } else if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
                         //在后台
                         NSLog(@"执行在后台的连接方法");
                         NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
@@ -753,7 +749,11 @@ typedef enum : NSUInteger {
                             [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
                         }
                     } else {
-                        NSLog(@"这是什么模式？既不是前台，也不是后台");
+//                        NSLog(@"这是什么模式？既不是前台，也不是后台");
+                        //在前台
+                        NSLog(@"执行在前台或遮罩的连接方法");
+//                        [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
+                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
                     }
                 }
             });
@@ -768,7 +768,6 @@ typedef enum : NSUInteger {
 #pragma mark 连接到某个外设的时候调用
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
-    
     [self.mgr stopScan];
     [self.timer setFireDate:[NSDate distantFuture]];
     peripheral.delegate = self;
