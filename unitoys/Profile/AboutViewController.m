@@ -13,6 +13,7 @@
 #import "BlueToothDataManager.h"
 #import "ChooseDeviceTypeViewController.h"
 #import "WristbandSettingViewController.h"
+#import "PurviewSettingViewController.h"
 
 #define CELLHEIGHT 44
 
@@ -180,9 +181,19 @@
         }
     }
     if (indexPath.section == 2) {
+        
+        PurviewSettingViewController *purviewSettingVC = [[PurviewSettingViewController alloc] init];
+        [self.navigationController pushViewController:purviewSettingVC animated:YES];
+        
+//        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]]) {
+//            //打开app设置界面
+//            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+//        } else {
+//            NSLog(@"打不开");
+//        }
 //        HUDNormal(@"手环设置")
-        WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
-        [self.navigationController pushViewController:wristbandSettingVC animated:YES];
+//        WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
+//        [self.navigationController pushViewController:wristbandSettingVC animated:YES];
 //        AlarmListViewController *alarmListVC;
 //        switch (indexPath.row) {
 //            case 0:
@@ -230,7 +241,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     //有闹钟时注销此方法
-    if (section == 3 || section == 2) {
+    if (section == 3) {
         return 0.01;
     } else {
         return 10;
@@ -294,7 +305,8 @@
 //            //有闹钟时注销此行
 //            return 0;
 //        }
-        return 0;
+//        return 0;
+        return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
     }else if(indexPath.section==3){
         
         return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;

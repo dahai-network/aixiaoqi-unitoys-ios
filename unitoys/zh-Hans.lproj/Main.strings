@@ -93,7 +93,7 @@
 "Icg-WE-vyi.text" = "已购套餐";
 
 /* Class = "UILabel"; text = "手环闹钟"; ObjectID = "JAv-Nd-PC8"; */
-"JAv-Nd-PC8.text" = "手环设置";
+"JAv-Nd-PC8.text" = "权限设置";
 
 /* Class = "UITabBarItem"; title = "通讯录"; ObjectID = "KAi-Bz-db3"; */
 "KAi-Bz-db3.title" = "通讯录";

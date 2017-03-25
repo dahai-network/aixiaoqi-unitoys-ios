@@ -129,7 +129,7 @@
     
     
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -193,13 +193,17 @@
     //判断定位权限
     if([UIApplication sharedApplication].backgroundRefreshStatus == UIBackgroundRefreshStatusDenied)
     {
-        alert = [[UIAlertView alloc]initWithTitle:INTERNATIONALSTRING(@"提示") message:INTERNATIONALSTRING(@"应用没有开启后台定位功能，需要在在设置->通用->后台应用刷新开启") delegate:nil cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil];
-        [alert show];
+        if (!alert) {
+            alert = [[UIAlertView alloc]initWithTitle:INTERNATIONALSTRING(@"提示") message:INTERNATIONALSTRING(@"应用没有开启后台定位功能，需要在设置->通用->后台应用刷新开启") delegate:nil cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil];
+            [alert show];
+        }
     }
     else if ([UIApplication sharedApplication].backgroundRefreshStatus == UIBackgroundRefreshStatusRestricted)
     {
-        alert = [[UIAlertView alloc]initWithTitle:INTERNATIONALSTRING(@"提示") message:INTERNATIONALSTRING(@"设备不可以定位") delegate:nil cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil];
-        [alert show];
+        if (!alert) {
+            alert = [[UIAlertView alloc]initWithTitle:INTERNATIONALSTRING(@"提示") message:INTERNATIONALSTRING(@"设备不可以定位") delegate:nil cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil];
+            [alert show];
+        }
     }
     else
     {

@@ -18,7 +18,7 @@
 @property (nonatomic, copy) NSString *versionNumber;//固件版本
 @property (nonatomic, copy) NSString *deviceMacAddress;//设备mac地址
 @property (nonatomic, copy) NSString *electricQuantity;//设备电量
-@property (nonatomic, assign) int chargingState;//充电状态 00:没有充电 01:正在充电 02:充满电了
+@property (nonatomic, assign) int chargingState;//充电状态 1:未充电 2:正在充电 3:充电完成
 @property (nonatomic, copy) NSString *lastChargTime;//上次充电时间
 @property (nonatomic, copy) NSString *movingTarget;//目标步数
 @property (nonatomic, copy) NSString *distance;//距离

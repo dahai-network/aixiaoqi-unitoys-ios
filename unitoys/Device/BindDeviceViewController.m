@@ -54,6 +54,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cardNumberNotTrueActionForBind:) name:@"cardNumberNotTrue" object:nil];//号码有问题专用
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatueAll:) name:@"changeStatueAll" object:nil];//状态改变
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(boundDeviceFail) name:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];//绑定钥匙扣的时候如果没有点击确认绑定就会发送此通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chargeStatueChanged) name:@"chargeStatuChanged" object:@"chargeStatuChanged"];//充电状态改变了
     // Do any additional setup after loading the view.
 }
 
@@ -87,6 +88,31 @@
     if (!self.isNeedToPushNextVC) {
         [self.navigationController popToRootViewControllerAnimated:YES];
         self.isNeedToPushNextVC = NO;
+    }
+}
+
+- (void)chargeStatueChanged {
+    [self addElectricQue];
+}
+
+- (void)checkChargeStatue {
+    switch ([BlueToothDataManager shareManager].chargingState) {
+        case 1:
+            self.customView.labelStr = @"剩余电量";
+            NSLog(@"剩余电量");
+            break;
+        case 2:
+            self.customView.labelStr = @"正在充电";
+            NSLog(@"正在充电");
+            break;
+        case 3:
+            self.customView.labelStr = @"充电完成";
+            NSLog(@"充电完成");
+            break;
+        default:
+            self.customView.labelStr = @"剩余电量";
+            NSLog(@"充电状态有问题");
+            break;
     }
 }
 
@@ -242,6 +268,7 @@
         self.macAddress.hidden = NO;
         self.versionNumber.text = [BlueToothDataManager shareManager].versionNumber;
         self.macAddress.text = [BlueToothDataManager shareManager].deviceMacAddress;
+        [self checkChargeStatue];
         if (!self.customView) {
             self.customView = [[WaterIdentifyView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2) - 50, 13, 100, 100)];
             self.customView.showBgLineView = YES;
@@ -400,6 +427,7 @@
                 [BlueToothDataManager shareManager].stepNumber = nil;
                 [BlueToothDataManager shareManager].bleStatueForCard = 0;
                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                [BlueToothDataManager shareManager].chargingState = 1;
                 if (self.customView) {
                     self.customView.hidden = YES;
                 }
@@ -491,14 +519,14 @@
     if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
         return 44;
     } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
-        if (indexPath.section == 1 && indexPath.row == 0) {
+        if (indexPath.section == 1 && (indexPath.row == 0 || indexPath.row == 1)) {
             return 0;
         } else {
             return 44;
         }
     } else {
         NSLog(@"连接的设备类型有问题 %@", [BlueToothDataManager shareManager].connectedDeviceName);
-        if (indexPath.section == 1 && indexPath.row == 0) {
+        if (indexPath.section == 1 && (indexPath.row == 0 || indexPath.row == 1)) {
             return 0;
         } else {
             return 44;
@@ -521,27 +549,54 @@
         }
     }
     if (indexPath.section == 1) {
-        if (indexPath.row == 0) {
-            if ([BlueToothDataManager shareManager].isConnected) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"searchMyBluetooth" object:@"searchMyBluetooth"];
-            } else {
-                HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
-            }
-        }
-        if (indexPath.row == 1) {
-            self.isNeedToPushNextVC = YES;
-            WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
-            [self.navigationController pushViewController:wristbandSettingVC animated:YES];
-        }
-        if (indexPath.row == 2) {
-            if ([BlueToothDataManager shareManager].isConnected) {
-                if (!self.isBeingNet) {
-                    [self otaDownload];
+        switch (indexPath.row) {
+            case 0:
+                if ([BlueToothDataManager shareManager].isConnected) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"searchMyBluetooth" object:@"searchMyBluetooth"];
+                } else {
+                    HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
                 }
-            } else {
-                HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
+                break;
+            case 1:
+            {
+                self.isNeedToPushNextVC = YES;
+                WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
+                [self.navigationController pushViewController:wristbandSettingVC animated:YES];
+                break;
             }
+            case 2:
+                if ([BlueToothDataManager shareManager].isConnected) {
+                    if (!self.isBeingNet) {
+                        [self otaDownload];
+                    }
+                } else {
+                    HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
+                }
+                break;
+            default:
+                break;
         }
+//        if (indexPath.row == 0) {
+//            if ([BlueToothDataManager shareManager].isConnected) {
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"searchMyBluetooth" object:@"searchMyBluetooth"];
+//            } else {
+//                HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
+//            }
+//        }
+//        if (indexPath.row == 1) {
+//            self.isNeedToPushNextVC = YES;
+//            WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
+//            [self.navigationController pushViewController:wristbandSettingVC animated:YES];
+//        }
+//        if (indexPath.row == 2) {
+//            if ([BlueToothDataManager shareManager].isConnected) {
+//                if (!self.isBeingNet) {
+//                    [self otaDownload];
+//                }
+//            } else {
+//                HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
+//            }
+//        }
     }
 }
 

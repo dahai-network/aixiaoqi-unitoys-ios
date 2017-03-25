@@ -60,6 +60,7 @@
     _scaleMargin = -10;
     _waveMargin = 18;
     _showBgLineView = NO;
+    self.labelStr = INTERNATIONALSTRING(@"剩余电量");
     
     [self initDrawingRects];
     
@@ -249,7 +250,7 @@
     
     NSMutableAttributedString *attriButedText = [self formatBatteryLevel:_percent * 100];
     CGRect textSize = [attriButedText boundingRectWithSize:CGSizeMake(400, 10000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
-    NSMutableAttributedString *attriLabelText = [self formatLabel:INTERNATIONALSTRING(@"剩余电量")];
+    NSMutableAttributedString *attriLabelText = [self formatLabel:self.labelStr];
     CGRect labelSize = [attriLabelText boundingRectWithSize:CGSizeMake(400, 10000) options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading context:nil];
     
     CGPoint textPoint = CGPointMake(fullRect.size.width / 2 - textSize.size.width / 2, fullRect.size.height / 2 - textSize.size.height / 2 - labelSize.size.height / 2);

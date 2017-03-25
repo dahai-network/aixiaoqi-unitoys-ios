@@ -811,6 +811,7 @@ typedef enum : NSUInteger {
     [BlueToothDataManager shareManager].stepNumber = @"000";
     [BlueToothDataManager shareManager].boundedDeviceName = [BlueToothDataManager shareManager].connectedDeviceName;
     [BlueToothDataManager shareManager].connectedDeviceName = nil;
+    [BlueToothDataManager shareManager].chargingState = 1;
     if ([self.connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
     } else if ([self.connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
@@ -1029,7 +1030,7 @@ typedef enum : NSUInteger {
             if (!self.boundedDeviceInfo[@"IMEI"]) {
                 //发送绑定请求
                 [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
-                [self showHudNormalTop1String:INTERNATIONALSTRING(@"请点击钥匙扣按钮确认绑定")];
+                [self showHudNormalTop1String:INTERNATIONALSTRING(@"请点击双待王按钮确认绑定")];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     if (![BlueToothDataManager shareManager].isAllowToBound) {
                         [self hideHud];
@@ -1182,6 +1183,8 @@ typedef enum : NSUInteger {
                 NSLog(@"接收到充电状态数据");
                 int chargeStatue = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
                 NSLog(@"充电状态 --> %d", chargeStatue);
+                [BlueToothDataManager shareManager].chargingState = chargeStatue;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"chargeStatuChanged" object:@"chargeStatuChanged"];
                 switch (chargeStatue) {
                     case 1:
                         NSLog(@"未充电");
@@ -1387,6 +1390,7 @@ typedef enum : NSUInteger {
                         [self phoneCardToOutageNew];
                         NSLog(@"不是大王卡");
                         [BlueToothDataManager shareManager].cardType = @"2";
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
                         //判断是否有指定套餐，并创建连接
                         [BlueToothDataManager shareManager].bleStatueForCard = 2;
                         if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {

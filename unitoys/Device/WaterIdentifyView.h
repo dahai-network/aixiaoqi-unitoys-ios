@@ -54,4 +54,6 @@
  */
 @property (nonatomic, readwrite, assign) BOOL showBgLineView;
 
+@property (nonatomic, copy) NSString *labelStr;//电量下面的文字
+
 @end
