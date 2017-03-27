@@ -75,6 +75,7 @@
     
     //无线数据权限（联网权限）
     [self checkNetWorkPurving];
+    [self.tableView reloadData];
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -87,24 +88,54 @@
     }
     CLAuthorizationStatus CLstatus = [CLLocationManager authorizationStatus];
     switch (CLstatus) {
-        case kCLAuthorizationStatusAuthorizedAlways: NSLog(@"定位权限 --> Always Authorized"); break;
-        case kCLAuthorizationStatusAuthorizedWhenInUse: NSLog(@"定位权限 --> AuthorizedWhenInUse"); break;
-        case kCLAuthorizationStatusDenied: NSLog(@"定位权限 --> Denied"); break;
-        case kCLAuthorizationStatusNotDetermined: NSLog(@"定位权限 --> not Determined"); break;
-        case kCLAuthorizationStatusRestricted: NSLog(@"定位权限 --> Restricted"); break;
-        default: break;
+        case kCLAuthorizationStatusAuthorizedAlways:
+            NSLog(@"定位权限 --> 始终开启 Always Authorized");
+            [self.dataArr[0] setObject:@"始终开启" forKey:@"status"];
+            break;
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
+            NSLog(@"定位权限 --> 使用时开启 AuthorizedWhenInUse");
+            [self.dataArr[0] setObject:@"使用时开启" forKey:@"status"];
+            break;
+        case kCLAuthorizationStatusDenied:
+            NSLog(@"定位权限 --> 关闭 Denied");
+            [self.dataArr[0] setObject:@"关闭" forKey:@"status"];
+            break;
+        case kCLAuthorizationStatusNotDetermined:
+            NSLog(@"定位权限 --> 未授权 not Determined");
+            [self.dataArr[0] setObject:@"未授权" forKey:@"status"];
+            break;
+        case kCLAuthorizationStatusRestricted:
+            NSLog(@"定位权限 --> 无权限 Restricted");
+            [self.dataArr[0] setObject:@"无权限" forKey:@"status"];
+            break;
+        default:
+            break;
     }
+    
 }
 
 #pragma mark iOS 9之前通讯录权限
 - (void)checkAddressBookPurvingBeforeIOS9 {
     ABAuthorizationStatus ABstatus = ABAddressBookGetAuthorizationStatus();
     switch (ABstatus) {
-        case kABAuthorizationStatusAuthorized: NSLog(@"iOS9之前通讯录权限 --> Authorized"); break;
-        case kABAuthorizationStatusDenied: NSLog(@"iOS9之前通讯录权限 --> Denied"); break;
-        case kABAuthorizationStatusNotDetermined: NSLog(@"iOS9之前通讯录权限 --> not Determined"); break;
-        case kABAuthorizationStatusRestricted: NSLog(@"iOS9之前通讯录权限 --> Restricted"); break;
-        default: break;
+        case kABAuthorizationStatusAuthorized:
+            NSLog(@"iOS9之前通讯录权限 --> 开启 Authorized");
+            [self.dataArr[1] setObject:@"开启" forKey:@"status"];
+            break;
+        case kABAuthorizationStatusDenied:
+            NSLog(@"iOS9之前通讯录权限 --> 关闭 Denied");
+            [self.dataArr[1] setObject:@"关闭" forKey:@"status"];
+            break;
+        case kABAuthorizationStatusNotDetermined:
+            NSLog(@"iOS9之前通讯录权限 --> 未授权 not Determined");
+            [self.dataArr[1] setObject:@"未授权" forKey:@"status"];
+            break;
+        case kABAuthorizationStatusRestricted:
+            NSLog(@"iOS9之前通讯录权限 --> 无权限 Restricted");
+            [self.dataArr[1] setObject:@"无权限" forKey:@"status"];
+            break;
+        default:
+            break;
     }
 }
 
@@ -112,21 +143,51 @@
 - (void)checkAddressBookPurvingOnIOS9AndLater {
     CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
     switch (status) {
-        case CNAuthorizationStatusAuthorized: { NSLog(@"iOS9之后通讯录权限 --> Authorized:"); } break;
-        case CNAuthorizationStatusDenied:{ NSLog(@"iOS9之后通讯录权限 --> Denied"); } break;
-        case CNAuthorizationStatusRestricted:{ NSLog(@"iOS9之后通讯录权限 --> Restricted"); } break;
-        case CNAuthorizationStatusNotDetermined:{ NSLog(@"iOS9之后通讯录权限 --> NotDetermined"); } break; }
+        case CNAuthorizationStatusAuthorized: {
+            NSLog(@"iOS9之后通讯录权限 --> 开启 Authorized:");
+            [self.dataArr[1] setObject:@"开启" forKey:@"status"];
+        }
+            break;
+        case CNAuthorizationStatusDenied:{
+            NSLog(@"iOS9之后通讯录权限 --> 关闭 Denied");
+            [self.dataArr[1] setObject:@"关闭" forKey:@"status"];
+        }
+            break;
+        case CNAuthorizationStatusRestricted:{
+            NSLog(@"iOS9之后通讯录权限 --> 无权限 Restricted");
+            [self.dataArr[1] setObject:@"无权限" forKey:@"status"];
+        }
+            break;
+        case CNAuthorizationStatusNotDetermined:{
+            NSLog(@"iOS9之后通讯录权限 --> 未授权 NotDetermined");
+            [self.dataArr[1] setObject:@"未授权" forKey:@"status"];
+        }
+        break;
+    }
 }
 
 #pragma mark 相册权限
 - (void)checkPhotoPurving {
     PHAuthorizationStatus photoAuthorStatus = [PHPhotoLibrary authorizationStatus];
     switch (photoAuthorStatus) {
-        case PHAuthorizationStatusAuthorized: NSLog(@"相册权限 --> Authorized"); break;
-        case PHAuthorizationStatusDenied: NSLog(@"相册权限 --> Denied"); break;
-        case PHAuthorizationStatusNotDetermined: NSLog(@"相册权限 --> not Determined"); break;
-        case PHAuthorizationStatusRestricted: NSLog(@"相册权限 --> Restricted"); break;
-        default: break;
+        case PHAuthorizationStatusAuthorized:
+            NSLog(@"相册权限 --> 开启 Authorized");
+            [self.dataArr[2] setObject:@"开启" forKey:@"status"];
+            break;
+        case PHAuthorizationStatusDenied:
+            NSLog(@"相册权限 --> 关闭 Denied");
+            [self.dataArr[2] setObject:@"关闭" forKey:@"status"];
+            break;
+        case PHAuthorizationStatusNotDetermined:
+            NSLog(@"相册权限 --> 未授权 not Determined");
+            [self.dataArr[2] setObject:@"未授权" forKey:@"status"];
+            break;
+        case PHAuthorizationStatusRestricted:
+            NSLog(@"相册权限 --> 无权限 Restricted");
+            [self.dataArr[2] setObject:@"无权限" forKey:@"status"];
+            break;
+        default:
+            break;
     }
 }
 
@@ -135,14 +196,27 @@
     AVAuthorizationStatus AVMicrophonestatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];//麦克风权限
     switch (AVMicrophonestatus) {
             //允许状态
-        case AVAuthorizationStatusAuthorized: NSLog(@"麦克风权限 --> Authorized"); break;
+        case AVAuthorizationStatusAuthorized:
+            NSLog(@"麦克风权限 --> 开启 Authorized");
+            [self.dataArr[3] setObject:@"开启" forKey:@"status"];
+            break;
             //不允许状态，可以弹出一个alertview提示用户在隐私设置中开启权限
-        case AVAuthorizationStatusDenied: NSLog(@"麦克风权限 --> Denied"); break;
+        case AVAuthorizationStatusDenied:
+            NSLog(@"麦克风权限 --> 关闭 Denied");
+            [self.dataArr[3] setObject:@"关闭" forKey:@"status"];
+            break;
             //未知，第一次申请权限
-        case AVAuthorizationStatusNotDetermined: NSLog(@"麦克风权限 --> not Determined"); break;
+        case AVAuthorizationStatusNotDetermined:
+            NSLog(@"麦克风权限 --> 未授权 not Determined");
+            [self.dataArr[3] setObject:@"未授权" forKey:@"status"];
+            break;
             //此应用程序没有被授权访问,可能是家长控制权限
-        case AVAuthorizationStatusRestricted: NSLog(@"麦克风权限 --> Restricted"); break;
-        default: break;
+        case AVAuthorizationStatusRestricted:
+            NSLog(@"麦克风权限 --> 无权限 Restricted");
+            [self.dataArr[3] setObject:@"无权限" forKey:@"status"];
+            break;
+        default:
+            break;
     }
 }
 
@@ -151,34 +225,53 @@
     AVAuthorizationStatus AVCamerastatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];//相机权限
     switch (AVCamerastatus) {
             //允许状态
-        case AVAuthorizationStatusAuthorized: NSLog(@"相机权限 --> Authorized"); break;
+        case AVAuthorizationStatusAuthorized:
+            NSLog(@"相机权限 --> 开启 Authorized");
+            [self.dataArr[4] setObject:@"开启" forKey:@"status"];
+            break;
             //不允许状态，可以弹出一个alertview提示用户在隐私设置中开启权限
-        case AVAuthorizationStatusDenied: NSLog(@"相机权限 --> Denied"); break;
+        case AVAuthorizationStatusDenied:
+            NSLog(@"相机权限 --> 关闭 Denied");
+            [self.dataArr[4] setObject:@"关闭" forKey:@"status"];
+            break;
             //未知，第一次申请权限
-        case AVAuthorizationStatusNotDetermined: NSLog(@"相机权限 --> not Determined"); break;
+        case AVAuthorizationStatusNotDetermined:
+            NSLog(@"相机权限 --> 未授权 not Determined");
+            [self.dataArr[4] setObject:@"未授权" forKey:@"status"];
+            break;
             //此应用程序没有被授权访问,可能是家长控制权限
-        case AVAuthorizationStatusRestricted: NSLog(@"相机权限 --> Restricted"); break;
-        default: break;
+        case AVAuthorizationStatusRestricted:
+            NSLog(@"相机权限 --> 无权限 Restricted");
+            [self.dataArr[4] setObject:@"无权限" forKey:@"status"];
+            break;
+        default:
+            break;
     }
 }
 
 #pragma mark 通知权限
 - (void)checkNotificationPurving {
-    UIUserNotificationType type = [[UIApplication sharedApplication] currentUserNotificationSettings].types;
-    switch (type) {
+    UIUserNotificationType notifiType = [[UIApplication sharedApplication] currentUserNotificationSettings].types;
+    switch (notifiType) {
         case UIUserNotificationTypeNone:
             NSLog(@"通知权限 --> UIUserNotificationTypeNone");
+            [self.dataArr[5] setObject:@"关闭" forKey:@"status"];
             break;
         case UIUserNotificationTypeBadge:
             NSLog(@"通知权限 --> UIUserNotificationTypeBadge");
+            [self.dataArr[5] setObject:@"应用图标标记" forKey:@"status"];
             break;
         case UIUserNotificationTypeSound:
             NSLog(@"通知权限 --> UIUserNotificationTypeSound");
+            [self.dataArr[5] setObject:@"声音" forKey:@"status"];
             break;
         case UIUserNotificationTypeAlert:
             NSLog(@"通知权限 --> UIUserNotificationTypeAlert");
+            [self.dataArr[5] setObject:@"通知中心显示" forKey:@"status"];
             break;
         default:
+            NSLog(@"通知权限 --> 这是什么鬼类型 %lu", (unsigned long)notifiType);
+            [self.dataArr[5] setObject:@"允许通知" forKey:@"status"];
             break;
     }
 }
@@ -186,9 +279,16 @@
 #pragma mark 后台应用刷新权限
 - (void)checkRefreshBackgroundPurving {
     if ([UIApplication sharedApplication].backgroundRefreshStatus == UIBackgroundRefreshStatusDenied) {
-        NSLog(@"后台应用刷新权限 --> 已开启");
+        NSLog(@"后台应用刷新权限 --> 关闭 UIBackgroundRefreshStatusDenied");
+        [self.dataArr[6] setObject:@"关闭" forKey:@"status"];
+    } else if ([UIApplication sharedApplication].backgroundRefreshStatus == UIBackgroundRefreshStatusRestricted) {
+        NSLog(@"后台应用刷新权限 --> 无权限 UIBackgroundRefreshStatusRestricted");
+        [self.dataArr[6] setObject:@"无权限" forKey:@"status"];
+    } else if ([UIApplication sharedApplication].backgroundRefreshStatus == UIBackgroundRefreshStatusAvailable) {
+        NSLog(@"后台应用刷新权限 --> 开启 UIBackgroundRefreshStatusAvailable");
+        [self.dataArr[6] setObject:@"开启" forKey:@"status"];
     } else {
-        NSLog(@"后台应用刷新权限 --> 未开启");
+        NSLog(@"后台应用刷新权限 --> 未知类型");
     }
 }
 
@@ -199,11 +299,21 @@
     { //获取联网状态
         switch (state)
         {
-        case kCTCellularDataRestricted: NSLog(@"无线数据权限 --> Restricrted"); break;
-        case kCTCellularDataNotRestricted: NSLog(@"无线数据权限 --> Not Restricted"); break;
+        case kCTCellularDataRestricted:
+                NSLog(@"无线数据权限 --> 关闭 Restricrted");
+                [self.dataArr[7] setObject:@"关闭" forKey:@"status"];
+                break;
+        case kCTCellularDataNotRestricted:
+                NSLog(@"无线数据权限 --> 开启 Not Restricted");
+                [self.dataArr[7] setObject:@"开启" forKey:@"status"];
+                break;
             //未知，第一次请求
-        case kCTCellularDataRestrictedStateUnknown: NSLog(@"无线数据权限 --> Unknown"); break;
-        default: break;
+        case kCTCellularDataRestrictedStateUnknown:
+                NSLog(@"无线数据权限 --> 未授权 Unknown");
+                [self.dataArr[7] setObject:@"未授权" forKey:@"status"];
+                break;
+        default:
+                break;
         };
     };
 }

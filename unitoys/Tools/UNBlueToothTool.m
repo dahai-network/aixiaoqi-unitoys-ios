@@ -717,32 +717,48 @@ typedef enum : NSUInteger {
                     }
                 } else {
                     NSLog(@"没有配对设备");
-                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
-                        //在后台
-                        NSLog(@"执行在后台的连接方法");
-                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-                            if (arr.count) {
-                                self.peripheral = arr[0];
-                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
-                            }
+                    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+                    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+                    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+                        NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
+                        if (arr.count) {
+                            self.peripheral = arr[0];
+                            NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
                         }
-                        if (self.peripheral) {
-                            NSLog(@"存在连接过的外围设备");
-                            [self.mgr connectPeripheral:self.peripheral options:nil];
-                        } else {
-                            NSLog(@"不存在连接过的外围设备");
-                            [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
-                        }
+                    }
+                    if (self.peripheral) {
+                        NSLog(@"存在连接过的外围设备");
+                        [self.mgr connectPeripheral:self.peripheral options:nil];
                     } else {
-//                        NSLog(@"这是什么模式？既不是前台，也不是后台");
-                        //在前台
-                        NSLog(@"执行在前台或遮罩的连接方法");
-//                        [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
+                        NSLog(@"不存在连接过的外围设备");
                         [self.mgr scanForPeripheralsWithServices:nil options:nil];
                     }
+//                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+//                        //在后台
+//                        NSLog(@"执行在后台的连接方法");
+//                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+//                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+//                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+//                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
+//                            if (arr.count) {
+//                                self.peripheral = arr[0];
+//                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+//                            }
+//                        }
+//                        if (self.peripheral) {
+//                            NSLog(@"存在连接过的外围设备");
+//                            [self.mgr connectPeripheral:self.peripheral options:nil];
+//                        } else {
+//                            NSLog(@"不存在连接过的外围设备");
+//                            [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
+//                        }
+//                    } else {
+////                        NSLog(@"这是什么模式？既不是前台，也不是后台");
+//                        //在前台
+//                        NSLog(@"执行在前台或遮罩的连接方法");
+////                        [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
+//                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
+//                    }
                 }
             });
         }
@@ -765,6 +781,31 @@ typedef enum : NSUInteger {
     [boundedDeviceInfo setObject:[peripheral.identifier UUIDString] forKey:userdata[@"Tel"]];
     [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSString *nameStr = peripheral.name;
+    NSString *allDeviceStr = MYDEVICENAME;
+    if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
+        nameStr = MYDEVICENAMEUNITOYS;
+    }
+    if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
+        nameStr = MYDEVICENAMEUNIBOX;
+    }
+    if ([BlueToothDataManager shareManager].deviceType) {
+        if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
+            //手环
+            allDeviceStr = MYDEVICENAMEUNITOYS;
+        } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
+            //钥匙扣
+            allDeviceStr = MYDEVICENAMEUNIBOX;
+        } else {
+            NSLog(@"类型错了");
+        }
+    }
+    if (peripheral != nil && [allDeviceStr containsString:nameStr.lowercaseString]) {
+        
+        //获取mac地址
+        [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1].lowercaseString];
+    }
     
     // 查找外设中的所有服务
     NSLog(@"连接成功，开始查找外设重所有服务%@",peripheral.name);

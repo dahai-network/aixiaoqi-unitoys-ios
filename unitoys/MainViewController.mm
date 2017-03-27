@@ -85,6 +85,15 @@
     //关闭tcp
     [[NSNotificationCenter defaultCenter] postNotificationName:@"disconnectTCP" object:@"disconnectTCP"];
     
+    //将连接的信息存储到本地
+    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+        [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
     UIApplication *application = [UIApplication sharedApplication];
     if ([application.keyWindow.rootViewController isKindOfClass:[LoginViewController class]]) {
         [self dismissViewControllerAnimated:YES completion:nil];

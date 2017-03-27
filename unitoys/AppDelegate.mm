@@ -127,7 +127,7 @@
 //    
 //    self.isPushKit = YES;
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
