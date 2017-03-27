@@ -61,6 +61,15 @@
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuFailed" object:@"MessageStatu" userInfo:userInfo];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSMSAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
+    
+}
+
+- (void)receiveNewSMSAction
+{
+    _messageFrames = nil;
+    [self loadMessages];
 }
 
 - (void)rightBarButtonAction
@@ -154,11 +163,13 @@
 //                }
                 
                 for (NSDictionary *dict in arrMessages){
-                    NSLog(@"%@", dict[@"SMSID"] );
-                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
-                    } else {
+                    NSLog(@"%@", dict[@"SMSID"]);
+                    if ([[dict objectForKey:@"IsSend"] boolValue]) {
+                        //己方发送
                         [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+                    }else{
+                        //对方发送
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
                     }
                 }
                 
@@ -239,13 +250,22 @@
 //                }
                 
                 for (NSDictionary *dict in arrNewMessages){
-                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",[dict valueForKey:@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
-                        
-                    } else {
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", [dict valueForKey:@"Status"], @"Status",[dict objectForKey:@"SMSID"],@"SMSID", nil]];
+//                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
+//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",[dict valueForKey:@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//                        
+//                    } else {
+//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", [dict valueForKey:@"Status"], @"Status",[dict objectForKey:@"SMSID"],@"SMSID", nil]];
+//                    }
+                    if ([[dict objectForKey:@"IsSend"] boolValue]) {
+                        //己方发送
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+                    }else{
+                        //对方发送
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
                     }
                 }
+                
+                
                 
                 NSMutableArray *mfArray = [NSMutableArray array];
                 for (NSDictionary *dict in dictArray) {

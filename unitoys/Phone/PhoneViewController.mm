@@ -254,7 +254,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             if (weakSelf.lblPhoneNumber) {
                 [weakSelf.lblPhoneNumber setHidden:NO];
                 weakSelf.lblPhoneNumber.text = weakSelf.phonePadView.inputedPhoneNumber;
-            } else {
+            }else{
                 UILabel *lblPhoneNumber = [[UILabel alloc] initWithFrame:weakSelf.navigationController.navigationBar.bounds];
                 weakSelf.lblPhoneNumber = lblPhoneNumber;
                 [weakSelf.lblPhoneNumber setTextAlignment:NSTextAlignmentCenter];
@@ -265,7 +265,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             
             //self.title = self.phonePadView.inputedPhoneNumber;
-            
             [weakSelf showOperation];
             
             //搜索电话并展示
@@ -288,6 +287,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
     };
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSMSContentAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
 
     /*
     [[SipEngineManager instance] Init];
@@ -313,6 +313,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //    [self.tableView updateConstraints];
 //}
 
+- (void)updateSMSContentAction
+{
+    [self loadMessage];
+}
 
 //谓词搜索
 - (void)searchInfoWithString:(NSString *)searchText
@@ -2460,5 +2464,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallingAction" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeCallAction" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeUnitysCallAction" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceiveNewSMSContentUpdate" object:nil];
 }
 @end

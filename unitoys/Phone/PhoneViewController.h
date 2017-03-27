@@ -31,7 +31,7 @@
 @property (readwrite) NSInteger phoneOperation;
 
 @property (strong,nonatomic) NSMutableArray *arrPhoneRecord;
-@property (strong,nonatomic) NSArray *arrMessageRecord;
+@property (copy,nonatomic) NSArray *arrMessageRecord;
 
 @property (weak, nonatomic) UILabel *lblPhoneNumber;
 

@@ -548,7 +548,6 @@
     }
 
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
-
 }
 
 
@@ -741,11 +740,12 @@
 // 如果对象关闭了 这里也会调用
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
     NSLog(@"tcp连接失败 %@", err);
+    [BlueToothDataManager shareManager].isTcpConnected = NO;
     if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
         [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
         [UNPushKitMessageManager shareManager].tcpReconnectTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tcpReconnectTimerAction) userInfo:nil repeats:YES];
     }
-//    [BlueToothDataManager shareManager].isTcpConnected = NO;
+    
 //    if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
 //        [self reConnectTcp];
 //    }
@@ -1346,6 +1346,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         //收到对方发送的短信
         NSString *name = [self checkLinkNameWithPhoneStr:extras[@"Tel"]];
         [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:extras[@"SMSContent"] userInfo:userInfo];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
+        
     } if ([contentType isEqualToString:@"SMSSendResult"]) {
         //发送短信成功
         if ([extras[@"Status"] isEqualToString:@"1"]) {
@@ -1377,7 +1380,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }else{
         trigger1.timeInterval = 0.5;
     }
-    
     
     //每小时重复 1 次 iOS 10 以上支持
 //    JPushNotificationTrigger *trigger2 = [[JPushNotificationTrigger alloc] init];
@@ -1640,6 +1642,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
         // Required, iOS 7 Support
+    //刷新页面
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
     
     [JPUSHService handleRemoteNotification:userInfo];
     NSString *name = [self checkLinkNameWithPhoneStr:userInfo[@"Tel"]];
@@ -1652,6 +1656,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         // Required,For systems with less than or equal to iOS6
 //        [JPUSHService handleRemoteNotification:userInfo];
 //    application.applicationIconBadgeNumber = 0;
+    
+    NSLog(@"收到远程通知");
     
     // 取得 APNs 标准信息内容
     NSDictionary *aps = [userInfo valueForKey:@"aps"];
@@ -1835,7 +1841,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             NSString *timeString = [NSString stringWithFormat:@"%f", time];
             NSDictionary *serviceTimeData = @{@"time" : timeString, @"dataString" : servicePushKitData, @"MessageType" : messageType};
             [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
-            
             
             if ([messageType isEqualToString:@"10"]) {
                 NSLog(@"鉴权数据PushKit消息");
