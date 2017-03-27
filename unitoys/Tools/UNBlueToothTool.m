@@ -638,14 +638,14 @@ typedef enum : NSUInteger {
             }
             
             //提升pushkit速度
-            CGFloat time;
-            if (self.isPushKitStatu) {
-                time = 1.0;
-            }else{
-                time = 2.0;
-            }
+//            CGFloat time;
+//            if (self.isPushKitStatu) {
+//                time = 1.0;
+//            }else{
+//                time = 2.0;
+//            }
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //已经被系统或者其他APP连接上的设备数组
                 if (!self.pairedArr) {
                     self.pairedArr = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
