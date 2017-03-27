@@ -127,7 +127,7 @@
 //    
 //    self.isPushKit = YES;
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -363,40 +363,45 @@
         self.sendTcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dQueue socketQueue:nil];
         [self reConnectTcp];
     }else{
-        if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-            if (self.sendTcpSocket.isConnected) {
-                NSLog(@"tcp pushkit数据---%@",[UNPushKitMessageManager shareManager].tcpStringWithPushKit);
-                if ([UNPushKitMessageManager shareManager].tcpStringWithPushKit) {
-                    self.communicateID = @"00000000";
-                    [BlueToothDataManager shareManager].isTcpConnected = YES;
-                    // 等待数据来啊
-                    [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
-                    //发送数据
-                    [self setUpTcppacketFromPushKit];
-                    NSLog(@"最终发送给tcp的pushkit数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
-                    [UNPushKitMessageManager shareManager].isSendTcpString = YES;
+        if (!self.sendTcpSocket.isConnected) {
+            [BlueToothDataManager shareManager].isTcpConnected = NO;
+            [UNPushKitMessageManager shareManager].isSendTcpString = NO;
+            [self reConnectTcp];
+        }else{
+            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                if (self.sendTcpSocket.isConnected) {
+                    NSLog(@"tcp pushkit数据---%@",[UNPushKitMessageManager shareManager].tcpStringWithPushKit);
+                    if ([UNPushKitMessageManager shareManager].tcpStringWithPushKit) {
+                        self.communicateID = @"00000000";
+//                        [BlueToothDataManager shareManager].isTcpConnected = YES;
+                        // 等待数据来啊
+                        [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
+                        //发送数据
+                        [self setUpTcppacketFromPushKit];
+                        NSLog(@"最终发送给tcp的pushkit数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
+                        [UNPushKitMessageManager shareManager].isSendTcpString = YES;
+                    }
+                }else{
+                    [UNPushKitMessageManager shareManager].isSendTcpString = NO;
+                    [self reConnectTcp];
                 }
             }else{
-                [UNPushKitMessageManager shareManager].isSendTcpString = NO;
-                [self reConnectTcp];
-            }
-        }else{
-            if (![BlueToothDataManager shareManager].isReseted) {
-                NSLog(@"tcp数据---%@", self.tcpPacketStr);
-                //发送数据
-                if (self.tcpPacketStr) {
-                    self.communicateID = @"00000000";
-                    [BlueToothDataManager shareManager].isTcpConnected = YES;
-                    // 等待数据来啊
-                    [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
-                    NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
-                    [self sendMsgWithMessage:self.tcpPacketStr];
+                if (![BlueToothDataManager shareManager].isReseted) {
+                    NSLog(@"tcp数据---%@", self.tcpPacketStr);
+                    //发送数据
+                    if (self.tcpPacketStr) {
+                        self.communicateID = @"00000000";
+//                        [BlueToothDataManager shareManager].isTcpConnected = YES;
+                        // 等待数据来啊
+                        [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
+                        NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
+                        [self sendMsgWithMessage:self.tcpPacketStr];
+                    }
+                    
                 }
-                
             }
         }
     }
-    // 连接必须服务器在线
 }
 
 - (void)receiveTcpPacket:(NSNotification *)sender {
@@ -663,6 +668,41 @@
                 [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
                 
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
+            }
+        }
+    }else if([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeAuthSimData){
+        if ([UNPushKitMessageManager shareManager].PushKitAuthDataType == 1) {
+            NSLog(@"PushKitAuthDataType1");
+            [self checkPacketDetailWithStringFromPushKit:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
+        }else if([UNPushKitMessageManager shareManager].PushKitAuthDataType == 2){
+            NSLog(@"PushKitAuthDataType2");
+            if (![UNPushKitMessageManager shareManager].isSendTcpString) {
+                NSLog(@"pushkit--tcp数据----%@", [UNPushKitMessageManager shareManager].tcpStringWithPushKit);
+                if ([UNPushKitMessageManager shareManager].tcpStringWithPushKit) {
+                    self.communicateID = @"00000000";
+                    NSLog(@"PushKit--tcp连接成功");
+                    [BlueToothDataManager shareManager].isTcpConnected = YES;
+                    [sock readDataWithTimeout:-1 tag:200];
+                    //发送数据
+                    [self setUpTcppacketFromPushKit];
+                    NSLog(@"PushKit--最终发送给tcp的数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
+                    [UNPushKitMessageManager shareManager].isSendTcpString = YES;
+                }
+            }
+        }else{
+            NSLog(@"PushKitAuthDataTypeNone");
+            if (![UNPushKitMessageManager shareManager].isSendTcpString) {
+                NSLog(@"pushkit--tcp数据----%@", [UNPushKitMessageManager shareManager].tcpStringWithPushKit);
+                if ([UNPushKitMessageManager shareManager].tcpStringWithPushKit) {
+                    self.communicateID = @"00000000";
+                    NSLog(@"PushKit--tcp连接成功");
+                    [BlueToothDataManager shareManager].isTcpConnected = YES;
+                    [sock readDataWithTimeout:-1 tag:200];
+                    //发送数据
+                    [self setUpTcppacketFromPushKit];
+                    NSLog(@"PushKit--最终发送给tcp的数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
+                    [UNPushKitMessageManager shareManager].isSendTcpString = YES;
+                }
             }
         }
     }else{
@@ -990,24 +1030,24 @@
     string = [string stringByReplacingOccurrencesOfString:tempStr withString:TLVdetail];
     NSLog(@"替换之后的字符串 -- %@", string);
     
-    if (!self.sendTcpSocket) {
-        [self creatAsocketTcp];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self sendMsgWithMessage:string];
-        });
-    }else{
-        if (!self.sendTcpSocket.isConnected) {
-            [self reConnectTcp];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self sendMsgWithMessage:string];
-            });
-        }else{
-            [self sendMsgWithMessage:string];
-        }
-    }
+//    if (!self.sendTcpSocket) {
+//        [self creatAsocketTcp];
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [self sendMsgWithMessage:string];
+//        });
+//    }else{
+//        if (!self.sendTcpSocket.isConnected) {
+//            [self reConnectTcp];
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                [self sendMsgWithMessage:string];
+//            });
+//        }else{
+//            [self sendMsgWithMessage:string];
+//        }
+//    }
     
     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", string]];
-    
+    [self sendMsgWithMessage:string];
     if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
         NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
         NSLog(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices);
@@ -1843,14 +1883,16 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
         NSTimeInterval timeValue = [dataDate timeIntervalSinceNow];
         NSLog(@"时间差为---%.f", timeValue);
-        if (timeValue < -9.0){
-            NSLog(@"时间太久,清空PushKit数据");
-            [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
-            [UNPushKitMessageManager shareManager].simDataDict = nil;
-        }
+        
         if ([serviceTimeData[@"MessageType"] isEqualToString:@"0f"]) {
             [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
             [UNPushKitMessageManager shareManager].simDataDict = nil;
+        }else{
+            if (timeValue < -9.0){
+                NSLog(@"时间太久,清空PushKit数据");
+                [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
+                [UNPushKitMessageManager shareManager].simDataDict = nil;
+            }
         }
     }
     [[UNPushKitMessageManager shareManager].pushKitMsgQueue addObject:serviceTimeData];
@@ -1955,10 +1997,20 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         //解析并发送当前pushkit
         if ([[servicePushKitData[@"dataString"] substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {
             NSLog(@"发送01pushkit消息");
+            [UNPushKitMessageManager shareManager].PushKitAuthDataType = 1;
             [UNPushKitMessageManager shareManager].receivePushKitDataFormServices = servicePushKitData;
-            [self checkPacketDetailWithStringFromPushKit:servicePushKitData];
+            if (!self.sendTcpSocket) {
+                [self creatAsocketTcp];
+            }else{
+                if (!self.sendTcpSocket.isConnected) {
+                    [self reConnectTcp];
+                }else{
+                    [self checkPacketDetailWithStringFromPushKit:servicePushKitData];
+                }
+            }
         }else{
             NSLog(@"发送正常pushkit消息");
+            [UNPushKitMessageManager shareManager].PushKitAuthDataType = 2;
             [UNPushKitMessageManager shareManager].receivePushKitDataFormServices = servicePushKitData;
             [self separatePushKitString:servicePushKitData];
             if ([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]) {
@@ -2030,6 +2082,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             }else{
                 NSLog(@"当前没有注册过,需要重新注册");
                 [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
+                [BlueToothDataManager shareManager].bleStatueForCard = 0;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
             }
         });

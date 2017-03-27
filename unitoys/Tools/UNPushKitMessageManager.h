@@ -39,6 +39,11 @@ typedef NS_ENUM(NSUInteger, PushKitMessageType) {
  */
 @property (nonatomic, assign) PushKitMessageType pushKitMsgType;
 /**
+ *  PushKit鉴权数据消息类型
+    type == 01(发送01数据)   type == 02(发送正常数据)
+ */
+@property (nonatomic, assign) NSInteger PushKitAuthDataType;
+/**
  *  APP是否已加载(是否加载过HomeVC)
  */
 @property (nonatomic, assign) BOOL isAppAlreadyLoad;
@@ -112,8 +117,6 @@ typedef NS_ENUM(NSUInteger, PushKitMessageType) {
  *  当前发送ICCID序号
  */
 @property (nonatomic, assign) NSInteger sendICCIDIndex;
-
-
 
 /**
  *  tcp断线重连定时器时间间隔
