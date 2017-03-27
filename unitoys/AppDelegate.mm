@@ -665,7 +665,6 @@
                 NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
                 NSLog(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices);
                 [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
-                
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
             }
         }
@@ -1858,7 +1857,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 [UNCreatLocalNoti createLocalNotiMessageString:@"pushKit消息唤醒网络电话"];
                 //创建网络电话服务
                 [[UNSipEngineInitialize sharedInstance] initEngine];
-                
             }else if ([messageType isEqualToString:@"05"]){
                 NSLog(@"心跳包PushKit消息");
                 [self checkCurrentPushKitMessage:serviceTimeData];
@@ -1868,6 +1866,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 [self checkCurrentPushKitMessage:serviceTimeData];
                 //在pushkit里初始化蓝牙
                 [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+                //创建网络电话服务
+                [[UNSipEngineInitialize sharedInstance] initEngine];
             }else{
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
                 NSLog(@"未知PushKit消息---%@", dict);

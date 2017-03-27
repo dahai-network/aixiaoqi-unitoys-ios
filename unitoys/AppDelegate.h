@@ -10,16 +10,6 @@
 #import "WXApi.h"
 #import <Bugly/Bugly.h>
 
-////PushKit消息类型
-//typedef NS_ENUM(NSUInteger, PushKitMessageType) {
-//    PushKitMessageTypeNone = 0,//默认
-//    PushKitMessageTypePingPacket = 5,//心跳包
-//    PushKitMessageTypeNetCall = 6,//只需要开启网络电话,无需开启蓝牙(一般指联通卡)
-//    PushKitMessageTypeAuthSimData = 10,//正常鉴权数据
-//    PushKitMessageTypeSimDisconnect = 15,//SIM卡断开连接
-//
-//};
-
 @interface AppDelegate : UIResponder <UIApplicationDelegate,WXApiDelegate, BuglyDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
