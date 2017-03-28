@@ -33,7 +33,7 @@
 
 //#import "JSONModel.h"
 #import <MJExtension/MJExtension.h>
-#import <Reachability/Reachability.h>
+#import "UNNetWorkStatuManager.h"
 
 @interface PhoneViewController ()
 {
@@ -1825,7 +1825,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (void)callUnitysNumber :(NSString *)strNumber {
-    if ([Reachability reachabilityForInternetConnection].currentReachabilityStatus == NotReachable) {
+    if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         return;
     }

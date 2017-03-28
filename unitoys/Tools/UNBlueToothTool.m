@@ -717,22 +717,50 @@ static UNBlueToothTool *instance = nil;
                     }
                 } else {
                     NSLog(@"没有配对设备");
-                    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-                    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-                    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-                        NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-                        if (arr.count) {
-                            self.peripheral = arr[0];
-                            NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+                    //空中升级需要通过扫描进行,否则失败
+                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
+                    }else{
+                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
+                            if (arr.count) {
+                                self.peripheral = arr[0];
+                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+                            }
+                        }
+                        if (self.peripheral) {
+                            NSLog(@"存在连接过的外围设备");
+                            [self.mgr connectPeripheral:self.peripheral options:nil];
+                        } else {
+                            NSLog(@"不存在连接过的外围设备");
+                            [self.mgr scanForPeripheralsWithServices:nil options:nil];
                         }
                     }
-                    if (self.peripheral) {
-                        NSLog(@"存在连接过的外围设备");
-                        [self.mgr connectPeripheral:self.peripheral options:nil];
-                    } else {
-                        NSLog(@"不存在连接过的外围设备");
-                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
-                    }
+                    
+                    
+//                    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+//                    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+//                    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+//                        NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
+//                        if (arr.count) {
+//                            self.peripheral = arr[0];
+//                            NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+//                        }
+//                    }
+//                    if (self.peripheral) {
+//                        NSLog(@"存在连接过的外围设备");
+//                        [self.mgr connectPeripheral:self.peripheral options:nil];
+//                    } else {
+//                        NSLog(@"不存在连接过的外围设备");
+//                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
+//                    }
+                    
+                    
+                    
+                    
+                    
 //                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
 //                        //在后台
 //                        NSLog(@"执行在后台的连接方法");
@@ -1051,7 +1079,6 @@ static UNBlueToothTool *instance = nil;
         self.normalAuthSimString = string;
         [self checkBindedDeviceFromNet];
     }
-
 }
 
 - (void)sendLBEMessageNoPushKit
@@ -1095,7 +1122,8 @@ static UNBlueToothTool *instance = nil;
         if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
             [self checkUserConfig];
         }
-        [self refreshBLEStatue];
+//        [self refreshBLEStatue];
+        [self initBLEStatue];
     }else{
         NSLog(@"蓝牙未连接重连蓝牙");
         [self checkBindedDeviceFromNet];
@@ -1119,6 +1147,16 @@ static UNBlueToothTool *instance = nil;
 {
     if (index < [UNPushKitMessageManager shareManager].sendICCIDCommands.count) {
         [self sendMessageToBLEWithType:BLECardData validData:[UNPushKitMessageManager shareManager].sendICCIDCommands[index]];
+    }
+}
+
+#pragma mark 初始化蓝牙状态
+- (void)initBLEStatue
+{
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+    } else {
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
     }
 }
 
@@ -1441,12 +1479,15 @@ static UNBlueToothTool *instance = nil;
                         } else {
                             //注册卡
                             if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
-                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                
+// ---取消延时查询套餐
+//                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                     [BlueToothDataManager shareManager].isRegisted = NO;
 //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
                                     NSLog(@"判断用户是否存在指定套餐");
                                     [self checkUserIsExistAppointPackage];
-                                });
+//                                });
+                                
                             } else {
                                 NSLog(@"注册卡---信号强");
                                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
@@ -1845,9 +1886,13 @@ static UNBlueToothTool *instance = nil;
                             //                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
                             [BlueToothDataManager shareManager].isChangeSimCard = NO;
                             [self updataToCard];
-                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                 [self sendICCIDMessage];
                             });
+//减少发送指令间隔时间
+//                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                                [self sendICCIDMessage];
+//                            });
                         }
                     } else {
                         [self showHudNormalString:INTERNATIONALSTRING(@"电话卡运营商不属于三大运营商")];
@@ -2141,9 +2186,13 @@ static UNBlueToothTool *instance = nil;
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
                 //注册卡
                 if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [self checkUserIsExistAppointPackage];
-                    });
+                    
+                    [self checkUserIsExistAppointPackage];
+                    
+//减少查询套餐时间
+//                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                        [self checkUserIsExistAppointPackage];
+//                    });
                 } else {
                     //                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
                     if ([BlueToothDataManager shareManager].isRegisted) {

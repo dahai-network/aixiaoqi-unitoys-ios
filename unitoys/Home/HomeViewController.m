@@ -287,13 +287,14 @@
     self.leftButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,120,30)];//原来宽是100
     NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     if (userData[@"BraceletIMEI"]) {
-        if (![BlueToothDataManager shareManager].isOpened) {
-            //蓝牙未开
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_BLNOTOPEN];
-        } else {
-            //连接中
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
-        }
+//        if (![BlueToothDataManager shareManager].isOpened) {
+//            //蓝牙未开
+//            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_BLNOTOPEN];
+//        } else {
+//            //连接中
+//            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
+//        }
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
     } else {
         //未绑定
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
@@ -628,6 +629,7 @@
                     //            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
                     DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
 //                    DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:self.mgr target:self.peripheral];
+                    NSLog(@"mgr---%@=====peripheral----%@",[UNBlueToothTool shareBlueToothTool].mgr,[UNBlueToothTool shareBlueToothTool].peripheral);
                     DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:[UNBlueToothTool shareBlueToothTool].mgr target:[UNBlueToothTool shareBlueToothTool].peripheral];
                     [initiator withFirmwareFile:selectedFirmware];
                     initiator.delegate = self;

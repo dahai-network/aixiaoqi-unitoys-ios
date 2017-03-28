@@ -119,6 +119,8 @@
 		3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */; };
 		3C52B2031E5EF87A001E67C4 /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B2021E5EF87A001E67C4 /* number_location.zip */; };
 		3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */; };
+		3C80965F1E8A317200942B0C /* UNNetWorkStatuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C80965E1E8A317200942B0C /* UNNetWorkStatuManager.m */; };
+		3C8096651E8A423D00942B0C /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8096641E8A423D00942B0C /* Reachability.m */; };
 		3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */; };
 		3C8CFA6B1E55988B0035A460 /* UCallPhoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6A1E55988B0035A460 /* UCallPhoneButton.m */; };
 		3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */; };
@@ -525,6 +527,11 @@
 		3C52B2021E5EF87A001E67C4 /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
 		3C66D0DB1E66714F00A7B125 /* UNDatabaseTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDatabaseTools.h; sourceTree = "<group>"; };
 		3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDatabaseTools.m; sourceTree = "<group>"; };
+		3C80965D1E8A317200942B0C /* UNNetWorkStatuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNNetWorkStatuManager.h; sourceTree = "<group>"; };
+		3C80965E1E8A317200942B0C /* UNNetWorkStatuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNNetWorkStatuManager.m; sourceTree = "<group>"; };
+		3C8096601E8A3E7500942B0C /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = "../../../Library/Developer/Xcode/DerivedData/unitoys-bfusqwuvvilolxenmvououztjroi/Build/Products/Debug-iphoneos/Reachability/Reachability.framework"; sourceTree = "<group>"; };
+		3C8096631E8A423D00942B0C /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		3C8096641E8A423D00942B0C /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3C8CFA661E5597D10035A460 /* UCallPhonePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhonePadView.h; sourceTree = "<group>"; };
 		3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCallPhonePadView.m; sourceTree = "<group>"; };
 		3C8CFA691E55988B0035A460 /* UCallPhoneButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhoneButton.h; sourceTree = "<group>"; };
@@ -1137,6 +1144,15 @@
 			path = Picture;
 			sourceTree = "<group>";
 		};
+		3C8096621E8A423D00942B0C /* ReachabilityTool */ = {
+			isa = PBXGroup;
+			children = (
+				3C8096631E8A423D00942B0C /* Reachability.h */,
+				3C8096641E8A423D00942B0C /* Reachability.m */,
+			);
+			path = ReachabilityTool;
+			sourceTree = "<group>";
+		};
 		3C8E77921E5D27A200C4833E /* Tools */ = {
 			isa = PBXGroup;
 			children = (
@@ -1158,6 +1174,8 @@
 				3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */,
 				3CD0C89E1E864BDB00ABD21B /* UNPushKitMessageManager.h */,
 				3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */,
+				3C80965D1E8A317200942B0C /* UNNetWorkStatuManager.h */,
+				3C80965E1E8A317200942B0C /* UNNetWorkStatuManager.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1183,6 +1201,7 @@
 		430B1E9DC15699DC69140B1C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3C8096601E8A3E7500942B0C /* Reachability.framework */,
 				3C20C2121E6D00F1008078BB /* PushKit.framework */,
 				3C8E77991E5D40F400C4833E /* CallKit.framework */,
 				046BD6471E0B7C5F008A958A /* CFNetwork.framework */,
@@ -1344,6 +1363,7 @@
 		95334A661D8A89B9002C1CFB /* depands */ = {
 			isa = PBXGroup;
 			children = (
+				3C8096621E8A423D00942B0C /* ReachabilityTool */,
 				04F727501E641CE4002EB54C /* CocoaHttpServer */,
 				95B0990B1DC0DA6A00743877 /* sipsdk */,
 				95C575DF1DA76F2E00F459DF /* Weipay */,
@@ -2276,6 +2296,7 @@
 				043965C91E07E18C00B67989 /* BindChargeCardViewController.m in Sources */,
 				04F727A61E641CE4002EB54C /* HTTPConnection.m in Sources */,
 				95E918561DDC7AA8005DABC0 /* BindDeviceViewController.m in Sources */,
+				3C8096651E8A423D00942B0C /* Reachability.m in Sources */,
 				95CD33F31D9CE4F300EE5DD3 /* RSADataVerifier.m in Sources */,
 				95334A621D8A83DD002C1CFB /* BaseTableController.m in Sources */,
 				95938D321D92C3C6008A0A21 /* CountryListViewController.m in Sources */,
@@ -2303,6 +2324,7 @@
 				740FD3931E287F9E009413F1 /* sim_com_interface.c in Sources */,
 				3C8E77981E5D280600C4833E /* UNDefines.m in Sources */,
 				954A87D51D98BBA700570843 /* JSONKeyMapper.m in Sources */,
+				3C80965F1E8A317200942B0C /* UNNetWorkStatuManager.m in Sources */,
 				950072B51DBF58D000C16088 /* PhoneViewController.mm in Sources */,
 				04F727AE1E641CE4002EB54C /* HTTPDynamicFileResponse.m in Sources */,
 				04F727B01E641CE4002EB54C /* HTTPFileResponse.m in Sources */,
