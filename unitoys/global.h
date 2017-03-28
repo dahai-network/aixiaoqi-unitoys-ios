@@ -258,6 +258,12 @@
 #define TCPSIMBALANCE @"c10100"//sim卡余额
 #define TCPVERSIONTYPE @"c90101"//设备类型(区分安卓)
 
+#pragma mark TCP断开状态
+#define SocketCloseByUser @"SocketCloseByUser"
+#define SocketCloseByNet @"SocketCloseByNet"
+#define SocketCloseByServer @"SocketCloseByUser"
+
+
 #pragma mark 顶端状态
 //蓝牙未开
 #define HOMESTATUETITLE_BLNOTOPEN @"蓝牙未开"

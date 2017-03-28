@@ -15,7 +15,6 @@ typedef NS_ENUM(NSUInteger, PushKitMessageType) {
     PushKitMessageTypeNetCall = 6,//只需要开启网络电话,无需开启蓝牙(一般指联通卡)
     PushKitMessageTypeAuthSimData = 10,//正常鉴权数据
     PushKitMessageTypeSimDisconnect = 15,//SIM卡断开连接
-    
 };
 
 @interface UNPushKitMessageManager : NSObject

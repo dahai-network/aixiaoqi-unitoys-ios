@@ -200,6 +200,7 @@
     }
     kWeakSelf
     [UNBlueToothTool shareBlueToothTool].updateButtonImageAndTitleBlock = ^(NSString *title){
+        NSLog(@"updateButtonImageAndTitleBlock---%@", title);
         [weakSelf setButtonImageAndTitleWithTitle:title];
     };
     [UNBlueToothTool shareBlueToothTool].showHudNormalBlock = ^(NSInteger hudType, NSString *string){

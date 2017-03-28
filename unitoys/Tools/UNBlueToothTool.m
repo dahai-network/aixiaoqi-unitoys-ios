@@ -85,6 +85,7 @@ typedef enum : NSUInteger {
 
 @end
 
+static UNBlueToothTool *instance = nil;
 @implementation UNBlueToothTool
 
 - (void)setPushKitStatu:(BOOL)isPushKit
@@ -127,10 +128,9 @@ typedef enum : NSUInteger {
 
 + (UNBlueToothTool *)shareBlueToothTool
 {
-    static UNBlueToothTool *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        instance = [[super allocWithZone:nil] init];
+        instance = [[UNBlueToothTool alloc] init];
     });
     return instance;
 }
@@ -2681,8 +2681,8 @@ typedef enum : NSUInteger {
 - (void)setButtonImageAndTitleWithTitle:(NSString *)title
 {
     NSLog(@"%@", title);
-    if (self.updateButtonImageAndTitleBlock) {
-        self.updateButtonImageAndTitleBlock(title);
+    if (_updateButtonImageAndTitleBlock) {
+        _updateButtonImageAndTitleBlock([title copy]);
     }
 }
 
