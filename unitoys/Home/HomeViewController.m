@@ -599,6 +599,15 @@
     if ([BlueToothDataManager shareManager].isConnected) {
         if (sender && ![sender.object isEqualToString:@"<null>"]) {
 //            [self sendMessageToBLEWithType:BLEUpdataFromOTA validData:@"b1"];
+            [BlueToothDataManager shareManager].isBeingOTA = YES;
+            //将连接的信息存储到本地
+            NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+            NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+            if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+                [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
+            }
+            [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             [[UNBlueToothTool shareBlueToothTool] oatUpdateCommand];
             [self showProgress];
             NSURL *downloadURL = [NSURL URLWithString:sender.object];
@@ -690,6 +699,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        self.progressWindow = nil;
         self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n请重新启动爱小器App");
+        [BlueToothDataManager shareManager].isBeingOTA = NO;
     });
 }
 
@@ -705,6 +715,7 @@
     if (progress == 100) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级成功\n请重新启动爱小器App");
+            [BlueToothDataManager shareManager].isBeingOTA = NO;
         });
     }
 }

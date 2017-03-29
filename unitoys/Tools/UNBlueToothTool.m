@@ -717,43 +717,80 @@ static UNBlueToothTool *instance = nil;
                     }
                 } else {
                     NSLog(@"没有配对设备");
-                    //空中升级需要通过扫描进行,否则失败
-                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
-                    }else{
-                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-                            if (arr.count) {
-                                self.peripheral = arr[0];
-                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+                    
+                    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+                    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+                    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+                        NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
+                        NSLog(@"本地存储的设备信息 -- %@", arr);
+                        if (arr.count) {
+                            self.peripheral = arr[0];
+                            NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+                            if (self.peripheral) {
+                                NSLog(@"存在连接过的外围设备");
+                                [self.mgr connectPeripheral:self.peripheral options:nil];
+                            } else {
+                                NSLog(@"不存在连接过的外围设备");
+                                [self.mgr scanForPeripheralsWithServices:nil options:nil];
                             }
-                        }
-                        if (self.peripheral) {
-                            NSLog(@"存在连接过的外围设备");
-                            [self.mgr connectPeripheral:self.peripheral options:nil];
                         } else {
-                            NSLog(@"不存在连接过的外围设备");
+                            NSLog(@"本地有存储其他设备信息，不存在连接过的外围设备");
                             [self.mgr scanForPeripheralsWithServices:nil options:nil];
                         }
+                    } else {
+                        NSLog(@"本地未存储其他设备信息,不存在连接过的外围设备");
+                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
                     }
                     
-                    
-//                    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-//                    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-//                    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-//                        NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-//                        if (arr.count) {
-//                            self.peripheral = arr[0];
-//                            NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+                    //空中升级需要通过扫描进行,否则失败
+//                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+//                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
+//                    }else{
+//                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+//                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+//                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+//                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
+//                            if (arr.count) {
+//                                self.peripheral = arr[0];
+//                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+//                            }
+//                        }
+//                        if (self.peripheral) {
+//                            NSLog(@"存在连接过的外围设备");
+//                            [self.mgr connectPeripheral:self.peripheral options:nil];
+//                        } else {
+//                            NSLog(@"不存在连接过的外围设备");
+//                            [self.mgr scanForPeripheralsWithServices:nil options:nil];
 //                        }
 //                    }
-//                    if (self.peripheral) {
-//                        NSLog(@"存在连接过的外围设备");
-//                        [self.mgr connectPeripheral:self.peripheral options:nil];
+                    
+//                    if (![BlueToothDataManager shareManager].isBeingOTA) {
+//                        NSLog(@"没有进行空中升级");
+//                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+//                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+//                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+//                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
+//                            NSLog(@"本地存储的设备信息 -- %@", arr);
+//                            if (arr.count) {
+//                                self.peripheral = arr[0];
+//                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+//                                if (self.peripheral) {
+//                                    NSLog(@"存在连接过的外围设备");
+//                                    [self.mgr connectPeripheral:self.peripheral options:nil];
+//                                } else {
+//                                    NSLog(@"不存在连接过的外围设备");
+//                                    [self.mgr scanForPeripheralsWithServices:nil options:nil];
+//                                }
+//                            } else {
+//                                NSLog(@"本地有存储其他设备信息，不存在连接过的外围设备");
+//                                [self.mgr scanForPeripheralsWithServices:nil options:nil];
+//                            }
+//                        } else {
+//                            NSLog(@"本地未存储其他设备信息,不存在连接过的外围设备");
+//                            [self.mgr scanForPeripheralsWithServices:nil options:nil];
+//                        }
 //                    } else {
-//                        NSLog(@"不存在连接过的外围设备");
+//                        NSLog(@"正在进行空中升级");
 //                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
 //                    }
                     
@@ -803,12 +840,14 @@ static UNBlueToothTool *instance = nil;
     [self.mgr stopScan];
     [self.timer setFireDate:[NSDate distantFuture]];
     peripheral.delegate = self;
-    //将连接的信息存储到本地
-    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-    [boundedDeviceInfo setObject:[peripheral.identifier UUIDString] forKey:userdata[@"Tel"]];
-    [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if (![BlueToothDataManager shareManager].isBeingOTA) {
+        //将连接的信息存储到本地
+        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+        [boundedDeviceInfo setObject:[peripheral.identifier UUIDString] forKey:userdata[@"Tel"]];
+        [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     
     NSString *nameStr = peripheral.name;
     NSString *allDeviceStr = MYDEVICENAME;
