@@ -58,6 +58,9 @@
 //使用签名，获取基本注册
 #define apiGetBasicConfig defaultHost@"api/Config/GetBasicConfig"
 
+//不用签名，APP升级
+#define apiUpgrade defaultHost@"api/public/Upgrade"
+
 //不用签名，获取首页banner图片
 #define apiGetBannerList defaultHost@"api/config/getbannerlist"
 

@@ -128,7 +128,10 @@
 //    
 //    self.isPushKit = YES;
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
+    
+    //检查更新
+    [self checkVersion];
     
     [[UNNetWorkStatuManager shareManager] initNetWorkStatuManager];
     [UNNetWorkStatuManager shareManager].netWorkStatuChangeBlock = ^(NetworkStatus currentStatu){
@@ -259,6 +262,72 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearTimeoutPushKitMessage) name:@"PushKitMessageDataTimeout" object:nil];
     
     return YES;
+}
+
+- (void)checkVersion {
+    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"0", @"TerminalCode", [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"], @"Version", nil];
+    [SSNetworkRequest getRequest:[apiUpgrade stringByAppendingString:[self getParamStr]] params:info success:^(id responseObj){
+        
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"app升级信息 -- %@", responseObj);
+            if (responseObj[@"data"][@"Descr"]) {
+                NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
+                if ([responseObj[@"data"][@"Mandatory"] intValue] == 0) {
+                    //不强制
+                    [self dj_alertActionWithAlertTitle:@"版本升级" leftActionTitle:@"下次再说" rightActionTitle:@"现在升级" message:infoStr rightAlertAction:^{
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
+                    }];
+                } else if ([responseObj[@"data"][@"Mandatory"] intValue] == 1) {
+                    //强制
+                    [self dj_alertActionWithAlertTitle:@"版本升级" rightActionTitle:@"确定" message:infoStr rightAlertAction:^{
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
+                    }];
+                } else {
+                    NSLog(@"不知道是不是强制性的");
+                }
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            NSLog(@"数据请求失败 -- %@", responseObj[@"mag"]);
+        }
+    }failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+        NSLog(@"数据错误：%@",[error description]);
+        
+    } headers:nil];
+}
+
+- (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle leftActionTitle:(NSString *)leftActionTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(leftActionTitle) style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        rightAlertAction();
+    }];
+    [alertVC addAction:cancelAction];
+    [alertVC addAction:certailAction];
+    
+    UIWindow   *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    alertWindow.rootViewController = [[UIViewController alloc] init];
+    alertWindow.windowLevel = UIWindowLevelAlert + 1;
+    [alertWindow makeKeyAndVisible];
+    [alertWindow.rootViewController presentViewController:alertVC animated:YES completion:nil];
+}
+
+- (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        rightAlertAction();
+    }];
+    [alertVC addAction:certailAction];
+    
+    UIWindow   *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    alertWindow.rootViewController = [[UIViewController alloc] init];
+    alertWindow.windowLevel = UIWindowLevelAlert + 1;
+    [alertWindow makeKeyAndVisible];
+    [alertWindow.rootViewController presentViewController:alertVC animated:YES completion:nil];
 }
 
 - (void)showLaunchView {
@@ -427,8 +496,8 @@
 - (void)receiveTcpPacket:(NSNotification *)sender {
 //    NSLog(@"app里面收到数据了 -- %@", sender.object);
     NSString *packteStr = [NSString stringWithFormat:@"%@", sender.object];
-    NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", packteStr.length/2]];
-    NSLog(@"数据包长度为 -- %lu  数据包长度转换成十六进制 -- %@", packteStr.length/2, packetLengthHex);
+    NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", packteStr.length/2]];
+    NSLog(@"数据包长度为 -- %zd  数据包长度转换成十六进制 -- %@", packteStr.length/2, packetLengthHex);
     self.packetFinalHex = [NSString stringWithFormat:@"c7%@%@", packetLengthHex, packteStr];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
 }
@@ -438,7 +507,7 @@
     NSString *iccidStr = [sender.object substringWithRange:NSMakeRange(6, 20)];
     [UNPushKitMessageManager shareManager].iccidString = [[iccidStr copy] lowercaseString];
     NSString *iccidHex = [self hexStringFromString:iccidStr];
-    NSString *iccidLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%ld", iccidHex.length/2]];
+    NSString *iccidLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", iccidHex.length/2]];
 //    NSLog(@"iccidStr -- %@  length -- %@", iccidHex, iccidLengthHex);
     self.iccidTotalHex = [NSString stringWithFormat:@"be%@%@", iccidLengthHex, iccidHex];
     NSString *imsiStr;
@@ -470,7 +539,7 @@
 - (void)receiveTcpLength:(NSNotification *)sender {
 //    NSLog(@"app里面收到数据包压缩前长度 -- %@", sender.object);
     NSString *totalLengthHex = [self hexNewStringFromString:sender.object];
-    NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", totalLengthHex.length/2]];
+    NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", totalLengthHex.length/2]];
     self.packetTotalLengthHex = [NSString stringWithFormat:@"c6%@%@", lengthHex, totalLengthHex];
 //    NSLog(@"压缩前长度转换成十六进制 -- %@", self.packetTotalLengthHex);
 }
@@ -534,7 +603,7 @@
     }
     
     NSString *ascHex = [self hexStringFromString:token];
-    NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", ascHex.length/2]];
+    NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
     NSString *tokenHex = [NSString stringWithFormat:@"78%@%@", lengthHex, ascHex];
     
     NSLog(@"self.tlvFirstStr -- -- %@", self.tlvFirstStr);
@@ -545,7 +614,7 @@
     }
     
     NSString *packteStr = [NSString stringWithFormat:@"%@", [UNPushKitMessageManager shareManager].tcpStringWithPushKit];
-    NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", packteStr.length/2]];
+    NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", packteStr.length/2]];
     NSString *newStr = [NSString stringWithFormat:@"%@%@%@",self.tlvFirstStr, packetLengthHex, packteStr];
     
     NSString *appendString = [NSString stringWithFormat:@"%@%@", newStr, tokenHex];
@@ -553,7 +622,7 @@
     NSString *countLengthStr = [appendString substringFromIndex:24];
     
     NSLog(@"替换后面的文字之后 -- %@", appendString);
-    NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%lu", countLengthStr.length/2]];
+    NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", countLengthStr.length/2]];
     NSString *tcpString = [appendString stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
     NSLog(@"发送给服务器的数据 -- %@", tcpString);
     [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit = tcpString;
@@ -971,6 +1040,11 @@
     if ([classStr isEqualToString:@"84"]) {
         if (![errorStr isEqualToString:@"00"]) {
             NSLog(@"电话端口错误");
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"cardNumberNotTrue" object:HOMESTATUETITLE_NOSIGNAL];
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            });
             return;
         }
         
@@ -1082,7 +1156,7 @@
             }
             tempStr = TLVdetail;
             TLVdetail = @"000100163b9f94801fc78031e073fe211b573786609b30800119";
-            for (int i = [[NSString stringWithFormat:@"%lu", TLVdetail.length] intValue]; i < leng * 2; i++) {
+            for (int i = [[NSString stringWithFormat:@"%zd", TLVdetail.length] intValue]; i < leng * 2; i++) {
                 TLVdetail = [TLVdetail stringByAppendingString:@"0"];
             }
             string = [string stringByReplacingOccurrencesOfString:tempStr withString:TLVdetail];
@@ -1143,7 +1217,7 @@
     }
     tempStr = TLVdetail;
     TLVdetail = @"000100163b9f94801fc78031e073fe211b573786609b30800119";
-    for (int i = [[NSString stringWithFormat:@"%lu", TLVdetail.length] intValue]; i < leng * 2; i++) {
+    for (int i = [[NSString stringWithFormat:@"%zd", TLVdetail.length] intValue]; i < leng * 2; i++) {
         TLVdetail = [TLVdetail stringByAppendingString:@"0"];
     }
     string = [string stringByReplacingOccurrencesOfString:tempStr withString:TLVdetail];
@@ -1194,12 +1268,12 @@
 - (void)receiveNewDataStr:(NSNotification *)sender {
     NSLog(@"self.tlvFirstStr -- -- %@", self.tlvFirstStr);
     NSString *packteStr = [NSString stringWithFormat:@"%@", sender.object];
-    NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", packteStr.length/2]];
+    NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", packteStr.length/2]];
     NSString *newStr = [NSString stringWithFormat:@"%@%@%@",self.tlvFirstStr, packetLengthHex, packteStr];
     NSString *countLengthStr = [newStr substringFromIndex:24];
     NSLog(@"替换后面的文字之后 -- %@", newStr);
 //    NSLog(@"jiequzhihoudes  -- %@", countLengthStr);
-    NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%lu", countLengthStr.length/2]];
+    NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", countLengthStr.length/2]];
 //    NSString *finalString = [newStr stringByReplacingOccurrencesOfString:[newStr substringWithRange:NSMakeRange(20, 4)] withString:countLengthHex];
     NSString *finalString = [newStr stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
     NSLog(@"发送给服务器的数据 -- %@", finalString);
@@ -1584,7 +1658,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         });
     });
     
-    NSLog(@"后台backgroundTaskIdentifier--------  %lu",(unsigned long)backgroundTaskIdentifier);
+    NSLog(@"后台backgroundTaskIdentifier--------  %zd",backgroundTaskIdentifier);
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -1932,7 +2006,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     NSString *tokenString = [[[[credentials.token description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];
     NSLog(@"pushToken======%@=======", tokenString);
     NSString *newToken = [self hexStringFromString:tokenString];
-    NSString *newTokenlength = [self hexNewStringFromString:[NSString stringWithFormat:@"%lu", newToken.length/2]];
+    NSString *newTokenlength = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", newToken.length/2]];
     [UNPushKitMessageManager shareManager].pushKitTokenString = [NSString stringWithFormat:@"ca%@%@", newTokenlength, newToken];
 }
 
