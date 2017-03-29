@@ -128,13 +128,18 @@
 //    
 //    self.isPushKit = YES;
     //制定真机调试保存日志文件
-    //[self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     [[UNNetWorkStatuManager shareManager] initNetWorkStatuManager];
     [UNNetWorkStatuManager shareManager].netWorkStatuChangeBlock = ^(NetworkStatus currentStatu){
         if (currentStatu != NotReachable) {
+            NSLog(@"有网络");
             if (self.sendTcpSocket && ![BlueToothDataManager shareManager].isTcpConnected && [self.sendTcpSocket.userData isEqualToString:SocketCloseByNet]) {
-                [self reConnectTcp];
+                [self closeTCP];
+                if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeNone) {
+                    [UNPushKitMessageManager shareManager].isSendTcpString = NO;
+                }
+                [self creatAsocketTcp];
             }
         }
     };
@@ -353,7 +358,8 @@
 
 - (void)closeTCP {
     // 关闭套接字
-    if (self.sendTcpSocket.isConnected) {
+    NSLog(@"关闭TCP");
+    if (self.sendTcpSocket) {
         self.sendTcpSocket.userData = SocketCloseByUser;
         [self.sendTcpSocket disconnect];
     }
@@ -765,6 +771,7 @@
         NSLog(@"无网络");
     }else{
         if (err) {
+            NSLog(@"连接失败");
             if(err.code == 7){
                 self.sendTcpSocket.userData = SocketCloseByServer;
                 [BlueToothDataManager shareManager].isTcpConnected = NO;
@@ -772,12 +779,14 @@
                     if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
                         [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
                         [UNPushKitMessageManager shareManager].tcpReconnectTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tcpReconnectTimerAction) userInfo:nil repeats:YES];
-//                        [[NSRunLoop currentRunLoop] addTimer:[UNPushKitMessageManager shareManager].tcpReconnectTimer forMode:UITrackingRunLoopMode];
                         [[UNPushKitMessageManager shareManager].tcpReconnectTimer fire];
                     }
                 });
-
-            }else if (err.code == 57 || err.code == 32) {
+            }else if (err.code == 57 || err.code == 32 || err.code == 51 || err.code == 1) {
+                if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
+                    [[UNPushKitMessageManager shareManager].tcpReconnectTimer invalidate];
+                    [UNPushKitMessageManager shareManager].tcpReconnectTimer = nil;
+                }
                 self.sendTcpSocket.userData = SocketCloseByNet;
                 [self closeTCP];
                 if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeNone) {
@@ -787,13 +796,17 @@
             } else{
                 NSLog(@"其他原因断开");
                 if ([self.sendTcpSocket.userData isEqualToString:SocketCloseByNet]) {
+                    if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
+                        [[UNPushKitMessageManager shareManager].tcpReconnectTimer invalidate];
+                        [UNPushKitMessageManager shareManager].tcpReconnectTimer = nil;
+                    }
                     [self closeTCP];
                     if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeNone) {
                         [UNPushKitMessageManager shareManager].isSendTcpString = NO;
                     }
                     [self creatAsocketTcp];
-                }else if ([self.sendTcpSocket.userData isEqualToString:SocketCloseByNet]){
-                    self.sendTcpSocket.userData = SocketCloseByServer;
+                }else if ([self.sendTcpSocket.userData isEqualToString:SocketCloseByServer]){
+//                    self.sendTcpSocket.userData = SocketCloseByServer;
                     [BlueToothDataManager shareManager].isTcpConnected = NO;
                     if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
                         [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
@@ -804,7 +817,6 @@
                     NSLog(@"不重连");
                 }
             }
-            NSLog(@"连接失败");
         }else{
             NSLog(@"正常断开");
         }
@@ -1884,34 +1896,34 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 }
 
 #pragma mark -从外部发起网络通话
-//- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
-//{
-//    NSLog(@"userActivity:%@", userActivity.description);
-//    //应该在这里发起实际VoIP呼叫
-//    
-//    NSString * handle =userActivity.startCallHandle;
-//    //    BOOL video = userActivity.video;
-//    UNContact * contact = [[UNContact alloc] init];
-//    contact.phoneNumber= handle;
-//    contact.uniqueIdentifier=@"";
-//    
-//    if(nil == handle ){
-//        NSLog(@"Could not determine start call handle from user activity:%@", userActivity);
-//        return NO;
-//    }else{
-//        UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
-//        
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
-//                
-//            }];
-//            NSLog(@"callUUID==%@", callUUID);
-//            [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
-//        });
-//        return YES;
-//    }
-//    return NO;
-//}
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
+{
+    if (kSystemVersionValue < 10.0) {
+        return NO;
+    }
+    NSLog(@"userActivity:%@", userActivity.description);
+    NSLog(@"userActivity--userInfo:%@", userActivity.userInfo);
+    NSString * handle =userActivity.startCallHandle;
+    UNContact * contact = [[UNContact alloc] init];
+    contact.phoneNumber= handle;
+    contact.uniqueIdentifier=@"";
+    if(nil == handle ){
+        NSLog(@"Could not determine start call handle from user activity:%@", userActivity);
+        return NO;
+    }else{
+        UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
+                
+            }];
+            NSLog(@"callUUID==%@", callUUID);
+            [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
+        });
+        return YES;
+    }
+    return NO;
+}
 
 
 

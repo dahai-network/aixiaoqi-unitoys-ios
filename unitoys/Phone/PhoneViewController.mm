@@ -36,10 +36,6 @@
 #import "UNNetWorkStatuManager.h"
 
 @interface PhoneViewController ()
-{
-    UNCallKitCenter *callCenter;
-}
-
 
 @property (nonatomic, strong)NSDictionary *userInfo;
 @property (nonatomic, strong)CallComingInViewController *callCominginVC;
@@ -53,6 +49,8 @@
 @property (nonatomic, copy) NSArray *contactsLists;
 //搜索列表
 @property (nonatomic, strong) NSMutableArray *searchLists;
+
+@property (nonatomic, strong) UNCallKitCenter *callCenter;
 
 @end
 
@@ -137,6 +135,91 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(makeUnitysCallAction:) name:@"MakeUnitysCallAction" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessage) name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
     
+    
+    kWeakSelf
+    if (kSystemVersionValue >= 10.0) {
+        if (!self.callCenter) {
+            self.callCenter=[UNCallKitCenter sharedInstance];
+        }
+        self.callCenter.actionNotificationBlock = ^(CXCallAction *action, UNCallActionType actionType){
+            switch (actionType) {
+                case UNCallActionTypeAnswer:
+                {
+                    weakSelf.callCominginVC                    = [[CallComingInViewController alloc] init];
+                    if (weakSelf.callCenter.currentCallKitName) {
+                        weakSelf.callCominginVC.nameStr            = [weakSelf checkLinkNameWithPhoneStr:weakSelf.callCenter.currentCallKitName];
+                    }
+                    weakSelf.callCominginVC.isPresentInCallKit = YES;
+                    [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:NO completion:^{
+                    }];
+                    
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
+                        [weakSelf callingAction:noti];
+                    });
+                    
+                    //                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+                    //                theSipEngine->AnswerCall();
+                    //                theSipEngine->StopRinging();
+                }
+                    break;
+                case UNCallActionTypeEnd:
+                {
+                    //对APP通话进行挂断操作
+                    if (weakSelf.callCominginVC) {
+                        [weakSelf.callCominginVC endCallPhone];
+                    }
+                    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+                    if(theSipEngine->InCalling())
+                        theSipEngine->TerminateCall();
+                    weakSelf.callStopTime = [NSDate date];
+                    weakSelf.hostHungup = @"source";
+                }
+                    break;
+                case UNCallActionTypeMute:
+                {
+                    //对APP通话进行无声操作
+                    if ([action isKindOfClass:[CXSetMutedCallAction class]]) {
+                        CXSetMutedCallAction *muteAction = (CXSetMutedCallAction *)action;
+                        //发送是否无声的操作
+                        if (weakSelf.callCominginVC) {
+                            weakSelf.muteStatus = muteAction.isMuted;
+                            [weakSelf.callCominginVC setUpMuteButtonStatu:muteAction.isMuted];
+                        }
+                    }
+                    
+                }
+                    break;
+                case UNCallActionTypeHeld:
+                {
+                    
+                }
+                    break;
+//                case UNCallActionTypeStart:
+//                {
+//                    //发起通话
+//                    NSLog(@"发起通话");
+//                    if ([action isKindOfClass:[CXStartCallAction class]]) {
+//                        CXStartCallAction *startAction = (CXStartCallAction *)action;
+//                        //手环电话
+//                        if ([BlueToothDataManager shareManager].isRegisted) {
+//                            if (startAction.handle.value) {
+//                                [weakSelf callUnitysNumber:startAction.handle.value];
+//                            }
+//                        } else {
+//                            HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
+//                        }
+//                    }
+//                }
+//                    break;
+                default:
+                    break;
+            }
+            
+        };
+        
+    }
+    
     return YES;
 }
 
@@ -199,6 +282,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     //解压联系人数据库
     [self unZipNumberPhoneDB];
     
@@ -231,9 +315,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
     // Do any additional setup after loading the view.
     
-    
-    __typeof(self) weakSelf = self;
-    
+    kWeakSelf
     self.phonePadView.completeBlock = ^(NSString *btnText,NSInteger btnTag){
         //点击了删除按钮
         /*
@@ -1183,10 +1265,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //电话拨打进来
 - (void)InComingCallWithCallKitName:(NSString *)name PhoneNumber:(NSString *)phoneNumber
 {
-    if (!callCenter) {
-        callCenter=[UNCallKitCenter sharedInstance];
-    }
-    
+    self.callCenter.currentCallKitName = name;
     UNContact * contact = [[UNContact alloc]init];
     contact.phoneNumber= phoneNumber;
     contact.displayName= name;
@@ -1207,66 +1286,83 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         NSLog(@"callUUID==%@", callUUID);
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
     });
-    
-    kWeakSelf
-    callCenter.actionNotificationBlock = ^(CXCallAction *action, UNCallActionType actionType){
-        switch (actionType) {
-            case UNCallActionTypeAnswer:
-            {
-                weakSelf.callCominginVC                    = [[CallComingInViewController alloc] init];
-                weakSelf.callCominginVC.nameStr            = [weakSelf checkLinkNameWithPhoneStr:name];
-                weakSelf.callCominginVC.isPresentInCallKit = YES;
-                [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:NO completion:^{
-                }];
-
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
-                    [weakSelf callingAction:noti];
-                });
-                
-//                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-//                theSipEngine->AnswerCall();
-//                theSipEngine->StopRinging();
-            }
-                break;
-            case UNCallActionTypeEnd:
-            {
-                //对APP通话进行挂断操作
-                if (weakSelf.callCominginVC) {
-                    [weakSelf.callCominginVC endCallPhone];
-                }
-                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-                if(theSipEngine->InCalling())
-                    theSipEngine->TerminateCall();
-                weakSelf.callStopTime = [NSDate date];
-                weakSelf.hostHungup = @"source";
-            }
-                break;
-            case UNCallActionTypeMute:
-            {
-                //对APP通话进行无声操作
-                if ([action isKindOfClass:[CXSetMutedCallAction class]]) {
-                    CXSetMutedCallAction *muteAction = (CXSetMutedCallAction *)action;
-                    //发送是否无声的操作
-                    if (weakSelf.callCominginVC) {
-                        weakSelf.muteStatus = muteAction.isMuted;
-                        [weakSelf.callCominginVC setUpMuteButtonStatu:muteAction.isMuted];
-                    }
-                }
-
-            }
-                break;
-            case UNCallActionTypeHeld:
-            {
-                
-            }
-                break;
-            default:
-                break;
-        }
-        
-    };
  
+//    kWeakSelf
+//    callCenter.actionNotificationBlock = ^(CXCallAction *action, UNCallActionType actionType){
+//        switch (actionType) {
+//            case UNCallActionTypeAnswer:
+//            {
+//                weakSelf.callCominginVC                    = [[CallComingInViewController alloc] init];
+//                weakSelf.callCominginVC.nameStr            = [weakSelf checkLinkNameWithPhoneStr:name];
+//                weakSelf.callCominginVC.isPresentInCallKit = YES;
+//                [weakSelf.navigationController presentViewController:weakSelf.callCominginVC animated:NO completion:^{
+//                }];
+//                
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
+//                    [weakSelf callingAction:noti];
+//                });
+//                
+//                //                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+//                //                theSipEngine->AnswerCall();
+//                //                theSipEngine->StopRinging();
+//            }
+//                break;
+//            case UNCallActionTypeEnd:
+//            {
+//                //对APP通话进行挂断操作
+//                if (weakSelf.callCominginVC) {
+//                    [weakSelf.callCominginVC endCallPhone];
+//                }
+//                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+//                if(theSipEngine->InCalling())
+//                    theSipEngine->TerminateCall();
+//                weakSelf.callStopTime = [NSDate date];
+//                weakSelf.hostHungup = @"source";
+//            }
+//                break;
+//            case UNCallActionTypeMute:
+//            {
+//                //对APP通话进行无声操作
+//                if ([action isKindOfClass:[CXSetMutedCallAction class]]) {
+//                    CXSetMutedCallAction *muteAction = (CXSetMutedCallAction *)action;
+//                    //发送是否无声的操作
+//                    if (weakSelf.callCominginVC) {
+//                        weakSelf.muteStatus = muteAction.isMuted;
+//                        [weakSelf.callCominginVC setUpMuteButtonStatu:muteAction.isMuted];
+//                    }
+//                }
+//                
+//            }
+//                break;
+//            case UNCallActionTypeHeld:
+//            {
+//                
+//            }
+//                break;
+//            case UNCallActionTypeStart:
+//            {
+//                //发起通话
+//                NSLog(@"发起通话");
+//                if ([action isKindOfClass:[CXStartCallAction class]]) {
+//                    CXStartCallAction *startAction = (CXStartCallAction *)action;
+//                    //手环电话
+//                    if ([BlueToothDataManager shareManager].isRegisted) {
+//                        if (startAction.handle.value) {
+//                            [weakSelf callUnitysNumber:startAction.handle.value];
+//                        }
+//                    } else {
+//                        HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
+//                    }
+//                }
+//            }
+//                break;
+//            default:
+//                break;
+//        }
+//        
+//    };
+
 }
 
 

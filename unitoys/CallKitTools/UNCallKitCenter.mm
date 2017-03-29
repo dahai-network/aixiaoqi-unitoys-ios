@@ -125,6 +125,7 @@
 //    return _callUUID;
 //}
 
+//网络电话呼出
 - (NSUUID *)startRequestCalllWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion
 {
     CXHandle* handle=[[CXHandle alloc]initWithType:CXHandleTypePhoneNumber value:contact.phoneNumber];
@@ -287,7 +288,7 @@
             self.actionNotificationBlock(action, UNCallActionTypeEnd);
         }
     }
-    [self updateCall:action.callUUID state:UNCallStateEnded];
+//    [self updateCall:action.callUUID state:UNCallStateEnded];
     [action fulfill];
 }
 

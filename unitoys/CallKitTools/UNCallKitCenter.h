@@ -51,6 +51,8 @@ typedef void(^UNCallKitActionNotificationBlock)(CXCallAction *action, UNCallActi
 
 @property (nonatomic, copy) UNCallKitActionNotificationBlock actionNotificationBlock;
 
+@property (nonatomic, copy) NSString *currentCallKitName;
+
 - (void)configurationCallProvider;
 
 - (NSUUID *)reportIncomingCallWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion;

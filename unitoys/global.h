@@ -261,7 +261,7 @@
 #pragma mark TCP断开状态
 #define SocketCloseByUser @"SocketCloseByUser"
 #define SocketCloseByNet @"SocketCloseByNet"
-#define SocketCloseByServer @"SocketCloseByUser"
+#define SocketCloseByServer @"SocketCloseByServer"
 
 
 #pragma mark 顶端状态
