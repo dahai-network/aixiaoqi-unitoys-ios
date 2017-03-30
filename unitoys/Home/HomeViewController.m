@@ -539,6 +539,7 @@
 #pragma mark 设置按钮的文字和图片
 - (void)setButtonImageAndTitleWithTitle:(NSString *)title {
     [self.leftButton setTitle:INTERNATIONALSTRING(title) forState:UIControlStateNormal];
+    [BlueToothDataManager shareManager].homeVCLeftTitle = INTERNATIONALSTRING(title);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:title];
     if ([title isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
         //蓝牙未开

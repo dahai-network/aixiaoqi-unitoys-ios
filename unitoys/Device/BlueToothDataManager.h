@@ -56,4 +56,6 @@
 //@property (nonatomic, assign) BOOL isAccordTocheckCard;//是否主动查询是否有卡
 //@property (nonatomic, assign) int blutoothStatue;//蓝牙状态 0:蓝牙未开 1:蓝牙已开启但未连接 2: 蓝牙已连接但未绑定 3:蓝牙已绑定设备但未插卡 4:设备已插卡
 
+@property (nonatomic, copy) NSString *homeVCLeftTitle;
+
 @end

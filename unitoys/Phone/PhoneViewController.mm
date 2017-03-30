@@ -195,23 +195,26 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     
                 }
                     break;
-//                case UNCallActionTypeStart:
-//                {
-//                    //发起通话
-//                    NSLog(@"发起通话");
-//                    if ([action isKindOfClass:[CXStartCallAction class]]) {
-//                        CXStartCallAction *startAction = (CXStartCallAction *)action;
-//                        //手环电话
-//                        if ([BlueToothDataManager shareManager].isRegisted) {
-//                            if (startAction.handle.value) {
-//                                [weakSelf callUnitysNumber:startAction.handle.value];
-//                            }
-//                        } else {
-//                            HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
-//                        }
-//                    }
-//                }
-//                    break;
+                case UNCallActionTypeStart:
+                {
+                    //发起通话
+                    NSLog(@"发起通话");
+                    if ([action isKindOfClass:[CXStartCallAction class]]) {
+                        CXStartCallAction *startAction = (CXStartCallAction *)action;
+                        //手环电话
+                        if ([BlueToothDataManager shareManager].isRegisted) {
+                            if (startAction.handle.value) {
+                                [weakSelf callUnitysNumber:startAction.handle.value];
+                            }
+                        } else {
+                            HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
+                            if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+                            }
+                        }
+                    }
+                }
+                    break;
                 default:
                     break;
             }
@@ -1843,6 +1846,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [weakSelf callUnitysNumber:phoneNumber];
             } else {
                 HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
+                if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+                }
             }
         }
     };
@@ -2352,6 +2358,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                             }
                         } else {
                             HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
+                            if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+                            }
                         }
                     }
                 };
@@ -2413,6 +2422,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                         }
                     } else {
                         HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
+                        if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+                        }
                     }
                 }
             };
