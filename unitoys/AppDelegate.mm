@@ -119,6 +119,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
+    [BlueToothDataManager shareManager].isOpened = YES;
     
 //    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
     
@@ -128,7 +129,7 @@
 //    
 //    self.isPushKit = YES;
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     //检查更新
     [self checkVersion];

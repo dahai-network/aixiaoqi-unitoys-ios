@@ -481,7 +481,8 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"空中升级的请求结果 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
-                [self dj_alertAction:self alertTitle:@"设备固件有更新" actionTitle:@"升级" message:responseObj[@"data"][@"Descr"] alertAction:^{
+                NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
+                [self dj_alertAction:self alertTitle:@"设备固件有更新" actionTitle:@"升级" message:infoStr alertAction:^{
                     //点击升级
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"OTAAction" object:responseObj[@"data"][@"Url"]];
                 }];
