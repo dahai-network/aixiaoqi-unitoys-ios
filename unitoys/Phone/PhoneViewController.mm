@@ -187,7 +187,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                             [weakSelf.callCominginVC setUpMuteButtonStatu:muteAction.isMuted];
                         }
                     }
-                    
                 }
                     break;
                 case UNCallActionTypeHeld:

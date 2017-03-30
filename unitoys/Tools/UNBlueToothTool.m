@@ -626,8 +626,8 @@ static UNBlueToothTool *instance = nil;
             [BlueToothDataManager shareManager].isOpened = NO;
             break;
         case CBManagerStatePoweredOn:
-            NSLog(@"当前蓝牙状态CBManagerStatePoweredOn");
         {
+            NSLog(@"当前蓝牙状态CBManagerStatePoweredOn");
             NSLog(@"蓝牙设备开着");
             [self.peripherals removeAllObjects];
             [BlueToothDataManager shareManager].isOpened = YES;

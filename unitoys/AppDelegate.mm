@@ -2285,9 +2285,13 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 
             }else{
                 NSLog(@"当前没有注册过,需要重新注册");
+                [self closeTCP];
                 [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
                 [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
                 [BlueToothDataManager shareManager].bleStatueForCard = 0;
+                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                [BlueToothDataManager shareManager].stepNumber = @"0";
+                [BlueToothDataManager shareManager].isRegisted = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
             }
         });
