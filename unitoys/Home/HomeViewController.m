@@ -2137,7 +2137,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section==0) {
-        return 120*[UIScreen mainScreen].bounds.size.width/340+194;
+        return 120*[UIScreen mainScreen].bounds.size.width/340+92;
     } else if(indexPath.section==1){
         if (self.arrOrderList.count>0){
             if (indexPath.row==0) {
