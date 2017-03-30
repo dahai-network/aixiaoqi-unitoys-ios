@@ -114,10 +114,10 @@
 		3C20C20E1E6CF3CC008078BB /* UNSipEngineInitialize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C20C1E6CF3CC008078BB /* UNSipEngineInitialize.mm */; };
 		3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */; };
 		3C20C2131E6D00F1008078BB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C20C2121E6D00F1008078BB /* PushKit.framework */; };
+		3C4863601E8CF111006FD87C /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C48635F1E8CF111006FD87C /* number_location.zip */; };
 		3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F81E5EB65B001E67C4 /* logo_call.png */; };
 		3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */; };
 		3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */; };
-		3C52B2031E5EF87A001E67C4 /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B2021E5EF87A001E67C4 /* number_location.zip */; };
 		3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */; };
 		3C80965F1E8A317200942B0C /* UNNetWorkStatuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C80965E1E8A317200942B0C /* UNNetWorkStatuManager.m */; };
 		3C8096651E8A423D00942B0C /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8096641E8A423D00942B0C /* Reachability.m */; };
@@ -521,10 +521,10 @@
 		3C20C20F1E6CF3E5008078BB /* UNCreatLocalNoti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCreatLocalNoti.h; sourceTree = "<group>"; };
 		3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCreatLocalNoti.m; sourceTree = "<group>"; };
 		3C20C2121E6D00F1008078BB /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
+		3C48635F1E8CF111006FD87C /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
 		3C52B1F81E5EB65B001E67C4 /* logo_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_call.png; sourceTree = "<group>"; };
 		3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_callKit.png; sourceTree = "<group>"; };
 		3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_callKit@2x.png"; sourceTree = "<group>"; };
-		3C52B2021E5EF87A001E67C4 /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
 		3C66D0DB1E66714F00A7B125 /* UNDatabaseTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDatabaseTools.h; sourceTree = "<group>"; };
 		3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDatabaseTools.m; sourceTree = "<group>"; };
 		3C80965D1E8A317200942B0C /* UNNetWorkStatuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNNetWorkStatuManager.h; sourceTree = "<group>"; };
@@ -1957,7 +1957,7 @@
 		95F337141D853256000B5461 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				3C52B2021E5EF87A001E67C4 /* number_location.zip */,
+				3C48635F1E8CF111006FD87C /* number_location.zip */,
 				95F337151D853256000B5461 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -2095,11 +2095,11 @@
 				04553F381E73FB840025CA34 /* scan.gif in Resources */,
 				04440CF41E778A2E00206877 /* Localizable.strings in Resources */,
 				04440D301E77C98F00206877 /* CallComingInViewController.xib in Resources */,
+				3C4863601E8CF111006FD87C /* number_location.zip in Resources */,
 				04440D451E77CEE000206877 /* BindGiftBagCardViewController.xib in Resources */,
 				04A9497E1E826875007611F7 /* WristbandSettingViewController.xib in Resources */,
 				0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */,
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
-				3C52B2031E5EF87A001E67C4 /* number_location.zip in Resources */,
 				95F337221D853256000B5461 /* Main.storyboard in Resources */,
 				04553F361E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib in Resources */,
 				3C15135B1E796CBD00AF48B6 /* AlarmListViewController.xib in Resources */,

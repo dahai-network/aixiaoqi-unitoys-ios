@@ -256,7 +256,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     // 取得沙盒目录
     NSString *localPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     // 要检查的文件目录
-    NSString *dbPath = [localPath  stringByAppendingPathComponent:@"number_location.db"];
+    NSString *dbPath = [localPath stringByAppendingPathComponent:@"number_location.db"];
     NSString *zipPath = [[NSBundle mainBundle] pathForResource:@"number_location" ofType:@"zip"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     //判断是否有数据库文件
@@ -265,8 +265,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         //判断是否有解压文件
         if ([fileManager fileExistsAtPath:zipPath]) {
             NSLog(@"解压文件存在");
+            NSError *error;
             //解压文件
-            if ([SSZipArchive unzipFileAtPath:zipPath toDestination:localPath overwrite:YES password:nil error:nil]) {
+            if ([SSZipArchive unzipFileAtPath:zipPath toDestination:localPath overwrite:YES password:nil error:&error]) {
+                if (error) {
+                    NSLog(@"error---%@", error);
+                }else{
+                    NSLog(@"解压成功");
+                }
 //                NSError *error = nil;
 //                BOOL isDelete = [fileManager removeItemAtPath:zipPath error:&error];
 //                if (isDelete) {
@@ -724,84 +730,61 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSString *localPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     // 要检查的文件目录
     NSString *path = [localPath  stringByAppendingPathComponent:@"number_location.db"];
-    FMDatabase *db = [FMDatabase databaseWithPath:path];
-    if (![db open]) {
-        NSLog(@"数据库打开失败！");
-    }else{
-        NSString *number;
-        if ([calltype isEqualToString:@"去电"]) {
-            number = [dicPhoneRecord objectForKey:@"destnumber"];
-        } else {
-            number = [dicPhoneRecord objectForKey:@"hostnumber"];
-        }
-
-        if ([self isZeroStarted:number]) {
-            NSString *prefix;
-            if (number.length >= 3) {
-                if ([[number substringToIndex:2] isEqualToString:@"01"]) {
-                    prefix = [number substringWithRange:NSMakeRange(1, 2)];
-                }else if ([[number substringToIndex:2] isEqualToString:@"02"]) {
-                    prefix = [number substringWithRange:NSMakeRange(1, 2)];
-                }else if ([[number substringToIndex:2] isEqualToString:@"00"]) {
-                    if (number.length >= 5) {
-                        prefix = [number substringWithRange:NSMakeRange(1, 4)];
-                    }
-                }else {
-                    if (number.length >= 4) {
-                        prefix = [number substringWithRange:NSMakeRange(1, 3)];
-                    }else{
-                        prefix = number;
-                    }
-                }
-            }else{
-                prefix = number;
-            }
-
-            
-            NSString *cityid;
-            NSString *provinceid;
-            NSString *provinceName = @"";
-            NSString *cityName = @"";
-            
-            FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM Number_0 where number='%@'",prefix]];
-            if ([rs next]) {
-                cityid = [NSString stringWithFormat:@"%zd",[rs longLongIntForColumn:@"city_id"]];
-                provinceid = [NSString stringWithFormat:@"%zd", [rs longLongIntForColumn:@"province_id"]];
-            }
-            rs = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM Province where id='%@'",provinceid]];
-            if ([rs next]) {
-                provinceName = [rs stringForColumn:@"name"];
-            }
-            
-            if (cityid.length) {
-                rs = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM City where id='%@'",cityid]];
-                if ([rs next]) {
-                    cityName = [rs stringForColumn:@"name"];
-                }
-            }
-            [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",provinceName,cityName] forKey:@"location"];
-            [rs close];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    FMDatabase *db;
+    //判断是否有数据库文件
+    if ([fileManager fileExistsAtPath:path]) {
+        db = [FMDatabase databaseWithPath:path];
+        if (![db open]) {
+            NSLog(@"数据库打开失败！");
         }else{
+            NSString *number;
+            if ([calltype isEqualToString:@"去电"]) {
+                number = [dicPhoneRecord objectForKey:@"destnumber"];
+            } else {
+                number = [dicPhoneRecord objectForKey:@"hostnumber"];
+            }
             
-            if ([number length]>=8) {
-                NSString *prefix = [number substringToIndex:3];
-                NSString *center = [number substringWithRange:{3,4}];
+            if ([self isZeroStarted:number]) {
+                NSString *prefix;
+                if (number.length >= 3) {
+                    if ([[number substringToIndex:2] isEqualToString:@"01"]) {
+                        prefix = [number substringWithRange:NSMakeRange(1, 2)];
+                    }else if ([[number substringToIndex:2] isEqualToString:@"02"]) {
+                        prefix = [number substringWithRange:NSMakeRange(1, 2)];
+                    }else if ([[number substringToIndex:2] isEqualToString:@"00"]) {
+                        if (number.length >= 5) {
+                            prefix = [number substringWithRange:NSMakeRange(1, 4)];
+                        }
+                    }else {
+                        if (number.length >= 4) {
+                            prefix = [number substringWithRange:NSMakeRange(1, 3)];
+                        }else{
+                            prefix = number;
+                        }
+                    }
+                }else{
+                    prefix = number;
+                }
+                
                 
                 NSString *cityid;
                 NSString *provinceid;
                 NSString *provinceName = @"";
                 NSString *cityName = @"";
                 
-                FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM Number_%@ where number='%@'",prefix,center]];
+                FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM Number_0 where number='%@'",prefix]];
                 if ([rs next]) {
                     cityid = [NSString stringWithFormat:@"%zd",[rs longLongIntForColumn:@"city_id"]];
                     provinceid = [NSString stringWithFormat:@"%zd", [rs longLongIntForColumn:@"province_id"]];
                 }
-                
                 rs = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM Province where id='%@'",provinceid]];
                 if ([rs next]) {
                     provinceName = [rs stringForColumn:@"name"];
                 }
+                
                 if (cityid.length) {
                     rs = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM City where id='%@'",cityid]];
                     if ([rs next]) {
@@ -809,20 +792,52 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     }
                 }
                 [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",provinceName,cityName] forKey:@"location"];
-                
                 [rs close];
             }else{
-                NSString *phoneStr = [self checkPhoneNumberIsMobile:number];
-                if (phoneStr) {
-                    [dicPhoneRecord setObject:phoneStr forKey:@"location"];
+                if ([number length]>=8) {
+                    NSString *prefix = [number substringToIndex:3];
+                    NSString *center = [number substringWithRange:{3,4}];
+                    
+                    NSString *cityid;
+                    NSString *provinceid;
+                    NSString *provinceName = @"";
+                    NSString *cityName = @"";
+                    
+                    FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM Number_%@ where number='%@'",prefix,center]];
+                    if ([rs next]) {
+                        cityid = [NSString stringWithFormat:@"%zd",[rs longLongIntForColumn:@"city_id"]];
+                        provinceid = [NSString stringWithFormat:@"%zd", [rs longLongIntForColumn:@"province_id"]];
+                    }
+                    
+                    rs = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM Province where id='%@'",provinceid]];
+                    if ([rs next]) {
+                        provinceName = [rs stringForColumn:@"name"];
+                    }
+                    if (cityid.length) {
+                        rs = [db executeQuery:[NSString stringWithFormat:@"SELECT name FROM City where id='%@'",cityid]];
+                        if ([rs next]) {
+                            cityName = [rs stringForColumn:@"name"];
+                        }
+                    }
+                    [dicPhoneRecord setObject:[NSString stringWithFormat:@"%@ %@",provinceName,cityName] forKey:@"location"];
+                    
+                    [rs close];
+                }else{
+                    NSString *phoneStr = [self checkPhoneNumberIsMobile:number];
+                    if (phoneStr) {
+                        [dicPhoneRecord setObject:phoneStr forKey:@"location"];
+                    }
                 }
             }
+            //不在此时插入数据
+            //        [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
+            //        [self.tableView reloadData];
+            [db close];
         }
-        //不在此时插入数据
-//        [self.arrPhoneRecord insertObject:dicPhoneRecord atIndex:0];
-//        [self.tableView reloadData];
-        [db close];
+
     }
+    
+    
     
 //    [self insertSqlData:dicPhoneRecord];
     

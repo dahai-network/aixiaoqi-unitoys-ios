@@ -129,7 +129,7 @@
 //    
 //    self.isPushKit = YES;
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     //检查更新
     [self checkVersion];
@@ -435,6 +435,9 @@
     }
     self.sendTcpSocket = nil;
     [BlueToothDataManager shareManager].isTcpConnected = NO;
+    [BlueToothDataManager shareManager].isBeingRegisting = NO;
+    [BlueToothDataManager shareManager].isRegisted = NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOTCONNECTED];
 }
 
 - (void)connectingBLEAction {
@@ -835,9 +838,10 @@
 // 如果对象关闭了 这里也会调用
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
     NSLog(@"tcp连接失败 %@", err);
+    [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
     if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
-        [BlueToothDataManager shareManager].isTcpConnected = NO;
         self.sendTcpSocket.userData = SocketCloseByNet;
+        [self closeTCP];
         NSLog(@"无网络");
     }else{
         if (err) {
@@ -1674,7 +1678,14 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
             NSLog(@"进入前台");
             [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
+            [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
             [self closeTCP];
+            [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+            [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
+            [BlueToothDataManager shareManager].bleStatueForCard = 0;
+            [BlueToothDataManager shareManager].isBeingRegisting = NO;
+            [BlueToothDataManager shareManager].stepNumber = @"0";
+            [BlueToothDataManager shareManager].isRegisted = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
         }
         [UNPushKitMessageManager shareManager].isAlreadyInForeground = YES;
@@ -2016,6 +2027,11 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         NSLog(@"开始电话接入======%@=======", payload.dictionaryPayload);
         if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
             NSLog(@"前台PushKit消息---%@", payload.dictionaryPayload);
+            if (!self.sendTcpSocket.isConnected || ![BlueToothDataManager shareManager].isTcpConnected) {
+                NSLog(@"TCP前台断开重连");
+                [self closeTCP];
+                [self creatAsocketTcp];
+            }
             return;
         }
         if (payload.dictionaryPayload) {
