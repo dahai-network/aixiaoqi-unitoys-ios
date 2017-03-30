@@ -128,7 +128,7 @@
 //    
 //    self.isPushKit = YES;
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     //检查更新
     [self checkVersion];
@@ -2154,28 +2154,33 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 - (void)checkPushKitMessage:(NSDictionary *)servicePushKitData
 {
     if (!servicePushKitData) {
-        return;
-    }
-    if ([[UNPushKitMessageManager shareManager].pushKitMsgQueue containsObject:servicePushKitData]) {
-        [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeObject:servicePushKitData];
-        NSLog(@"删除后当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
         //发送新的pushkit消息
         if ([UNPushKitMessageManager shareManager].pushKitMsgQueue.count) {
             [self sendPushKitMessage:[UNPushKitMessageManager shareManager].pushKitMsgQueue.firstObject];
         }
-//        else{
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
-//        }
     }else{
-        NSLog(@"不包含当前队列消息");
-        if ([UNPushKitMessageManager shareManager].pushKitMsgQueue.count) {
-            [self sendPushKitMessage:[UNPushKitMessageManager shareManager].pushKitMsgQueue.firstObject];
+        [UNPushKitMessageManager shareManager].receivePushKitDataFormServices = nil;
+        if ([[UNPushKitMessageManager shareManager].pushKitMsgQueue containsObject:servicePushKitData]) {
+            [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeObject:servicePushKitData];
+            NSLog(@"删除后当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
+            //发送新的pushkit消息
+            if ([UNPushKitMessageManager shareManager].pushKitMsgQueue.count) {
+                [self sendPushKitMessage:[UNPushKitMessageManager shareManager].pushKitMsgQueue.firstObject];
+            }
+            //        else{
+            //            [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
+            //        }
+        }else{
+            NSLog(@"不包含当前队列消息");
+            if ([UNPushKitMessageManager shareManager].pushKitMsgQueue.count) {
+                [self sendPushKitMessage:[UNPushKitMessageManager shareManager].pushKitMsgQueue.firstObject];
+            }
+            //        else{
+            //            [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
+            //        }
         }
-//        else{
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];
-//        }
+
     }
-    [UNPushKitMessageManager shareManager].receivePushKitDataFormServices = nil;
 }
 
 - (void)sendPushKitMessage:(NSDictionary *)servicePushKitData
@@ -2279,6 +2284,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 
             }else{
                 NSLog(@"当前没有注册过,需要重新注册");
+                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
                 [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
                 [BlueToothDataManager shareManager].bleStatueForCard = 0;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
