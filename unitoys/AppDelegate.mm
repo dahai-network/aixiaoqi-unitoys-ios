@@ -120,14 +120,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
     [BlueToothDataManager shareManager].isOpened = YES;
-    
-//    NSString *servicePushKitData = @"108a10002ffd82190003001a010100c71500010500001900023f007f206f740000a0c0000016";
-    
-//    NSString *servicePushKitData = @"108A1000300CBDE7000E002A010100C72500090510000200033F007F206F740000A088000010A458F84D016BD7C2A75F6A752D6E0FD9";
-//    
-//    [self separatePushKitString:servicePushKitData];
-//    
-//    self.isPushKit = YES;
     //制定真机调试保存日志文件
     [self redirectNSLogToDocumentFolder];
     
@@ -312,7 +304,7 @@
     
     UIWindow   *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     alertWindow.rootViewController = [[UIViewController alloc] init];
-    alertWindow.windowLevel = UIWindowLevelAlert + 1;
+    alertWindow.windowLevel = UIWindowLevelStatusBar + 1;
     [alertWindow makeKeyAndVisible];
     [alertWindow.rootViewController presentViewController:alertVC animated:YES completion:nil];
 }
@@ -326,7 +318,7 @@
     
     UIWindow   *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     alertWindow.rootViewController = [[UIViewController alloc] init];
-    alertWindow.windowLevel = UIWindowLevelAlert + 1;
+    alertWindow.windowLevel = UIWindowLevelStatusBar + 1;
     [alertWindow makeKeyAndVisible];
     [alertWindow.rootViewController presentViewController:alertVC animated:YES completion:nil];
 }

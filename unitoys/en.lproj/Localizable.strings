@@ -66,7 +66,7 @@
 "设备固件有更新" = "Firmware Update";
 "升级" = "Upgrade";
 "网络貌似有问题" = "Network seems to have a problem";
-"未连接手环" = "Device is not connected";
+"未连接设备" = "Device is not connected";
 "套餐状态" = "Package Status";
 "套餐状态：未激活" = "Package Status:Unactivated";
 "套餐状态：已激活" = "Package Status:Activated";

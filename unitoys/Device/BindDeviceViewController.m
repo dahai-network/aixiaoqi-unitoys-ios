@@ -546,7 +546,7 @@
                 }
             }
         } else {
-            HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
+            HUDNormal(INTERNATIONALSTRING(@"未连接设备"))
         }
     }
     if (indexPath.section == 1) {
@@ -555,7 +555,7 @@
                 if ([BlueToothDataManager shareManager].isConnected) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"searchMyBluetooth" object:@"searchMyBluetooth"];
                 } else {
-                    HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
+                    HUDNormal(INTERNATIONALSTRING(@"未连接设备"))
                 }
                 break;
             case 1:
@@ -571,7 +571,7 @@
                         [self otaDownload];
                     }
                 } else {
-                    HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
+                    HUDNormal(INTERNATIONALSTRING(@"未连接设备"))
                 }
                 break;
             default:
