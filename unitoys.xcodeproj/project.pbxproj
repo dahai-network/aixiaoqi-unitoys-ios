@@ -128,6 +128,8 @@
 		3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */; };
 		3C8E77981E5D280600C4833E /* UNDefines.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E77971E5D280600C4833E /* UNDefines.m */; };
 		3C8E779A1E5D40F400C4833E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8E77991E5D40F400C4833E /* CallKit.framework */; };
+		3CA898771E8DF33F00C38387 /* MBProgressHUD+UNTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */; };
+		3CA898791E8DFD1600C38387 /* MBProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */; };
 		3CC3E0A31E63BE2500A62F8C /* AbroadMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A21E63BE2500A62F8C /* AbroadMessageController.m */; };
 		3CC3E0A71E63C22F00A62F8C /* CustomOrderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A51E63C22F00A62F8C /* CustomOrderCell.m */; };
 		3CC3E0A81E63C22F00A62F8C /* CustomOrderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A61E63C22F00A62F8C /* CustomOrderCell.xib */; };
@@ -544,6 +546,9 @@
 		3C8E77961E5D280600C4833E /* UNDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDefines.h; sourceTree = "<group>"; };
 		3C8E77971E5D280600C4833E /* UNDefines.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDefines.m; sourceTree = "<group>"; };
 		3C8E77991E5D40F400C4833E /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
+		3CA898751E8DF33F00C38387 /* MBProgressHUD+UNTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MBProgressHUD+UNTip.h"; sourceTree = "<group>"; };
+		3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD+UNTip.m"; sourceTree = "<group>"; };
+		3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MBProgressHUD.bundle; sourceTree = "<group>"; };
 		3CC3E0A11E63BE2500A62F8C /* AbroadMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadMessageController.h; sourceTree = "<group>"; };
 		3CC3E0A21E63BE2500A62F8C /* AbroadMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadMessageController.m; sourceTree = "<group>"; };
 		3CC3E0A41E63C22F00A62F8C /* CustomOrderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomOrderCell.h; sourceTree = "<group>"; };
@@ -1176,6 +1181,9 @@
 				3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */,
 				3C80965D1E8A317200942B0C /* UNNetWorkStatuManager.h */,
 				3C80965E1E8A317200942B0C /* UNNetWorkStatuManager.m */,
+				3CA898751E8DF33F00C38387 /* MBProgressHUD+UNTip.h */,
+				3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */,
+				3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -2068,6 +2076,7 @@
 				3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */,
 				740FD3961E287F9E009413F1 /* simcom in Resources */,
 				04440D3E1E77CE9500206877 /* ActivateGiftCardViewController.xib in Resources */,
+				3CA898791E8DFD1600C38387 /* MBProgressHUD.bundle in Resources */,
 				04F727A11E641CE4002EB54C /* README.txt in Resources */,
 				952B2B071DC22D75006A7C69 /* messages.plist in Resources */,
 				0480516D1E86682F00E8AB55 /* PurviewSettingViewController.xib in Resources */,
@@ -2284,6 +2293,7 @@
 				95E9185A1DDC7EB6005DABC0 /* BeforeOutViewController.m in Sources */,
 				04F727AB1E641CE4002EB54C /* MultipartMessageHeaderField.m in Sources */,
 				95CD33F01D9CE4F300EE5DD3 /* NSDataEx.m in Sources */,
+				3CA898771E8DF33F00C38387 /* MBProgressHUD+UNTip.m in Sources */,
 				04553F301E70EE980025CA34 /* ChooseDeviceTypeViewController.m in Sources */,
 				954A87CE1D98BBA700570843 /* JSONModelArray.m in Sources */,
 				9536B9741D8FC16600CD6B78 /* UnderlineField.m in Sources */,

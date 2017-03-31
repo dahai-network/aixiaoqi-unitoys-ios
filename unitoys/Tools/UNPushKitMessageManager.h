@@ -127,5 +127,13 @@ typedef NS_ENUM(NSUInteger, PushKitMessageType) {
 @property (nonatomic, strong) NSTimer *tcpReconnectTimer;
 
 
+/**
+ *  是否为外部CallKit电话
+ */
+@property (nonatomic, assign) BOOL isSysCallKitPhone;
+/**
+ *  外部CallKit电话handle
+ */
+@property (nonatomic, copy) NSString *callKitHandleString;
 
 @end

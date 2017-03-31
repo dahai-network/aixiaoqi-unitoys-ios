@@ -50,6 +50,8 @@
 #import "UNPushKitMessageManager.h"
 #import "UNNetWorkStatuManager.h"
 
+#import "MBProgressHUD+UNTip.h"
+
 #endif
 // 如果需要使 idfa功能所需要引 的头 件(可选) #import <AdSupport/AdSupport.h>
 
@@ -92,10 +94,12 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //制定真机调试保存日志文件
+    [self redirectNSLogToDocumentFolder];
+    
+    NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
     [BlueToothDataManager shareManager].isOpened = YES;
-    //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
     
     [[UNNetWorkStatuManager shareManager] initNetWorkStatuManager];
     [UNNetWorkStatuManager shareManager].netWorkStatuChangeBlock = ^(NetworkStatus currentStatu){
@@ -1002,6 +1006,10 @@
             [BlueToothDataManager shareManager].stepNumber = @"0";
             [BlueToothDataManager shareManager].isRegisted = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
+            if ([UNPushKitMessageManager shareManager].isSysCallKitPhone && [UNPushKitMessageManager shareManager].callKitHandleString) {
+                NSLog(@"拨打CallKit电话");
+                [self callPhoneFromCallKitWithHandleString:[[UNPushKitMessageManager shareManager].callKitHandleString copy]];
+            }
         });
     }else if ([classStr isEqualToString:@"0f"]) {
         NSLog(@"sim卡断开连接");
@@ -1572,7 +1580,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     //进入前台重新注册
     if (![UNPushKitMessageManager shareManager].isAlreadyInForeground) {
         if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-            [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
             NSLog(@"进入前台");
             [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
             [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -1587,8 +1594,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         }
         [UNPushKitMessageManager shareManager].isAlreadyInForeground = YES;
     }
-
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -1884,30 +1890,49 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     if (kSystemVersionValue < 10.0) {
         return NO;
     }
+    NSLog(@"application--continueUserActivity");
     NSLog(@"userActivity:%@", userActivity.description);
     NSLog(@"userActivity--userInfo:%@", userActivity.userInfo);
-    NSString * handle =userActivity.startCallHandle;
-    UNContact * contact = [[UNContact alloc] init];
-    contact.phoneNumber= handle;
-    contact.uniqueIdentifier=@"";
-    if(nil == handle ){
-        NSLog(@"Could not determine start call handle from user activity:%@", userActivity);
-        return NO;
+    if ([BlueToothDataManager shareManager].isTcpConnected && ![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+        NSString * handle =userActivity.startCallHandle;
+        if(nil == handle ){
+            [UNPushKitMessageManager shareManager].isSysCallKitPhone = NO;
+            [UNPushKitMessageManager shareManager].callKitHandleString = nil;
+            NSLog(@"Could not determine start call handle from user activity:%@", userActivity);
+            return NO;
+        }else{
+            [self callPhoneFromCallKitWithHandleString:handle];
+            return YES;
+        }
     }else{
-        UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
-                
-            }];
-            NSLog(@"callUUID==%@", callUUID);
-            [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
+        [UNPushKitMessageManager shareManager].isSysCallKitPhone = YES;
+        [UNPushKitMessageManager shareManager].callKitHandleString = userActivity.startCallHandle;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [MBProgressHUD showMessage:@"正在注册电话,注册成功后将为您拨打电话"];
         });
-        return YES;
     }
+
     return NO;
 }
 
+- (void)callPhoneFromCallKitWithHandleString:(NSString *)handle
+{
+    [UNPushKitMessageManager shareManager].isSysCallKitPhone = NO;
+    [UNPushKitMessageManager shareManager].callKitHandleString = nil;
+    
+    UNContact * contact = [[UNContact alloc] init];
+    contact.phoneNumber= handle;
+    contact.uniqueIdentifier=@"";
+    UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
+            
+        }];
+        NSLog(@"callUUID==%@", callUUID);
+        [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
+    });
+}
 
 
 #pragma mark --- PuskKitDelegate
