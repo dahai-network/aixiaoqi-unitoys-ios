@@ -95,7 +95,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -1589,15 +1589,15 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
             [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
             [self closeTCP];
-            [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+            [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
             [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
             [BlueToothDataManager shareManager].bleStatueForCard = 0;
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
             [BlueToothDataManager shareManager].stepNumber = @"0";
             [BlueToothDataManager shareManager].isRegisted = NO;
-            
+
             //在pushkit里初始化蓝牙
-            [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+//            [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
         }
         [UNPushKitMessageManager shareManager].isAlreadyInForeground = YES;
@@ -1998,7 +1998,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             }else if ([messageType isEqualToString:@"05"]){
                 NSLog(@"心跳包PushKit消息");
                 [self checkCurrentPushKitMessage:serviceTimeData];
-                
+                [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
             }else if ([messageType isEqualToString:@"0f"]){
                 NSLog(@"SIM卡断开连接PushKit消息");
                 [self checkCurrentPushKitMessage:serviceTimeData];
