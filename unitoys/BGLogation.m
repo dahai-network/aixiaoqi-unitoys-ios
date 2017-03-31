@@ -16,6 +16,8 @@
 @property (strong , nonatomic) BGTask *bgTask; //后台任务
 @property (strong , nonatomic) NSTimer *restarTimer; //重新开启后台任务定时器
 @property (strong , nonatomic) NSTimer *closeCollectLocationTimer; //关闭定位定时器 （减少耗电）
+@property (nonatomic, assign) BOOL isShowNetwork;//是否显示网络请求提示
+@property (nonatomic, assign) BOOL isShowlocation;//是否显示定位权限提示
 @end
 @implementation BGLogation
 //初始化
@@ -182,13 +184,19 @@
     {
         case kCLErrorNetwork: // general, network-related error
         {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"网络错误") message:INTERNATIONALSTRING(@"请检查网络连接") delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-            [alert show];
+            if (!self.isShowNetwork) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"网络错误") message:INTERNATIONALSTRING(@"请检查网络连接") delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                [alert show];
+                self.isShowNetwork = YES;
+            }
         }
             break;
         case kCLErrorDenied:{
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"请开启后台服务") message:INTERNATIONALSTRING(@"应用没有不可以定位，需要在在设置->通用->后台应用刷新开启") delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-            [alert show];
+            if (!self.isShowlocation) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"请开启后台服务") message:INTERNATIONALSTRING(@"应用没有开启后台定位功能，需要在在设置->通用->后台应用刷新开启") delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                [alert show];
+                self.isShowlocation = YES;
+            }
         }
             break;
         default:

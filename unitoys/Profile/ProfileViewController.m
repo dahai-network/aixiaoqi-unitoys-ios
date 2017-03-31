@@ -328,7 +328,7 @@
 - (NSString *)timeWithTimeIntervalString:(NSString *)timeString
 {
     // 格式化时间
-    NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     formatter.timeZone = [NSTimeZone timeZoneWithName:@"shanghai"];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setTimeStyle:NSDateFormatterShortStyle];

@@ -213,7 +213,17 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange:) name:@"addressBookChanged" object:@"addressBookChanged"];
     }
     //检查更新
-    [self checkVersion];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    // hh与HH的区别:分别表示12小时制,24小时制
+    [formatter setDateFormat:@"YYYY-MM-dd"];
+    NSDate *datenow = [NSDate date];
+    NSString *currentTimeString = [formatter stringFromDate:datenow];
+    NSString *timeString = [[NSUserDefaults standardUserDefaults] objectForKey:@"nowTime"];
+    if (![timeString isEqualToString:currentTimeString]) {
+        [self checkVersion];
+        [[NSUserDefaults standardUserDefaults] setObject:currentTimeString forKey:@"nowTime"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 - (void)checkVersion {
@@ -388,6 +398,7 @@
 - (void)setButtonImageAndTitleWithTitle:(NSString *)title {
     [self.leftButton setTitle:INTERNATIONALSTRING(title) forState:UIControlStateNormal];
     [BlueToothDataManager shareManager].homeVCLeftTitle = INTERNATIONALSTRING(title);
+    [BlueToothDataManager shareManager].statuesTitleString = title;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:title];
     if ([title isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
         //蓝牙未开

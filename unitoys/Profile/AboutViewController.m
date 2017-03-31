@@ -155,20 +155,13 @@
         }
         if (indexPath.row == 1) {
             //跳转到设备界面
-//            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
-//            
-//            BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
-//            if (bindDeviceViewController) {
-//                self.tabBarController.tabBar.hidden = YES;
-//                [self.navigationController pushViewController:bindDeviceViewController animated:YES];
-//            }
             if ([BlueToothDataManager shareManager].isBounded) {
                 //有绑定
                 UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
                 BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
                 if (bindDeviceViewController) {
                     self.tabBarController.tabBar.hidden = YES;
-//                    bindDeviceViewController.hintStrFirst = self.leftButton.titleLabel.text;
+                    bindDeviceViewController.hintStrFirst = [BlueToothDataManager shareManager].statuesTitleString;
                     [self.navigationController pushViewController:bindDeviceViewController animated:YES];
                 }
             } else {
@@ -184,43 +177,6 @@
         
         PurviewSettingViewController *purviewSettingVC = [[PurviewSettingViewController alloc] init];
         [self.navigationController pushViewController:purviewSettingVC animated:YES];
-        
-//        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]]) {
-//            //打开app设置界面
-//            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-//        } else {
-//            NSLog(@"打不开");
-//        }
-//        HUDNormal(@"手环设置")
-//        WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
-//        [self.navigationController pushViewController:wristbandSettingVC animated:YES];
-//        AlarmListViewController *alarmListVC;
-//        switch (indexPath.row) {
-//            case 0:
-//                //来电提醒
-//                HUDNormal(INTERNATIONALSTRING(@"来电提醒"))
-//                break;
-//            case 1:
-//                //手环闹钟
-////                HUDNormal(@"手环闹钟")
-//                alarmListVC = [[AlarmListViewController alloc] init];
-//                [self.navigationController pushViewController:alarmListVC animated:YES];
-//                break;
-//            case 2:
-//                //短信提醒
-//                HUDNormal(INTERNATIONALSTRING(@"短信提醒"))
-//                break;
-//            case 3:
-//                //微信消息提醒
-//                HUDNormal(INTERNATIONALSTRING(@"微信消息提醒"))
-//                break;
-//            case 4:
-//                //QQ消息提醒
-//                HUDNormal(INTERNATIONALSTRING(@"QQ消息提醒"))
-//                break;
-//            default:
-//                break;
-//        }
     }
     if (indexPath.section==3) {
         //开始调用设置
@@ -240,27 +196,11 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    //有闹钟时注销此方法
     if (section == 3) {
         return 0.01;
     } else {
         return 10;
     }
-    
-//    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-//        //有闹钟时打开此方法
-//        if (section == 3) {
-//            return 0.01;
-//        } else {
-//            return 10;
-//        }
-//    } else {
-//        if (section == 2 || section == 3) {
-//            return 0.01;
-//        } else {
-//            return 10;
-//        }
-//    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -298,14 +238,6 @@
             return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
         
     }else if(indexPath.section==2){
-        //有闹钟时打开此行
-//        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-//            return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
-//        } else {
-//            //有闹钟时注销此行
-//            return 0;
-//        }
-//        return 0;
         return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
     }else if(indexPath.section==3){
         

@@ -189,7 +189,7 @@
 "网络错误" = "Network error";
 "请检查网络连接" = "Please check network connection";
 "请开启后台服务" = "Please turn on backstage service";
-"应用没有不可以定位，需要在在设置->通用->后台应用刷新开启" = "Unable to locate, function need to be opened: Settings->General->Background application refresh";
+"应用没有开启后台定位功能，需要在在设置->通用->后台应用刷新开启" = "Unable to locate, function need to be opened: Settings->General->Background application refresh";
 "您尚未安装\"微信App\",请先安装后再返回支付" = "Wechat App is not installed, pay after App is installed";
 "您微信当前版本不支持此功能,请先升级微信应用" = "Current Wechat version can’t support this function, please upgrade Wechat to the newest version";
 
