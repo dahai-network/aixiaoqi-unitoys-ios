@@ -6,6 +6,9 @@
 //  Copyright © 2017年 sumars. All rights reserved.
 //
 
+#define ShowTime 1.0
+#define MessageTime 1.5
+
 #import "MBProgressHUD+UNTip.h"
 
 @implementation MBProgressHUD (UNTip)
@@ -15,11 +18,10 @@
     if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
     hud.labelText = text;
-//    hud.color = [UIColor colorWithRed:.337f green:.57f blue:.731f alpha:1.f];
     hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"MBProgressHUD.bundle/%@", icon]]];
     hud.mode = MBProgressHUDModeCustomView;
     hud.removeFromSuperViewOnHide = YES;
-    [hud hide:YES afterDelay:1.0];
+    [hud hide:YES afterDelay:ShowTime];
 }
 
 + (void)showSuccess:(NSString *)success
@@ -44,18 +46,23 @@
 + (void)showMessage:(NSString *)message
 {
     if (message.length > 8) {
-        [self showMessage:message toView:nil isLongText:YES];
+        [self showMessage:message toView:nil isLongText:YES DelayTime:0];
     }else{
-        [self showMessage:message toView:nil isLongText:NO];
+        [self showMessage:message toView:nil isLongText:NO DelayTime:0];
     }
 }
 
 + (void)showLongMessage:(NSString *)message
 {
-    [self showMessage:message toView:nil isLongText:YES];
+    [self showMessage:message toView:nil isLongText:YES DelayTime:0];
 }
 
-+ (void)showMessage:(NSString *)message toView:(UIView *)view isLongText:(BOOL)isLong {
++ (void)showMessage:(NSString *)message DelayTime:(CGFloat)time
+{
+    [self showMessage:message toView:nil isLongText:NO DelayTime:time];
+}
+
++ (void)showMessage:(NSString *)message toView:(UIView *)view isLongText:(BOOL)isLong DelayTime:(CGFloat)time{
     if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
     // 快速显示一个提示信息
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
@@ -69,10 +76,12 @@
     hud.removeFromSuperViewOnHide = YES;
     // YES代表需要蒙版效果
 //    hud.dimBackground = YES;
-    [hud hide:YES afterDelay:2.0];
+    if (time != 0) {
+        [hud hide:YES afterDelay:time];
+    }else{
+        [hud hide:YES afterDelay:MessageTime];
+    }
 }
-
-
 
 + (void)showLoading
 {

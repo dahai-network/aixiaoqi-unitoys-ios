@@ -34,6 +34,13 @@
  *  @param success 提示文字
  */
 + (void)showLongMessage:(NSString *)message;
+/**
+ *  加载提示信息
+ *
+ *  @param message 提示文字
+ *  @param time    时间
+ */
++ (void)showMessage:(NSString *)message DelayTime:(CGFloat)time;
 
 //正在加载不会自动隐藏
 /**
