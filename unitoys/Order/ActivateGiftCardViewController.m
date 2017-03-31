@@ -105,6 +105,8 @@
             self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
             self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
             [self.tableView reloadData];
+            self.cancelButton.enabled = YES;
+            self.activateButton.enabled = YES;
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -345,6 +347,7 @@
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     if (indexPath.section == 0) {
+        self.isPaySuccess = NO;
         UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
         PackageDetailViewController *packageDetailViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageDetailViewController"];
         switch (self.packageCategory) {

@@ -72,32 +72,6 @@
 @property (nonatomic, strong)NSTimer *timer;
 @property (nonatomic, assign)int sec;
 
-//@property (nonatomic, assign) BOOL isPushKit;
-//@property (nonatomic, copy) NSString *tcpStringWithPushKit;
-//@property (nonatomic, copy) NSString *tcpPacketStrWithPushKit;
-//
-//@property (nonatomic, copy) NSString *pushKitTokenString;
-//@property (nonatomic, copy) NSDictionary *receivePushKitDataFormServices;
-//@property (nonatomic, assign) BOOL isSendTcpString;
-//
-//@property (nonatomic, copy) NSString *iccidString;
-//@property (nonatomic, assign) BOOL isUdpSendFristMsg;
-//
-//@property (nonatomic, strong) NSMutableArray *pushKitMsgQueue;
-//
-////PushKit消息类型
-//@property (nonatomic, assign) PushKitMessageType pushKitMsgType;
-//
-////TCP是否为第一次连接
-////@property (nonatomic, assign) BOOL isTcpFristConnect;
-//
-////是否已经进入过前台
-//@property (nonatomic, assign) BOOL isAlreadyInForeground;
-////TCP是否正在连接
-//@property (nonatomic, assign) BOOL isTcpConnecting;
-////当前PushKit心跳包数据
-//@property (nonatomic, copy) NSString *currentPushKitPingPackect;
-
 @end
 
 @implementation AppDelegate
@@ -121,10 +95,7 @@
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
     [BlueToothDataManager shareManager].isOpened = YES;
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
-    
-    //检查更新
-    [self checkVersion];
+//    [self redirectNSLogToDocumentFolder];
     
     [[UNNetWorkStatuManager shareManager] initNetWorkStatuManager];
     [UNNetWorkStatuManager shareManager].netWorkStatuChangeBlock = ^(NetworkStatus currentStatu){
@@ -255,72 +226,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearTimeoutPushKitMessage) name:@"PushKitMessageDataTimeout" object:nil];
     
     return YES;
-}
-
-- (void)checkVersion {
-    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"0", @"TerminalCode", [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"], @"Version", nil];
-    [SSNetworkRequest getRequest:[apiUpgrade stringByAppendingString:[self getParamStr]] params:info success:^(id responseObj){
-        
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"app升级信息 -- %@", responseObj);
-            if (responseObj[@"data"][@"Descr"]) {
-                NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
-                if ([responseObj[@"data"][@"Mandatory"] intValue] == 0) {
-                    //不强制
-                    [self dj_alertActionWithAlertTitle:@"版本升级" leftActionTitle:@"下次再说" rightActionTitle:@"现在升级" message:infoStr rightAlertAction:^{
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
-                    }];
-                } else if ([responseObj[@"data"][@"Mandatory"] intValue] == 1) {
-                    //强制
-                    [self dj_alertActionWithAlertTitle:@"版本升级" rightActionTitle:@"确定" message:infoStr rightAlertAction:^{
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
-                    }];
-                } else {
-                    NSLog(@"不知道是不是强制性的");
-                }
-            }
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-            NSLog(@"数据请求失败 -- %@", responseObj[@"mag"]);
-        }
-    }failure:^(id dataObj, NSError *error) {
-        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        NSLog(@"数据错误：%@",[error description]);
-        
-    } headers:nil];
-}
-
-- (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle leftActionTitle:(NSString *)leftActionTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
-    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(leftActionTitle) style:UIAlertActionStyleCancel handler:nil];
-    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        rightAlertAction();
-    }];
-    [alertVC addAction:cancelAction];
-    [alertVC addAction:certailAction];
-    
-    UIWindow   *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    alertWindow.rootViewController = [[UIViewController alloc] init];
-    alertWindow.windowLevel = UIWindowLevelStatusBar + 1;
-    [alertWindow makeKeyAndVisible];
-    [alertWindow.rootViewController presentViewController:alertVC animated:YES completion:nil];
-}
-
-- (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
-    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        rightAlertAction();
-    }];
-    [alertVC addAction:certailAction];
-    
-    UIWindow   *alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    alertWindow.rootViewController = [[UIViewController alloc] init];
-    alertWindow.windowLevel = UIWindowLevelStatusBar + 1;
-    [alertWindow makeKeyAndVisible];
-    [alertWindow.rootViewController presentViewController:alertVC animated:YES completion:nil];
 }
 
 - (void)showLaunchView {
@@ -1246,7 +1151,7 @@
 }
 
 - (void)timerAction {
-    if (self.sec == 59) {
+    if (self.sec == 300) {
         self.sec = 0;
         NSString *num = [NSString stringWithFormat:@"%d", self.currentNumber];
         NSString *str = [self hexFinalTLVLength:num];

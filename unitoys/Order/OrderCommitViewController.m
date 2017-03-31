@@ -17,6 +17,7 @@
 @interface OrderCommitViewController ()
 @property (nonatomic, copy)NSString *orderID;
 @property (nonatomic, assign)int packageCategory;
+@property (weak, nonatomic) IBOutlet UIButton *paymentButton;
 
 @end
 
@@ -76,6 +77,7 @@
     [SSNetworkRequest getRequest:apiGetUserAmount params:nil success:^(id responseObj) {
         //
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            self.paymentButton.enabled = YES;
             self.ammountValue = [[[responseObj objectForKey:@"data"] objectForKey:@"amount"] floatValue];
             
             

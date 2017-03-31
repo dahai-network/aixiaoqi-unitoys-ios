@@ -17,6 +17,7 @@
 
 @property (nonatomic,assign) BOOL isSupport4G;
 @property (nonatomic,assign) BOOL isApn;
+@property (weak, nonatomic) IBOutlet UIButton *buyButton;
 
 @property (weak, nonatomic) IBOutlet UIImageView *ivPic;
 @property (weak, nonatomic) IBOutlet UILabel *lblPackageName;
