@@ -36,6 +36,11 @@
     UIDatePicker *pickerview = [[UIDatePicker alloc] initWithFrame: CGRectMake(0,self.view.bounds.size.height-210,self.view.bounds.size.width,105)];
     pickerview.datePickerMode = UIDatePickerModeDate;
     pickerview.minimumDate = [NSDate date];
+    
+    NSTimeInterval time=[self.dicOrderDetail[@"list"][@"LastCanActivationDate"] doubleValue];
+    NSDate *lasteddate=[NSDate dateWithTimeIntervalSince1970:time];
+    pickerview.maximumDate = lasteddate;
+    
     [self setDateForSelectedWithSelected:[NSDate date]];
     NSDate *defaultDate = [NSDate date];
     pickerview.date = defaultDate;//设置UIDatePicker默认显示时间

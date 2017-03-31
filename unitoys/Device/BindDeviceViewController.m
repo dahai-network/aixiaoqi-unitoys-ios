@@ -577,27 +577,6 @@
             default:
                 break;
         }
-//        if (indexPath.row == 0) {
-//            if ([BlueToothDataManager shareManager].isConnected) {
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"searchMyBluetooth" object:@"searchMyBluetooth"];
-//            } else {
-//                HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
-//            }
-//        }
-//        if (indexPath.row == 1) {
-//            self.isNeedToPushNextVC = YES;
-//            WristbandSettingViewController *wristbandSettingVC = [[WristbandSettingViewController alloc] init];
-//            [self.navigationController pushViewController:wristbandSettingVC animated:YES];
-//        }
-//        if (indexPath.row == 2) {
-//            if ([BlueToothDataManager shareManager].isConnected) {
-//                if (!self.isBeingNet) {
-//                    [self otaDownload];
-//                }
-//            } else {
-//                HUDNormal(INTERNATIONALSTRING(@"未连接手环"))
-//            }
-//        }
     }
 }
 

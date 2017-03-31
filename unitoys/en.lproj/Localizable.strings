@@ -156,7 +156,7 @@
 "呼叫失败" = "Failed to call";
 "新来电" = "New coming call";
 "挂断" = "End call";
-"手环内sim卡未注册或已掉线" = "Unregistered SIM card or it is offline";
+"设备内sim卡未注册或已掉线" = "Unregistered SIM card or it is offline";
 "此功能正在开发中" = "This function is still under development";
 "激活境外套餐教程" = "Guidance";
 "正在重启蓝牙" = "Restarting Bluetooth";
@@ -171,7 +171,7 @@
 "还没有连接设备，请先连接设备" = "Please connect device";
 "请忽略您之前的设备" = "Please ignore former device";
 "重启" = "Reboot";
-"未能检测到手环内有电话卡，您需要重启手环重新检测吗？" = "No card was founded, reboot device to redetect";
+"未能检测到设备内有电话卡，您需要重启设备重新检测吗？" = "No card was founded, reboot device to redetect";
 "连接蓝牙设备才能正常使用" = "Enable to use after Bluetooth was connected";
 "蓝牙未连接" = "Bluetooth is not connected";
 "注册失败，是否复位？" = "Failed to register, whether to reset?";

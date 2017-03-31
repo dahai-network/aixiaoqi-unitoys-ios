@@ -117,7 +117,7 @@
         });
     };
     [UNBlueToothTool shareBlueToothTool].checkBLEAndResetBlock = ^(){
-        [weakSelf dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:@"未能检测到手环内有电话卡，您需要重启手环重新检测吗？" alertAction:^{
+        [weakSelf dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:@"未能检测到设备内有电话卡，您需要重启设备重新检测吗？" alertAction:^{
             [BlueToothDataManager shareManager].isNeedToResert = YES;
             //发送复位请求
 //            [self sendMessageToBLEWithType:BLESystemReset validData:nil];
@@ -213,17 +213,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange:) name:@"addressBookChanged" object:@"addressBookChanged"];
     }
     //检查更新
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    // hh与HH的区别:分别表示12小时制,24小时制
-    [formatter setDateFormat:@"YYYY-MM-dd"];
-    NSDate *datenow = [NSDate date];
-    NSString *currentTimeString = [formatter stringFromDate:datenow];
-    NSString *timeString = [[NSUserDefaults standardUserDefaults] objectForKey:@"nowTime"];
-    if (![timeString isEqualToString:currentTimeString]) {
-        [self checkVersion];
-        [[NSUserDefaults standardUserDefaults] setObject:currentTimeString forKey:@"nowTime"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
+    [self checkVersion];
 }
 
 - (void)checkVersion {
@@ -233,19 +223,31 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"app升级信息 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
-                NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
-                if ([responseObj[@"data"][@"Mandatory"] intValue] == 0) {
-                    //不强制
-                    [self dj_alertActionWithAlertTitle:@"版本升级" leftActionTitle:@"下次再说" rightActionTitle:@"现在升级" message:infoStr rightAlertAction:^{
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
-                    }];
-                } else if ([responseObj[@"data"][@"Mandatory"] intValue] == 1) {
-                    //强制
-                    [self dj_alertActionWithAlertTitle:@"版本升级" rightActionTitle:@"确定" message:infoStr rightAlertAction:^{
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
-                    }];
-                } else {
-                    NSLog(@"不知道是不是强制性的");
+                
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                // hh与HH的区别:分别表示12小时制,24小时制
+                [formatter setDateFormat:@"YYYY-MM-dd"];
+                NSDate *datenow = [NSDate date];
+                NSString *currentTimeString = [formatter stringFromDate:datenow];
+                NSString *timeString = [[NSUserDefaults standardUserDefaults] objectForKey:@"nowTime"];
+                if (![timeString isEqualToString:currentTimeString]) {
+                    NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
+                    if ([responseObj[@"data"][@"Mandatory"] intValue] == 0) {
+                        //不强制
+                        [self dj_alertActionWithAlertTitle:@"版本升级" leftActionTitle:@"下次再说" rightActionTitle:@"现在升级" message:infoStr rightAlertAction:^{
+                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
+                        }];
+                    } else if ([responseObj[@"data"][@"Mandatory"] intValue] == 1) {
+                        //强制
+                        [self dj_alertActionWithAlertTitle:@"版本升级" rightActionTitle:@"确定" message:infoStr rightAlertAction:^{
+                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
+                        }];
+                    } else {
+                        NSLog(@"不知道是不是强制性的");
+                    }
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:currentTimeString forKey:@"nowTime"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
                 }
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){

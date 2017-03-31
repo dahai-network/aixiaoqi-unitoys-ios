@@ -120,7 +120,7 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeUnitysCallAction" object:[weakSelf formatPhoneNum:number]];
                 }
             } else {
-                HUDNormal(INTERNATIONALSTRING(@"手环内sim卡未注册或已掉线"))
+                HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
             }
         }
     };
