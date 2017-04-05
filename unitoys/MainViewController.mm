@@ -35,9 +35,6 @@
                 self.childViewControllers[i].tabBarItem.selectedImage = [[UIImage imageNamed:@"nav_contactsSelected"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
                 break;
             case 3:
-                self.childViewControllers[i].tabBarItem.selectedImage = [[UIImage imageNamed:@"nav_sportSelected"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-                break;
-            case 4:
                 self.childViewControllers[i].tabBarItem.selectedImage = [[UIImage imageNamed:@"nav_profileSelected"]imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
                 break;
             default:
