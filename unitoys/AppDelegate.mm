@@ -1917,8 +1917,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }else{
         [UNPushKitMessageManager shareManager].isSysCallKitPhone = YES;
         [UNPushKitMessageManager shareManager].callKitHandleString = userActivity.startCallHandle;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [MBProgressHUD showMessage:@"正在注册电话,注册成功后将为您拨打电话"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [MBProgressHUD showMessage:@"正在注册电话,注册成功后将为您拨打电话" toView:nil isLongText:YES DelayTime:3.0];
         });
     }
     return NO;

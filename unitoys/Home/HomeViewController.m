@@ -80,7 +80,6 @@
             }else if (hudType == 2){
                 HUDNoStop1(string)
             }
-            
         });
     };
     [UNBlueToothTool shareBlueToothTool].endHudBlock = ^(){

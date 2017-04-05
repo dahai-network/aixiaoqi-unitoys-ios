@@ -42,6 +42,26 @@
  */
 + (void)showMessage:(NSString *)message DelayTime:(CGFloat)time;
 
+/**
+ *  加载提示信息
+ *
+ *  @param message 提示文字
+ *  @param view    superView
+ *  @param isLong  是否为长文字
+ *  @param time    持续时间
+ */
++ (void)showMessage:(NSString *)message toView:(UIView *)view isLongText:(BOOL)isLong DelayTime:(CGFloat)time;
+
+/**
+ *  加载提示信息
+ *
+ *  @param text 提示文字
+ *  @param icon 提示图片
+ *  @param view superView
+ */
++ (void)show:(NSString *)text icon:(NSString *)icon view:(UIView *)view;
+
+
 //正在加载不会自动隐藏
 /**
  *  正在加载
