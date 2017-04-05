@@ -1595,7 +1595,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
             [BlueToothDataManager shareManager].stepNumber = @"0";
             [BlueToothDataManager shareManager].isRegisted = NO;
-
             //在pushkit里初始化蓝牙
 //            [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
@@ -1725,9 +1724,12 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 // iOS 10 Support,本地通知为notification，接收到通知
 - (void)jpushNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(NSInteger))completionHandler {
+
     // Required
     NSDictionary * userInfo = notification.request.content.userInfo;
     if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        //刷新页面
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
         [JPUSHService handleRemoteNotification:userInfo];
         NSString *name = [self checkLinkNameWithPhoneStr:userInfo[@"Tel"]];
         [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:userInfo[@"SMSContent"] userInfo:userInfo];
