@@ -108,9 +108,67 @@
                 [self.navigationController pushViewController:agreementViewController animated:YES];
             }
         } else if (indexPath.row==1) {
-            NSString *str = [NSString stringWithFormat:@"%@%@",INTERNATIONALSTRING(@"当前版本") , self.versionNumberStr];
-            HUDNormal(str)
+            [self checkVersion];
         }
     }
+}
+
+- (void)checkVersion {
+    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"0", @"TerminalCode", [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"], @"Version", nil];
+    [SSNetworkRequest getRequest:[apiUpgrade stringByAppendingString:[self getParamStr]] params:info success:^(id responseObj){
+        
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"app升级信息 -- %@", responseObj);
+            if (responseObj[@"data"][@"Descr"]) {
+                NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
+                if ([responseObj[@"data"][@"Mandatory"] intValue] == 0) {
+                    //不强制
+                    [self dj_alertActionWithAlertTitle:@"版本升级" leftActionTitle:@"下次再说" rightActionTitle:@"现在升级" message:infoStr rightAlertAction:^{
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
+                    }];
+                } else if ([responseObj[@"data"][@"Mandatory"] intValue] == 1) {
+                    //强制
+                    [self dj_alertActionWithAlertTitle:@"版本升级" rightActionTitle:@"确定" message:infoStr rightAlertAction:^{
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
+                    }];
+                } else {
+                    NSLog(@"不知道是不是强制性的");
+                }
+            } else {
+                NSString *str = [NSString stringWithFormat:@"%@%@",INTERNATIONALSTRING(@"当前版本") , self.versionNumberStr];
+                HUDNormal(str)
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            NSLog(@"数据请求失败 -- %@", responseObj[@"mag"]);
+        }
+    }failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+        NSLog(@"数据错误：%@",[error description]);
+        
+    } headers:nil];
+}
+
+- (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle leftActionTitle:(NSString *)leftActionTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(leftActionTitle) style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        rightAlertAction();
+    }];
+    [alertVC addAction:cancelAction];
+    [alertVC addAction:certailAction];
+    [self presentViewController:alertVC animated:YES completion:nil];
+}
+
+- (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        rightAlertAction();
+    }];
+    [alertVC addAction:certailAction];
+    [self presentViewController:alertVC animated:YES completion:nil];
 }
 @end

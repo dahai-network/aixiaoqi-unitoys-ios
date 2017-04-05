@@ -58,34 +58,6 @@
 
 @implementation HomeViewController
 
-- (NSMutableArray *)todays {
-    if (!_todays) {
-        self.todays = [NSMutableArray array];
-    }
-    return _todays;
-}
-
-- (NSMutableArray *)yesterdays {
-    if (!_yesterdays) {
-        self.yesterdays = [NSMutableArray array];
-    }
-    return _yesterdays;
-}
-
-- (NSMutableArray *)berforeYesterdays {
-    if (!_berforeYesterdays) {
-        self.berforeYesterdays = [NSMutableArray array];
-    }
-    return _berforeYesterdays;
-}
-
-- (NSMutableArray *)threeDaysAgo {
-    if (!_threeDaysAgo) {
-        self.threeDaysAgo = [NSMutableArray array];
-    }
-    return _threeDaysAgo;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     

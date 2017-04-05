@@ -40,24 +40,6 @@ typedef enum : NSUInteger {
     BLEJUSTBOXCANCONNECT,//仅钥匙扣能连
 } APPSENDTOBLE;
 
-//蓝牙发送给app
-typedef enum : NSUInteger {
-    APPSystemBaseInfo,//系统基本信息
-    APPElectricQuantity,//电量
-    APPChargeElectricStatue,//充电状态
-    APPAgreeToBind,//同意绑定
-    APPRealTimeCountStep,//实时计步
-    APPHistoryStep,//历史计步
-    APPAnswerUpElectricToCard,//对卡上电回应
-    APPAnswerDownElectricToCard,//对卡断电回应
-    APPAnswerSIMData,//SIM数据回应
-    APPAixiaoqiCardData,//爱小器国际卡数据
-    APPAnswerOTA,//回应收到空中升级指令
-    APPChangeCardStatue,//卡状态改变（热插拔）
-    APPLastChargeElectricTime,//上次充电时间
-    APPAlarmClockSetSuccess,//闹钟设置成功
-} BLESENDTOAPP;
-
 @interface UNBlueToothTool()
 @property (nonatomic, assign) BOOL checkToken;
 @property (nonatomic, strong) NSMutableDictionary *headers;
@@ -480,119 +462,6 @@ static UNBlueToothTool *instance = nil;
 }
 
 #pragma mark 蓝牙状态发生变化
-//- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
-//    [BlueToothDataManager shareManager].executeNum++;
-//    //第一次打开或者每次蓝牙状态改变都会调用这个函数
-//    if(central.state==CBCentralManagerStatePoweredOn) {
-//        NSLog(@"蓝牙设备开着");
-//        [self.peripherals removeAllObjects];
-//        [BlueToothDataManager shareManager].isOpened = YES;
-//        //连接中
-//        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
-//        if (!self.boundedDeviceInfo[@"IMEI"]) {
-//            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
-//        }
-//        
-//        //提升pushkit速度
-//        CGFloat time;
-//        if (self.isPushKitStatu) {
-//            time = 1.0;
-//        }else{
-//            time = 2.0;
-//        }
-//        
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            //已经被系统或者其他APP连接上的设备数组
-//            if (!self.pairedArr) {
-//                self.pairedArr = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
-//            } else {
-//                self.pairedArr = nil;
-//                self.pairedArr = [self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]];
-//            }
-//            //            NSArray *arr = [self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]];
-//            if(self.pairedArr.count>0) {
-//                NSLog(@"连接的配对设备 - %@", self.pairedArr);
-//                for (CBPeripheral* peripheral in self.pairedArr) {
-//                    NSString *nameStr = peripheral.name;
-//                    NSString *allDeviceStr = MYDEVICENAME;
-//                    if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
-//                        nameStr = MYDEVICENAMEUNITOYS;
-//                    }
-//                    if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
-//                        nameStr = MYDEVICENAMEUNIBOX;
-//                    }
-//                    if ([BlueToothDataManager shareManager].deviceType) {
-//                        if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
-//                            //手环
-//                            allDeviceStr = MYDEVICENAMEUNITOYS;
-//                        } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
-//                            //钥匙扣
-//                            allDeviceStr = MYDEVICENAMEUNIBOX;
-//                        } else {
-//                            NSLog(@"类型错了");
-//                        }
-//                    }
-//                    if (peripheral != nil && [allDeviceStr containsString:nameStr.lowercaseString]) {
-//                        
-//                        //获取mac地址
-//                        if (!self.boundedDeviceInfo[@"IMEI"] && peripheral.name.length > nameStr.length+1) {
-//                            [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1].lowercaseString];
-//                        }
-//                        if (self.boundedDeviceInfo[@"IMEI"]) {
-//                            NSString *boundStr = self.boundedDeviceInfo[@"IMEI"];
-//                            [BlueToothDataManager shareManager].deviceMacAddress = boundStr.lowercaseString;
-//                        }
-//                        //绑定设备
-//                        if (!self.boundedDeviceInfo[@"IMEI"]) {
-//                            if ([BlueToothDataManager shareManager].isNeedToBoundDevice) {
-//                                //调用绑定设备接口
-//                                self.strongestRssiPeripheral = peripheral;
-//                                [self.macAddressDict setObject:[BlueToothDataManager shareManager].deviceMacAddress forKey:peripheral.identifier];
-//                                [self checkDeviceIsBound];
-//                                [BlueToothDataManager shareManager].isNeedToBoundDevice = NO;
-//                                [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
-//                            } else {
-//                                NSLog(@"啥都不做");
-//                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
-//                            }
-//                        } else {
-//                            NSLog(@"已经绑定过了%@", self.boundedDeviceInfo[@"IMEI"]);
-//                            //已经绑定过
-//                            NSString *boundMac = self.boundedDeviceInfo[@"IMEI"];
-//                            if ([boundMac.lowercaseString isEqualToString:[BlueToothDataManager shareManager].deviceMacAddress]) {
-//                                peripheral.delegate = self;
-//                                self.peripheral = peripheral;
-//                                [self.mgr connectPeripheral:self.peripheral options:nil];
-//                            } else {
-//                                [self showHudNormalString:INTERNATIONALSTRING(@"请忽略您之前的设备")];
-//                            }
-//                        }
-//                    }
-//                }
-//            } else {
-//                NSLog(@"没有配对设备");
-//                [self.mgr scanForPeripheralsWithServices:nil options:nil];
-//            }
-//        });
-//    } else {
-//        NSLog(@"蓝牙设备关着");
-//        [self.peripherals removeAllObjects];
-//        [self.mgr stopScan];
-//        //蓝牙未开
-//        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_BLNOTOPEN];
-//        if (![BlueToothDataManager shareManager].isOpened) {
-//            if ([BlueToothDataManager shareManager].executeNum < 3) {
-//                //第一次什么都不执行
-//            } else {
-//                [self showHudNormalString:INTERNATIONALSTRING(@"连接蓝牙设备才能正常使用")];
-//            }
-//        }
-//        [BlueToothDataManager shareManager].isOpened = NO;
-//    }
-//    
-//    NSLog(@"中心设备：%ld，%@", central.state, central);
-//}
-#pragma mark 蓝牙状态发生变化
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
     [BlueToothDataManager shareManager].executeNum++;
     //第一次打开或者每次蓝牙状态改变都会调用这个函数
@@ -636,14 +505,6 @@ static UNBlueToothTool *instance = nil;
             if (!self.boundedDeviceInfo[@"IMEI"]) {
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
             }
-            
-            //提升pushkit速度
-//            CGFloat time;
-//            if (self.isPushKitStatu) {
-//                time = 1.0;
-//            }else{
-//                time = 2.0;
-//            }
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //已经被系统或者其他APP连接上的设备数组
@@ -741,89 +602,6 @@ static UNBlueToothTool *instance = nil;
                         NSLog(@"本地未存储其他设备信息,不存在连接过的外围设备");
                         [self.mgr scanForPeripheralsWithServices:nil options:nil];
                     }
-                    
-                    //空中升级需要通过扫描进行,否则失败
-//                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-//                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
-//                    }else{
-//                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-//                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-//                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-//                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-//                            if (arr.count) {
-//                                self.peripheral = arr[0];
-//                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
-//                            }
-//                        }
-//                        if (self.peripheral) {
-//                            NSLog(@"存在连接过的外围设备");
-//                            [self.mgr connectPeripheral:self.peripheral options:nil];
-//                        } else {
-//                            NSLog(@"不存在连接过的外围设备");
-//                            [self.mgr scanForPeripheralsWithServices:nil options:nil];
-//                        }
-//                    }
-                    
-//                    if (![BlueToothDataManager shareManager].isBeingOTA) {
-//                        NSLog(@"没有进行空中升级");
-//                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-//                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-//                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-//                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-//                            NSLog(@"本地存储的设备信息 -- %@", arr);
-//                            if (arr.count) {
-//                                self.peripheral = arr[0];
-//                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
-//                                if (self.peripheral) {
-//                                    NSLog(@"存在连接过的外围设备");
-//                                    [self.mgr connectPeripheral:self.peripheral options:nil];
-//                                } else {
-//                                    NSLog(@"不存在连接过的外围设备");
-//                                    [self.mgr scanForPeripheralsWithServices:nil options:nil];
-//                                }
-//                            } else {
-//                                NSLog(@"本地有存储其他设备信息，不存在连接过的外围设备");
-//                                [self.mgr scanForPeripheralsWithServices:nil options:nil];
-//                            }
-//                        } else {
-//                            NSLog(@"本地未存储其他设备信息,不存在连接过的外围设备");
-//                            [self.mgr scanForPeripheralsWithServices:nil options:nil];
-//                        }
-//                    } else {
-//                        NSLog(@"正在进行空中升级");
-//                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
-//                    }
-                    
-                    
-                    
-                    
-                    
-//                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
-//                        //在后台
-//                        NSLog(@"执行在后台的连接方法");
-//                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-//                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-//                        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-//                            NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-//                            if (arr.count) {
-//                                self.peripheral = arr[0];
-//                                NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
-//                            }
-//                        }
-//                        if (self.peripheral) {
-//                            NSLog(@"存在连接过的外围设备");
-//                            [self.mgr connectPeripheral:self.peripheral options:nil];
-//                        } else {
-//                            NSLog(@"不存在连接过的外围设备");
-//                            [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
-//                        }
-//                    } else {
-////                        NSLog(@"这是什么模式？既不是前台，也不是后台");
-//                        //在前台
-//                        NSLog(@"执行在前台或遮罩的连接方法");
-////                        [self.mgr scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
-//                        [self.mgr scanForPeripheralsWithServices:nil options:nil];
-//                    }
                 }
             });
         }
@@ -2491,34 +2269,6 @@ static UNBlueToothTool *instance = nil;
     dataStr = [NSString stringWithFormat:@"%d", dataNum];
     NSString *dataHexStr = [self hexStringFromString:dataStr];
     [self sendMessageToBLEWithType:BLEIsNotifi validData:dataHexStr];
-}
-
-#pragma mark 查询实时步数指令(实时步数)
-//- (NSData *)checkCurrentStepNumber {
-//    //0xAA, 0x01, 0x04, 0xO1, 0xAE
-//    Byte reg[6];
-//    reg[0]=0xAA;
-//    reg[1]=0x01;
-//    reg[2]=0x04;
-//    reg[3]=0x01;
-//    reg[4]=0xAE;
-//    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-//    NSData *data=[NSData dataWithBytes:reg length:6];
-//    return data;
-//}
-
-#pragma mark 删除所有步数指令
-- (NSData *)deleteAllStepNumber {
-    Byte reg[6];
-    //    0xAA 0x09 0x04 0x01 0xA6
-    reg[0]=0xAA;
-    reg[1]=0x09;
-    reg[2]=0x04;
-    reg[3]=0x01;
-    reg[4]=0xA6;
-    reg[5]=(Byte)(reg[0]^reg[1]^reg[2]^reg[3]^reg[4]);
-    NSData *data=[NSData dataWithBytes:reg length:6];
-    return data;
 }
 
 #pragma mark 设置闹钟指令

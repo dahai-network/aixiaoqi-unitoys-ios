@@ -27,25 +27,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-//    if (![BlueToothDataManager shareManager].isBounded) {
-//        [self dj_alertAction:self alertTitle:nil actionTitle:@"去绑定" message:@"您还没有绑定设备，是否要绑定？" alertAction:^{
-//            if ([BlueToothDataManager shareManager].isOpened) {
-//                IsBoundingViewController *isBoundVC = [[IsBoundingViewController alloc] init];
-//                [self.navigationController pushViewController:isBoundVC animated:YES];
-//                //绑定设备
-//                if ([BlueToothDataManager shareManager].isConnected) {
-//                    //点击绑定设备
-//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
-//                } else {
-//                    //未连接设备，先扫描连接
-//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
-//                }
-//            } else {
-//                HUDNormal(@"请先开启蓝牙")
-//            }
-//        }];
-//    }
-    
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addElectricQue) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disConnectToDevice) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];//断开连接
@@ -278,12 +259,6 @@
         NSString *num = [BlueToothDataManager shareManager].electricQuantity;
         CGFloat a = (float)[num intValue]/100.00;
         self.customView.percent = a;
-        //        self.hintLabel.hidden = YES;
-//        if ([BlueToothDataManager shareManager].lastChargTime) {
-//            self.hintLabel.text = [NSString stringWithFormat:@"上次充电时间:%@", [BlueToothDataManager shareManager].lastChargTime];
-//        } else {
-//            self.hintLabel.text = [NSString stringWithFormat:@"设备还未充过电"];
-//        }
         if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
             self.hintLabel.text = INTERNATIONALSTRING(@"已连接爱小器手环");
         } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
@@ -294,7 +269,6 @@
     } else {
         if (self.customView) {
             [self.customView removeFromSuperview];
-            //            self.hintLabel.hidden = NO;
         }
         if (![BlueToothDataManager shareManager].isConnected) {
             self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
@@ -386,7 +360,6 @@
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-        //
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -439,7 +412,6 @@
                     [self.timer setFireDate:[NSDate distantFuture]];
                 }
                 [self.navigationController popToRootViewControllerAnimated:YES];
-//                self.imgStatueImage.image = [UIImage imageNamed:@"deviceStatue_noSinge"];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -449,7 +421,6 @@
             }
             NSLog(@"查询到的运动数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
-            //
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
     });
