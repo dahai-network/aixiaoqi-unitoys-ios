@@ -645,7 +645,7 @@
         ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) { if (!error) { if (granted) {//允许
             NSLog(@"已授权访问通讯录"); NSArray *contacts = [self fetchContactWithAddressBook:addressBook]; dispatch_async(dispatch_get_main_queue(), ^{
                 //----------------主线程 更新 UI-----------------
-                NSLog(@"contacts:%@", contacts);
+//                NSLog(@"contacts:%@", contacts);
                 _contactsDataArr = contacts;
                 for (NSDictionary *subDic in self.contactsDataArr) {
                     ContactModel *model=[[ContactModel alloc]initWithDic:subDic];
@@ -667,7 +667,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             //----------------主线程 更新 UI-----------------
             _contactsDataArr = contacts;
-            NSLog(@"contacts:%@", contacts);
+//            NSLog(@"contacts:%@", contacts);
             
             for (NSDictionary *subDic in self.contactsDataArr) {
                 ContactModel *model=[[ContactModel alloc]initWithDic:subDic];
@@ -737,7 +737,7 @@
                     NSLog(@"已授权访问通讯录");
                     NSArray *contacts = [self fetchContactWithContactStore:contactStore];//访问通讯录
                     dispatch_async(dispatch_get_main_queue(),^{ //----------------主线程 更新 UI-----------------
-                        NSLog(@"contacts:%@", contacts);
+//                        NSLog(@"contacts:%@", contacts);
                         _contactsDataArr = contacts;
                         for (NSDictionary *subDic in self.contactsDataArr) {
                             ContactModel *model=[[ContactModel alloc]initWithDic:subDic];
@@ -756,7 +756,7 @@
     }else{//非首次访问通讯录
         NSArray *contacts = [self fetchContactWithContactStore:contactStore];//访问通讯录
         dispatch_async(dispatch_get_main_queue(), ^{ //----------------主线程 更新 UI-----------------
-            NSLog(@"contacts:%@", contacts);
+//            NSLog(@"contacts:%@", contacts);
             _contactsDataArr = contacts;
             for (NSDictionary *subDic in self.contactsDataArr) {
                 ContactModel *model=[[ContactModel alloc]initWithDic:subDic];

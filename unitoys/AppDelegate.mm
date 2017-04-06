@@ -95,7 +95,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -657,6 +657,7 @@
                 // 等待数据来啊
                 [sock readDataWithTimeout:-1 tag:200];
                 NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
+                [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", self.tcpPacketStr]];
                 //发送数据
                 [self sendMsgWithMessage:self.tcpPacketStr];
                 
@@ -840,49 +841,8 @@
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
-    if (tag == 200) {
-        [sock readDataWithTimeout:-1 tag:200];
-        
-        NSString *ip = [sock connectedHost];
-        uint16_t port = [sock connectedPort];
-        //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"200接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-        NSString *tempStr = [NSString stringWithFormat:@"%@", data];
-        if ([tempStr containsString:@"<"]) {
-            tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
-        }
-        if ([tempStr containsString:@">"]) {
-            tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
-        }
-        if ([tempStr containsString:@" "]) {
-            tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
-        }
-        
-        [self checkManyPacketString:tempStr];
-    }else if(tag == 100){
-        [sock readDataWithTimeout:-1 tag:100];
-        NSString *ip = [sock connectedHost];
-        uint16_t port = [sock connectedPort];
-        //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"100接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-        NSString *tempStr = [NSString stringWithFormat:@"%@", data];
-        if ([tempStr containsString:@"<"]) {
-            tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
-        }
-        if ([tempStr containsString:@">"]) {
-            tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
-        }
-        if ([tempStr containsString:@" "]) {
-            tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
-        }
-        
-        [self checkManyPacketString:tempStr];
-    }else if(tag == 201){
-        [sock readDataWithTimeout:-1 tag:201];
-        NSString *ip = [sock connectedHost];
-        uint16_t port = [sock connectedPort];
-        NSLog(@"201接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-    }else{
+    if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+        NSLog(@"非PushKit状态");
         [sock readDataWithTimeout:-1 tag:tag];
         NSString *ip = [sock connectedHost];
         uint16_t port = [sock connectedPort];
@@ -900,8 +860,70 @@
         }
         
         [self checkManyPacketString:tempStr];
+    }else{
+        NSLog(@"PushKit状态");
+        if (tag == 200) {
+            [sock readDataWithTimeout:-1 tag:200];
+            
+            NSString *ip = [sock connectedHost];
+            uint16_t port = [sock connectedPort];
+            //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSLog(@"200接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+            NSString *tempStr = [NSString stringWithFormat:@"%@", data];
+            if ([tempStr containsString:@"<"]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
+            }
+            if ([tempStr containsString:@">"]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
+            }
+            if ([tempStr containsString:@" "]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+            }
+            
+            [self checkManyPacketString:tempStr];
+        }else if(tag == 100){
+            [sock readDataWithTimeout:-1 tag:100];
+            NSString *ip = [sock connectedHost];
+            uint16_t port = [sock connectedPort];
+            //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSLog(@"100接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+            NSString *tempStr = [NSString stringWithFormat:@"%@", data];
+            if ([tempStr containsString:@"<"]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
+            }
+            if ([tempStr containsString:@">"]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
+            }
+            if ([tempStr containsString:@" "]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+            }
+            
+            [self checkManyPacketString:tempStr];
+        }else if(tag == 201){
+            [sock readDataWithTimeout:-1 tag:201];
+            NSString *ip = [sock connectedHost];
+            uint16_t port = [sock connectedPort];
+            NSLog(@"201接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+        }else{
+            [sock readDataWithTimeout:-1 tag:tag];
+            NSString *ip = [sock connectedHost];
+            uint16_t port = [sock connectedPort];
+            //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSLog(@"%ld接收到服务器返回的数据 tcp [%@:%d] %@",tag, ip, port, data);
+            NSString *tempStr = [NSString stringWithFormat:@"%@", data];
+            if ([tempStr containsString:@"<"]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
+            }
+            if ([tempStr containsString:@">"]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
+            }
+            if ([tempStr containsString:@" "]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+            }
+            
+            [self checkManyPacketString:tempStr];
+        }
     }
-
 }
 
 - (void)checkManyPacketString:(NSString *)tempStr
@@ -1904,8 +1926,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }else{
         [UNPushKitMessageManager shareManager].isSysCallKitPhone = YES;
         [UNPushKitMessageManager shareManager].callKitHandleString = userActivity.startCallHandle;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [MBProgressHUD showMessage:@"正在注册电话,注册成功后将为您拨打电话" toView:nil isLongText:YES DelayTime:3.0];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [MBProgressHUD showMessage:@"正在注册电话,注册成功后将为您拨打电话" toView:nil isLongText:YES DelayTime:2.0];
         });
     }
     return NO;
@@ -1960,8 +1982,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             return;
         }
         
-        
-
         if (payload.dictionaryPayload) {
             NSDictionary *dict = payload.dictionaryPayload;
             NSString *messageType = [dict[@"MessageType"] lowercaseString];
@@ -2131,6 +2151,13 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 - (void)sendPushKitMessage:(NSDictionary *)servicePushKitData
 {
     NSLog(@"当前队列需要发送的pushkit消息=====%@", servicePushKitData);
+    if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
+        [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
+        [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
+        [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
+        return;
+    }
+    
     [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = YES;
     if ([servicePushKitData[@"MessageType"] isEqualToString:@"10"]) {
         //鉴权数据
