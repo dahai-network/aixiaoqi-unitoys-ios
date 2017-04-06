@@ -96,6 +96,39 @@
     return isSuccess;
 }
 
+- (BOOL)deleteTableWithAPIName:(NSString *)apiName {
+    BOOL isSuccess = YES;
+    //打开数据库
+    if ([self.database open]) {
+        NSString *sqlString = [NSString stringWithFormat:@"DROP TABLE IF EXISTS %@", apiName];
+        BOOL isSuccess = [self.database executeUpdate:sqlString];
+        if (!isSuccess) {
+            NSLog(@"删除数据库文件失败");
+            isSuccess = NO;
+        }
+//        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+//        FMResultSet *rs = [self.database executeQuery:existsSql];
+//        if ([rs next]) {
+//            NSInteger count = [rs intForColumn:@"countNum"];
+//            if (count == 0) {
+//                NSLog(@"没有数据");
+//            } else {
+//                NSString *sqlString = [NSString stringWithFormat:@"DROP TABLE IF EXISTS %@", apiName];
+//                BOOL isSuccess = [self.database executeUpdate:sqlString];
+//                if (!isSuccess) {
+//                    NSLog(@"删除数据库文件失败");
+//                    isSuccess = NO;
+//                }
+//            }
+//            [rs close];
+//        }
+        [self.database close];
+    }else{
+        isSuccess = NO;
+    }
+    return isSuccess;
+}
+
 - (NSDictionary *)getResponseWithAPIName:(NSString *)apiName
 {
     //打开数据库

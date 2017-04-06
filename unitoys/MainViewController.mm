@@ -11,6 +11,7 @@
 #import "LoginViewController.h"
 #import "JPUSHService.h"
 #import "navHomeViewController.h"
+#import "UNDatabaseTools.h"
 
 @implementation MainViewController
 
@@ -90,6 +91,9 @@
     }
     [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    //删除存储的绑定信息
+    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
     
     UIApplication *application = [UIApplication sharedApplication];
     if ([application.keyWindow.rootViewController isKindOfClass:[LoginViewController class]]) {

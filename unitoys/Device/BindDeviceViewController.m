@@ -11,6 +11,7 @@
 #import "WaterIdentifyView.h"
 #import "UIImage+GIF.h"
 #import "WristbandSettingViewController.h"
+#import "UNDatabaseTools.h"
 
 @interface BindDeviceViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *lblStatue;
@@ -384,6 +385,9 @@
                 }
                 [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                //删除存储的绑定信息
+                [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
                 
                 if ([[BlueToothDataManager shareManager].boundedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
                     HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))

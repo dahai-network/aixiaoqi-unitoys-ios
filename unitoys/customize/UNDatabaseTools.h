@@ -15,6 +15,7 @@
 
 - (BOOL)insertDataWithAPIName:(NSString *)apiName dictData:(NSDictionary *)response;
 //- (BOOL)insertDataWithAPIName:(NSString *)apiName jsonData:(NSString *)jsonString;
+- (BOOL)deleteTableWithAPIName:(NSString *)apiName;
 
 - (NSDictionary *)getResponseWithAPIName:(NSString *)apiName;
 

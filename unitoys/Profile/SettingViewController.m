@@ -9,6 +9,7 @@
 #import "SettingViewController.h"
 #import "LinkUsViewController.h"
 #import "JPUSHService.h"
+#import "UNDatabaseTools.h"
 
 @implementation SettingViewController
 
@@ -52,6 +53,9 @@
         }
         [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
         [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        //删除存储的绑定信息
+        [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
         
         //注销极光推送
         [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
