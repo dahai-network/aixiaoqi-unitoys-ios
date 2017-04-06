@@ -119,9 +119,9 @@
         NSString *speed = [NSString stringWithFormat:@"%3.5f", currLocation.speed];
         NSString *timeS = [NSString stringWithFormat:@"%@", currLocation.timestamp];
         NSString *currentDayTime = [timeS substringToIndex:10];
-        NSLog(@"截取到的当前时间 -- %@",currentDayTime);
-        NSLog(@"定位收集: -- %@", locations);
-        NSLog(@"定位收集:纬度:%@,经度:%@,高度:%@,速度:%@,时间:%@",latitude,longitude,altitude,speed,timeS);
+//        NSLog(@"截取到的当前时间 -- %@",currentDayTime);
+//        NSLog(@"定位收集: -- %@", locations);
+//        NSLog(@"定位收集:纬度:%@,经度:%@,高度:%@,速度:%@,时间:%@",latitude,longitude,altitude,speed,timeS);
         
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  //保存定位信息
         NSData *locationListArrData = [userDefaults objectForKey:@"locationList"];
@@ -154,10 +154,10 @@
                 double meters = [self calculateDistanceWithStart:startCoordinate end:endCoordinate];
                 NSLog(@"计算的位移为%f米",meters);
                 if (meters >= 5){
-                    NSLog(@"添加进位置数组");
+//                    NSLog(@"添加进位置数组");
                     [locationListArr addObject:currLocation];
                 }else{
-                    NSLog(@"不添加进位置数组");
+//                    NSLog(@"不添加进位置数组");
                 }
             }
         } else {

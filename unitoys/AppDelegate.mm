@@ -846,7 +846,7 @@
         NSString *ip = [sock connectedHost];
         uint16_t port = [sock connectedPort];
         //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+        NSLog(@"200接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
         NSString *tempStr = [NSString stringWithFormat:@"%@", data];
         if ([tempStr containsString:@"<"]) {
             tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
@@ -863,7 +863,7 @@
         [sock readDataWithTimeout:-1 tag:201];
         NSString *ip = [sock connectedHost];
         uint16_t port = [sock connectedPort];
-        NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+        NSLog(@"201接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
         
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //            if (!self.timer) {
