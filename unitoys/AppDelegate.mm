@@ -859,62 +859,49 @@
         }
         
         [self checkManyPacketString:tempStr];
-    }else{
+    }else if(tag == 100){
+        [sock readDataWithTimeout:-1 tag:100];
+        NSString *ip = [sock connectedHost];
+        uint16_t port = [sock connectedPort];
+        //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"100接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+        NSString *tempStr = [NSString stringWithFormat:@"%@", data];
+        if ([tempStr containsString:@"<"]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
+        }
+        if ([tempStr containsString:@">"]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
+        }
+        if ([tempStr containsString:@" "]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+        }
+        
+        [self checkManyPacketString:tempStr];
+    }else if(tag == 201){
         [sock readDataWithTimeout:-1 tag:201];
         NSString *ip = [sock connectedHost];
         uint16_t port = [sock connectedPort];
         NSLog(@"201接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+    }else{
+        [sock readDataWithTimeout:-1 tag:tag];
+        NSString *ip = [sock connectedHost];
+        uint16_t port = [sock connectedPort];
+        //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"%ld接收到服务器返回的数据 tcp [%@:%d] %@",tag, ip, port, data);
+        NSString *tempStr = [NSString stringWithFormat:@"%@", data];
+        if ([tempStr containsString:@"<"]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
+        }
+        if ([tempStr containsString:@">"]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
+        }
+        if ([tempStr containsString:@" "]) {
+            tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+        }
         
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            if (!self.timer) {
-//                //开始计时
-//                self.sec = 0;
-//                self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
-//                //如果不添加下面这条语句，会阻塞定时器的调用
-//                [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
-//            }
-//        });
+        [self checkManyPacketString:tempStr];
     }
-//    [sock readDataWithTimeout:-1 tag:200];
-//    if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-//        NSString *ip = [sock connectedHost];
-//        uint16_t port = [sock connectedPort];
-//        //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//        NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-//        //        [BlueToothDataManager shareManager].isBeingRegisting = NO;
-//        //        [BlueToothDataManager shareManager].stepNumber = @"0";
-//        //        [BlueToothDataManager shareManager].isRegisted = YES;
-//        //        [BlueToothDataManager shareManager].isConnected = YES;
-//        //        [BlueToothDataManager shareManager].isTcpConnected = YES;
-//        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
-//        
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            if (!self.timer) {
-//                //开始计时
-//                self.sec = 0;
-//                self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
-//                //如果不添加下面这条语句，会阻塞定时器的调用
-//                [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
-//            }
-//        });
-//    }else{
-//        NSString *ip = [sock connectedHost];
-//        uint16_t port = [sock connectedPort];
-//        //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//        NSLog(@"接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
-//        NSString *tempStr = [NSString stringWithFormat:@"%@", data];
-//        if ([tempStr containsString:@"<"]) {
-//            tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
-//        }
-//        if ([tempStr containsString:@">"]) {
-//            tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
-//        }
-//        if ([tempStr containsString:@" "]) {
-//            tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
-//        }
-//
-//        [self checkManyPacketString:tempStr];
-//    }
+
 }
 
 - (void)checkManyPacketString:(NSString *)tempStr
@@ -1933,14 +1920,21 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     contact.phoneNumber= handle;
     contact.uniqueIdentifier=@"";
     UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
             
         }];
         NSLog(@"callUUID==%@", callUUID);
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
     });
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
+//            
+//        }];
+//        NSLog(@"callUUID==%@", callUUID);
+//        [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
+//    });
 }
 
 
