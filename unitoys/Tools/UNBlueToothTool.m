@@ -152,6 +152,7 @@ static UNBlueToothTool *instance = nil;
 //解析鉴权数据
 - (void)analysisAuthData:(NSNotification *)noti
 {
+    NSLog(@"analysisAuthData---%@", noti.object);
     [self analysisAuthDataWithString:noti.object];
 }
 
@@ -471,6 +472,9 @@ static UNBlueToothTool *instance = nil;
             break;
         case CBManagerStatePoweredOff:
             NSLog(@"当前蓝牙状态CBManagerStatePoweredOff");
+            //清空鉴权数据
+            self.normalAuthSimString = nil;
+            
             [self.peripherals removeAllObjects];
             [self.mgr stopScan];
             //蓝牙未开
@@ -705,6 +709,7 @@ static UNBlueToothTool *instance = nil;
 #pragma mark 连接到某个外设的时候调用
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
+    [BlueToothDataManager shareManager].isConnected = YES;
     [self.mgr stopScan];
     [self.timer setFireDate:[NSDate distantFuture]];
     peripheral.delegate = self;
@@ -775,6 +780,7 @@ static UNBlueToothTool *instance = nil;
     
     NSLog(@"跟外设失去连接");
     //    [BlueToothDataManager shareManager].isRegisted = NO;
+    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
     [BlueToothDataManager shareManager].isBounded = NO;
     [BlueToothDataManager shareManager].isConnected = NO;
     [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
@@ -987,6 +993,7 @@ static UNBlueToothTool *instance = nil;
         [self updataToCard];
         [self sendDataToVSW:string];
     }else{
+        NSLog(@"蓝牙未连接,连接蓝牙后解析鉴权数据");
         self.normalAuthSimString = string;
         [self checkBindedDeviceFromNet];
     }
@@ -1088,6 +1095,8 @@ static UNBlueToothTool *instance = nil;
     NSLog(@"发送指令成功");
     if (!error) {
         NSLog(@"其他操作");
+    }else{
+        NSLog(@"%@",error);
     }
 }
 
@@ -1640,7 +1649,7 @@ static UNBlueToothTool *instance = nil;
 - (void)sendNewMessageToBLEWithPushKit:(NSString *)sendString
 {
     if ([BlueToothDataManager shareManager].isConnected) {
-        NSLog(@"获取卡数据从pushkit---%@", sendString);
+        NSLog(@"获取卡数据sendNewMessageToBLEWithPushKit---%@", sendString);
         [self sendMessageToBLEWithType:BLECardData validData:sendString];
     }else{
         NSLog(@"蓝牙未连接");

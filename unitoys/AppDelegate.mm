@@ -752,7 +752,7 @@
     }else{
         if (err) {
             NSLog(@"连接失败");
-            if(err.code == 7){
+            if(err.code == 7 || err.code == 61){
                 self.sendTcpSocket.userData = SocketCloseByServer;
                 [BlueToothDataManager shareManager].isTcpConnected = NO;
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -1033,10 +1033,10 @@
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOSIGNAL];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                self.communicateID = @"00000000";
                 if ([BlueToothDataManager shareManager].isConnected) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
                     [BlueToothDataManager shareManager].isBeingRegisting = YES;
-                    self.communicateID = @"00000000";
                     //发送数据
                     [self sendMsgWithMessage:self.tcpPacketStr];
                 }else{
