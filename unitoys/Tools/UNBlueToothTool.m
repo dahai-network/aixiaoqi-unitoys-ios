@@ -143,8 +143,10 @@ static UNBlueToothTool *instance = nil;
     if ([BlueToothDataManager shareManager].isConnected) {
         [self sendInitMessageToBLE];
     }else{
-        NSLog(@"蓝牙未连接,重连设备");
-        [self checkBindedDeviceFromNet];
+        if (![BlueToothDataManager shareManager].isLbeConnecting) {
+            NSLog(@"蓝牙未连接,重连设备");
+            [self checkBindedDeviceFromNet];
+        }
     }
 }
 
@@ -499,7 +501,7 @@ static UNBlueToothTool *instance = nil;
             if (!self.boundedDeviceInfo[@"IMEI"]) {
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
             }
-            
+            [BlueToothDataManager shareManager].isLbeConnecting = YES;
 #warning 为了提高连接时间，此处去掉延时，可能对手环连接有影响
 //            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                //已经被系统或者其他APP连接上的设备数组
@@ -709,6 +711,7 @@ static UNBlueToothTool *instance = nil;
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
     [BlueToothDataManager shareManager].isConnected = YES;
+    [BlueToothDataManager shareManager].isLbeConnecting = NO;
     [self.mgr stopScan];
     [self.timer setFireDate:[NSDate distantFuture]];
     peripheral.delegate = self;
@@ -769,6 +772,7 @@ static UNBlueToothTool *instance = nil;
 }
 
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
+    [BlueToothDataManager shareManager].isLbeConnecting = NO;
     NSLog(@"连接失败 - %@", error);
 }
 
@@ -776,7 +780,7 @@ static UNBlueToothTool *instance = nil;
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
     [UNPushKitMessageManager shareManager].isNeedRegister = NO;
-    
+    [BlueToothDataManager shareManager].isLbeConnecting = NO;
     NSLog(@"跟外设失去连接");
     //    [BlueToothDataManager shareManager].isRegisted = NO;
     [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
@@ -830,7 +834,7 @@ static UNBlueToothTool *instance = nil;
     if (self.time == 60) {
         [self.timer setFireDate:[NSDate distantFuture]];
         self.time = 0;
-        if (![BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isOpened) {
+        if (![BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isOpened && ![BlueToothDataManager shareManager].isLbeConnecting) {
             //重新连接
             [self checkBindedDeviceFromNet];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -894,7 +898,7 @@ static UNBlueToothTool *instance = nil;
         NSLog(@"characteristic:%@", characteristic);
     }
     [BlueToothDataManager shareManager].isConnected = YES;
-    
+    [BlueToothDataManager shareManager].isLbeConnecting = NO;
     if (self.normalAuthSimString) {
         [self sendLBEConnectData];
 
@@ -1043,7 +1047,10 @@ static UNBlueToothTool *instance = nil;
         [self initBLEStatue];
     }else{
         NSLog(@"蓝牙未连接重连蓝牙");
-        [self checkBindedDeviceFromNet];
+        if (![BlueToothDataManager shareManager].isLbeConnecting) {
+            [self checkBindedDeviceFromNet];
+        }
+        
     }
 
 }
