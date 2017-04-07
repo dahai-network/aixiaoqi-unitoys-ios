@@ -135,7 +135,7 @@
             CLLocation *firstLocation = locationListArr[0];
             NSString *timeStr = [NSString stringWithFormat:@"%@", firstLocation.timestamp];
             NSString *dayTime = [timeStr substringToIndex:10];
-            NSLog(@"截取到的存储时间 -- %@",dayTime);
+//            NSLog(@"截取到的存储时间 -- %@",dayTime);
             if (![dayTime isEqualToString:currentDayTime]) {
                 //不是同一天
                 [locationListArr removeAllObjects];
@@ -152,7 +152,7 @@
                 endCoordinate.longitude = currLocation.coordinate.longitude;
                 //移动距离的计算
                 double meters = [self calculateDistanceWithStart:startCoordinate end:endCoordinate];
-                NSLog(@"计算的位移为%f米",meters);
+//                NSLog(@"计算的位移为%f米",meters);
                 if (meters >= 5){
 //                    NSLog(@"添加进位置数组");
                     [locationListArr addObject:currLocation];

@@ -45,7 +45,7 @@
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtMessageContent.text,@"SMSContent", nil];
         
         [self getBasicHeader];
-        NSLog(@"表演头：%@",self.headers);
+//        NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest postRequest:apiSMSSend params:params success:^(id responseObj) {
             
             NSLog(@"查询到的用户数据：%@",responseObj);

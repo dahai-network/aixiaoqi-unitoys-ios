@@ -54,7 +54,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.communicateDetailID,@"id", nil];
     NSString *apiNameStr = [NSString stringWithFormat:@"%@communicateDetailID%@", @"apiPackageByID", [self.communicateDetailID stringByReplacingOccurrencesOfString:@"-" withString:@""]];
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageByID params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {

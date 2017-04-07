@@ -30,7 +30,7 @@
         self.checkToken = YES;
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.txtGiftCard.text,@"CardPwd", nil];
         [self getBasicHeader];
-        NSLog(@"表演头：%@",self.headers);
+//        NSLog(@"表演头：%@",self.headers);
         
         [SSNetworkRequest postRequest:apiGiftCardBind params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {

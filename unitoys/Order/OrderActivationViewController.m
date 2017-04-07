@@ -153,7 +153,7 @@
             NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.dicOrderDetail[@"list"][@"OrderID"],@"OrderID", self.selectedDateString,@"BeginTime", nil];
             
             [self getBasicHeader];
-            NSLog(@"表演头：%@",self.headers);
+//            NSLog(@"表演头：%@",self.headers);
             [SSNetworkRequest postRequest:apiOrderActivation params:info success:^(id responseObj) {
                 NSLog(@"查询到的用户数据：%@",responseObj);
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {

@@ -449,7 +449,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理
@@ -498,7 +498,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
 
     [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
         //
@@ -1151,7 +1151,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)getMaxPhoneCall {
     self.checkToken = YES;
     [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
-        NSLog(@"有数据：%@",responseObj);
+//        NSLog(@"有数据：%@",responseObj);
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             
             self.maxPhoneCall = [[[responseObj objectForKey:@"data"]  objectForKey:@"maximumPhoneCallTime"] intValue];
@@ -1543,7 +1543,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            NSLog(@"有数据：%@",responseObj);
+//            NSLog(@"有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
@@ -1587,7 +1587,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            NSLog(@"有数据：%@",responseObj);
+//            NSLog(@"有数据：%@",responseObj);
             
             
             
@@ -1908,7 +1908,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         //获取最大通话时长后再拨打
         [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
-            NSLog(@"有数据：%@",responseObj);
+//            NSLog(@"有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 
                 CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
@@ -1985,7 +1985,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[userdata objectForKey:@"Tel"],@"DeviceName",self.calledTelNum,@"calledTelNum",[self formatTime:self.callStartTime],@"callStartTime", [self formatTime:self.callStopTime],@"callStopTime",[NSString stringWithFormat:@"%d",dat],@"callSessionTime",self.outIP,@"callSourceIp",self.outIP,@"callServerIp",self.hostHungup,@"acctterminatedirection",nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiAddSpeakRecord params:params success:^(id responseObj) {
 
         

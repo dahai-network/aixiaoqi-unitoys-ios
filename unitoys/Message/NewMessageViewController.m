@@ -161,7 +161,7 @@
         NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber",self.linkManTele,@"Tel", nil];
         
         [self getBasicHeader];
-        NSLog(@"表演头：%@",self.headers);
+//        NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest getRequest:apiSMSByTel params:info success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 
@@ -250,7 +250,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber",self.linkManTele,@"Tel", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     
     [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
         
@@ -390,7 +390,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:messageFrame.message.SMSID,@"SMSID", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiSendRetryForError params:params success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理
@@ -480,7 +480,7 @@
          NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
          
          [self getBasicHeader];
-         NSLog(@"表演头：%@",self.headers);
+//         NSLog(@"表演头：%@",self.headers);
          [SSNetworkRequest postRequest:apiSMSSend params:info success:^(id responseObj) {
              NSLog(@"查询到的用户数据：%@",responseObj);
              

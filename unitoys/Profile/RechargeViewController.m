@@ -314,7 +314,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:paymentMethod,@"PaymentMethod",self.payValue,@"Amount", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiRecharge params:params success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理
@@ -366,7 +366,7 @@
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderNumber,@"orderOrPayment", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiGetPrepayID params:info success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理

@@ -27,7 +27,7 @@
     } else {
         NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[[UIDevice currentDevice] systemVersion],@"Version",[[UIDevice currentDevice] model],@"Model",self.contentFeedback.text,@"Info", nil];
         [self getBasicHeader];
-        NSLog(@"表演头：%@",self.headers);
+//        NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest postRequest:apiFeedback params:info success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 NSLog(@"查询到的用户数据：%@",responseObj);

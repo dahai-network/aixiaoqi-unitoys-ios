@@ -32,7 +32,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.idOrder,@"id", nil];
     
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiOrderById params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -162,7 +162,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrderDetail[@"list"] objectForKey:@"OrderID"],@"OrderID", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiOrderCancel params:params success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理

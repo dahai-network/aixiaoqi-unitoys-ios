@@ -51,7 +51,6 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, strong)NSString *connectedDeviceName;//连接的设备名称（用于区分连接的是什么设备）
 
-@property (nonatomic, assign) BOOL isInitInstance;//是否初始化过
 @property (nonatomic, assign) BOOL isPushKitStatu;//是否为PushKit
 
 @property (nonatomic, copy) NSString *normalAuthSimString;
@@ -993,7 +992,7 @@ static UNBlueToothTool *instance = nil;
         [self updataToCard];
         [self sendDataToVSW:string];
     }else{
-        NSLog(@"蓝牙未连接,连接蓝牙后解析鉴权数据");
+        NSLog(@"不解析鉴权数据");
         self.normalAuthSimString = string;
         [self checkBindedDeviceFromNet];
     }
@@ -1508,7 +1507,7 @@ static UNBlueToothTool *instance = nil;
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.bigKingCardNumber,@"EmptyCardSerialNumber", self.activityOrderId, @"OrderID", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     
     [SSNetworkRequest postRequest:apiQueryOrderData params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -1545,7 +1544,7 @@ static UNBlueToothTool *instance = nil;
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.activityOrderId, @"OrderID", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     
     [SSNetworkRequest postRequest:apiActivationLocalCompleted params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -1789,7 +1788,7 @@ static UNBlueToothTool *instance = nil;
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"1",@"PackageCategory", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     
     [SSNetworkRequest postRequest:apiCheckUsedExistByPageCategory params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -1885,7 +1884,7 @@ static UNBlueToothTool *instance = nil;
         NSLog(@"本地没有存储，进行网络请求");
             self.checkToken = YES;
             [self getBasicHeader];
-            NSLog(@"表头：%@",self.headers);
+//            NSLog(@"表头：%@",self.headers);
             NSDictionary *info = [[NSDictionary alloc] init];
             [SSNetworkRequest getRequest:apiDeviceBracelet params:info success:^(id responseObj) {
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -1928,7 +1927,7 @@ static UNBlueToothTool *instance = nil;
 - (void)checkDeviceIsBound {
     self.checkToken = YES;
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", nil];
     if (!info[@"IMEI"]) {
         [self showAlertViewWithMessage:@"没有搜索到可连接的设备"];
@@ -1968,7 +1967,7 @@ static UNBlueToothTool *instance = nil;
             NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", [BlueToothDataManager shareManager].versionNumber, @"Version", nil];
             
             [self getBasicHeader];
-            NSLog(@"表演头：%@",self.headers);
+//            NSLog(@"表演头：%@",self.headers);
             
             NSDictionary *saveData = @{@"data":info, @"status" : @1};
             [SSNetworkRequest postRequest:apiBind params:info success:^(id responseObj) {
@@ -2018,7 +2017,7 @@ static UNBlueToothTool *instance = nil;
 - (void)sendDataToUnBoundDevice {
     self.checkToken = YES;
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiUnBind params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"解除绑定结果：%@", responseObj);
@@ -2032,6 +2031,9 @@ static UNBlueToothTool *instance = nil;
             [[NSUserDefaults standardUserDefaults] synchronize];
             //删除存储的绑定信息
             [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+            if ([BlueToothDataManager shareManager].isConnected) {
+                [self.mgr cancelPeripheralConnection:self.peripheral];
+            }
             [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
             [BlueToothDataManager shareManager].isBounded = NO;
             [BlueToothDataManager shareManager].isConnected = NO;
@@ -2059,7 +2061,7 @@ static UNBlueToothTool *instance = nil;
 - (void)checkRegistStatue {
     self.checkToken = YES;
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiGetRegStatus params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"手环注册状态 -- %@", responseObj[@"data"][@"RegStatus"]);
@@ -2297,7 +2299,7 @@ static UNBlueToothTool *instance = nil;
     self.dataArr = [NSMutableArray arrayWithObjects:dict1, dict2, dict3, dict4, nil];
     self.checkToken = YES;
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiCheckUserConfig params:nil success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {

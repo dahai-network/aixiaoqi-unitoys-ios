@@ -10,6 +10,8 @@
 #import "LinkUsViewController.h"
 #import "JPUSHService.h"
 #import "UNDatabaseTools.h"
+#import "BlueToothDataManager.h"
+#import "UNBlueToothTool.h"
 
 @implementation SettingViewController
 
@@ -30,7 +32,7 @@
         self.checkToken = YES;
         
         [self getBasicHeader];
-        NSLog(@"表演头：%@",self.headers);
+//        NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest getRequest:apiLogout params:nil success:^(id responseObj) {
             //
             NSLog(@"查询到的用户数据：%@",responseObj);
@@ -56,6 +58,10 @@
         
         //删除存储的绑定信息
         [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+        if ([BlueToothDataManager shareManager].isConnected) {
+            [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+        }
+        [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
         
         //注销极光推送
         [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {

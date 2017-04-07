@@ -113,7 +113,7 @@
     }
     
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     
     [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
         
@@ -131,7 +131,7 @@
             //数据请求失败
         }
         
-        NSLog(@"查询到的套餐数据：%@",responseObj);
+//        NSLog(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
         if (responseObj) {

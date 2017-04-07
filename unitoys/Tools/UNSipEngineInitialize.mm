@@ -96,7 +96,7 @@
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            NSLog(@"有数据：%@",responseObj);
+//            NSLog(@"有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
@@ -140,7 +140,7 @@
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            NSLog(@"有数据：%@",responseObj);
+//            NSLog(@"有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];

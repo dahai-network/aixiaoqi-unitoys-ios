@@ -25,7 +25,7 @@ typedef void(^PaySuccessBlock)();
 
 @interface UNBlueToothTool : NSObject<CBCentralManagerDelegate,CBPeripheralDelegate>
 //是否初始化过
-@property (nonatomic, readonly) BOOL isInitInstance;
+@property (nonatomic, assign) BOOL isInitInstance;
 
 //sim卡类型
 @property (nonatomic, copy) NSString *simtype;

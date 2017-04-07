@@ -938,7 +938,7 @@
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"3",@"PageSize",@"1",@"PageNumber", nil];
         
         [self getBasicHeader];
-        NSLog(@"表头：%@",self.headers);
+//        NSLog(@"表头：%@",self.headers);
         
         
         [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
@@ -956,7 +956,7 @@
             }else{
                 
             }
-            NSLog(@"查询到的套餐数据：%@",responseObj);
+//            NSLog(@"查询到的套餐数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             //
             NSLog(@"啥都没：%@",[error description]);
@@ -1240,7 +1240,7 @@
         self.checkToken = YES;
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"16",@"pageSize", nil];
         [self getBasicHeader];
-        NSLog(@"表演头：%@",self.headers);
+//        NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest getRequest:apiCountryHot params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCountryHot" dictData:responseObj];

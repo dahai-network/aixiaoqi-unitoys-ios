@@ -89,7 +89,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.idOrder,@"id", nil];
     NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderId%@", @"apiOrderById", [self.idOrder stringByReplacingOccurrencesOfString:@"-" withString:@""]];
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiOrderById params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
@@ -527,7 +527,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrderDetail[@"list"] objectForKey:@"OrderID"],@"OrderID", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiOrderCancel params:params success:^(id responseObj) {
         NSLog(@"查询到的用户数据：%@",responseObj);
         
@@ -555,7 +555,7 @@
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.idOrder,@"OrderID", tel,@"Tel", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiActivationKindCard params:info success:^(id responseObj) {
         NSLog(@"激活大王卡的结果：%@",responseObj);
         if ([[responseObj objectForKey:@"status"] intValue]==1) {

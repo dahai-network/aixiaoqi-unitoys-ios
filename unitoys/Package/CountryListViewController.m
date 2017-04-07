@@ -28,7 +28,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"100",@"pageSize", nil];
     NSString *apiNameStr = [NSString stringWithFormat:@"%@pageSize%@", @"apiCountryGet", @"100"];
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest getRequest:apiCountryGet params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];

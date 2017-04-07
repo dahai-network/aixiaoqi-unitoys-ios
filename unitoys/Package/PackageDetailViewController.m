@@ -33,7 +33,7 @@
     NSString *apiNameStr = [NSString stringWithFormat:@"%@idPackage%@", @"apiPackageByID", self.idPackage];
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageByID params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {

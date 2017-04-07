@@ -43,7 +43,7 @@
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiCheckUserConfig params:nil success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {

@@ -12,6 +12,8 @@
 #import "JPUSHService.h"
 #import "navHomeViewController.h"
 #import "UNDatabaseTools.h"
+#import "UNBlueToothTool.h"
+#import "BlueToothDataManager.h"
 
 @implementation MainViewController
 
@@ -94,6 +96,10 @@
     
     //删除存储的绑定信息
     [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+    }
+    [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
     
     UIApplication *application = [UIApplication sharedApplication];
     if ([application.keyWindow.rootViewController isKindOfClass:[LoginViewController class]]) {

@@ -11,6 +11,7 @@
 #import "WaterIdentifyView.h"
 #import "UIImage+GIF.h"
 #import "WristbandSettingViewController.h"
+#import "UNBlueToothTool.h"
 #import "UNDatabaseTools.h"
 
 @interface BindDeviceViewController ()
@@ -340,7 +341,7 @@
 - (void)checkHasBindDevice {
     self.checkToken = YES;
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     NSDictionary *info = [[NSDictionary alloc] init];
     [SSNetworkRequest getRequest:apiDeviceBracelet params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -371,7 +372,7 @@
         HUDNoStop1(INTERNATIONALSTRING(@"正在解绑..."))
         self.checkToken = YES;
         [self getBasicHeader];
-        NSLog(@"表头：%@",self.headers);
+//        NSLog(@"表头：%@",self.headers);
         [SSNetworkRequest getRequest:apiUnBind params:nil success:^(id responseObj) {
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -388,6 +389,9 @@
                 
                 //删除存储的绑定信息
                 [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+                if ([BlueToothDataManager shareManager].isConnected) {
+                    [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+                }
                 
                 if ([[BlueToothDataManager shareManager].boundedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
                     HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))
@@ -435,7 +439,7 @@
     self.isBeingNet = YES;
     self.checkToken = YES;
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     NSString *versionStr;
     NSString *typeStr;
     if ([BlueToothDataManager shareManager].versionNumber) {

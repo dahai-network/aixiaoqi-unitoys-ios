@@ -305,7 +305,7 @@
     }
     HUDNoStop1(INTERNATIONALSTRING(@"正在提交订单..."))
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     
     [SSNetworkRequest postRequest:apiOrderAdd params:params success:^(id responseObj) {
         NSLog(@"查询到的订单数据：%@",responseObj);
@@ -347,7 +347,7 @@
     
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     
     [SSNetworkRequest postRequest:apiPayNotifyAnsync params:params success:^(id responseObj) {
         //
@@ -406,7 +406,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrder objectForKey:@"OrderID"],@"OrderID", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiPayOrderByUserAmount params:params success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理
@@ -478,7 +478,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrder objectForKey:@"OrderNum"],@"orderOrPayment", nil];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiGetPrepayID params:params success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理

@@ -135,7 +135,7 @@
     [self.dicInfo setObject:str forKey:@"NickName"];
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     
     [self.valueView setHidden:YES];
     self.tableView.scrollEnabled = self.valueView.hidden;
@@ -244,7 +244,7 @@
     }
     
     [self getBasicHeader];
-    NSLog(@"表演头：%@",self.headers);
+//    NSLog(@"表演头：%@",self.headers);
     
     [self.valueView setHidden:YES];
     self.tableView.scrollEnabled = self.valueView.hidden;

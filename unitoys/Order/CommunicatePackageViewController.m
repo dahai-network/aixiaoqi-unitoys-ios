@@ -40,7 +40,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"1",@"pageNumber", @"20",@"pageSize",@"1", @"category", nil];
     NSString *apiNameStr = [NSString stringWithFormat:@"%@category%@", @"apiPackageGet", @"1"];
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+//    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageGet params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
