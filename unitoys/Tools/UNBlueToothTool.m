@@ -2070,9 +2070,11 @@ static UNBlueToothTool *instance = nil;
             if ([responseObj[@"data"][@"RegStatus"] intValue] == 1) {
                 //注册成功
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                [BlueToothDataManager shareManager].isRegisted = YES;
             } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
                 //未注册成功
                 [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                [BlueToothDataManager shareManager].isRegisted = NO;
                 [self checkUserIsExistAppointPackage];
             } else {
                 NSLog(@"注册状态有问题");
