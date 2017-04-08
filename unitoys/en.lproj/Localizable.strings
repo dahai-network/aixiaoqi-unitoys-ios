@@ -260,4 +260,7 @@
 "正在加载..." = "Loading...";
 "解绑成功" = "Unbound successfully";
 "已解除绑定，请打开蓝牙设置界面忽略蓝牙设备" = "Please open the bluetooth Settings to ignore the bluetooth device";
+"您已禁用位置服务，请开启定位功能体验更好的服务" = "You currently have all location services for this device disabled";
+"定位功能已禁用" = "Location Services Disabled";
+"好的" = "OK";
 

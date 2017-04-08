@@ -106,5 +106,9 @@ typedef void(^PaySuccessBlock)();
 - (void)checkEmptyCardSerialNumberFirstWithString:(NSString *)string;
 //是否使能通知
 - (void)sendDataToCheckIsAllowToNotificationWithPhoneCall:(BOOL)phoneCall Message:(BOOL)message WeiChart:(BOOL)weiChart QQ:(BOOL)QQ;
+//检测到有电话
+- (void)checkNitifiCall;
+//检测到有短信
+- (void)checkNotifiMessage;
 
 @end

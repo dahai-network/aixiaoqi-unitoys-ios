@@ -55,7 +55,7 @@
         self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
     }
     
-    if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
+    if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBeingRegisting) {
         self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
     }
     if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
@@ -409,6 +409,7 @@
                 [BlueToothDataManager shareManager].bleStatueForCard = 0;
                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
                 [BlueToothDataManager shareManager].chargingState = 1;
+                [BlueToothDataManager shareManager].isNeedToCheckStatue = YES;
                 if (self.customView) {
                     self.customView.hidden = YES;
                 }

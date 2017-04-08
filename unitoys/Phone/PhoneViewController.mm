@@ -34,6 +34,7 @@
 //#import "JSONModel.h"
 #import <MJExtension/MJExtension.h>
 #import "UNNetWorkStatuManager.h"
+#import "UNBlueToothTool.h"
 
 @interface PhoneViewController ()
 
@@ -1387,6 +1388,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
     NSLog(@"新呼叫");
+    [[UNBlueToothTool shareBlueToothTool] checkNitifiCall];
 //    NSString *msg = @"";
     NSString *newcid;
     

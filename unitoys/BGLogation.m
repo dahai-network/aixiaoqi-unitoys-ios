@@ -79,7 +79,7 @@
     
     if ([CLLocationManager locationServicesEnabled] == NO) {
         NSLog(@"locationServicesEnabled false");
-        UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:@"Location Services Disabled" message:@"You currently have all location services for this device disabled" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *servicesDisabledAlert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"定位功能已禁用") message:INTERNATIONALSTRING(@"您已禁用位置服务，请开启定位功能体验更好的服务") delegate:nil cancelButtonTitle:INTERNATIONALSTRING(@"好的") otherButtonTitles:nil];
         [servicesDisabledAlert show];
     } else {
         CLAuthorizationStatus authorizationStatus= [CLLocationManager authorizationStatus];
@@ -185,7 +185,7 @@
         case kCLErrorNetwork: // general, network-related error
         {
             if (!self.isShowNetwork) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"网络错误") message:INTERNATIONALSTRING(@"请检查网络连接") delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"网络错误") message:INTERNATIONALSTRING(@"请检查网络连接") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"好的") otherButtonTitles:nil, nil];
                 [alert show];
                 self.isShowNetwork = YES;
             }
@@ -193,7 +193,7 @@
             break;
         case kCLErrorDenied:{
             if (!self.isShowlocation) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"请开启后台服务") message:INTERNATIONALSTRING(@"应用没有开启后台定位功能，需要在在设置->通用->后台应用刷新开启") delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"请开启后台服务") message:INTERNATIONALSTRING(@"应用没有开启后台定位功能，需要在在设置->通用->后台应用刷新开启") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"好的") otherButtonTitles:nil, nil];
                 [alert show];
                 self.isShowlocation = YES;
             }

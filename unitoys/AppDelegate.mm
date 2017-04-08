@@ -1176,7 +1176,7 @@
         self.sec = 0;
         NSString *num = [NSString stringWithFormat:@"%d", self.currentNumber];
         NSString *str = [self hexFinalTLVLength:num];
-        //108a050020fdef90000800060101006501b4
+        //108a 0500 20fd ef90 0008 0006 0101006501b4
         //发送心跳包
         NSString *sendStr = [NSString stringWithFormat:@"108a0500%@%@00060101006501b4", self.communicateID, str];
         NSLog(@"发送心跳包 -- %@", sendStr);
@@ -1455,6 +1455,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     if ([contentType isEqualToString:@"SMSReceiveNew"]) {
         //收到对方发送的短信
         NSString *name = [self checkLinkNameWithPhoneStr:extras[@"Tel"]];
+        [[UNBlueToothTool shareBlueToothTool] checkNotifiMessage];
         [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:extras[@"SMSContent"] userInfo:userInfo];
         
 //        [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
@@ -1741,6 +1742,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
         [JPUSHService handleRemoteNotification:userInfo];
         NSString *name = [self checkLinkNameWithPhoneStr:userInfo[@"Tel"]];
+        [[UNBlueToothTool shareBlueToothTool] checkNotifiMessage];
         [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:userInfo[@"SMSContent"] userInfo:userInfo];
     } else {
         // 本地通知
@@ -1769,6 +1771,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     
     [JPUSHService handleRemoteNotification:userInfo];
     NSString *name = [self checkLinkNameWithPhoneStr:userInfo[@"Tel"]];
+    [[UNBlueToothTool shareBlueToothTool] checkNotifiMessage];
     [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:userInfo[@"SMSContent"] userInfo:userInfo];
     
     NSLog(@" -- %@", userInfo);

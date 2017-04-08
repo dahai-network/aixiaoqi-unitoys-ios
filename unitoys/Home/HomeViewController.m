@@ -91,7 +91,6 @@
         [weakSelf dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:@"未能检测到设备内有电话卡，您需要重启设备重新检测吗？" alertAction:^{
             [BlueToothDataManager shareManager].isNeedToResert = YES;
             //发送复位请求
-//            [self sendMessageToBLEWithType:BLESystemReset validData:nil];
             [[UNBlueToothTool shareBlueToothTool] sendBLESystemResetCommand];
             [BlueToothDataManager shareManager].isReseted = YES;
             [BlueToothDataManager shareManager].isBounded = NO;

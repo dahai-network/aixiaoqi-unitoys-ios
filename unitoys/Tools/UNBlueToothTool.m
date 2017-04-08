@@ -21,7 +21,8 @@
 typedef enum : NSUInteger {
     BLESystemReset,//系统复位
     BLETellBLEIsApple,//app发送手机系统给蓝牙
-    BLEIsNotifi,//是否是能通知
+    BLEIsNotifi,//是否使能通知
+    BLENotifiCall,//检测到有电话
     BLETurnoverTime,//更新时间
     BLESystemBaseInfo,//系统基本信息请求
     BLECkeckToBound,//请求绑定
@@ -223,6 +224,16 @@ static UNBlueToothTool *instance = nil;
     [self sendMessageToBLEWithType:BLEUpElectricToCard validData:type];
 }
 
+#pragma mark 检测到有电话
+- (void)checkNitifiCall {
+    [self sendMessageToBLEWithType:BLENotifiCall validData:@"01"];
+}
+
+#pragma mark 检测到有短信
+- (void)checkNotifiMessage {
+    [self sendMessageToBLEWithType:BLENotifiCall validData:@"02"];
+}
+
 #pragma mark 新协议发送数据包的方法
 - (void)sendMessageToBLEWithType:(APPSENDTOBLE)type validData:(NSString *)validData {
     NSString *firstStr;
@@ -244,6 +255,10 @@ static UNBlueToothTool *instance = nil;
         case BLEIsNotifi:
             //是否是能通知
             typeStr = @"0300";
+            break;
+        case BLENotifiCall:
+            //检测到有电话
+            typeStr = @"0400";
             break;
         case BLETurnoverTime:
             //更新时间
@@ -320,7 +335,7 @@ static UNBlueToothTool *instance = nil;
             NSLog(@"只有一个包，最终发送的包内容 -> %@", totalStr);
             [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
         } else {
-            NSString *totalNumber = [NSString stringWithFormat:@"%lu", ((firstStr.length - 15*2)/2)/17 + 2];
+            NSString *totalNumber = [NSString stringWithFormat:@"%u", ((firstStr.length - 15*2)/2)/17 + 2];
             for (int i = 0; i < [totalNumber integerValue]; i++) {
                 NSString *tempStr;//后面拼接的字节
                 NSString *currentNumStr;//数据包编号
@@ -1398,12 +1413,13 @@ static UNBlueToothTool *instance = nil;
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
                         //判断是否有指定套餐，并创建连接
                         [BlueToothDataManager shareManager].bleStatueForCard = 2;
-                        if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+                        if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue && ![BlueToothDataManager shareManager].isNeedToCheckStatue) {
                             //查询tcp连接状态
                             [self checkRegistStatue];
                             [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                         } else {
                             //注册卡
+                            [BlueToothDataManager shareManager].isNeedToCheckStatue = NO;
                             if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
                                 
 // ---取消延时查询套餐
