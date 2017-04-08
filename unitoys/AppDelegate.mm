@@ -435,6 +435,7 @@
         NSLog(@"号码有问题");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
+            [BlueToothDataManager shareManager].isRegisted = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"cardNumberNotTrue" object:HOMESTATUETITLE_NOSIGNAL];
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         });
@@ -961,6 +962,7 @@
             NSLog(@"电话端口错误");
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                [BlueToothDataManager shareManager].isRegisted = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"cardNumberNotTrue" object:HOMESTATUETITLE_NOSIGNAL];
                 [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             });
