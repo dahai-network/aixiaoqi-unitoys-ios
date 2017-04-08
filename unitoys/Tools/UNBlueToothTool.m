@@ -1892,9 +1892,9 @@ static UNBlueToothTool *instance = nil;
         self.boundedDeviceInfo = nil;
     }
     NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiDeviceBracelet"];
-    if (responseObj) {
+    if (responseObj[@"data"][@"IMEI"]) {
         self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
-        if (!responseObj[@"data"][@"IMEI"]) {
+        if (!responseObj[@"data"]) {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
             [BlueToothDataManager shareManager].isBounded = NO;
         } else {
@@ -1913,13 +1913,13 @@ static UNBlueToothTool *instance = nil;
             [SSNetworkRequest getRequest:apiDeviceBracelet params:info success:^(id responseObj) {
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
                     NSLog(@"查询绑定设备 -- %@", responseObj);
-                    [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:responseObj];
                     self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
                     if (!responseObj[@"data"][@"IMEI"]) {
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
                         [BlueToothDataManager shareManager].isBounded = NO;
                     } else {
                         [BlueToothDataManager shareManager].isBounded = YES;
+                        [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:responseObj];
                     }
                     //扫描蓝牙设备
                     [self scanAndConnectDevice];
