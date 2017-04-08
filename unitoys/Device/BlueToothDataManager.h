@@ -61,5 +61,7 @@
 @property (nonatomic, copy) NSString *homeVCLeftTitle;
 
 @property (nonatomic, assign) BOOL isLbeConnecting; //蓝牙是否正在连接(包括扫描连接操作)
+//@property (nonatomic, assign) BOOL isCan
+
 
 @end

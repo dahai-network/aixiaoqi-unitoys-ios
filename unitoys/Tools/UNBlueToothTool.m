@@ -490,7 +490,7 @@ static UNBlueToothTool *instance = nil;
             NSLog(@"当前蓝牙状态CBManagerStatePoweredOff");
             //清空鉴权数据
             self.normalAuthSimString = nil;
-            
+            [BlueToothDataManager shareManager].isConnected = NO;
             [self.peripherals removeAllObjects];
             [self.mgr stopScan];
             //蓝牙未开
@@ -509,6 +509,7 @@ static UNBlueToothTool *instance = nil;
         {
             NSLog(@"当前蓝牙状态CBManagerStatePoweredOn");
             NSLog(@"蓝牙设备开着");
+            [BlueToothDataManager shareManager].bleStatueForCard = 0;
             [self.peripherals removeAllObjects];
             [BlueToothDataManager shareManager].isOpened = YES;
             //连接中
@@ -549,7 +550,6 @@ static UNBlueToothTool *instance = nil;
                             }
                         }
                         if (peripheral != nil && [allDeviceStr containsString:nameStr.lowercaseString]) {
-                            
                             //获取mac地址
                             if (!self.boundedDeviceInfo[@"IMEI"] && peripheral.name.length > nameStr.length+1) {
                                 [BlueToothDataManager shareManager].deviceMacAddress = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1].lowercaseString];
@@ -910,7 +910,7 @@ static UNBlueToothTool *instance = nil;
         }
         NSLog(@"characteristic:%@", characteristic);
     }
-    [BlueToothDataManager shareManager].isConnected = YES;
+//    [BlueToothDataManager shareManager].isConnected = YES;
     [BlueToothDataManager shareManager].isLbeConnecting = NO;
     if (self.normalAuthSimString) {
         [self sendLBEConnectData];
@@ -923,6 +923,7 @@ static UNBlueToothTool *instance = nil;
         [self sendDataToVSW:self.normalAuthSimString];
         self.normalAuthSimString = nil;
     }else{
+        
         [self sendInitMessageToBLE];
     }
     
@@ -951,7 +952,8 @@ static UNBlueToothTool *instance = nil;
 
 - (void)sendLBEConnectData
 {
-    if (self.pairedArr.count<=0) {
+    NSArray *paire = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
+    if (paire.count<=0) {
         //告诉蓝牙是苹果设备
         [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
         NSLog(@"告诉了设备是苹果手机");
@@ -999,7 +1001,9 @@ static UNBlueToothTool *instance = nil;
         
     }else{
         NSLog(@"蓝牙未连接");
-        [self checkBindedDeviceFromNet];
+        if (![BlueToothDataManager shareManager].isLbeConnecting) {
+            [self checkBindedDeviceFromNet];
+        }
     }
 }
 
@@ -1013,8 +1017,10 @@ static UNBlueToothTool *instance = nil;
         [self sendDataToVSW:string];
     }else{
         NSLog(@"不解析鉴权数据");
-        self.normalAuthSimString = string;
-        [self checkBindedDeviceFromNet];
+        if (![BlueToothDataManager shareManager].isLbeConnecting) {
+            self.normalAuthSimString = string;
+            [self checkBindedDeviceFromNet];
+        }
     }
 }
 
@@ -1426,7 +1432,7 @@ static UNBlueToothTool *instance = nil;
 // ---取消延时查询套餐
 //                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                     [BlueToothDataManager shareManager].isRegisted = NO;
-                                [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                                    [BlueToothDataManager shareManager].isBeingRegisting = YES;
 //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
                                     NSLog(@"判断用户是否存在指定套餐");
                                     [self checkUserIsExistAppointPackage];
