@@ -1388,13 +1388,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
     NSLog(@"新呼叫");
-    [[UNBlueToothTool shareBlueToothTool] checkNitifiCall];
 //    NSString *msg = @"";
     NSString *newcid;
     
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     
     if (dir == CallIncoming){
+        [[UNBlueToothTool shareBlueToothTool] checkNitifiCall];
 //        msg = [NSString stringWithFormat:@"新来电 %@",cid];
         //去掉“+”
         if ([cid containsString:@"+"]) {
