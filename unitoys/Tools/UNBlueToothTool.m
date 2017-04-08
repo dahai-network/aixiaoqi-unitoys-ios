@@ -960,12 +960,10 @@ static UNBlueToothTool *instance = nil;
 //        NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
 //    }
     
-//    NSArray *paire = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
-//    if (paire.count<=0) {
-        //告诉蓝牙是苹果设备
-        [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
-        NSLog(@"告诉了设备是苹果手机");
-//    }
+    //告诉蓝牙是苹果设备
+    [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
+    NSLog(@"告诉了设备是苹果手机");
+    
     //同步时间
     [self checkNowTime];
     //请求基本信息
