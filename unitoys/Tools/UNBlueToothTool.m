@@ -953,13 +953,6 @@ static UNBlueToothTool *instance = nil;
 
 - (void)sendLBEConnectData
 {
-//    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-//    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-//    NSArray *paire = [NSArray array]
-//    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-//        NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-//    }
-    
     //告诉蓝牙是苹果设备
     [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
     NSLog(@"告诉了设备是苹果手机");
