@@ -491,6 +491,7 @@ static UNBlueToothTool *instance = nil;
             //清空鉴权数据
             self.normalAuthSimString = nil;
             [BlueToothDataManager shareManager].isConnected = NO;
+            [BlueToothDataManager shareManager].isCanSendAuthData = NO;
             [self.peripherals removeAllObjects];
             [self.mgr stopScan];
             //蓝牙未开
@@ -792,6 +793,7 @@ static UNBlueToothTool *instance = nil;
 #pragma mark 跟某个外设失去连接
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
 {
+    [BlueToothDataManager shareManager].isCanSendAuthData = NO;
     [UNPushKitMessageManager shareManager].isNeedRegister = NO;
     [BlueToothDataManager shareManager].isLbeConnecting = NO;
     NSLog(@"跟外设失去连接");
@@ -923,7 +925,6 @@ static UNBlueToothTool *instance = nil;
         [self sendDataToVSW:self.normalAuthSimString];
         self.normalAuthSimString = nil;
     }else{
-        
         [self sendInitMessageToBLE];
     }
     
@@ -952,12 +953,19 @@ static UNBlueToothTool *instance = nil;
 
 - (void)sendLBEConnectData
 {
-    NSArray *paire = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
-    if (paire.count<=0) {
+//    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+//    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+//    NSArray *paire = [NSArray array]
+//    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+//        NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
+//    }
+    
+//    NSArray *paire = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
+//    if (paire.count<=0) {
         //告诉蓝牙是苹果设备
         [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
         NSLog(@"告诉了设备是苹果手机");
-    }
+//    }
     //同步时间
     [self checkNowTime];
     //请求基本信息
@@ -1012,9 +1020,11 @@ static UNBlueToothTool *instance = nil;
 {
     if ([BlueToothDataManager shareManager].isConnected) {
         NSLog(@"解析鉴权数据");
-        [UNPushKitMessageManager shareManager].isQuickLoad = NO;
-        [self updataToCard];
-        [self sendDataToVSW:string];
+        if ([BlueToothDataManager shareManager].isCanSendAuthData) {
+            [UNPushKitMessageManager shareManager].isQuickLoad = NO;
+            [self updataToCard];
+            [self sendDataToVSW:string];
+        }
     }else{
         NSLog(@"不解析鉴权数据");
         if (![BlueToothDataManager shareManager].isLbeConnecting) {
@@ -1271,6 +1281,7 @@ static UNBlueToothTool *instance = nil;
                     [self registFailAction];
                     
                 } else if ([contentStr isEqualToString:@"03"]) {
+                    [BlueToothDataManager shareManager].isCanSendAuthData = YES;
                     NSLog(@"对卡上电3成功");
                 }else if ([contentStr isEqualToString:@"13"]) {
                     NSLog(@"对卡上电3失败");
@@ -1420,6 +1431,7 @@ static UNBlueToothTool *instance = nil;
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
                         //判断是否有指定套餐，并创建连接
                         [BlueToothDataManager shareManager].bleStatueForCard = 2;
+                        [BlueToothDataManager shareManager].isCanSendAuthData = YES;
                         if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue && ![BlueToothDataManager shareManager].isNeedToCheckStatue) {
                             //查询tcp连接状态
                             [self checkRegistStatue];

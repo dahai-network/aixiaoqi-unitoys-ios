@@ -61,7 +61,7 @@
 @property (nonatomic, copy) NSString *homeVCLeftTitle;
 
 @property (nonatomic, assign) BOOL isLbeConnecting; //蓝牙是否正在连接(包括扫描连接操作)
-//@property (nonatomic, assign) BOOL isCan
+@property (nonatomic, assign) BOOL isCanSendAuthData; //是否允许解析鉴权数据(只有蓝牙注册后才允许)
 
 
 @end
