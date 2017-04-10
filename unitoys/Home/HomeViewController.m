@@ -7,7 +7,7 @@
 //
 
 #import "HomeViewController.h"
-#import "CountryCell.h"
+#import "ProductCollectionViewCell.h"
 #import "PackageListViewController.h"
 #import "BrowserViewController.h"
 #import "OrderDetailViewController.h"
@@ -1281,18 +1281,7 @@
             return 1;
             break;
         case 1:
-                if (self.arrOrderList.count>0){
-                    if (self.arrOrderList.count ==1) {
-                        self.orderFoot1.hidden = YES;
-                        self.orderFoot2.hidden = YES;
-                    }
-                    if (self.arrOrderList.count == 2) {
-                        self.orderFoot1.hidden = YES;
-                    }
-                    return self.arrOrderList.count+1;
-                }else{
-                    return 2;
-                }
+            return 3;
             break;
         case 2:
             return 2;
@@ -1306,23 +1295,30 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section==0) {
-        return 120*[UIScreen mainScreen].bounds.size.width/340+92;
+        return [UIScreen mainScreen].bounds.size.width*360.00/750.00+(([UIScreen mainScreen].bounds.size.width-40)/2)*92.00/167.00+80.00;
     } else if(indexPath.section==1){
-        if (self.arrOrderList.count>0){
-            if (indexPath.row==0) {
-                return 32*[UIScreen mainScreen].bounds.size.width/320;
-            } else {
-                return 50*[UIScreen mainScreen].bounds.size.width/320;
-            }
-        }else{
-            return 0;
+        switch (indexPath.row) {
+            case 0:
+                return 46;
+                break;
+            case 1:
+                return 151;
+                break;
+            case 2:
+                return [UIScreen mainScreen].bounds.size.width*21.00/75.00+5.00;
+                break;
+            default:
+                return 46;
+                break;
         }
     }else if(indexPath.section==2){
         if (indexPath.row==0) {
-            return 36*[UIScreen mainScreen].bounds.size.width/320;
+            return 46;
         } else {
             //后边按实际的热门套餐数量
-            return 320*[UIScreen mainScreen].bounds.size.width/320 * 0.75;
+            NSInteger sizeWidth=[UIScreen mainScreen].bounds.size.width/2.00-18.00;
+            NSInteger sizeHeight = sizeWidth*189.00/170.00;
+            return sizeHeight*2+6+15;
         }
     }else return 0;
 }
@@ -1381,8 +1377,9 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSInteger size=[UIScreen mainScreen].bounds.size.width/4;
-    return CGSizeMake(size, size);
+    NSInteger sizeWidth=[UIScreen mainScreen].bounds.size.width/2.00-18.00;
+    NSInteger sizeHeight = sizeWidth*189.00/170.00;
+    return CGSizeMake(sizeWidth, sizeHeight);
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -1394,18 +1391,18 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return  [self.arrCountry count];
+    return  4;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    CountryCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CountryCell" forIndexPath:indexPath];
-    NSDictionary *dicCountry = [self.arrCountry objectAtIndex:indexPath.row];
+    ProductCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ProductCollectionViewCell" forIndexPath:indexPath];
+//    NSDictionary *dicCountry = [self.arrCountry objectAtIndex:indexPath.row];
     
-    cell.lblCountryName.text = [dicCountry objectForKey:@"CountryName"];
-    [cell.ivCountry sd_setImageWithURL:[NSURL URLWithString:[dicCountry objectForKey:@"LogoPic"]]];
-    cell.urlPic = [dicCountry objectForKey:@"Pic"];
-    cell.countryID = [dicCountry objectForKey:@"CountryID"];
+//    cell.lblCountryName.text = [dicCountry objectForKey:@"CountryName"];
+//    [cell.ivCountry sd_setImageWithURL:[NSURL URLWithString:[dicCountry objectForKey:@"LogoPic"]]];
+//    cell.urlPic = [dicCountry objectForKey:@"Pic"];
+//    cell.countryID = [dicCountry objectForKey:@"CountryID"];
     
     return cell;
 }

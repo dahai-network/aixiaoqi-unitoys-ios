@@ -90,7 +90,7 @@
 "I1E-Y7-lMD.text" = "消耗/千卡";
 
 /* Class = "UILabel"; text = "已购套餐"; ObjectID = "Icg-WE-vyi"; */
-"Icg-WE-vyi.text" = "已购套餐";
+"Icg-WE-vyi.text" = "海外流量套餐";
 
 /* Class = "UILabel"; text = "手环闹钟"; ObjectID = "JAv-Nd-PC8"; */
 "JAv-Nd-PC8.text" = "权限设置";
@@ -117,13 +117,13 @@
 "QdB-9f-EXC.text" = "0";
 
 /* Class = "UILabel"; text = "热门流量套餐"; ObjectID = "R5T-eh-pqI"; */
-"R5T-eh-pqI.text" = "热门流量套餐";
+"R5T-eh-pqI.text" = "硬件产品";
 
 /* Class = "UILabel"; text = "有效期：--天"; ObjectID = "TCy-Xb-7Us"; */
 "TCy-Xb-7Us.text" = "有效期：--天";
 
 /* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "Tl9-4J-PAS"; */
-"Tl9-4J-PAS.normalTitle" = "更多>";
+"Tl9-4J-PAS.normalTitle" = "更多V";
 
 /* Class = "UILabel"; text = "0"; ObjectID = "TnU-Qc-YbS"; */
 "TnU-Qc-YbS.text" = "0";
@@ -153,7 +153,7 @@
 "byG-lF-DHz.text" = "0";
 
 /* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "cAW-Zz-6aP"; */
-"cAW-Zz-6aP.normalTitle" = "更多>";
+"cAW-Zz-6aP.normalTitle" = "更多V";
 
 /* Class = "UILabel"; text = "设置"; ObjectID = "cQM-8y-MA7"; */
 "cQM-8y-MA7.text" = "设置";
@@ -228,7 +228,7 @@
 "rhx-hb-oRA.text" = "消耗/千卡";
 
 /* Class = "UILabel"; text = "更多>"; ObjectID = "s0D-2Z-1VP"; */
-"s0D-2Z-1VP.text" = "更多>";
+"s0D-2Z-1VP.text" = "更多V";
 
 /* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "t4s-zm-RsX"; */
 "t4s-zm-RsX.normalTitle" = "无状态";
