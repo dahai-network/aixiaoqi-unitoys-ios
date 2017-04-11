@@ -20,11 +20,6 @@
 
 @property (strong,nonatomic) NSMutableArray *arrCountry;
 
-@property (weak, nonatomic) IBOutlet UILabel *lblStepNum;
-@property (weak, nonatomic) IBOutlet UILabel *lblKM;
-@property (weak, nonatomic) IBOutlet UILabel *lblDate;
-@property (weak, nonatomic) IBOutlet UILabel *lblKcal;
-
 @property (weak, nonatomic) IBOutlet UIView *ivTutorial;
 
 @property (weak, nonatomic) IBOutlet UIView *ivQuickSetting;

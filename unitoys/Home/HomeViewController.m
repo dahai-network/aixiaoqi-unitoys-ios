@@ -36,6 +36,7 @@
 
 #import "UNBlueToothTool.h"
 #import "UNPushKitMessageManager.h"
+#import "CommunicateDetailViewController.h"
 
 //#import "AbroadMessageController.h"
 
@@ -54,12 +55,36 @@
 @property (nonatomic, assign) BOOL isUpdatedLBEInfo;
 
 @property (nonatomic, assign) BOOL isPushKitStatu;
+
+//通话套餐相关
+@property (nonatomic, strong)NSMutableArray *communicatePackageDataArr;
+@property (weak, nonatomic) IBOutlet UILabel *leftCountLbl;
+@property (weak, nonatomic) IBOutlet UILabel *leftNameLbl;
+@property (weak, nonatomic) IBOutlet UILabel *leftSubNameLbl;
+@property (weak, nonatomic) IBOutlet UILabel *rightCountLbl;
+@property (weak, nonatomic) IBOutlet UILabel *rightNameLbl;
+@property (weak, nonatomic) IBOutlet UILabel *rightSubNameLbl;
+
+//流量套餐相关
+@property (weak, nonatomic) IBOutlet UIImageView *leftFlowImg;
+@property (weak, nonatomic) IBOutlet UIImageView *midFlowImg;
+@property (weak, nonatomic) IBOutlet UIImageView *rightFlowImg;
+@property (weak, nonatomic) IBOutlet UILabel *leftFlowNameLbl;
+@property (weak, nonatomic) IBOutlet UILabel *rightFlowNameLbl;
+@property (weak, nonatomic) IBOutlet UILabel *midFlowNameLbl;
+@property (weak, nonatomic) IBOutlet UILabel *leftFlowSubNameLbl;
+@property (weak, nonatomic) IBOutlet UILabel *midFlowSubNameLbl;
+@property (weak, nonatomic) IBOutlet UILabel *rightFlowSubNameLbl;
+
+
 @end
 
 @implementation HomeViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.communicatePackageDataArr = [NSMutableArray array];
     
     [UNPushKitMessageManager shareManager].isAppAlreadyLoad = YES;
     self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
@@ -112,6 +137,8 @@
     [self loadHotCountry];
     
     [self loadBasicConfig];
+    
+    [self checkCommunicatePackageData];
     
     //境外通讯
     UITapGestureRecognizer *abroadMessage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(abroadMessageAction)];
@@ -252,6 +279,105 @@
     }];
     [alertVC addAction:certailAction];
     [self presentViewController:alertVC animated:YES completion:nil];
+}
+
+#pragma mark 获取通话套餐数据
+- (void)checkCommunicatePackageData {
+    self.checkToken = YES;
+    
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"1",@"pageNumber", @"20",@"pageSize",@"1", @"category", nil];
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@category%@", @"apiPackageGet", @"1"];
+    [self getBasicHeader];
+    //    NSLog(@"表头：%@",self.headers);
+    [SSNetworkRequest getRequest:apiPackageGet params:params success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
+            NSLog(@"首页获取到的通话套餐:%@", responseObj);
+            self.communicatePackageDataArr = responseObj[@"data"][@"list"];
+            [self refreshCommunicatePackage];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+        }
+    } failure:^(id dataObj, NSError *error) {
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            self.communicatePackageDataArr = responseObj[@"data"][@"list"];
+            [self refreshCommunicatePackage];
+        }
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
+- (void)refreshCommunicatePackage {
+    NSDictionary *firstDict = self.communicatePackageDataArr[0];
+    self.leftCountLbl.text = [NSString stringWithFormat:@"%@元", firstDict[@"Price"]];
+    self.leftNameLbl.text = firstDict[@"PackageName"];
+    self.leftSubNameLbl.text = [NSString stringWithFormat:@"有效期%@天", firstDict[@"ExpireDays"]];
+    NSDictionary *secondDict = self.communicatePackageDataArr[1];
+    self.rightCountLbl.text = [NSString stringWithFormat:@"%@元", secondDict[@"Price"]];
+    self.rightNameLbl.text = secondDict[@"PackageName"];
+    self.rightSubNameLbl.text = [NSString stringWithFormat:@"有效期%@天", secondDict[@"ExpireDays"]];
+//    [self.tableView reloadData];
+}
+
+#pragma mark 手势点击事件
+- (IBAction)leftAction:(UITapGestureRecognizer *)sender {
+    NSDictionary *dict = self.communicatePackageDataArr[0];
+    CommunicateDetailViewController *communicateDetailVC = [[CommunicateDetailViewController alloc] init];
+    communicateDetailVC.communicateDetailID = dict[@"PackageId"];
+    [self.navigationController pushViewController:communicateDetailVC animated:YES];
+}
+
+- (IBAction)rightAction:(UITapGestureRecognizer *)sender {
+    NSDictionary *dict = self.communicatePackageDataArr[1];
+    CommunicateDetailViewController *communicateDetailVC = [[CommunicateDetailViewController alloc] init];
+    communicateDetailVC.communicateDetailID = dict[@"PackageId"];
+    [self.navigationController pushViewController:communicateDetailVC animated:YES];
+}
+
+- (IBAction)leftFlowAction:(UITapGestureRecognizer *)sender {
+    NSDictionary *dicCountry = self.arrCountry[0];
+    
+    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+    PackageListViewController *packageListViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageListViewController"];
+    if (packageListViewController) {
+        self.tabBarController.tabBar.hidden = YES;
+        packageListViewController.CountryID = [dicCountry objectForKey:@"CountryID"];
+        packageListViewController.dicCountry = dicCountry;
+        [self.navigationController pushViewController:packageListViewController animated:YES];
+    }
+}
+
+- (IBAction)midFlowAction:(UITapGestureRecognizer *)sender {
+    NSDictionary *dicCountry = self.arrCountry[1];
+    
+    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+    PackageListViewController *packageListViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageListViewController"];
+    if (packageListViewController) {
+        self.tabBarController.tabBar.hidden = YES;
+        packageListViewController.CountryID = [dicCountry objectForKey:@"CountryID"];
+        packageListViewController.dicCountry = dicCountry;
+        [self.navigationController pushViewController:packageListViewController animated:YES];
+    }
+}
+
+- (IBAction)rightFlowAction:(UITapGestureRecognizer *)sender {
+    NSDictionary *dicCountry = self.arrCountry[2];
+    
+    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+    PackageListViewController *packageListViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageListViewController"];
+    if (packageListViewController) {
+        self.tabBarController.tabBar.hidden = YES;
+        packageListViewController.CountryID = [dicCountry objectForKey:@"CountryID"];
+        packageListViewController.dicCountry = dicCountry;
+        [self.navigationController pushViewController:packageListViewController animated:YES];
+    }
+}
+
+- (IBAction)abordGuide:(UITapGestureRecognizer *)sender {
+    HUDNormal(@"海外节费引导")
 }
 
 #pragma mark 刷新卡状态
@@ -1231,7 +1357,7 @@
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiCountryHot"];
         if (responseObj) {
             self.arrCountry = [responseObj objectForKey:@"data"];
-            [self.hotCollectionView reloadData];
+            [self refreshFlowPackage];
         }else{
             HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
@@ -1244,7 +1370,7 @@
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCountryHot" dictData:responseObj];
                 self.arrCountry = [responseObj objectForKey:@"data"];
-                [self.hotCollectionView reloadData];
+                [self refreshFlowPackage];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -1257,13 +1383,28 @@
             NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiCountryHot"];
             if (responseObj) {
                 self.arrCountry = [responseObj objectForKey:@"data"];
-                [self.hotCollectionView reloadData];
+                [self refreshFlowPackage];
             }else{
                 HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
             }
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }
+}
+
+- (void)refreshFlowPackage {
+    NSDictionary *leftDict = self.arrCountry[0];
+    [self.leftFlowImg sd_setImageWithURL:[NSURL URLWithString:leftDict[@"LogoPic"]]];
+    self.leftFlowNameLbl.text = leftDict[@"CountryName"];
+    self.leftFlowSubNameLbl.text = leftDict[@"Descr"];
+    NSDictionary *midDict = self.arrCountry[1];
+    [self.midFlowImg sd_setImageWithURL:[NSURL URLWithString:midDict[@"LogoPic"]]];
+    self.midFlowNameLbl.text = midDict[@"CountryName"];
+    self.midFlowSubNameLbl.text = midDict[@"Descr"];
+    NSDictionary *rightDict = self.arrCountry[2];
+    [self.rightFlowImg sd_setImageWithURL:[NSURL URLWithString:rightDict[@"LogoPic"]]];
+    self.rightFlowNameLbl.text = rightDict[@"CountryName"];
+    self.rightFlowSubNameLbl.text = rightDict[@"Descr"];
 }
 
 - (void)showAlertViewWithMessage:(NSString *)message {
@@ -1324,24 +1465,16 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section==1) {
-        
-        switch (indexPath.row) {
-            case 1:
-                if (self.arrOrderList.count>0) {
-                    [self showDetail:0];
-                }
-                
-                break;
-            case 2:
-                [self showDetail:1];
-                break;
-            case 3:
-                [self showDetail:2];
-                break;
-            default:
-                break;
+    if (indexPath.section==1 && indexPath.row == 0) {
+        UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+        UIViewController *countryListViewController = [mainStory instantiateViewControllerWithIdentifier:@"countryListViewController"];
+        if (countryListViewController) {
+            self.tabBarController.tabBar.hidden = YES;
+            [self.navigationController pushViewController:countryListViewController animated:YES];
         }
+    }
+    if (indexPath.section == 2 && indexPath.row == 0) {
+        HUDNormal(@"敬请期待")
     }
 }
 
@@ -1354,14 +1487,15 @@
 }
 
 - (IBAction)viewAllOrders:(id)sender {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-    if (storyboard) {
-        self.tabBarController.tabBar.hidden = YES;
-        UIViewController *orderListViewController = [storyboard instantiateViewControllerWithIdentifier:@"orderListViewController"];
-        if (orderListViewController) {
-            [self.navigationController pushViewController:orderListViewController animated:YES];
-        }
-    }
+    HUDNormal(@"敬请期待")
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+//    if (storyboard) {
+//        self.tabBarController.tabBar.hidden = YES;
+//        UIViewController *orderListViewController = [storyboard instantiateViewControllerWithIdentifier:@"orderListViewController"];
+//        if (orderListViewController) {
+//            [self.navigationController pushViewController:orderListViewController animated:YES];
+//        }
+//    }
 }
 
 - (IBAction)viewAllContury:(id)sender {
@@ -1408,17 +1542,7 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    //开始弹弹弹
-    NSDictionary *dicCountry = [self.arrCountry objectAtIndex:indexPath.row];
-    
-    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
-    PackageListViewController *packageListViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageListViewController"];
-    if (packageListViewController) {
-        self.tabBarController.tabBar.hidden = YES;
-        packageListViewController.CountryID = [dicCountry objectForKey:@"CountryID"];
-        packageListViewController.dicCountry = dicCountry;
-        [self.navigationController pushViewController:packageListViewController animated:YES];
-    }
+    HUDNormal(@"敬请期待")
 }
 
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {

@@ -148,6 +148,7 @@
                                                         </label>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <gestureRecognizers/>
                                                     <constraints>
                                                         <constraint firstAttribute="bottom" secondItem="Mhl-ec-fXU" secondAttribute="bottom" id="5iT-Pj-itD"/>
                                                         <constraint firstItem="Mhl-ec-fXU" firstAttribute="leading" secondItem="8rS-Jn-3qK" secondAttribute="leading" id="JHO-bS-fS8"/>
@@ -166,6 +167,9 @@
                                                         <constraint firstItem="DGS-2f-Z6q" firstAttribute="trailing" secondItem="U1h-7u-po1" secondAttribute="trailing" id="le9-L5-lGq"/>
                                                         <constraint firstItem="M7u-6K-Crc" firstAttribute="top" secondItem="DGS-2f-Z6q" secondAttribute="bottom" id="qSK-VC-L0j"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <outletCollection property="gestureRecognizers" destination="mvO-QF-HJw" appends="YES" id="9AF-qH-NLn"/>
+                                                    </connections>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QFe-Nb-3tJ">
                                                     <rect key="frame" x="192.5" y="234.5" width="167.5" height="92.5"/>
@@ -196,6 +200,7 @@
                                                         </label>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <gestureRecognizers/>
                                                     <constraints>
                                                         <constraint firstItem="dfZ-AK-ZYI" firstAttribute="leading" secondItem="QFe-Nb-3tJ" secondAttribute="leading" constant="5" id="3yS-GG-hGv"/>
                                                         <constraint firstItem="Lmx-03-Q53" firstAttribute="leading" secondItem="dfZ-AK-ZYI" secondAttribute="leading" id="4EU-H3-fT0"/>
@@ -212,6 +217,9 @@
                                                         <constraint firstAttribute="trailing" secondItem="Kvh-IL-LCU" secondAttribute="trailing" id="hHE-16-gC4"/>
                                                         <constraint firstItem="Lmx-03-Q53" firstAttribute="height" secondItem="dfZ-AK-ZYI" secondAttribute="height" id="sJF-ar-mNy"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <outletCollection property="gestureRecognizers" destination="N01-ET-tw2" appends="YES" id="gZM-H2-nXs"/>
+                                                    </connections>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y5l-yb-oyd">
                                                     <rect key="frame" x="0.0" y="347" width="375" height="5"/>
@@ -283,7 +291,7 @@
                                                         <color key="titleColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="viewAllOrders:" destination="fDG-5D-gMG" eventType="touchUpInside" id="D5t-yO-ldE"/>
+                                                        <action selector="viewAllContury:" destination="fDG-5D-gMG" eventType="touchUpInside" id="K0L-eS-edD"/>
                                                     </connections>
                                                 </button>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wbg-St-f9F">
@@ -331,6 +339,12 @@
                                                                 <constraint firstAttribute="width" secondItem="TkV-KT-lql" secondAttribute="height" multiplier="1:1" id="eQ8-s2-2Un"/>
                                                                 <constraint firstAttribute="width" constant="60" id="o7s-fl-LEK"/>
                                                             </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                                    <integer key="value" value="30"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="只需10元" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jxm-Cx-W3t">
                                                             <rect key="frame" x="5" y="113" width="115" height="21"/>
@@ -352,6 +366,7 @@
                                                         </label>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <gestureRecognizers/>
                                                     <constraints>
                                                         <constraint firstAttribute="trailing" secondItem="jxm-Cx-W3t" secondAttribute="trailing" constant="5" id="6YI-3Y-OVS"/>
                                                         <constraint firstAttribute="trailing" secondItem="Ajj-Qx-LTv" secondAttribute="trailing" constant="5" id="9JG-lc-Vx8"/>
@@ -362,6 +377,9 @@
                                                         <constraint firstItem="Ajj-Qx-LTv" firstAttribute="leading" secondItem="cIT-Sz-LYq" secondAttribute="leading" constant="5" id="a8Z-sG-YHt"/>
                                                         <constraint firstItem="jxm-Cx-W3t" firstAttribute="top" secondItem="Ajj-Qx-LTv" secondAttribute="bottom" constant="3" id="ffU-Mz-TsS"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <outletCollection property="gestureRecognizers" destination="AAn-gq-ylB" appends="YES" id="GoP-6E-Lhg"/>
+                                                    </connections>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3YB-UI-4oA">
                                                     <rect key="frame" x="250" y="0.0" width="125" height="150"/>
@@ -372,6 +390,12 @@
                                                                 <constraint firstAttribute="width" constant="60" id="JVf-Tb-w8z"/>
                                                                 <constraint firstAttribute="width" secondItem="Pvy-kS-ifc" secondAttribute="height" multiplier="1:1" id="bqw-Bf-HQK"/>
                                                             </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                                    <integer key="value" value="30"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="只需10元" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jm1-0P-Go5">
                                                             <rect key="frame" x="5" y="113" width="115" height="21"/>
@@ -393,6 +417,7 @@
                                                         </label>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <gestureRecognizers/>
                                                     <constraints>
                                                         <constraint firstItem="Pvy-kS-ifc" firstAttribute="centerX" secondItem="3YB-UI-4oA" secondAttribute="centerX" id="3Jb-20-Qef"/>
                                                         <constraint firstAttribute="trailing" secondItem="OFC-SX-yok" secondAttribute="trailing" constant="5" id="6Do-sX-hqg"/>
@@ -403,6 +428,9 @@
                                                         <constraint firstAttribute="bottom" secondItem="jm1-0P-Go5" secondAttribute="bottom" constant="16" id="eeS-dn-XkT"/>
                                                         <constraint firstItem="OFC-SX-yok" firstAttribute="leading" secondItem="3YB-UI-4oA" secondAttribute="leading" constant="5" id="lc8-6z-V22"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <outletCollection property="gestureRecognizers" destination="nPI-XW-CwT" appends="YES" id="99i-hm-vPy"/>
+                                                    </connections>
                                                 </view>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9gv-ME-gA4">
                                                     <rect key="frame" x="125" y="0.0" width="125" height="150"/>
@@ -413,6 +441,12 @@
                                                                 <constraint firstAttribute="width" secondItem="2Ph-Kn-Qpq" secondAttribute="height" multiplier="1:1" id="dGz-Wg-qhp"/>
                                                                 <constraint firstAttribute="width" constant="60" id="rEE-oc-2pT"/>
                                                             </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                                    <integer key="value" value="30"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="只需10元" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="USH-ps-XIh">
                                                             <rect key="frame" x="5" y="113" width="115" height="21"/>
@@ -445,6 +479,7 @@
                                                         </view>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <gestureRecognizers/>
                                                     <constraints>
                                                         <constraint firstAttribute="trailing" secondItem="6Qk-d8-pr8" secondAttribute="trailing" id="1Pd-mJ-GUy"/>
                                                         <constraint firstItem="uaP-lD-daH" firstAttribute="leading" secondItem="9gv-ME-gA4" secondAttribute="leading" constant="5" id="69H-If-Uh3"/>
@@ -462,6 +497,9 @@
                                                         <constraint firstItem="2Ph-Kn-Qpq" firstAttribute="centerX" secondItem="9gv-ME-gA4" secondAttribute="centerX" id="nOo-bs-hy3"/>
                                                         <constraint firstAttribute="bottom" secondItem="cnV-cJ-Q7f" secondAttribute="bottom" id="vlS-Do-l73"/>
                                                     </constraints>
+                                                    <connections>
+                                                        <outletCollection property="gestureRecognizers" destination="2La-G1-fOA" appends="YES" id="Itd-DM-7Sg"/>
+                                                    </connections>
                                                 </view>
                                             </subviews>
                                             <constraints>
@@ -487,8 +525,12 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="110"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="home_guide_abord" translatesAutoresizingMaskIntoConstraints="NO" id="Ano-bv-B8j">
+                                                <imageView contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="home_guide_abord" translatesAutoresizingMaskIntoConstraints="NO" id="Ano-bv-B8j">
                                                     <rect key="frame" x="0.0" y="5" width="375" height="105"/>
+                                                    <gestureRecognizers/>
+                                                    <connections>
+                                                        <outletCollection property="gestureRecognizers" destination="Yo6-zn-8BI" appends="YES" id="vu1-tu-a7N"/>
+                                                    </connections>
                                                 </imageView>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="S5H-rx-t6R">
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="5"/>
@@ -541,7 +583,7 @@
                                                         <color key="titleColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="viewAllContury:" destination="fDG-5D-gMG" eventType="touchUpInside" id="z5Y-jN-0QU"/>
+                                                        <action selector="viewAllOrders:" destination="fDG-5D-gMG" eventType="touchUpInside" id="2bS-iW-Rbf"/>
                                                     </connections>
                                                 </button>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FmC-3z-M2Q">
@@ -658,24 +700,58 @@
                             <outlet property="delegate" destination="fDG-5D-gMG" id="izY-d5-umE"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="首页" id="fZh-Fu-1Mz">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="gzi-Ar-mUE">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fwM-Xc-WIr">
-                                <rect key="frame" x="329" y="7" width="30" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="home_mall"/>
-                                <connections>
-                                    <action selector="viewAllContury:" destination="fDG-5D-gMG" eventType="touchUpInside" id="0at-mF-p1U"/>
-                                </connections>
-                            </button>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="首页" id="fZh-Fu-1Mz"/>
                     <connections>
                         <outlet property="AdView" destination="lbk-eH-AfM" id="wV9-vI-S50"/>
                         <outlet property="hotCollectionView" destination="2CZ-8V-QHe" id="o1S-cr-lva"/>
+                        <outlet property="leftCountLbl" destination="U1h-7u-po1" id="SQs-rh-0Me"/>
+                        <outlet property="leftFlowImg" destination="TkV-KT-lql" id="xfv-YJ-XPS"/>
+                        <outlet property="leftFlowNameLbl" destination="Ajj-Qx-LTv" id="DMJ-A6-YO2"/>
+                        <outlet property="leftFlowSubNameLbl" destination="jxm-Cx-W3t" id="gls-nS-Y9d"/>
+                        <outlet property="leftNameLbl" destination="DGS-2f-Z6q" id="biu-35-XIf"/>
+                        <outlet property="leftSubNameLbl" destination="M7u-6K-Crc" id="7ok-HU-qST"/>
+                        <outlet property="midFlowImg" destination="2Ph-Kn-Qpq" id="q7d-KB-ruL"/>
+                        <outlet property="midFlowNameLbl" destination="uaP-lD-daH" id="FxA-UQ-aQf"/>
+                        <outlet property="midFlowSubNameLbl" destination="USH-ps-XIh" id="qRE-2a-d6d"/>
+                        <outlet property="rightCountLbl" destination="dfZ-AK-ZYI" id="MJZ-Oe-DBd"/>
+                        <outlet property="rightFlowImg" destination="Pvy-kS-ifc" id="2Qs-MB-8wq"/>
+                        <outlet property="rightFlowNameLbl" destination="OFC-SX-yok" id="SRU-z6-Hhh"/>
+                        <outlet property="rightFlowSubNameLbl" destination="jm1-0P-Go5" id="a7N-fQ-aeo"/>
+                        <outlet property="rightNameLbl" destination="Lmx-03-Q53" id="4NV-DC-zle"/>
+                        <outlet property="rightSubNameLbl" destination="YRG-if-v5A" id="dQS-f4-hdf"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HI4-Ek-fTr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="mvO-QF-HJw">
+                    <connections>
+                        <action selector="leftAction:" destination="fDG-5D-gMG" id="05M-6c-RBU"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="N01-ET-tw2">
+                    <connections>
+                        <action selector="rightAction:" destination="fDG-5D-gMG" id="wrf-vi-Pag"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="AAn-gq-ylB">
+                    <connections>
+                        <action selector="leftFlowAction:" destination="fDG-5D-gMG" id="jAW-HW-EYw"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="2La-G1-fOA">
+                    <connections>
+                        <action selector="midFlowAction:" destination="fDG-5D-gMG" id="JeT-du-Xdo"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="nPI-XW-CwT">
+                    <connections>
+                        <action selector="rightFlowAction:" destination="fDG-5D-gMG" id="0U9-Nl-cmR"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="Yo6-zn-8BI">
+                    <connections>
+                        <action selector="abordGuide:" destination="fDG-5D-gMG" id="zgH-wA-c6h"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-1017.5" y="1759.5"/>
         </scene>
@@ -2081,7 +2157,6 @@
         <image name="common_warnning" width="64" height="74"/>
         <image name="defriend_pre" width="31" height="31"/>
         <image name="home_guide_abord" width="375" height="106"/>
-        <image name="home_mall" width="23" height="23"/>
         <image name="home_package_blue" width="167" height="92"/>
         <image name="home_package_orange" width="167" height="92"/>
         <image name="home_product_shouhuanyidai" width="170" height="126"/>
