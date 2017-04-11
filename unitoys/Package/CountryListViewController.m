@@ -69,7 +69,7 @@
         if (self.continentIndex.count - 1 == section) {
             return CGSizeMake([UIScreen mainScreen].bounds.size.width, 0);
         } else {
-            return CGSizeMake([UIScreen mainScreen].bounds.size.width, 30);
+            return CGSizeMake([UIScreen mainScreen].bounds.size.width, 36);
         }
     } else {
         return CGSizeMake([UIScreen mainScreen].bounds.size.width, 0);

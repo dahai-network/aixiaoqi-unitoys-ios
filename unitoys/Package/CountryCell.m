@@ -13,9 +13,9 @@
 - (void)drawRect:(CGRect)rect {
     
         CGContextRef context = UIGraphicsGetCurrentContext();
-        CGContextSetFillColorWithColor(context, [UIColor lightGrayColor].CGColor);
-        CGContextFillRect(context, CGRectMake(0, CGRectGetHeight(self.frame) - 0.5, CGRectGetWidth(self.frame), 0.5));
-        CGContextFillRect(context, CGRectMake(CGRectGetWidth(self.frame) - 0.5, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
+        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:229.0/255.0 green:229.0/255.0 blue:229.0/255.0 alpha:1.0].CGColor);
+        CGContextFillRect(context, CGRectMake(0, CGRectGetHeight(self.frame) - 1, CGRectGetWidth(self.frame), 1));
+        CGContextFillRect(context, CGRectMake(CGRectGetWidth(self.frame) - 1, 0, CGRectGetWidth(self.frame), CGRectGetHeight(self.frame)));
     
 }
 

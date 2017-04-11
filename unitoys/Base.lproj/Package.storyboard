@@ -24,8 +24,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="AfS-vM-p5a">
-                                <rect key="frame" x="-4" y="20" width="383" height="647"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" indicatorStyle="white" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="AfS-vM-p5a">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="5WD-5o-ZaH">
                                     <size key="itemSize" width="80" height="80"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -51,8 +51,8 @@
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="EeL-aQ-MEU"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -82,8 +82,8 @@
                         <constraints>
                             <constraint firstItem="AfS-vM-p5a" firstAttribute="top" secondItem="oUP-fF-DUt" secondAttribute="bottom" id="Lgr-gi-YFF"/>
                             <constraint firstItem="Pex-OG-R2C" firstAttribute="top" secondItem="AfS-vM-p5a" secondAttribute="bottom" id="Mou-Ao-1M7"/>
-                            <constraint firstItem="AfS-vM-p5a" firstAttribute="leading" secondItem="wi6-kn-k00" secondAttribute="leadingMargin" constant="-20" id="e6c-my-627"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="AfS-vM-p5a" secondAttribute="trailing" constant="-20" id="ty7-tG-nh9"/>
+                            <constraint firstAttribute="trailing" secondItem="AfS-vM-p5a" secondAttribute="trailing" id="Q1Q-NX-AAk"/>
+                            <constraint firstItem="AfS-vM-p5a" firstAttribute="leading" secondItem="wi6-kn-k00" secondAttribute="leading" id="eN9-wI-LDd"/>
                         </constraints>
                     </view>
                     <connections>
