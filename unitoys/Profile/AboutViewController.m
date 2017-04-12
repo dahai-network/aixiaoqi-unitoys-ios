@@ -7,7 +7,7 @@
 //
 
 #import "AboutViewController.h"
-#import "UIimageView+WebCache.h"
+#import "UIImageView+WebCache.h"
 #import "BindDeviceViewController.h"
 //#import "AlarmListViewController.h"
 #import "BlueToothDataManager.h"
@@ -29,15 +29,11 @@
     self.navigationItem.leftBarButtonItem = nil;
 //    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    UITapGestureRecognizer *amountTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(amountDetail)];
-    
-    [self.vwAmount addGestureRecognizer:amountTap];
-    
-    UITapGestureRecognizer *backgroundTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(editProfile:)];
-    
-    [self.ivBackground addGestureRecognizer:backgroundTap];
-    
-    
+    //消除导航栏横线
+    //自定义一个NaVIgationBar
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    //消除阴影
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needRefreshAmount) name:@"NeedRefreshAmount" object:nil];
     
@@ -91,7 +87,7 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //            self.lblAmount.text = [[[responseObj objectForKey:@"data"] objectForKey:@"amount"] stringValue];
             float amount = [responseObj[@"data"][@"amount"] floatValue];
-            self.lblAmount.text = [NSString stringWithFormat:@"￥%.2f", amount];
+            self.lblAmount.text = [NSString stringWithFormat:@"余额：%.2f元", amount];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -130,6 +126,8 @@
     [self.ivUserHead.layer setMasksToBounds:YES];
   
     [self.ivUserHead.layer setCornerRadius:self.ivUserHead.bounds.size.width/2];
+    self.ivUserHead.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.ivUserHead.layer.borderWidth = 2;
     
 //    self.ivUserHead.image = [UIImage imageWithData:imageData];
 
@@ -141,19 +139,17 @@
 
 #pragma mark ---TableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    NSLog(@"当前选择：%ld",(long)indexPath.row);
-    if (indexPath.section==1) {
-        if (indexPath.row==0) {
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-            if (storyboard) {
-                self.tabBarController.tabBar.hidden = YES;
-                UIViewController *orderListViewController = [storyboard instantiateViewControllerWithIdentifier:@"orderListViewController"];
-                if (orderListViewController) {
-                    [self.navigationController pushViewController:orderListViewController animated:YES];
-                }
+    
+    switch (indexPath.section) {
+        case 0:
+            if (indexPath.row == 2) {
+                [self amountDetail];
             }
-        }
-        if (indexPath.row == 1) {
+            break;
+        case 1:
+            HUDNormal(@"激活套餐")
+            break;
+        case 2:
             //跳转到设备界面
             if ([BlueToothDataManager shareManager].isBounded) {
                 //有绑定
@@ -171,35 +167,46 @@
                 }
                 [self.navigationController pushViewController:self.chooseDeviceTypeVC animated:YES];
             }
-        }
-    }
-    if (indexPath.section == 2) {
-        
-        PurviewSettingViewController *purviewSettingVC = [[PurviewSettingViewController alloc] init];
-        [self.navigationController pushViewController:purviewSettingVC animated:YES];
-    }
-    if (indexPath.section==3) {
-        //开始调用设置
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Setting" bundle:nil];
-        if (storyboard) {
-            self.tabBarController.tabBar.hidden = YES;
-            UIViewController *settingViewController = [storyboard instantiateViewControllerWithIdentifier:@"settingViewController"];
-            if (settingViewController) {
-                [self.navigationController pushViewController:settingViewController animated:YES];
+            break;
+        case 3:
+            switch (indexPath.row) {
+                case 0:
+                {
+                    PurviewSettingViewController *purviewSettingVC = [[PurviewSettingViewController alloc] init];
+                    [self.navigationController pushViewController:purviewSettingVC animated:YES];
+                }
+                    break;
+                case 1:
+                {
+                    //开始调用设置
+                    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Setting" bundle:nil];
+                    if (storyboard) {
+                        self.tabBarController.tabBar.hidden = YES;
+                        UIViewController *settingViewController = [storyboard instantiateViewControllerWithIdentifier:@"settingViewController"];
+                        if (settingViewController) {
+                            [self.navigationController pushViewController:settingViewController animated:YES];
+                        }
+                    }
+                }
+                    break;
+                default:
+                    break;
             }
-        }
+            break;
+        default:
+            break;
     }
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section{
-    view.tintColor = [UIColor colorWithRed:234/255.0 green:236/255.0 blue:240/255.0 alpha:1];
+    view.tintColor = UIColorFromRGB(0xf5f5f5);
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 3) {
-        return 0.01;
-    } else {
         return 10;
+    } else {
+        return 5;
     }
 }
 
@@ -212,16 +219,16 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     switch (section) {
         case 0:
-            return 1;
+            return 3;
             break;
         case 1:
-            return 2; //如果没有内容有可能只能显示一行并提示用户购买，如果有还得算出有多少已购
+            return 1;
             break;
         case 2:
             return 1;
             break;
         case 3:
-            return 1;
+            return 2;
             break;
             
         default:
@@ -231,19 +238,36 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section==0) {
-        return 172*[UIScreen mainScreen].bounds.size.width/320;
-    } else if(indexPath.section==1){
-        
-            return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
-        
-    }else if(indexPath.section==2){
-        return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
-    }else if(indexPath.section==3){
-        
-        return CELLHEIGHT*[UIScreen mainScreen].bounds.size.width/320;
-        
-    }else return 0;
+    switch (indexPath.section) {
+        case 0:
+            switch (indexPath.row) {
+                case 0:
+                    return 171;
+                    break;
+                case 1:
+                    return 55;
+                    break;
+                case 2:
+                    return 55;
+                    break;
+                default:
+                    return 55;
+                    break;
+            }
+            break;
+        case 1:
+            return 120;
+            break;
+        case 2:
+            return 120;
+            break;
+        case 3:
+            return 55;
+            break;
+        default:
+            return 55;
+            break;
+    }
 }
 
 - (IBAction)accountRecharge:(id)sender {

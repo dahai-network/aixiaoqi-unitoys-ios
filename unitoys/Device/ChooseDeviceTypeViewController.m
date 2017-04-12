@@ -44,8 +44,6 @@
         self.cell=[[[NSBundle mainBundle] loadNibNamed:@"ChooseDeviceTypeTableViewCell" owner:nil options:nil] firstObject];
         self.cell.selectionStyle = UITableViewCellSelectionStyleNone;
         [self.cell.backGroundButton addTarget:self action:@selector(didClickButton:) forControlEvents:UIControlEventTouchUpInside];
-//        [self.cell.backGroundButton setImage:[UIImage imageNamed:@"image_chooseBound_selected"] forState:UIControlStateSelected];
-//        self.cell.backGroundButton.adjustsImageWhenHighlighted = NO;
         [self.cell.backGroundButton setBackgroundImage:[UIImage imageNamed:@"image_chooseBound_selected"] forState:UIControlStateHighlighted];
     }
     switch (indexPath.row) {

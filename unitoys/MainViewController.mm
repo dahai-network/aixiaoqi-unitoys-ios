@@ -15,6 +15,13 @@
 #import "UNBlueToothTool.h"
 #import "BlueToothDataManager.h"
 
+typedef enum : NSUInteger {
+    DEFULTCOLOR,
+    BLACKCOLOR,
+    BLUECOLOR,
+    YELLOWCOLOR,
+} CHOOSECOLOR;
+
 @implementation MainViewController
 
 - (void)viewDidLoad {
@@ -24,7 +31,26 @@
     for (navHomeViewController *controller in self.childViewControllers) {
         controller.navigationBar.tintColor = [UIColor whiteColor];
         controller.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor]};
-        controller.navigationBar.barTintColor = [UIColor blackColor];
+        NSString *colorSrt = [[NSUserDefaults standardUserDefaults] objectForKey:@"currentColor"];
+        UIColor *currentColor;
+        switch ([colorSrt intValue]) {
+            case 0:
+                currentColor = DefultColor;
+                break;
+            case 1:
+                currentColor = [UIColor blackColor];
+                break;
+            case 2:
+                currentColor = [UIColor blueColor];
+                break;
+            case 3:
+                currentColor = [UIColor yellowColor];
+                break;
+            default:
+                currentColor = DefultColor;
+                break;
+        }
+        controller.navigationBar.barTintColor = currentColor;
         controller.navigationBar.translucent = NO;
     }
     for (int i = 0; i < self.childViewControllers.count; i++) {
