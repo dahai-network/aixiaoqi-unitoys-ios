@@ -30,12 +30,14 @@
     CGContextRef contextRef = UIGraphicsGetCurrentContext();
     
     CGFloat descender = self.titleLabel.font.descender;
+#warning 若要在外面临时改变下划线颜色，注销下面这行代码，然后在外面调用setColor方法即可
+    lineColor = [UIColor whiteColor];
     if([lineColor isKindOfClass:[UIColor class]]){
         CGContextSetStrokeColorWithColor(contextRef, lineColor.CGColor);
     }
     
-    CGContextMoveToPoint(contextRef, textRect.origin.x, textRect.origin.y + textRect.size.height + descender+1);
-    CGContextAddLineToPoint(contextRef, textRect.origin.x + textRect.size.width, textRect.origin.y + textRect.size.height + descender+1);
+    CGContextMoveToPoint(contextRef, textRect.origin.x, textRect.origin.y + textRect.size.height + descender+3);
+    CGContextAddLineToPoint(contextRef, textRect.origin.x + textRect.size.width, textRect.origin.y + textRect.size.height + descender+3);
     
     CGContextClosePath(contextRef);
     CGContextDrawPath(contextRef, kCGPathStroke);

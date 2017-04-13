@@ -112,6 +112,8 @@
                 }
                 [self creatAsocketTcp];
             }
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"netWorkNotToUse"];
         }
     };
     

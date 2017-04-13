@@ -42,6 +42,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:YES];
     self.lblStatue.text = self.hintStrFirst;
     if ([BlueToothDataManager shareManager].isConnected) {
         [self addElectricQue];

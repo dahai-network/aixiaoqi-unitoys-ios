@@ -134,7 +134,10 @@
 #define apiRecharge defaultHost@"api/Payment/Add"
 
 //使用签名，通过用户余额支付套餐订单
-#define apiPayOrderByUserAmount defaultHost@"api//Order/PayOrderByUserAmount"
+#define apiPayOrderByUserAmount defaultHost@"api/Order/PayOrderByUserAmount"
+
+//使用签名，查询用户订单使用余量
+#define apiGetUserOrderUsageRemaining defaultHost@"api/Order/GetUserOrderUsageRemaining"
 
 //使用签名，获取用户消费记录
 #define apiGetUserBill defaultHost@"api/User/GetUserBill"

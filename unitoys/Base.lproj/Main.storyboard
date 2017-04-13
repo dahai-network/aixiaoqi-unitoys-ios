@@ -1739,7 +1739,7 @@
         <scene sceneID="IxB-7t-lsu">
             <objects>
                 <tableViewController id="wn9-cs-emF" customClass="AboutViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="vOA-v8-c1z">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="vOA-v8-c1z">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -1970,7 +1970,7 @@
                                                         <constraint firstItem="EeW-fH-pWD" firstAttribute="centerY" secondItem="Gzc-8Y-ycV" secondAttribute="centerY" id="UIi-ua-5HP"/>
                                                     </constraints>
                                                 </view>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QSN-xZ-2xr">
+                                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QSN-xZ-2xr">
                                                     <rect key="frame" x="15" y="0.0" width="345" height="120"/>
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bj_green" translatesAutoresizingMaskIntoConstraints="NO" id="gNZ-rS-iAq">
@@ -1989,13 +1989,16 @@
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u79-HE-8eH" customClass="CutomButton">
-                                                            <rect key="frame" x="284" y="0.0" width="50" height="40"/>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u79-HE-8eH" customClass="CutomButton">
+                                                            <rect key="frame" x="254" y="0.0" width="80" height="40"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="50" id="H5k-z6-aN8"/>
+                                                                <constraint firstAttribute="width" constant="80" id="H5k-z6-aN8"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                            <state key="normal" title="续费"/>
+                                                            <state key="normal" title="套餐超市"/>
+                                                            <connections>
+                                                                <action selector="renewAction:" destination="wn9-cs-emF" eventType="touchUpInside" id="uhz-x5-bgR"/>
+                                                            </connections>
                                                         </button>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4jd-3g-CMX">
                                                             <rect key="frame" x="115.5" y="40.5" width="114" height="79.5"/>
@@ -2007,8 +2010,8 @@
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2000M" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OkZ-XA-epn">
-                                                            <rect key="frame" x="126.5" y="81" width="52.5" height="20"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="----" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OkZ-XA-epn">
+                                                            <rect key="frame" x="126.5" y="81" width="29" height="20"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
@@ -2022,8 +2025,8 @@
                                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="200分钟" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Y6-8b-Co2">
-                                                                    <rect key="frame" x="10" y="39.5" width="62" height="19.5"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="----" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Y6-8b-Co2">
+                                                                    <rect key="frame" x="10" y="39.5" width="29" height="20"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <nil key="highlightedColor"/>
@@ -2046,8 +2049,8 @@
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2个" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="itK-b0-n4F">
-                                                            <rect key="frame" x="241" y="81" width="26" height="20"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="----" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="itK-b0-n4F">
+                                                            <rect key="frame" x="241" y="81" width="29" height="20"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
@@ -2149,7 +2152,7 @@
                                                         <constraint firstItem="U8D-0w-gXi" firstAttribute="centerY" secondItem="b98-Oz-gre" secondAttribute="centerY" id="UW8-ez-xH6"/>
                                                     </constraints>
                                                 </view>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MA6-ta-aXc">
+                                                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MA6-ta-aXc">
                                                     <rect key="frame" x="15" y="0.0" width="345" height="120"/>
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bj_blue" translatesAutoresizingMaskIntoConstraints="NO" id="GAf-kG-pnb">
@@ -2162,19 +2165,22 @@
                                                                 <constraint firstAttribute="height" constant="0.5" id="odU-Rm-DaS"/>
                                                             </constraints>
                                                         </view>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设备：双待王" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AGX-1f-VRW">
-                                                            <rect key="frame" x="11" y="0.0" width="86" height="40"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设备：---" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AGX-1f-VRW">
+                                                            <rect key="frame" x="11" y="0.0" width="62.5" height="40"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvK-ed-giB" customClass="CutomButton">
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZvK-ed-giB" customClass="CutomButton">
                                                             <rect key="frame" x="284" y="0.0" width="50" height="40"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="50" id="3WY-W2-Y1c"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                             <state key="normal" title="解绑"/>
+                                                            <connections>
+                                                                <action selector="unboundAction:" destination="wn9-cs-emF" eventType="touchUpInside" id="gRj-EX-UOu"/>
+                                                            </connections>
                                                         </button>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="asN-Jp-puT">
                                                             <rect key="frame" x="115" y="40.5" width="114" height="79.5"/>
@@ -2436,12 +2442,20 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="我" id="C5B-0N-FGx"/>
                     <connections>
+                        <outlet property="commicateMin" destination="5Y6-8b-Co2" id="Hv4-JB-SjS"/>
                         <outlet property="connectedDeviceView" destination="MA6-ta-aXc" id="U0u-VJ-hLs"/>
+                        <outlet property="deviceName" destination="AGX-1f-VRW" id="Wzd-gw-muy"/>
+                        <outlet property="electricNum" destination="OxZ-Ou-Brb" id="aT6-XZ-NQo"/>
+                        <outlet property="flowLbl" destination="OkZ-XA-epn" id="zeQ-LQ-5hI"/>
+                        <outlet property="flowName" destination="o9r-s7-xNN" id="DE4-fr-M9z"/>
                         <outlet property="havePackageView" destination="QSN-xZ-2xr" id="YIL-kW-vBs"/>
                         <outlet property="ivUserHead" destination="Hm4-GJ-srf" id="Riu-dC-yq2"/>
                         <outlet property="lblAmount" destination="Znh-lG-7hi" id="akn-yt-byg"/>
                         <outlet property="lblNickName" destination="O8n-hY-VBl" id="akV-2W-R2b"/>
                         <outlet property="lblPhoneNumber" destination="phu-w2-dfD" id="UiD-le-Cuo"/>
+                        <outlet property="operatorImg" destination="W6K-Cg-a3M" id="h6g-Oo-vkm"/>
+                        <outlet property="operatorName" destination="GPr-yw-2wQ" id="9kr-PP-LfW"/>
+                        <outlet property="totalPackageNum" destination="itK-b0-n4F" id="neX-wn-3Pr"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BT8-Xg-KcM" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2555,7 +2569,8 @@
         <image name="btn_back" width="10" height="18"/>
         <image name="btn_cz_nor" width="50" height="25"/>
         <image name="common_warnning" width="64" height="74"/>
-
+        <image name="contacts_bar_nor" width="17" height="18"/>
+        <image name="contacts_bar_pre" width="17" height="18"/>
         <image name="defriend_pre" width="31" height="31"/>
         <image name="home_guide_abord" width="375" height="106"/>
         <image name="home_package_blue" width="167" height="92"/>
@@ -2567,14 +2582,6 @@
         <image name="icon_tj" width="19" height="19"/>
         <image name="icon_ye" width="14" height="16"/>
         <image name="icon_zd" width="13" height="15"/>
-
-        <image name="contacts_bar_nor" width="17" height="18"/>
-        <image name="contacts_bar_pre" width="17" height="18"/>
-        <image name="home_mall" width="23" height="23"/>
-        <image name="index_call_packet" width="148" height="147"/>
-        <image name="index_inland_save" width="49" height="49"/>
-        <image name="index_internetional_save" width="148" height="147"/>
-
         <image name="log_hidewords" width="33" height="32"/>
         <image name="logo" width="48" height="48"/>
         <image name="mall_bar_nor" width="15" height="18"/>
@@ -2585,17 +2592,10 @@
         <image name="my_center_pre" width="18" height="18"/>
         <image name="nav_sport" width="24" height="24"/>
         <image name="nav_sportSelected" width="24" height="24"/>
-
-        <image name="pic_line" width="1" height="1"/>
-        <image name="pic_tx_pre" width="70" height="70"/>
-
-        <image name="order_unactive" width="23" height="23"/>
         <image name="phone_bar_nor" width="18" height="17"/>
         <image name="phone_bar_pre" width="18" height="17"/>
-        <image name="pro_background" width="360" height="142"/>
-        <image name="pro_device" width="22" height="28"/>
-        <image name="pro_package" width="22" height="28"/>
-
+        <image name="pic_line" width="1" height="1"/>
+        <image name="pic_tx_pre" width="70" height="70"/>
         <image name="pro_purving" width="22" height="28"/>
         <image name="pro_setting" width="22" height="28"/>
         <image name="reg_checked" width="14" height="14"/>

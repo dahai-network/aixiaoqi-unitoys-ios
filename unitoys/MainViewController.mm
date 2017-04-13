@@ -85,6 +85,8 @@ typedef enum : NSUInteger {
        [phoneViewController initEngine];
     }
     
+    [self addProgressWindow];
+    
     //注册接受者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectedSport) name:@"jumpToSport" object:@"jump"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectedMessage) name:@"jumpToMessage" object:@"jumpToMessage"];
@@ -92,7 +94,50 @@ typedef enum : NSUInteger {
     //接收重新登入通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloginAction) name:@"reloginNotify" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appIsKilled) name:@"appIsKilled" object:@"appIsKilled"];
+    
+    //是否隐藏上面进度条
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeShowProgressStatue:) name:@"isShowProgress" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatueAll:) name:@"changeStatueAll" object:nil];//状态改变
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkNotUse) name:@"netWorkNotToUse" object:@"netWorkNotToUse"];//网络状态不可用
 
+}
+
+- (void)changeStatueAll:(NSNotification *)sender {
+    self.showLabelStr = sender.object;
+    self.titleLabel.text = self.showLabelStr;
+}
+
+- (void)networkNotUse {
+    self.showLabelStr = @"当前网络不可用";
+    self.titleLabel.text = self.showLabelStr;
+}
+
+- (void)changeShowProgressStatue:(NSNotification *)sender {
+    NSString *str = sender.object;
+    if ([str isEqualToString:@"1"]) {
+        [self addProgressWindow];
+    } else {
+        self.registProgress = nil;
+    }
+}
+
+- (void)addProgressWindow {
+    if (!self.registProgress) {
+        self.registProgress = [[UIWindow alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, 24)];
+        self.registProgress.windowLevel = UIWindowLevelStatusBar+1;
+        self.registProgress.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
+        UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
+        leftImg.frame = CGRectMake(15, 2, 20, 20);
+        [self.registProgress addSubview:leftImg];
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, [UIScreen mainScreen].bounds.size.width-30-leftImg.frame.size.width, 24)];
+        self.titleLabel.text = self.showLabelStr;
+        self.titleLabel.font = [UIFont systemFontOfSize:14];
+        self.titleLabel.textColor = UIColorFromRGB(0x999999);
+        [self.registProgress addSubview:self.titleLabel];
+        [self.registProgress makeKeyAndVisible];
+    }
 }
 
 #pragma mark app被杀死，注销电话
@@ -224,6 +269,9 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"jumpToSport" object:@"jump"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"jumpToMessage" object:@"jumpToMessage"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"appIsKilled" object:@"appIsKilled"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isShowProgress" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:@"netWorkNotToUse"];
 }
 
 @end
