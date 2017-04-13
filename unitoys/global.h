@@ -214,6 +214,12 @@
 //删除单个联系人短信
 #define apiDeletesByTel  defaultHost@"api/SMS/DeletesByTel"
 
+//删除多个联系人短信
+#define apiDeletesByTels  defaultHost@"api/SMS/DeletesByTels"
+
+//删除多条短信内容
+#define apiDeletes  defaultHost@"api/SMS/Deletes"
+
 //短信发送错误-重试
 #define apiSendRetryForError  defaultHost@"api/SMS/SendRetryForError"
 

@@ -154,7 +154,7 @@
     if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]] && gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         kWeakSelf
         if (_longPressCellBlock) {
-            _longPressCellBlock(weakSelf.contentLabel.text, weakSelf.containerView);
+            _longPressCellBlock(self.tag, weakSelf.contentLabel.text, weakSelf.containerView);
         }
     }
 }

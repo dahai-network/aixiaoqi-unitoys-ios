@@ -116,12 +116,28 @@
 		3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */; };
 		3C20C2131E6D00F1008078BB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C20C2121E6D00F1008078BB /* PushKit.framework */; };
 		3C4863601E8CF111006FD87C /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C48635F1E8CF111006FD87C /* number_location.zip */; };
+		3C4A07761E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */; };
+		3C4A07791E9CC56400A6DDA9 /* ContactsCallDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07781E9CC56400A6DDA9 /* ContactsCallDetailsController.m */; };
+		3C4A077C1E9CCAD500A6DDA9 /* UITableView+RegisterNib.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A077B1E9CCAD500A6DDA9 /* UITableView+RegisterNib.m */; };
+		3C4A07811E9CD54B00A6DDA9 /* CallDetailsActionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A077F1E9CD54B00A6DDA9 /* CallDetailsActionCell.m */; };
+		3C4A07821E9CD54B00A6DDA9 /* CallDetailsActionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A07801E9CD54B00A6DDA9 /* CallDetailsActionCell.xib */; };
+		3C4A07861E9CD85800A6DDA9 /* CallDetailsNameCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07841E9CD85800A6DDA9 /* CallDetailsNameCell.m */; };
+		3C4A07871E9CD85800A6DDA9 /* CallDetailsNameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A07851E9CD85800A6DDA9 /* CallDetailsNameCell.xib */; };
+		3C4A078B1E9CD87800A6DDA9 /* CallDetailsNumberCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07891E9CD87800A6DDA9 /* CallDetailsNumberCell.m */; };
+		3C4A078C1E9CD87800A6DDA9 /* CallDetailsNumberCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A078A1E9CD87800A6DDA9 /* CallDetailsNumberCell.xib */; };
+		3C4A07901E9CD9B500A6DDA9 /* CallDetailsRecordCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A078E1E9CD9B500A6DDA9 /* CallDetailsRecordCell.m */; };
+		3C4A07911E9CD9B500A6DDA9 /* CallDetailsRecordCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A078F1E9CD9B500A6DDA9 /* CallDetailsRecordCell.xib */; };
+		3C4A07951E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07931E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m */; };
+		3C4A07961E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A07941E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib */; };
+		3C4A07991E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07981E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m */; };
 		3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F81E5EB65B001E67C4 /* logo_call.png */; };
 		3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */; };
 		3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */; };
 		3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */; };
 		3C80965F1E8A317200942B0C /* UNNetWorkStatuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C80965E1E8A317200942B0C /* UNNetWorkStatuManager.m */; };
 		3C8096651E8A423D00942B0C /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8096641E8A423D00942B0C /* Reachability.m */; };
+		3C85E1BE1E9DBF28006459F9 /* CustomButtonInset.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C85E1BD1E9DBF28006459F9 /* CustomButtonInset.m */; };
+		3C85E1C11E9E39BB006459F9 /* UNEditMessageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C85E1C01E9E39BB006459F9 /* UNEditMessageView.m */; };
 		3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */; };
 		3C8CFA6B1E55988B0035A460 /* UCallPhoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6A1E55988B0035A460 /* UCallPhoneButton.m */; };
 		3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8CFA6D1E55A1CB0035A460 /* UIView+Utils.m */; };
@@ -129,6 +145,12 @@
 		3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */; };
 		3C8E77981E5D280600C4833E /* UNDefines.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8E77971E5D280600C4833E /* UNDefines.m */; };
 		3C8E779A1E5D40F400C4833E /* CallKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C8E77991E5D40F400C4833E /* CallKit.framework */; };
+		3C9035561E9B344700FF95C0 /* PhoneIndexController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3C9035551E9B344700FF95C0 /* PhoneIndexController.mm */; };
+		3C9035591E9B52C100FF95C0 /* HLTitlesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9035581E9B52C100FF95C0 /* HLTitlesView.m */; };
+		3C90355F1E9B53B700FF95C0 /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C90355E1E9B53B700FF95C0 /* PageViewController.m */; };
+		3C9035651E9B5D2700FF95C0 /* MessageRecordController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9035641E9B5D2700FF95C0 /* MessageRecordController.m */; };
+		3C90356B1E9B6A5C00FF95C0 /* PhoneRecordController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3C90356A1E9B6A5C00FF95C0 /* PhoneRecordController.mm */; };
+		3C98E99A1E9B736900B51419 /* PhoneRecordSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C98E9991E9B736900B51419 /* PhoneRecordSearchController.m */; };
 		3CA898771E8DF33F00C38387 /* MBProgressHUD+UNTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */; };
 		3CA898791E8DFD1600C38387 /* MBProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */; };
 		3CC3E0A31E63BE2500A62F8C /* AbroadMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A21E63BE2500A62F8C /* AbroadMessageController.m */; };
@@ -527,6 +549,29 @@
 		3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCreatLocalNoti.m; sourceTree = "<group>"; };
 		3C20C2121E6D00F1008078BB /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
 		3C48635F1E8CF111006FD87C /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
+		3C4A07741E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhoneNumLabel.h; sourceTree = "<group>"; };
+		3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCallPhoneNumLabel.m; sourceTree = "<group>"; };
+		3C4A07771E9CC56400A6DDA9 /* ContactsCallDetailsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsCallDetailsController.h; sourceTree = "<group>"; };
+		3C4A07781E9CC56400A6DDA9 /* ContactsCallDetailsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsCallDetailsController.m; sourceTree = "<group>"; };
+		3C4A077A1E9CCAD500A6DDA9 /* UITableView+RegisterNib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+RegisterNib.h"; sourceTree = "<group>"; };
+		3C4A077B1E9CCAD500A6DDA9 /* UITableView+RegisterNib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+RegisterNib.m"; sourceTree = "<group>"; };
+		3C4A077E1E9CD54B00A6DDA9 /* CallDetailsActionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallDetailsActionCell.h; sourceTree = "<group>"; };
+		3C4A077F1E9CD54B00A6DDA9 /* CallDetailsActionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallDetailsActionCell.m; sourceTree = "<group>"; };
+		3C4A07801E9CD54B00A6DDA9 /* CallDetailsActionCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CallDetailsActionCell.xib; sourceTree = "<group>"; };
+		3C4A07831E9CD85800A6DDA9 /* CallDetailsNameCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallDetailsNameCell.h; sourceTree = "<group>"; };
+		3C4A07841E9CD85800A6DDA9 /* CallDetailsNameCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallDetailsNameCell.m; sourceTree = "<group>"; };
+		3C4A07851E9CD85800A6DDA9 /* CallDetailsNameCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CallDetailsNameCell.xib; sourceTree = "<group>"; };
+		3C4A07881E9CD87800A6DDA9 /* CallDetailsNumberCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallDetailsNumberCell.h; sourceTree = "<group>"; };
+		3C4A07891E9CD87800A6DDA9 /* CallDetailsNumberCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallDetailsNumberCell.m; sourceTree = "<group>"; };
+		3C4A078A1E9CD87800A6DDA9 /* CallDetailsNumberCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CallDetailsNumberCell.xib; sourceTree = "<group>"; };
+		3C4A078D1E9CD9B500A6DDA9 /* CallDetailsRecordCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallDetailsRecordCell.h; sourceTree = "<group>"; };
+		3C4A078E1E9CD9B500A6DDA9 /* CallDetailsRecordCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallDetailsRecordCell.m; sourceTree = "<group>"; };
+		3C4A078F1E9CD9B500A6DDA9 /* CallDetailsRecordCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CallDetailsRecordCell.xib; sourceTree = "<group>"; };
+		3C4A07921E9CDB8900A6DDA9 /* CallDetailsLookAllCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallDetailsLookAllCell.h; sourceTree = "<group>"; };
+		3C4A07931E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallDetailsLookAllCell.m; sourceTree = "<group>"; };
+		3C4A07941E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CallDetailsLookAllCell.xib; sourceTree = "<group>"; };
+		3C4A07971E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPhoneRecordDataTool.h; sourceTree = "<group>"; };
+		3C4A07981E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPhoneRecordDataTool.m; sourceTree = "<group>"; };
 		3C52B1F81E5EB65B001E67C4 /* logo_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_call.png; sourceTree = "<group>"; };
 		3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_callKit.png; sourceTree = "<group>"; };
 		3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_callKit@2x.png"; sourceTree = "<group>"; };
@@ -537,6 +582,10 @@
 		3C8096601E8A3E7500942B0C /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = "../../../Library/Developer/Xcode/DerivedData/unitoys-bfusqwuvvilolxenmvououztjroi/Build/Products/Debug-iphoneos/Reachability/Reachability.framework"; sourceTree = "<group>"; };
 		3C8096631E8A423D00942B0C /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		3C8096641E8A423D00942B0C /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		3C85E1BC1E9DBF28006459F9 /* CustomButtonInset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomButtonInset.h; sourceTree = "<group>"; };
+		3C85E1BD1E9DBF28006459F9 /* CustomButtonInset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomButtonInset.m; sourceTree = "<group>"; };
+		3C85E1BF1E9E39BB006459F9 /* UNEditMessageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNEditMessageView.h; sourceTree = "<group>"; };
+		3C85E1C01E9E39BB006459F9 /* UNEditMessageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNEditMessageView.m; sourceTree = "<group>"; };
 		3C8CFA661E5597D10035A460 /* UCallPhonePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhonePadView.h; sourceTree = "<group>"; };
 		3C8CFA671E5597D10035A460 /* UCallPhonePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCallPhonePadView.m; sourceTree = "<group>"; };
 		3C8CFA691E55988B0035A460 /* UCallPhoneButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhoneButton.h; sourceTree = "<group>"; };
@@ -549,6 +598,18 @@
 		3C8E77961E5D280600C4833E /* UNDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDefines.h; sourceTree = "<group>"; };
 		3C8E77971E5D280600C4833E /* UNDefines.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDefines.m; sourceTree = "<group>"; };
 		3C8E77991E5D40F400C4833E /* CallKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CallKit.framework; path = System/Library/Frameworks/CallKit.framework; sourceTree = SDKROOT; };
+		3C9035541E9B344700FF95C0 /* PhoneIndexController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneIndexController.h; sourceTree = "<group>"; };
+		3C9035551E9B344700FF95C0 /* PhoneIndexController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PhoneIndexController.mm; sourceTree = "<group>"; };
+		3C9035571E9B52C100FF95C0 /* HLTitlesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLTitlesView.h; sourceTree = "<group>"; };
+		3C9035581E9B52C100FF95C0 /* HLTitlesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLTitlesView.m; sourceTree = "<group>"; };
+		3C90355D1E9B53B700FF95C0 /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageViewController.h; sourceTree = "<group>"; };
+		3C90355E1E9B53B700FF95C0 /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewController.m; sourceTree = "<group>"; };
+		3C9035631E9B5D2700FF95C0 /* MessageRecordController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageRecordController.h; sourceTree = "<group>"; };
+		3C9035641E9B5D2700FF95C0 /* MessageRecordController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageRecordController.m; sourceTree = "<group>"; };
+		3C9035691E9B6A5C00FF95C0 /* PhoneRecordController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneRecordController.h; sourceTree = "<group>"; };
+		3C90356A1E9B6A5C00FF95C0 /* PhoneRecordController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PhoneRecordController.mm; sourceTree = "<group>"; };
+		3C98E9981E9B736900B51419 /* PhoneRecordSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneRecordSearchController.h; sourceTree = "<group>"; };
+		3C98E9991E9B736900B51419 /* PhoneRecordSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneRecordSearchController.m; sourceTree = "<group>"; };
 		3CA898751E8DF33F00C38387 /* MBProgressHUD+UNTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MBProgressHUD+UNTip.h"; sourceTree = "<group>"; };
 		3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD+UNTip.m"; sourceTree = "<group>"; };
 		3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MBProgressHUD.bundle; sourceTree = "<group>"; };
@@ -1142,6 +1203,28 @@
 			path = "Xcode-Configurations";
 			sourceTree = "<group>";
 		};
+		3C4A077D1E9CCED200A6DDA9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3C4A077E1E9CD54B00A6DDA9 /* CallDetailsActionCell.h */,
+				3C4A077F1E9CD54B00A6DDA9 /* CallDetailsActionCell.m */,
+				3C4A07801E9CD54B00A6DDA9 /* CallDetailsActionCell.xib */,
+				3C4A07831E9CD85800A6DDA9 /* CallDetailsNameCell.h */,
+				3C4A07841E9CD85800A6DDA9 /* CallDetailsNameCell.m */,
+				3C4A07851E9CD85800A6DDA9 /* CallDetailsNameCell.xib */,
+				3C4A07881E9CD87800A6DDA9 /* CallDetailsNumberCell.h */,
+				3C4A07891E9CD87800A6DDA9 /* CallDetailsNumberCell.m */,
+				3C4A078A1E9CD87800A6DDA9 /* CallDetailsNumberCell.xib */,
+				3C4A078D1E9CD9B500A6DDA9 /* CallDetailsRecordCell.h */,
+				3C4A078E1E9CD9B500A6DDA9 /* CallDetailsRecordCell.m */,
+				3C4A078F1E9CD9B500A6DDA9 /* CallDetailsRecordCell.xib */,
+				3C4A07921E9CDB8900A6DDA9 /* CallDetailsLookAllCell.h */,
+				3C4A07931E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m */,
+				3C4A07941E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		3C52B1F11E5E8C87001E67C4 /* Picture */ = {
 			isa = PBXGroup;
 			children = (
@@ -1164,6 +1247,8 @@
 		3C8E77921E5D27A200C4833E /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				3C4A077A1E9CCAD500A6DDA9 /* UITableView+RegisterNib.h */,
+				3C4A077B1E9CCAD500A6DDA9 /* UITableView+RegisterNib.m */,
 				3C8E77961E5D280600C4833E /* UNDefines.h */,
 				3C8E77971E5D280600C4833E /* UNDefines.m */,
 				3C20C2091E6CF3CC008078BB /* UNDataTransformation.h */,
@@ -1308,6 +1393,10 @@
 		95334A651D8A89B9002C1CFB /* customize */ = {
 			isa = PBXGroup;
 			children = (
+				3C85E1BC1E9DBF28006459F9 /* CustomButtonInset.h */,
+				3C85E1BD1E9DBF28006459F9 /* CustomButtonInset.m */,
+				3C9035571E9B52C100FF95C0 /* HLTitlesView.h */,
+				3C9035581E9B52C100FF95C0 /* HLTitlesView.m */,
 				040FC5191E7FB0A50056745D /* HWNewfeatureViewController.h */,
 				040FC51A1E7FB0A50056745D /* HWNewfeatureViewController.m */,
 				041BB4B61E5C1F05001C4841 /* TTRangeSlider.h */,
@@ -1367,6 +1456,10 @@
 				040FC5151E7F81EE0056745D /* CutomButton.m */,
 				0404BB8F1E7FCDE6009DEA1D /* DJPageControl.h */,
 				0404BB901E7FCDE6009DEA1D /* DJPageControl.m */,
+				3C4A07971E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.h */,
+				3C4A07981E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m */,
+				3C85E1BF1E9E39BB006459F9 /* UNEditMessageView.h */,
+				3C85E1C01E9E39BB006459F9 /* UNEditMessageView.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -1511,6 +1604,16 @@
 				3C8CFA711E55AF4E0035A460 /* SearchContactsCell.xib */,
 				3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */,
 				3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */,
+				3C9035541E9B344700FF95C0 /* PhoneIndexController.h */,
+				3C9035551E9B344700FF95C0 /* PhoneIndexController.mm */,
+				3C9035631E9B5D2700FF95C0 /* MessageRecordController.h */,
+				3C9035641E9B5D2700FF95C0 /* MessageRecordController.m */,
+				3C9035691E9B6A5C00FF95C0 /* PhoneRecordController.h */,
+				3C90356A1E9B6A5C00FF95C0 /* PhoneRecordController.mm */,
+				3C98E9981E9B736900B51419 /* PhoneRecordSearchController.h */,
+				3C98E9991E9B736900B51419 /* PhoneRecordSearchController.m */,
+				3C4A07741E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.h */,
+				3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */,
 			);
 			path = Phone;
 			sourceTree = "<group>";
@@ -1659,6 +1762,7 @@
 		95938D511D951F40008A0A21 /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
+				3C4A077D1E9CCED200A6DDA9 /* View */,
 				954A87B31D98BBA700570843 /* JSONModel */,
 				954A87AC1D98BA6500570843 /* libs */,
 				95938D521D951F63008A0A21 /* ContactsViewController.h */,
@@ -1673,6 +1777,8 @@
 				95E5965F1DC478A700B3F4F8 /* ContactPhoneCell.m */,
 				043965CB1E07ED8100B67989 /* AddressBookManager.h */,
 				043965CC1E07ED8100B67989 /* AddressBookManager.m */,
+				3C4A07771E9CC56400A6DDA9 /* ContactsCallDetailsController.h */,
+				3C4A07781E9CC56400A6DDA9 /* ContactsCallDetailsController.m */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -1948,6 +2054,8 @@
 				95BAED641D87A5D4005A6402 /* BaseViewController.m */,
 				95334A601D8A83DD002C1CFB /* BaseTableController.h */,
 				95334A611D8A83DD002C1CFB /* BaseTableController.m */,
+				3C90355D1E9B53B700FF95C0 /* PageViewController.h */,
+				3C90355E1E9B53B700FF95C0 /* PageViewController.m */,
 				95334A631D8A83FF002C1CFB /* global.h */,
 				04440D1D1E77BBF000206877 /* Profile.storyboard */,
 				04440D161E779CF900206877 /* Device.storyboard */,
@@ -2059,6 +2167,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04A949831E82691F007611F7 /* WristbandSettingTableViewCell.xib in Resources */,
+				3C4A07911E9CD9B500A6DDA9 /* CallDetailsRecordCell.xib in Resources */,
 				04440D061E779AD500206877 /* Order.storyboard in Resources */,
 				048051721E86686700E8AB55 /* PurviewSettingTableViewCell.xib in Resources */,
 				04553F311E70EE980025CA34 /* ChooseDeviceTypeViewController.xib in Resources */,
@@ -2069,6 +2178,8 @@
 				0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */,
 				04F727DB1E642BED002EB54C /* CertificateFiles in Resources */,
 				04440CEE1E77887000206877 /* InfoPlist.strings in Resources */,
+				3C4A07871E9CD85800A6DDA9 /* CallDetailsNameCell.xib in Resources */,
+				3C4A07961E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib in Resources */,
 				0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */,
 				74A91C661DF7E9A9002B4FCE /* headCollectionReusableView.xib in Resources */,
 				04472ABF1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib in Resources */,
@@ -2085,6 +2196,7 @@
 				04F727A11E641CE4002EB54C /* README.txt in Resources */,
 				952B2B071DC22D75006A7C69 /* messages.plist in Resources */,
 				0480516D1E86682F00E8AB55 /* PurviewSettingViewController.xib in Resources */,
+				3C4A07821E9CD54B00A6DDA9 /* CallDetailsActionCell.xib in Resources */,
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
 				0480E1681E7BD88900FCC33B /* ShowPathViewController.xib in Resources */,
 				04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */,
@@ -2103,6 +2215,7 @@
 				3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */,
 				04440CF81E77905500206877 /* Setting.storyboard in Resources */,
 				95F337271D853256000B5461 /* LaunchScreen.storyboard in Resources */,
+				3C4A078C1E9CD87800A6DDA9 /* CallDetailsNumberCell.xib in Resources */,
 				04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */,
 				95C575F51DA77AB200F459DF /* PhoneRecordCell.xib in Resources */,
 				04440D1B1E77BBF000206877 /* Profile.storyboard in Resources */,
@@ -2205,6 +2318,7 @@
 				95938D351D933FFA008A0A21 /* CountryCell.m in Sources */,
 				9520BCB01DA1048100F0B286 /* RechargeViewController.m in Sources */,
 				04F7279F1E641CE4002EB54C /* ContextFilterLogFormatter.m in Sources */,
+				3C9035561E9B344700FF95C0 /* PhoneIndexController.mm in Sources */,
 				040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */,
 				95E596601DC478A700B3F4F8 /* ContactPhoneCell.m in Sources */,
 				9562EEA31DD3672F00E10C98 /* NewMessageViewController.m in Sources */,
@@ -2216,6 +2330,7 @@
 				952B2B021DC229E0006A7C69 /* MJMessage.m in Sources */,
 				95938D411D93ABF0008A0A21 /* PackageDetailViewController.m in Sources */,
 				95BAED651D87A5D4005A6402 /* BaseViewController.m in Sources */,
+				3C4A078B1E9CD87800A6DDA9 /* CallDetailsNumberCell.m in Sources */,
 				3CD0C8A01E864BDB00ABD21B /* UNPushKitMessageManager.m in Sources */,
 				0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */,
 				952B2AEE1DC224F4006A7C69 /* UIImage+Extension.m in Sources */,
@@ -2229,6 +2344,7 @@
 				3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */,
 				954A87B11D98BA6500570843 /* ContactDataHelper.m in Sources */,
 				74A91C651DF7E9A9002B4FCE /* headCollectionReusableView.m in Sources */,
+				3C9035651E9B5D2700FF95C0 /* MessageRecordController.m in Sources */,
 				9554C9EC1DE7E44400162624 /* FDCalendar.m in Sources */,
 				9554C9ED1DE7E44400162624 /* FDCalendarItem.m in Sources */,
 				954A87D11D98BBA700570843 /* NSArray+JSONModel.m in Sources */,
@@ -2238,10 +2354,12 @@
 				3C20C20D1E6CF3CC008078BB /* UNDataTransformation.m in Sources */,
 				95CD340F1D9D1B1900EE5DD3 /* OrderListViewController.m in Sources */,
 				95938D441D93DF87008A0A21 /* AgreementViewController.m in Sources */,
+				3C9035591E9B52C100FF95C0 /* HLTitlesView.m in Sources */,
 				95938D3E1D93ABCC008A0A21 /* PackageCell.m in Sources */,
 				04F727A71E641CE4002EB54C /* HTTPMessage.m in Sources */,
 				95938D2E1D92B7FC008A0A21 /* SettingViewController.m in Sources */,
 				953B01F81D8C16A300EDF5ED /* LoginViewController.m in Sources */,
+				3C4A077C1E9CCAD500A6DDA9 /* UITableView+RegisterNib.m in Sources */,
 				954A87CF1D98BBA700570843 /* JSONModelClassProperty.m in Sources */,
 				95E5965D1DC4788D00B3F4F8 /* ContactsDetailViewController.m in Sources */,
 				04F7279C1E641CE4002EB54C /* DDFileLogger.m in Sources */,
@@ -2263,14 +2381,17 @@
 				3CC3E0A31E63BE2500A62F8C /* AbroadMessageController.m in Sources */,
 				046BF7001E27A544008C10C7 /* YBPopupMenu.m in Sources */,
 				3C8CFA6B1E55988B0035A460 /* UCallPhoneButton.m in Sources */,
+				3C4A07861E9CD85800A6DDA9 /* CallDetailsNameCell.m in Sources */,
 				95F337161D853256000B5461 /* main.m in Sources */,
 				955CCC351D9016EB00BC8110 /* MainViewController.mm in Sources */,
+				3C4A07761E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m in Sources */,
 				04472AB91E1CABD70042CEE1 /* ActivateGiftCardViewController.m in Sources */,
 				954D37EF1D8CD5A7002A8F46 /* RegisterViewController.m in Sources */,
 				95FB44211DC82B9C00B81A0D /* AmountDetailViewController.m in Sources */,
 				3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */,
 				0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */,
 				95B099171DC0DA6A00743877 /* SipEngineEventObserver.mm in Sources */,
+				3C4A07811E9CD54B00A6DDA9 /* CallDetailsActionCell.m in Sources */,
 				740FD3941E287F9E009413F1 /* sim_com_preread.c in Sources */,
 				954A87AB1D98B6E800570843 /* ContactTableViewCell.m in Sources */,
 				04F727A91E641CE4002EB54C /* MultipartFormDataParser.m in Sources */,
@@ -2283,14 +2404,17 @@
 				952B2AFF1DC22948006A7C69 /* MJViewController.m in Sources */,
 				3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */,
 				95C575F01DA7750000F459DF /* ConerSegment.m in Sources */,
+				3C4A07991E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m in Sources */,
 				740FD3B91E2A58CB009413F1 /* Test.m in Sources */,
 				04F727AF1E641CE4002EB54C /* HTTPErrorResponse.m in Sources */,
 				04A9497D1E826875007611F7 /* WristbandSettingViewController.m in Sources */,
+				3C90355F1E9B53B700FF95C0 /* PageViewController.m in Sources */,
 				04553F351E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m in Sources */,
 				952AB0091DF8DA8900C5A927 /* PhoneOperationPad.m in Sources */,
 				04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */,
 				95C575FC1DA77C1000F459DF /* MessageRecordCell.m in Sources */,
 				04F727A41E641CE4002EB54C /* DDRange.m in Sources */,
+				3C85E1BE1E9DBF28006459F9 /* CustomButtonInset.m in Sources */,
 				7402B3311E5597FF00DC73B9 /* UIView+Extension.m in Sources */,
 				952B2AFC1DC228F2006A7C69 /* MJMessageCell.m in Sources */,
 				04F727AC1E641CE4002EB54C /* HTTPAsyncFileResponse.m in Sources */,
@@ -2309,9 +2433,11 @@
 				954A87AA1D98B6E800570843 /* ContactModel.m in Sources */,
 				955CCC3C1D90D55C00BC8110 /* AboutViewController.m in Sources */,
 				3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */,
+				3C90356B1E9B6A5C00FF95C0 /* PhoneRecordController.mm in Sources */,
 				043965C91E07E18C00B67989 /* BindChargeCardViewController.m in Sources */,
 				04F727A61E641CE4002EB54C /* HTTPConnection.m in Sources */,
 				95E918561DDC7AA8005DABC0 /* BindDeviceViewController.m in Sources */,
+				3C4A07951E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m in Sources */,
 				3C8096651E8A423D00942B0C /* Reachability.m in Sources */,
 				95CD33F31D9CE4F300EE5DD3 /* RSADataVerifier.m in Sources */,
 				95334A621D8A83DD002C1CFB /* BaseTableController.m in Sources */,
@@ -2358,7 +2484,9 @@
 				953B01F51D8BDA6C00EDF5ED /* SSNetworkRequest.m in Sources */,
 				04F727A81E641CE4002EB54C /* HTTPServer.m in Sources */,
 				740FD38F1E287F9E009413F1 /* euble_interface.c in Sources */,
+				3C4A07901E9CD9B500A6DDA9 /* CallDetailsRecordCell.m in Sources */,
 				95FB44271DC8663800B81A0D /* navHomeViewController.m in Sources */,
+				3C85E1C11E9E39BB006459F9 /* UNEditMessageView.m in Sources */,
 				9581594D1DCC1409004474FF /* VPImageCropperViewController.m in Sources */,
 				954A87D41D98BBA700570843 /* JSONModel+networking.m in Sources */,
 				95C404551DAE384B0001E566 /* MessageSessionViewController.m in Sources */,
@@ -2368,6 +2496,7 @@
 				3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */,
 				95CD33EE1D9CE4F300EE5DD3 /* DataVerifier.m in Sources */,
 				958159501DCCC31D004474FF /* SetValueViewController.m in Sources */,
+				3C4A07791E9CC56400A6DDA9 /* ContactsCallDetailsController.m in Sources */,
 				954A87E61D9A151500570843 /* OrderCommitViewController.m in Sources */,
 				955CCC401D91758400BC8110 /* HomeViewController.m in Sources */,
 				954A87CD1D98BBA700570843 /* JSONModel.m in Sources */,
@@ -2377,6 +2506,7 @@
 				954A87B21D98BA6500570843 /* NSString+Utils.m in Sources */,
 				04F727B21E641CE4002EB54C /* WebSocket.m in Sources */,
 				3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */,
+				3C98E99A1E9B736900B51419 /* PhoneRecordSearchController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

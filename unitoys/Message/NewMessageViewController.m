@@ -366,7 +366,7 @@
     // 2.给cell传递模型
     cell.messageFrame = self.messageFrames[indexPath.row];
     
-    cell.longPressCellBlock = ^(NSString *content, UIView *longPressView){
+    cell.longPressCellBlock = ^(NSInteger index, NSString *content, UIView *longPressView){
         [weakSelf longPressActionWithContent:content longPressView:longPressView];
     };
     //重发短信

@@ -22,8 +22,10 @@
     [super viewDidLoad];
     
     //左边按钮
-    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"btn_back"] imageWithRenderingMode:/*去除渲染效果*/UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(leftButtonAction)];
-//    self.navigationController.interactivePopGestureRecognizer.delegate = (id)self;
+    if ([self isShowLeftButton]) {
+        self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"btn_back"] imageWithRenderingMode:/*去除渲染效果*/UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(leftButtonAction)];
+    }
+
 }
 
 //- (void)viewWillAppear:(BOOL)animated {
@@ -54,6 +56,11 @@
 #pragma mark-----点击左按钮出发事情
 -(void)leftButtonClick{
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (BOOL)isShowLeftButton
+{
+    return YES;
 }
 
 #pragma mark-----设置右边按钮
@@ -225,6 +232,14 @@
     return dateString;
 }
 
+- (NSString *)compareCurrentTimeString:(NSString *)compareDateString
+{
+    NSTimeInterval second = compareDateString.longLongValue;
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:second];
+    return [self compareCurrentTime:date];
+}
+
+
 -(NSString *) compareCurrentTime:(NSDate*) compareDate
 //
 {
@@ -353,6 +368,121 @@ withDateFormat:(NSString *)format
         return YES;
     }
     return NO;
+}
+
+//短信去除重复组名
+- (NSString *)checkLinkNameWithPhoneStrMergeGroupName:(NSString *)phoneStr {
+    NSString *linkName;
+    if ([phoneStr containsString:@"-"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@" "]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@"+86"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@"#"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@","]) {
+        NSArray *arr = [phoneStr componentsSeparatedByString:@","];
+        for (NSString *str in arr) {
+            NSString *string;
+            string = [self checkNameWithNumber:str];
+            if (linkName) {
+                //防止长号包含短号
+                if (![str containsString:string]) {
+                    //去除重复组名
+                    if (![linkName containsString:string]) {
+                        linkName = [NSString stringWithFormat:@"%@,%@", linkName, string];
+                    }
+                }else{
+                    linkName = [NSString stringWithFormat:@"%@,%@", linkName, string];
+                }
+            } else {
+                linkName = string;
+            }
+        }
+    } else {
+        linkName = [self checkNameWithNumber:phoneStr];
+        return linkName;
+    }
+    return linkName;
+}
+
+
+//短信不显示组名
+- (NSString *)checkLinkNameWithPhoneStrNoGroupName:(NSString *)phoneStr
+{
+    NSString *linkName;
+    if ([phoneStr containsString:@"-"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@" "]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@"+86"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@"#"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@","]) {
+        NSArray *arr = [phoneStr componentsSeparatedByString:@","];
+        for (NSString *str in arr) {
+            NSString *string;
+            string = [self checkNameWithNumberNoGroupName:str];
+            if (linkName) {
+                linkName = [NSString stringWithFormat:@"%@,%@", linkName, string];
+            } else {
+                linkName = string;
+            }
+        }
+    } else {
+        linkName = [self checkNameWithNumberNoGroupName:phoneStr];
+        return linkName;
+    }
+    return linkName;
+    
+}
+
+- (NSString *)checkNameWithNumberNoGroupName:(NSString *)number
+{
+    ContactModel *tempModel;
+    NSString *linkName = number;
+    for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
+        tempModel = model;
+        if ([model.phoneNumber containsString:@"-"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@" "]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
+        }
+        if ([model.phoneNumber containsString:@"+86"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@"#"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        }
+        if ([number isEqualToString:[NSString stringWithFormat:@"%@", tempModel.phoneNumber]]) {
+            linkName = tempModel.name;
+            return linkName;
+        }
+        if ([number isEqualToString:@"anonymous"]) {
+            linkName = @"未知";
+            return linkName;
+        }
+    }
+    return linkName;
 }
 
 - (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr {

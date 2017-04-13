@@ -16,6 +16,8 @@
 #import "ContactsDetailViewController.h"
 #import "AddressBookManager.h"
 
+#import "ContactsCallDetailsController.h"
+
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
 @interface ContactsViewController ()
@@ -68,19 +70,7 @@ UISearchBarDelegate,UISearchDisplayDelegate>
     
     // Do any additional setup after loading the view, typically from a nib.
     //[self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"navBar_bg"] forBarPosition:UIBarPositionAny barMetrics:UIBarMetricsDefault];
-    
-//    if (self.dataArr) {
-//        [self.dataArr removeAllObjects];
-//    }
-//    if (self.contactsDataArr) {
-//        self.contactsDataArr = nil;
-//    }
-//    if (_rowArr) {
-//        _rowArr = nil;
-//    }
-//    if (_sectionArr) {
-//        _sectionArr = nil;
-//    }
+
     if (!self.dataArr) {
         self.dataArr=[NSMutableArray array];
     }
@@ -260,72 +250,91 @@ UISearchBarDelegate,UISearchDisplayDelegate>
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-    if (storyboard) {
-//        self.tabBarController.tabBar.hidden = YES;
-        ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
-        if (contactsDetailViewController) {
-            
+    if (tableView==_searchDisplayController.searchResultsTableView){
+        NSDictionary *dicResult = _searchResultArr[indexPath.row];
+        NSLog(@"搜索结果：%@",dicResult);
+        
+        if ([[dicResult objectForKey:@"phoneNumber"] containsString:@","]) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+            if (!storyboard) {
+                return;
+            }
+            ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
+            if (!contactsDetailViewController) {
+                return;
+            }
             contactsDetailViewController.bOnlySelectNumber = self.bOnlySelectNumber;
             
-            
-            if (tableView==_searchDisplayController.searchResultsTableView){
-                NSDictionary *dicResult = _searchResultArr[indexPath.row];
-                NSLog(@"搜索结果：%@",dicResult);
-                
-                if (self.bOnlySelectNumber) {
-                    if ([[[dicResult objectForKey:@"phoneNumber"] componentsSeparatedByString:@","] count]==1) {
-                        if (self.delegate) {
-                            if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
-                                [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",[dicResult objectForKey:@"name"],[dicResult objectForKey:@"phoneNumber"]]];
-                                [self.navigationController popToViewController:self.delegate animated:YES];
-                            }
+            if (self.bOnlySelectNumber) {
+                if ([[[dicResult objectForKey:@"phoneNumber"] componentsSeparatedByString:@","] count]==1) {
+                    if (self.delegate) {
+                        if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
+                            [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",[dicResult objectForKey:@"name"],[dicResult objectForKey:@"phoneNumber"]]];
+                            [self.navigationController popToViewController:self.delegate animated:YES];
                         }
-                        return;
                     }
+                    return;
                 }
-                
-                contactsDetailViewController.contactMan = [dicResult objectForKey:@"name"];
-                
-                contactsDetailViewController.phoneNumbers = [dicResult objectForKey:@"phoneNumber"];
-                
-                contactsDetailViewController.contactHead = [dicResult objectForKey:@"portrait"];
-                
-                [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:[dicResult objectForKey:@"portrait"]] ];
-                
-    
-                
-            }else{
-                ContactModel *model=_rowArr[indexPath.section][indexPath.row];
-                NSLog(@"联系结果：%@",model);
-                
-                if (self.bOnlySelectNumber) {
-                    if ([[model.phoneNumber componentsSeparatedByString:@","] count]==1) {
-                        if (self.delegate) {
-                            if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
-                                [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",model.name,model.phoneNumber]];
-                                [self.navigationController popToViewController:self.delegate animated:YES];
-                            }
-                        }
-                        return;
-                    }
-                }
-                
-                contactsDetailViewController.contactMan = model.name;
-                
-                contactsDetailViewController.phoneNumbers = model.phoneNumber;
-            
-                contactsDetailViewController.contactHead = model.portrait;
-                
-                [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
             }
+            
+            contactsDetailViewController.contactMan = [dicResult objectForKey:@"name"];
+            
+            contactsDetailViewController.phoneNumbers = [dicResult objectForKey:@"phoneNumber"];
+            
+            contactsDetailViewController.contactHead = [dicResult objectForKey:@"portrait"];
+            
+            [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:[dicResult objectForKey:@"portrait"]] ];
             
             if (self.delegate) {
                 contactsDetailViewController.delegate = self.delegate; //设置选择后的委托
             }
-            
-            
             [self.navigationController pushViewController:contactsDetailViewController animated:YES];
+        }else{
+            ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+            callDetailsVc.nickName = [dicResult objectForKey:@"name"];
+            callDetailsVc.phoneNumber = [dicResult objectForKey:@"phoneNumber"];
+            [self.navigationController pushViewController:callDetailsVc animated:YES];
+        }
+    }else{
+        ContactModel *model=_rowArr[indexPath.section][indexPath.row];
+        NSLog(@"联系结果：%@",model);
+        if ([model.phoneNumber containsString:@","]) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+            if (!storyboard) {
+                return;
+            }
+            ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
+            if (!contactsDetailViewController) {
+                return;
+            }
+            contactsDetailViewController.bOnlySelectNumber = self.bOnlySelectNumber;
+            
+            if (self.bOnlySelectNumber) {
+                if ([[model.phoneNumber componentsSeparatedByString:@","] count]==1) {
+                    if (self.delegate) {
+                        if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
+                            [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",model.name,model.phoneNumber]];
+                            [self.navigationController popToViewController:self.delegate animated:YES];
+                        }
+                    }
+                    return;
+                }
+            }
+            
+            contactsDetailViewController.contactMan = model.name;
+            contactsDetailViewController.phoneNumbers = model.phoneNumber;
+            contactsDetailViewController.contactHead = model.portrait;
+            [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
+            
+            if (self.delegate) {
+                contactsDetailViewController.delegate = self.delegate; //设置选择后的委托
+            }
+            [self.navigationController pushViewController:contactsDetailViewController animated:YES];
+        }else{
+            ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+            callDetailsVc.nickName = model.name;
+            callDetailsVc.phoneNumber = model.phoneNumber;
+            [self.navigationController pushViewController:callDetailsVc animated:YES];
         }
     }
     

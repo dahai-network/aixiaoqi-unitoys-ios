@@ -12,6 +12,7 @@
 #import "global.h"
 
 #define PhonePadHeight 225
+#define PhoneLabelHeigth 70
 
 @interface UCallPhonePadView()
 
@@ -102,8 +103,26 @@
 //初始化子控件
 - (void)initSubViews
 {
-    self.clipsToBounds = YES;
+    self.clipsToBounds = NO;
     self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+    
+    _phoneNumLabel = [[UCallPhoneNumLabel alloc] initWithFrame:CGRectMake(0, - (PhoneLabelHeigth - 1), kScreenWidthValue, PhoneLabelHeigth - 1)];
+    _phoneNumLabel.hidden = YES;
+    kWeakSelf
+    _phoneNumLabel.phoneLabelChangeBlock = ^(NSString *currentText){
+        weakSelf.inputedPhoneNumber = currentText;
+        if (weakSelf.completeBlock) {
+            weakSelf.completeBlock(currentText);
+        }
+        if (!currentText || !currentText.length) {
+            weakSelf.phoneNumLabel.hidden = YES;
+//            weakSelf.phoneNumLabel.userInteractionEnabled = NO;
+        }else{
+            weakSelf.phoneNumLabel.hidden = NO;
+//            weakSelf.phoneNumLabel.userInteractionEnabled = YES;
+        }
+    };
+    [self addSubview:_phoneNumLabel];
     
     _buttonCount = 12;
     _colCount = 3;
@@ -132,9 +151,15 @@
         }
     }
     
-    if (self.completeBlock) {
-        self.completeBlock(btnSender.topTitle,btnSender.tag);
-    }
+    [_phoneNumLabel updatePhoneLabel:self.inputedPhoneNumber];
+    
+}
+
+- (void)hideCallView
+{
+    self.inputedPhoneNumber = @"";
+    self.phoneNumLabel.phonelabel.text = @"";
+    self.phoneNumLabel.hidden = YES;
 }
 
 - (void)layoutSubviews
@@ -150,6 +175,29 @@
         UCallPhoneButton * callButton = self.buttonArray[i];
         callButton.frame = CGRectMake(buttonX, buttonY, buttonW, buttonH);
     }
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *view = [super hitTest:point withEvent:event];
+    if (view == nil) {
+        for (UIView *subView in self.subviews) {
+            if ([subView isKindOfClass:[UCallPhoneNumLabel class]]) {
+                if (!subView.isHidden) {
+                    CGPoint p = [subView convertPoint:point fromView:self];
+                    if (CGRectContainsPoint(subView.bounds, p)) {
+                        view = subView;
+                        for (UIView *subView2 in subView.subviews) {
+                            CGPoint p2 = [subView2 convertPoint:p fromView:subView];
+                            if (CGRectContainsPoint(subView2.bounds, p2)) {
+                                view = subView2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return view;
 }
 
 @end

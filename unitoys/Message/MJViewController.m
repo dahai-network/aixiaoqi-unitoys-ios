@@ -14,6 +14,8 @@
 #import "CustomRefreshMessageHeader.h"
 #import "MessagePhoneDetailController.h"
 
+#import "UNEditMessageView.h"
+
 @interface MJViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *messageFrames;
@@ -22,23 +24,58 @@
 
 @property (nonatomic, assign) NSInteger page;
 
+@property (nonatomic, assign) NSInteger currentIndex;
+
+@property (nonatomic, strong) NSMutableArray *selectRemoveData;
+
+
+@property (nonatomic, strong) UIBarButtonItem *defaultLeftItem;
+@property (nonatomic, strong) UIBarButtonItem *defaultRightItem;
+
+@property (nonatomic, strong) UIBarButtonItem *editLeftItem;
+@property (nonatomic, strong) UIBarButtonItem *editRightItem;
+
+@property (nonatomic, strong) UNEditMessageView *bottomView;
 @end
 
 @implementation MJViewController
+
+- (UNEditMessageView *)bottomView
+{
+    if (!_bottomView) {
+        _bottomView = [[UNEditMessageView alloc] initWithFrame:CGRectMake(0, self.view.height, kScreenWidthValue, 50)];
+        _bottomView.backgroundColor = [UIColor clearColor];
+        kWeakSelf
+        _bottomView.editMessageActionBlock = ^(NSInteger buttonTag) {
+            if (buttonTag == 0) {
+                [weakSelf deleteSelectSMS];
+            }else if (buttonTag == 1){
+                [weakSelf cancelEdit];
+            }
+        };
+        [self.view addSubview:_bottomView];
+    }
+    return _bottomView;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    [self initAllItems];
+    
+    _selectRemoveData = [NSMutableArray array];
     // 1.表格的设置
     // 去除分割线
-    self.tableView.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1.0];
+//    self.tableView.backgroundColor = [UIColor colorWithRed:235/255.0 green:235/255.0 blue:235/255.0 alpha:1.0];
+    self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.allowsSelection = NO; // 不允许选中
+    self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.tableView.dataSource = self;  //新增
     self.tableView.delegate = self; //控制器成为代理
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"详细信息") style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
+    self.navigationItem.rightBarButtonItem = self.defaultRightItem;
     [self loadMessages];
     
     self.txtSendText.delegate = self;
@@ -51,6 +88,7 @@
 //    }];
     self.page = 1;
     self.tableView.mj_header = [CustomRefreshMessageHeader headerWithRefreshingBlock:^{
+        [self cancelEdit];
         [self loadMoreMessage];
     }];
     
@@ -63,6 +101,81 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSMSAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
+}
+
+- (void)initAllItems
+{
+    self.defaultLeftItem = self.navigationItem.leftBarButtonItem;
+    self.defaultRightItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"详细信息") style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
+    self.editLeftItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"取消") style:UIBarButtonItemStyleDone target:self action:@selector(cancelEdit)];
+    self.editRightItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"全选") style:UIBarButtonItemStyleDone target:self action:@selector(selectAllCell)];
+}
+
+- (void)selectAllCell
+{
+    if (self.selectRemoveData.count == self.messageFrames.count) {
+        return;
+    }
+    [self.selectRemoveData removeAllObjects];
+    for (int i = 0; i < self.messageFrames.count; i ++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+    }
+    [self.selectRemoveData addObjectsFromArray:self.messageFrames];
+}
+
+- (void)beComeEditMode
+{
+    self.bottomInputView.hidden = YES;
+    [self showEditView];
+    self.navigationItem.leftBarButtonItem = self.editLeftItem;
+    self.navigationItem.rightBarButtonItem = self.editRightItem;
+    [self.selectRemoveData removeAllObjects];
+    [self.tableView setEditing:YES animated:YES];
+}
+
+- (void)cancelEdit
+{
+    self.bottomInputView.hidden = NO;
+    [self hideEditView];
+    self.navigationItem.leftBarButtonItem = self.defaultLeftItem;
+    self.navigationItem.rightBarButtonItem = self.defaultRightItem;
+    [self.selectRemoveData removeAllObjects];
+    [self.tableView setEditing:NO animated:YES];
+}
+
+- (void)deleteSelectSMS
+{
+    if (self.selectRemoveData.count) {
+        NSLog(@"删除多条短信---%@", self.selectRemoveData);
+        NSMutableArray *smsArray = [NSMutableArray array];
+        for (MJMessageFrame *messageFrame in self.selectRemoveData) {
+            [smsArray addObject:messageFrame.message.SMSID];
+        }
+        [self deleteMessageSWithDatas:[self.selectRemoveData copy] SMSIds:[smsArray copy]];
+        
+        [self cancelEdit];
+    }
+}
+
+- (void)showEditView
+{
+    [self bottomView];
+    [UIView animateWithDuration:0.3 animations:^{
+        self.bottomView.top = self.view.height - self.bottomView.height;
+    }];
+}
+
+- (void)hideEditView
+{
+    [UIView animateWithDuration:0.3 animations:^{
+        self.bottomView.top = self.view.height;
+    } completion:^(BOOL finished) {
+        if (finished) {
+            [_bottomView removeFromSuperview];
+            _bottomView = nil;
+        }
+    }];
 }
 
 - (void)receiveNewSMSAction
@@ -141,25 +254,8 @@
                 //可通过异步处理优化
                 NSArray *arrMessages = [responseObj objectForKey:@"data"];
                 
-//                arrMessages = [arrMessages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-//                    
-//                    NSString *time1 = [obj1 objectForKey:@"SMSTime"];
-//                    NSString *time2 = [obj2 objectForKey:@"SMSTime"];
-//                    
-//                    NSComparisonResult result = [time1 compare:time2];
-//                    return result == NSOrderedDescending; // 升序
-//                    //        return result == NSOrderedAscending;  // 降序
-//                }];
                 //将数组倒序
                 arrMessages = [[arrMessages reverseObjectEnumerator] allObjects];
-                
-//                for (NSDictionary *dict in arrMessages){
-//                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type", nil]];
-//                    } else {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", nil]];
-//                    }
-//                }
                 
                 for (NSDictionary *dict in arrMessages){
                     NSLog(@"%@", dict[@"SMSID"]);
@@ -240,21 +336,8 @@
                 //将数组倒序
                 arrNewMessages = [[arrNewMessages reverseObjectEnumerator] allObjects];
                 
-//                for (NSDictionary *dict in arrNewMessages){
-//                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type", nil]];
-//                    } else {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", nil]];
-//                    }
-//                }
                 
                 for (NSDictionary *dict in arrNewMessages){
-//                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",[dict valueForKey:@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
-//                        
-//                    } else {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", [dict valueForKey:@"Status"], @"Status",[dict objectForKey:@"SMSID"],@"SMSID", nil]];
-//                    }
                     if ([[dict objectForKey:@"IsSend"] boolValue]) {
                         //己方发送
                         [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
@@ -347,13 +430,14 @@
     kWeakSelf
     // 1.创建cell
     MJMessageCell *cell = [MJMessageCell cellWithTableView:tableView];
-    
     // 2.给cell传递模型
     cell.messageFrame = self.messageFrames[indexPath.row];
-    
+    cell.selectedBackgroundView = [[UIView alloc]init];
+    cell.tag = indexPath.row;
     // 长按菜单
-    cell.longPressCellBlock = ^(NSString *content, UIView *longPressView){
-        [weakSelf longPressActionWithContent:content longPressView:longPressView];
+    cell.longPressCellBlock = ^(NSInteger index, NSString *content, UIView *longPressView){
+//        [weakSelf longPressActionWithContent:content longPressView:longPressView];
+        [weakSelf longPressActionWithIndex:index Content:content longPressView:longPressView];
     };
     
     //重发短信
@@ -370,6 +454,43 @@
     MJMessageFrame *mf = self.messageFrames[indexPath.row];
     return mf.cellHeight;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"didSelectRowAtIndexPath---%ld", indexPath.row);
+    if (self.tableView.isEditing) {
+        [self.selectRemoveData addObject:self.messageFrames[indexPath.row]];
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"didDeselectRowAtIndexPath---%ld", indexPath.row);
+    if (self.tableView.isEditing) {
+        if ([self.selectRemoveData containsObject:self.messageFrames[indexPath.row]]) {
+            [self.selectRemoveData removeObject:self.messageFrames[indexPath.row]];
+        }
+    }
+}
+
+#pragma mark - 编辑状态
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete | UITableViewCellEditingStyleInsert;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+//    if (editingStyle == (UITableViewCellEditingStyleDelete | UITableViewCellEditingStyleInsert)) {
+//        
+//    }
+}
+
 
 /**
  *  当开始拖拽表格的时候就会调用
@@ -478,13 +599,14 @@
 }
 
 //长按响应
-- (void)longPressActionWithContent:(NSString *)content longPressView:(UIView *)longPressView
+- (void)longPressActionWithIndex:(NSInteger)index Content:(NSString *)content longPressView:(UIView *)longPressView
 {
     NSArray *menus = [self menusItems];
     if ([menus count] && [self becomeFirstResponder]) {
         UIMenuController *menuController = [UIMenuController sharedMenuController];
         menuController.menuItems = menus;
         _cellContent = content;
+        _currentIndex = index;
         [menuController setTargetRect:longPressView.bounds inView:longPressView];
         [menuController setMenuVisible:YES animated:YES];
     }
@@ -495,6 +617,8 @@
 {
     NSMutableArray *items = [NSMutableArray array];
     [items addObject:[[UIMenuItem alloc] initWithTitle:INTERNATIONALSTRING(@"复制") action:@selector(copyText:)]];
+    [items addObject:[[UIMenuItem alloc] initWithTitle:INTERNATIONALSTRING(@"删除") action:@selector(deleteText:)]];
+    [items addObject:[[UIMenuItem alloc] initWithTitle:INTERNATIONALSTRING(@"更多") action:@selector(deleteSelectText:)]];
     return items;
 }
 
@@ -505,6 +629,74 @@
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         [pasteboard setString:self.cellContent];
     }
+}
+
+- (void)deleteText:(id)sender
+{
+    NSLog(@"当前删除短信%@", self.messageFrames[_currentIndex]);
+    if (_currentIndex < self.messageFrames.count) {
+        MJMessageFrame *messageFrame = self.messageFrames[_currentIndex];
+        [self deleteMessageWithSMSId:messageFrame.message.SMSID Index:_currentIndex];
+    }
+}
+
+- (void)deleteSelectText:(id)sender
+{
+    [self beComeEditMode];
+}
+
+- (void)deleteMessageWithSMSId:(NSString *)smsId Index:(NSInteger)index
+{
+    kWeakSelf
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: @[smsId] ,@"Ids",nil];
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"删除单条短信成功");
+            [weakSelf.messageFrames removeObjectAtIndex:index];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+            [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            NSLog(@"删除单条短信失败");
+        }
+    } failure:^(id dataObj, NSError *error) {
+        NSLog(@"删除单条短信异常：%@",[error description]);
+    } headers:self.headers];
+}
+
+- (void)deleteMessageSWithDatas:(NSArray *)Datas SMSIds:(NSArray *)smsIds
+{
+    kWeakSelf
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: smsIds ,@"Ids",nil];
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"删除多条短信成功");
+            NSMutableArray *indexPathsArray = [NSMutableArray array];
+            for (MJMessageFrame *messageFrame in Datas) {
+//                if ([weakSelf.messageFrames indexOfObject:messageFrame]) {
+//                    
+//                }
+                NSInteger row = [weakSelf.messageFrames indexOfObject:messageFrame];
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+                [indexPathsArray addObject:indexPath];
+            }
+            if (indexPathsArray.count) {
+                [weakSelf.messageFrames removeObjectsInArray:Datas];
+                [weakSelf.tableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            NSLog(@"删除多条短信失败");
+        }
+    } failure:^(id dataObj, NSError *error) {
+        NSLog(@"删除单条短信异常：%@",[error description]);
+    } headers:self.headers];
 }
 
 @end

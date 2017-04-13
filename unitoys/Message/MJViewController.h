@@ -10,6 +10,7 @@
 #import "KTAutoHeightTextView.h"
 
 @interface MJViewController : BaseViewController<UITextViewDelegate>
+@property (weak, nonatomic) IBOutlet UIView *bottomInputView;
 @property (weak, nonatomic) IBOutlet UIButton *btnSend;
 @property (weak, nonatomic) IBOutlet KTAutoHeightTextView *txtSendText;
 @property (nonatomic, copy) NSString *toTelephone;

@@ -13,7 +13,5 @@
     UIColor *lineColor;
 }
 @property (nonatomic, strong) NSIndexPath *indexPath;
-
 -(void)setColor:(UIColor*)color;
-
 @end

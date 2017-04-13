@@ -311,6 +311,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     [self.tableView registerNib:phoneRecordNib forCellReuseIdentifier:strPhoneRecordCell];
     [self.tableView registerNib:messageRecordNib forCellReuseIdentifier:strMessageRecordCell];
+    
     [self.tableView registerNib:[UINib nibWithNibName:searchContactsCellID bundle:nil] forCellReuseIdentifier:searchContactsCellID];
     
     if (!_arrPhoneRecord) {
@@ -325,7 +326,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     // Do any additional setup after loading the view.
     
     kWeakSelf
-    self.phonePadView.completeBlock = ^(NSString *btnText,NSInteger btnTag){
+    self.phonePadView.completeBlock = ^(NSString *btnText){
         //点击了删除按钮
         /*
          if (btnTag == 9) {
@@ -1734,59 +1735,19 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         self.callView = callView;
 //        [self.tabBarController.tabBar bringSubviewToFront:self.callView];
         kWeakSelf
-        self.callView.deleteNumberBlock = ^(){
-            if (weakSelf.phonePadView) {
-                if (weakSelf.phonePadView.inputedPhoneNumber.length>1) {
-                    weakSelf.phonePadView.inputedPhoneNumber = [weakSelf.phonePadView.inputedPhoneNumber substringToIndex:weakSelf.phonePadView.inputedPhoneNumber.length-1];
-                    
-                    weakSelf.lblPhoneNumber.text = weakSelf.phonePadView.inputedPhoneNumber;
-                    
-                }else{
-                    weakSelf.phonePadView.inputedPhoneNumber = @"";
-                    [weakSelf.segmentType setHidden:NO];
-                    
-                    if (weakSelf.lblPhoneNumber) {
-                        weakSelf.lblPhoneNumber.text = nil;
-                        [weakSelf.lblPhoneNumber setHidden:YES];
-                    }
-                    
-                    if (weakSelf.callView.hidden==NO) {
-                        weakSelf.callView.hidden = YES;
-                    }
-                    
-                    
-                }
-                NSLog(@"lblPhoneNumber------%@", weakSelf.lblPhoneNumber.text);
-                if (weakSelf.phonePadView.inputedPhoneNumber.length) {
-                    //搜索电话并展示
-                    [weakSelf searchInfoWithString:weakSelf.lblPhoneNumber.text];
-                    weakSelf.isSearchStatu = YES;
-                    [weakSelf.tableView reloadData];
-                }else{
-                    weakSelf.isSearchStatu = NO;
-                    [weakSelf.tableView reloadData];
-                }
-
-            }
-        };
-        
         self.callView.calloutBlock = ^(){
-            [self standardCall];
+            [weakSelf standardCall];
         };
         
         self.callView.switchStatusBlock = ^(BOOL hidden) {
             if (hidden) {
                 //开始加载谁
-                [self switchNumberPad:YES];
-//                [self.phonePadView setHidden:YES];
-                [self.callView.btnSwitchNumberPad setImage:[UIImage imageNamed:@"tel_numberpad_pulloff"] forState:UIControlStateNormal];
+                [weakSelf switchNumberPad:YES];
+                [weakSelf.callView.btnSwitchNumberPad setImage:[UIImage imageNamed:@"tel_numberpad_pulloff"] forState:UIControlStateNormal];
  
             }else{
-                
-//                [self.phonePadView setHidden:NO];
-                [self switchNumberPad:NO];
-                [self.callView.btnSwitchNumberPad setImage:[UIImage imageNamed:@"tel_numberpad_pushon"] forState:UIControlStateNormal];
-                
+                [weakSelf switchNumberPad:NO];
+                [weakSelf.callView.btnSwitchNumberPad setImage:[UIImage imageNamed:@"tel_numberpad_pushon"] forState:UIControlStateNormal];
             }
             
         };

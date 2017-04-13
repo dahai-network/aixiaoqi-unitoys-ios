@@ -67,6 +67,8 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 @property (readwrite) BOOL checkToken;
 
+- (NSString *)md5:(NSString *)str;
+
 - (void)getBasicParam;
 
 - (void)getBasicHeader;
@@ -74,6 +76,8 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 - (NSString *)getParamStr;
 
 -(void)setExtraCellLineHidden: (UITableView *)tableView;
+
+- (NSString *)compareCurrentTimeString:(NSString *)compareDateString;
 
 -(NSString *) compareCurrentTime:(NSDate*) compareDate;
 
@@ -91,6 +95,8 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 -(void)leftButtonClick;
 
+- (BOOL)isShowLeftButton;
+
 -(void)setRightButton:(id)rightButton;
 -(void)rightButtonClick;
 
@@ -101,5 +107,11 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 - (BOOL)isBlankString:(NSString *)string;
 
 - (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr;
+
+//短信不显示组名
+- (NSString *)checkLinkNameWithPhoneStrNoGroupName:(NSString *)phoneStr;
+//短信去除重复组名
+- (NSString *)checkLinkNameWithPhoneStrMergeGroupName:(NSString *)phoneStr;
+
 - (BOOL)isWXAppInstalled;//判断是否安装指定版本的微信
 @end

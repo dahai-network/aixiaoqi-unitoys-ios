@@ -37,7 +37,7 @@
         <scene sceneID="2Oj-Fn-T1k">
             <objects>
                 <navigationController title="首页" id="DbG-xP-2CW" customClass="navHomeViewController" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="首页" image="nav_home" selectedImage="nav_homeSelected" id="iJW-Ui-4cG"/>
+                    <tabBarItem key="tabBarItem" title="首页" image="mall_bar_nor" selectedImage="mall_bar_pre" id="iJW-Ui-4cG"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="pyx-IF-q4Q">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1122,7 +1122,7 @@
         <scene sceneID="bI9-8P-BsF">
             <objects>
                 <navigationController id="1J6-ul-Vng" customClass="navHomeViewController" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="通讯录" image="nav_contacts" selectedImage="nav_contactsSelected" id="KAi-Bz-db3"/>
+                    <tabBarItem key="tabBarItem" title="通讯录" image="contacts_bar_nor" selectedImage="contacts_bar_pre" id="KAi-Bz-db3"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Q7F-Dp-G5r">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1135,17 +1135,17 @@
             </objects>
             <point key="canvasLocation" x="-168.75" y="954.92166666666662"/>
         </scene>
-        <!--拨打-->
+        <!--电话-->
         <scene sceneID="ebs-oF-3u0">
             <objects>
                 <navigationController id="jZT-8j-xkN" customClass="navHomeViewController" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="拨打" image="nav_call" id="z8a-mc-f7E"/>
+                    <tabBarItem key="tabBarItem" title="电话" image="phone_bar_nor" selectedImage="phone_bar_pre" id="z8a-mc-f7E"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="GyN-vx-ZWb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="tE2-hs-JUY" kind="relationship" relationship="rootViewController" id="09J-gh-Iad"/>
+                        <segue destination="v8z-Ow-sGr" kind="relationship" relationship="rootViewController" id="05P-YZ-TwH"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mRn-HZ-ugz" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1156,7 +1156,7 @@
         <scene sceneID="lHW-qs-Moz">
             <objects>
                 <navigationController title="我" id="Asa-PC-QhR" customClass="navHomeViewController" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="个人中心" image="nav_profile" selectedImage="nav_profileSelected" id="zL2-et-yt6"/>
+                    <tabBarItem key="tabBarItem" title="个人中心" image="my_center_nor" selectedImage="my_center_pre" id="zL2-et-yt6"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="y7e-2R-JgY">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1363,7 +1363,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pNd-aL-h2N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-571.5" y="2505.5"/>
+            <point key="canvasLocation" x="-155" y="2498"/>
         </scene>
         <!--通讯录-->
         <scene sceneID="zfL-4K-ejq">
@@ -2461,7 +2461,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hFN-ff-ImX">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="Grt-GY-4k4">
@@ -2475,7 +2475,7 @@
                                 </prototypes>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="77B-XV-0LN" customClass="UCallPhonePadView">
-                                <rect key="frame" x="0.0" y="393" width="375" height="225"/>
+                                <rect key="frame" x="0.0" y="442" width="375" height="225"/>
                                 <color key="backgroundColor" red="0.88235294119999996" green="0.88235294119999996" blue="0.88235294119999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="225" id="idm-MI-m7u"/>
@@ -2526,7 +2526,26 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EX1-WL-gVi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-572.5" y="1760.5"/>
+            <point key="canvasLocation" x="-585" y="1772"/>
+        </scene>
+        <!--Phone Index Controller-->
+        <scene sceneID="QPW-fL-Aea">
+            <objects>
+                <viewController id="v8z-Ow-sGr" customClass="PhoneIndexController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fpa-tB-OZi"/>
+                        <viewControllerLayoutGuide type="bottom" id="ZT2-r2-XmD"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="SBM-z5-aVK">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="M1e-ud-uZ8"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Bfr-dM-9gC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-573" y="2521"/>
         </scene>
     </scenes>
     <resources>
@@ -2536,6 +2555,7 @@
         <image name="btn_back" width="10" height="18"/>
         <image name="btn_cz_nor" width="50" height="25"/>
         <image name="common_warnning" width="64" height="74"/>
+
         <image name="defriend_pre" width="31" height="31"/>
         <image name="home_guide_abord" width="375" height="106"/>
         <image name="home_package_blue" width="167" height="92"/>
@@ -2547,21 +2567,35 @@
         <image name="icon_tj" width="19" height="19"/>
         <image name="icon_ye" width="14" height="16"/>
         <image name="icon_zd" width="13" height="15"/>
+
+        <image name="contacts_bar_nor" width="17" height="18"/>
+        <image name="contacts_bar_pre" width="17" height="18"/>
+        <image name="home_mall" width="23" height="23"/>
+        <image name="index_call_packet" width="148" height="147"/>
+        <image name="index_inland_save" width="49" height="49"/>
+        <image name="index_internetional_save" width="148" height="147"/>
+
         <image name="log_hidewords" width="33" height="32"/>
         <image name="logo" width="48" height="48"/>
+        <image name="mall_bar_nor" width="15" height="18"/>
+        <image name="mall_bar_pre" width="15" height="18"/>
         <image name="msg_addman" width="23" height="23"/>
         <image name="msg_write" width="23" height="23"/>
-        <image name="nav_call" width="24" height="24"/>
-        <image name="nav_contacts" width="24" height="24"/>
-        <image name="nav_contactsSelected" width="24" height="24"/>
-        <image name="nav_home" width="24" height="24"/>
-        <image name="nav_homeSelected" width="24" height="24"/>
-        <image name="nav_profile" width="24" height="24"/>
-        <image name="nav_profileSelected" width="24" height="24"/>
+        <image name="my_center_nor" width="18" height="18"/>
+        <image name="my_center_pre" width="18" height="18"/>
         <image name="nav_sport" width="24" height="24"/>
         <image name="nav_sportSelected" width="24" height="24"/>
+
         <image name="pic_line" width="1" height="1"/>
         <image name="pic_tx_pre" width="70" height="70"/>
+
+        <image name="order_unactive" width="23" height="23"/>
+        <image name="phone_bar_nor" width="18" height="17"/>
+        <image name="phone_bar_pre" width="18" height="17"/>
+        <image name="pro_background" width="360" height="142"/>
+        <image name="pro_device" width="22" height="28"/>
+        <image name="pro_package" width="22" height="28"/>
+
         <image name="pro_purving" width="22" height="28"/>
         <image name="pro_setting" width="22" height="28"/>
         <image name="reg_checked" width="14" height="14"/>
@@ -2578,5 +2612,5 @@
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4_7.fullscreen"/>
     </simulatedMetricsContainer>
-    <color key="tintColor" red="0.0039215686269999999" green="0.81568627449999997" blue="0.75294117650000003" alpha="1" colorSpace="calibratedRGB"/>
+    <color key="tintColor" red="0.0" green="0.62745098039215685" blue="0.9137254901960784" alpha="1" colorSpace="calibratedRGB"/>
 </document>

@@ -20,8 +20,8 @@
 
 - (IBAction)switchNumberPad:(id)sender {
     if (self.switchStatusBlock) {
-        self.isPadHidden = !self.isPadHidden;
-        self.switchStatusBlock(self.isPadHidden);
+//        self.isPadHidden = !self.isPadHidden;
+        self.switchStatusBlock(YES);
     }
 }
 
@@ -65,9 +65,4 @@
     */
 }
 
-- (IBAction)deleteNumber:(id)sender {
-    if (self.deleteNumberBlock) {
-        self.deleteNumberBlock();
-    }
-}
 @end

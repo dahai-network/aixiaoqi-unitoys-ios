@@ -70,7 +70,7 @@
 }
 
 
-+ (void)postRequest:(NSString *)url params:(NSDictionary *)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers{
++ (void)postRequest:(NSString *)url params:(id)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers{
     
     if (![self checkNetworkStatus]) {
         successHandler(nil);

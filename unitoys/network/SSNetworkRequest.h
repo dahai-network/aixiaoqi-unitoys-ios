@@ -53,7 +53,7 @@ typedef void (^progressBlock)(int64_t bytesWritten, int64_t totalBytesWritten, i
 /**
  POST请求
  */
-+ (void)postRequest:(NSString *)url params:(NSDictionary *)params success:(requestSuccessBlock)successHandler failure:(responseBlock)responseBlock headers:(NSDictionary *) headers;
++ (void)postRequest:(NSString *)url params:(id)params success:(requestSuccessBlock)successHandler failure:(responseBlock)responseBlock headers:(NSDictionary *) headers;
 
 /**
  POST请求

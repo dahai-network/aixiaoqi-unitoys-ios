@@ -94,6 +94,8 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 -(void)leftButtonClick;
 
+- (BOOL)isShowLeftButton;
+
 -(void)setRightButton:(id)rightButton;
 -(void)rightButtonClick;
 

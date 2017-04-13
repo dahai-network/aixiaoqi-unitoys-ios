@@ -11,6 +11,8 @@
 #import "MJViewController.h"
 #import <AddressBook/AddressBook.h>
 #import "BlueToothDataManager.h"
+
+#import "ContactsCallDetailsController.h"
 @interface ContactsDetailViewController ()
 
 @end
@@ -84,10 +86,16 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
-        [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",self.lblContactMan.text,[_arrNumbers objectAtIndex:indexPath.row]]];
-        [self.navigationController popToViewController:self.delegate animated:YES];
-    }
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+    callDetailsVc.nickName = self.contactMan;
+    callDetailsVc.phoneNumber = [self.arrNumbers objectAtIndex:indexPath.row];
+    [self.navigationController pushViewController:callDetailsVc animated:YES];
+    
+//    if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
+//        [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",self.lblContactMan.text,[_arrNumbers objectAtIndex:indexPath.row]]];
+//        [self.navigationController popToViewController:self.delegate animated:YES];
+//    }
 }
 
 - (IBAction)rewriteMessage:(id)sender {
@@ -115,8 +123,6 @@
 - (IBAction)callPhoneNumber:(id)sender {
     
     NSString *number = [self.arrNumbers objectAtIndex:[(UIButton *)sender tag]];
-    
-    
     if (!self.callActionView){
         self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
         

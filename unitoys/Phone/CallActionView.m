@@ -37,7 +37,7 @@
         _bgWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         _bgWindow.windowLevel = UIWindowLevelStatusBar;
         _bgWindow.backgroundColor = [UIColor clearColor];
-        _bgWindow.hidden = NO;
+        _bgWindow.hidden = YES;
     }
     return _bgWindow;
 }
@@ -47,7 +47,7 @@
     self = [super initWithFrame:frame];
     
     self.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8];
-    self.hidden = NO;
+    self.hidden = YES;
     if (self) {
         [self.bgWindow addSubview:self];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];

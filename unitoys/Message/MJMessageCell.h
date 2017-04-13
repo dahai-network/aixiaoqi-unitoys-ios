@@ -10,7 +10,7 @@
 
 @class MJMessageFrame;
 
-typedef void(^LongPressCellBlock)(NSString *content, UIView *longPressView);
+typedef void(^LongPressCellBlock)(NSInteger index, NSString *content, UIView *longPressView);
 typedef void(^RepeatSendMessageBlock)(MJMessageFrame *messageFrame);
 
 @interface MJMessageCell : UITableViewCell
