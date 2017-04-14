@@ -80,8 +80,8 @@
         UILabel *timeView = [[UILabel alloc] init];   //因为这个属性定义的是弱指针类型的  所以这行代码过后就会被销毁   所以先用一个强指针指向刚创建的这个对象然后把它添加到contentView中
         //        timeView.backgroundColor = [UIColor redColor];
         timeView.textAlignment = NSTextAlignmentCenter;
-        timeView.textColor = [UIColor darkGrayColor];
-        timeView.font = [UIFont systemFontOfSize:13];
+        timeView.textColor = UIColorFromRGB(0x999999);
+        timeView.font = [UIFont systemFontOfSize:14];
         [self.contentView addSubview:timeView];  //把刚创建的那个lable对象添加到contentView中
         self.timeView = timeView;
         
@@ -226,7 +226,7 @@
             self.failedbutton.hidden = YES;
         }
         [self.bgImageView setImage:[UIImage resizableImage1:@"msg_receive_new"]];
-        [self.contentLabel setTextColor:[UIColor blackColor]];
+        [self.contentLabel setTextColor:UIColorFromRGB(0x333333)];
     }
     
     

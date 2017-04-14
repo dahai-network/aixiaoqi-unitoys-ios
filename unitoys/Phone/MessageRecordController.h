@@ -10,7 +10,7 @@
 #import "BaseViewController.h"
 
 @interface MessageRecordController : BaseViewController
-@property (nonatomic, strong) UINavigationController *nav;
+@property (nonatomic, weak) UINavigationController *nav;
 
 @property (copy,nonatomic) NSArray *arrMessageRecord;
 @property (nonatomic, assign) NSInteger page;  //当前短信页码

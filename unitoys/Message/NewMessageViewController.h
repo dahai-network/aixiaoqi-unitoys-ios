@@ -12,7 +12,7 @@
 #import "NotifyTextField.h"
 
 @interface NewMessageViewController : BaseViewController<PhoneNumberSelectDelegate,UITextViewDelegate,NotifyTextFieldDelegate>
-
+@property (weak, nonatomic) IBOutlet UIView *bottomInputView;
 @property (weak, nonatomic) IBOutlet UIView *topEditMessageView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topEditMessageViewHeight;
 

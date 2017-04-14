@@ -99,7 +99,7 @@
     CXCallUpdate *callUpdate = [[CXCallUpdate alloc] init];
     callUpdate.remoteHandle = handle;
     callUpdate.localizedCallerName = contact.displayName;
-    callUpdate.supportsDTMF = NO;
+    callUpdate.supportsDTMF = YES;
 //    callUpdate.supportsGrouping = NO;
 //    callUpdate.supportsUngrouping = NO;
 //    callUpdate.supportsHolding = NO;
@@ -161,7 +161,7 @@
     [self.callController requestTransaction:[CXTransaction transactionWithActions:@[action]] completion:completion];
 }
 
-//扩音
+
 - (void)hold:(BOOL)hold callUUID:(NSUUID *)callUUID completion:(UNCallKitCenterCompletion)completion
 {
 //    if (!callUUID) {
@@ -326,7 +326,8 @@
 }
 //双频多音功能
 - (void)provider:(CXProvider *)provider performPlayDTMFCallAction:(CXPlayDTMFCallAction *)action{
-    NSLog(@"performPlayDTMFCallAction---%s", __func__);
+    NSLog(@"performPlayDTMFCallAction---%@", action.digits);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallPhoneKeyBoard" object:action.digits];
 }
 //超时时调用
 - (void)provider:(CXProvider *)provider timedOutPerformingAction:(CXAction *)action{

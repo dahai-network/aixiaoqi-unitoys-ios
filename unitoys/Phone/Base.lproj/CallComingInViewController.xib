@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -14,8 +14,11 @@
             <connections>
                 <outlet property="btnMuteStatus" destination="9xO-4Y-xus" id="iv1-NC-f4t"/>
                 <outlet property="btnSpeakerStatus" destination="STM-p7-P0q" id="NjP-Jc-BZl"/>
+                <outlet property="callNumberStatus" destination="VW4-Wc-H0v" id="Wl9-yV-5jc"/>
                 <outlet property="connectView" destination="0V5-A0-dGi" id="7Be-Z7-Skp"/>
+                <outlet property="containerView" destination="i8a-8p-1hZ" id="dSX-pj-XEF"/>
                 <outlet property="handfreeOffButton" destination="STM-p7-P0q" id="HVd-T8-pPf"/>
+                <outlet property="hideKeyboardButton" destination="TvC-Co-TNv" id="rhC-OP-1Bs"/>
                 <outlet property="lbName" destination="bVm-X2-EM3" id="NDR-Uc-sEW"/>
                 <outlet property="lbTime" destination="HuX-vt-NXn" id="Ae9-H7-OxA"/>
                 <outlet property="muteOffButton" destination="9xO-4Y-xus" id="ywn-FJ-UL5"/>
@@ -51,17 +54,14 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T8d-RW-uyB">
-                    <rect key="frame" x="67.5" y="497" width="70" height="98"/>
+                    <rect key="frame" x="67.5" y="535" width="70" height="98"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JTY-dE-Mhe">
                             <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="70" id="BmF-fZ-oUI"/>
-                                <constraint firstAttribute="width" secondItem="JTY-dE-Mhe" secondAttribute="height" multiplier="1:1" id="sLq-vd-yoC"/>
-                            </constraints>
-                            <state key="normal" backgroundImage="tel_hangup">
+                            <state key="normal" image="btn_dh_h_nor">
                                 <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
+                            <state key="highlighted" image="btn_dh_h_pre"/>
                             <connections>
                                 <action selector="refuseButtonAction:" destination="-1" eventType="touchUpInside" id="mAE-nF-8s3"/>
                             </connections>
@@ -88,14 +88,11 @@
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0V5-A0-dGi">
-                    <rect key="frame" x="237.5" y="497" width="70" height="98"/>
+                    <rect key="frame" x="237.5" y="535" width="70" height="98"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KzM-TR-jYA">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KzM-TR-jYA">
                             <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
-                            <constraints>
-                                <constraint firstAttribute="width" secondItem="KzM-TR-jYA" secondAttribute="height" multiplier="1:1" id="0iK-Ys-4t2"/>
-                            </constraints>
-                            <state key="normal" backgroundImage="tel_answer"/>
+                            <state key="normal" image="btn_dh_l_nor"/>
                             <connections>
                                 <action selector="answerButtonAction:" destination="-1" eventType="touchUpInside" id="UcP-5h-Bth"/>
                             </connections>
@@ -115,61 +112,124 @@
                         <constraint firstItem="KzM-TR-jYA" firstAttribute="centerX" secondItem="0V5-A0-dGi" secondAttribute="centerX" id="zeU-CS-zYr"/>
                     </constraints>
                 </view>
-                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9xO-4Y-xus">
-                    <rect key="frame" x="58.5" y="211" width="88" height="88"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i8a-8p-1hZ">
+                    <rect key="frame" x="0.0" y="385" width="375" height="105"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VW4-Wc-H0v">
+                            <rect key="frame" x="151" y="0.0" width="72" height="72"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="72" id="5lc-c4-9bW"/>
+                                <constraint firstAttribute="height" constant="72" id="bhb-cZ-RkF"/>
+                            </constraints>
+                            <state key="normal" image="call_keyb_nor"/>
+                            <connections>
+                                <action selector="callNumberAction:" destination="-1" eventType="touchUpInside" id="ntg-NC-ejI"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="键盘" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lCE-27-ptn">
+                            <rect key="frame" x="170" y="82" width="35" height="20.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9xO-4Y-xus">
+                            <rect key="frame" x="39" y="0.0" width="72" height="72"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="72" id="LPt-lC-6sR"/>
+                                <constraint firstAttribute="height" constant="72" id="YV3-9b-GFD"/>
+                            </constraints>
+                            <state key="normal" image="icon_jy_nor"/>
+                            <connections>
+                                <action selector="muteOffButtonClickAction:" destination="-1" eventType="touchUpInside" id="hOL-Hs-VtD"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="静音" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EXN-4m-ijY">
+                            <rect key="frame" x="58" y="82" width="35" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="STM-p7-P0q">
+                            <rect key="frame" x="264" y="0.0" width="72" height="72"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="72" id="bCi-Fl-DVG"/>
+                                <constraint firstAttribute="height" constant="72" id="ume-1I-qU1"/>
+                            </constraints>
+                            <state key="normal" image="hands_free_nor"/>
+                            <connections>
+                                <action selector="handfreeOffButtonClickAction:" destination="-1" eventType="touchUpInside" id="ZP7-1i-qDa"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="免提" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M4M-dM-pWr">
+                            <rect key="frame" x="283" y="82" width="35" height="21"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="9xO-4Y-xus" secondAttribute="height" id="9ct-r6-ZlN"/>
-                        <constraint firstAttribute="width" constant="88" id="CRD-aQ-vl1"/>
+                        <constraint firstItem="9xO-4Y-xus" firstAttribute="top" secondItem="i8a-8p-1hZ" secondAttribute="top" id="0pk-Yf-UdI"/>
+                        <constraint firstItem="lCE-27-ptn" firstAttribute="top" secondItem="VW4-Wc-H0v" secondAttribute="bottom" constant="10" id="67q-8n-Kzg"/>
+                        <constraint firstItem="EXN-4m-ijY" firstAttribute="top" secondItem="9xO-4Y-xus" secondAttribute="bottom" constant="10" id="7MT-Zo-Lz3"/>
+                        <constraint firstAttribute="height" constant="105" id="BeA-9w-hZt"/>
+                        <constraint firstItem="STM-p7-P0q" firstAttribute="top" secondItem="i8a-8p-1hZ" secondAttribute="top" id="Rry-87-472"/>
+                        <constraint firstItem="9xO-4Y-xus" firstAttribute="centerX" secondItem="i8a-8p-1hZ" secondAttribute="centerX" multiplier="0.4" id="SuG-kY-3Jd"/>
+                        <constraint firstItem="M4M-dM-pWr" firstAttribute="centerX" secondItem="STM-p7-P0q" secondAttribute="centerX" id="f1o-CU-ION"/>
+                        <constraint firstItem="VW4-Wc-H0v" firstAttribute="top" secondItem="i8a-8p-1hZ" secondAttribute="top" id="p9o-JS-bZg"/>
+                        <constraint firstItem="STM-p7-P0q" firstAttribute="centerX" secondItem="i8a-8p-1hZ" secondAttribute="centerX" multiplier="1.6" id="qsj-l7-VfV"/>
+                        <constraint firstItem="EXN-4m-ijY" firstAttribute="centerX" secondItem="9xO-4Y-xus" secondAttribute="centerX" id="vdH-xW-kKQ"/>
+                        <constraint firstItem="VW4-Wc-H0v" firstAttribute="centerX" secondItem="i8a-8p-1hZ" secondAttribute="centerX" id="yUZ-k6-yhG"/>
+                        <constraint firstItem="lCE-27-ptn" firstAttribute="centerX" secondItem="VW4-Wc-H0v" secondAttribute="centerX" id="yix-7v-TNA"/>
+                        <constraint firstItem="M4M-dM-pWr" firstAttribute="top" secondItem="STM-p7-P0q" secondAttribute="bottom" constant="10" id="zth-of-Xfp"/>
                     </constraints>
-                    <state key="normal" image="tel_muteoff"/>
+                </view>
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TvC-Co-TNv" customClass="AddTouchAreaButton">
+                    <rect key="frame" x="344" y="559" width="16" height="22"/>
+                    <state key="normal" image="down_arrow_nor"/>
+                    <state key="highlighted" image="down_arrow_pre"/>
                     <connections>
-                        <action selector="muteOffButtonClickAction:" destination="-1" eventType="touchUpInside" id="hOL-Hs-VtD"/>
-                    </connections>
-                </button>
-                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="STM-p7-P0q">
-                    <rect key="frame" x="228.5" y="211" width="88" height="88"/>
-                    <state key="normal" image="tel_handfreeoff"/>
-                    <connections>
-                        <action selector="handfreeOffButtonClickAction:" destination="-1" eventType="touchUpInside" id="ZP7-1i-qDa"/>
+                        <action selector="hideKeyBAction:" destination="-1" eventType="touchUpInside" id="zP0-ho-aVh"/>
                     </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstItem="KzM-TR-jYA" firstAttribute="width" secondItem="JTY-dE-Mhe" secondAttribute="width" id="8A7-Pe-K8G"/>
                 <constraint firstItem="0V5-A0-dGi" firstAttribute="top" secondItem="T8d-RW-uyB" secondAttribute="top" id="Arr-Up-asR"/>
-                <constraint firstItem="9xO-4Y-xus" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" constant="-85" id="B9A-MV-hQ8"/>
-                <constraint firstItem="STM-p7-P0q" firstAttribute="height" secondItem="9xO-4Y-xus" secondAttribute="height" id="BEW-PU-EBV"/>
                 <constraint firstItem="HuX-vt-NXn" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="10" id="CDi-GI-GUa"/>
+                <constraint firstItem="T8d-RW-uyB" firstAttribute="top" secondItem="i8a-8p-1hZ" secondAttribute="bottom" constant="45" id="DqJ-23-9yl"/>
                 <constraint firstItem="HuX-vt-NXn" firstAttribute="top" secondItem="bVm-X2-EM3" secondAttribute="bottom" constant="15" id="FWR-cl-prD"/>
                 <constraint firstItem="0V5-A0-dGi" firstAttribute="width" secondItem="T8d-RW-uyB" secondAttribute="width" id="G8Q-4f-rMn"/>
                 <constraint firstItem="0V5-A0-dGi" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" constant="85" id="Hor-x7-GvR"/>
                 <constraint firstItem="0V5-A0-dGi" firstAttribute="height" secondItem="T8d-RW-uyB" secondAttribute="height" id="JAj-2C-Il2"/>
-                <constraint firstItem="STM-p7-P0q" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" constant="85" id="Mdb-LD-6OJ"/>
-                <constraint firstAttribute="bottom" secondItem="T8d-RW-uyB" secondAttribute="bottom" constant="72" id="NCy-a5-YgJ"/>
+                <constraint firstItem="i8a-8p-1hZ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="MMe-Id-fjd"/>
+                <constraint firstAttribute="bottom" secondItem="T8d-RW-uyB" secondAttribute="bottom" constant="34" id="NCy-a5-YgJ"/>
                 <constraint firstItem="tIZ-Am-u5o" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="XCO-yp-Uuy"/>
-                <constraint firstItem="STM-p7-P0q" firstAttribute="top" secondItem="9xO-4Y-xus" secondAttribute="top" id="XLj-Qu-2zx"/>
                 <constraint firstAttribute="trailing" secondItem="bVm-X2-EM3" secondAttribute="trailing" constant="10" id="aWp-W8-Gvr"/>
+                <constraint firstAttribute="trailing" secondItem="i8a-8p-1hZ" secondAttribute="trailing" id="b1s-26-Mmb"/>
                 <constraint firstAttribute="bottom" secondItem="tIZ-Am-u5o" secondAttribute="bottom" id="bry-AZ-HbF"/>
+                <constraint firstItem="TvC-Co-TNv" firstAttribute="centerY" secondItem="JTY-dE-Mhe" secondAttribute="centerY" id="gKR-sg-2QI"/>
                 <constraint firstAttribute="trailing" secondItem="HuX-vt-NXn" secondAttribute="trailing" constant="10" id="hsn-3k-oVP"/>
                 <constraint firstAttribute="trailing" secondItem="tIZ-Am-u5o" secondAttribute="trailing" id="j9S-ow-hHh"/>
-                <constraint firstItem="9xO-4Y-xus" firstAttribute="top" secondItem="HuX-vt-NXn" secondAttribute="bottom" constant="100" id="nLS-LR-kxu"/>
                 <constraint firstItem="T8d-RW-uyB" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" constant="-85" id="nRw-sx-J5D"/>
                 <constraint firstItem="ZKU-ab-J51" firstAttribute="height" secondItem="0kd-UN-56M" secondAttribute="height" id="q8E-8F-whl"/>
                 <constraint firstItem="ZKU-ab-J51" firstAttribute="width" secondItem="0kd-UN-56M" secondAttribute="width" id="qHi-FF-ebl"/>
-                <constraint firstItem="STM-p7-P0q" firstAttribute="width" secondItem="9xO-4Y-xus" secondAttribute="width" id="qmZ-jO-0Bj"/>
                 <constraint firstItem="bVm-X2-EM3" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="10" id="rfl-j9-kec"/>
                 <constraint firstItem="bVm-X2-EM3" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="45" id="u0x-aU-rLN"/>
+                <constraint firstAttribute="trailing" secondItem="TvC-Co-TNv" secondAttribute="trailing" constant="15" id="un0-je-MVQ"/>
                 <constraint firstItem="tIZ-Am-u5o" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="vOK-8x-Ta8"/>
             </constraints>
             <point key="canvasLocation" x="33.5" y="54.5"/>
         </view>
     </objects>
     <resources>
+        <image name="btn_dh_h_nor" width="70" height="70"/>
+        <image name="btn_dh_h_pre" width="70" height="70"/>
+        <image name="btn_dh_l_nor" width="70" height="70"/>
         <image name="call_backView" width="360" height="640"/>
-        <image name="tel_answer" width="16" height="16"/>
-        <image name="tel_handfreeoff" width="16" height="16"/>
-        <image name="tel_hangup" width="16" height="16"/>
-        <image name="tel_muteoff" width="16" height="16"/>
+        <image name="call_keyb_nor" width="72" height="72"/>
+        <image name="down_arrow_nor" width="16" height="9"/>
+        <image name="down_arrow_pre" width="16" height="9"/>
+        <image name="hands_free_nor" width="72" height="72"/>
+        <image name="icon_jy_nor" width="72" height="72"/>
     </resources>
 </document>

@@ -34,10 +34,11 @@
         _pageViewController.delegate   = self;
         _pageViewController.dataSource = self;
     }
-    
     // 设置首先要显示的控制器
     [_pageViewController setViewControllers:@[_viewControllers[0]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
+    [self addChildViewController:_pageViewController];
     [self.view addSubview:_pageViewController.view];
+    [_pageViewController didMoveToParentViewController:self];
 }
 
 - (void)setupViewControllers

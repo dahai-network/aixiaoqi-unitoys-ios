@@ -70,7 +70,11 @@
     CGFloat containerY;
     CGFloat containerW;
     CGFloat containerH;
-    _contentEdge = UIEdgeInsetsMake(5, 13, 5, 13);
+    if (message.type == MJMessageTypeMe) {
+        _contentEdge = UIEdgeInsetsMake(5, 11, 5, 15);
+    }else{
+        _contentEdge = UIEdgeInsetsMake(5, 15, 5, 11);
+    }
     containerY = CGRectGetMaxY(_timeF);
     CGSize textMaxSize = CGSizeMake(screenW * 3.0 / 4.0, MAXFLOAT);
     CGSize contentSize = [self sizeWithText:message.text font:MJTextFont maxSize:textMaxSize];

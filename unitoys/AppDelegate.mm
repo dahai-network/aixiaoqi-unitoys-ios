@@ -170,7 +170,6 @@
     BuglyConfig *config = [[BuglyConfig alloc] init];  //初始化
     config.delegate = self;
     self.window.backgroundColor = [UIColor colorWithRed:234/255.0 green:236/255.0 blue:240/255.0 alpha:1.0];
-    
 //    [self checkLogin];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] < 9.0) {
@@ -240,7 +239,7 @@
 }
 
 - (void)showLaunchView {
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     if (storyboard) {

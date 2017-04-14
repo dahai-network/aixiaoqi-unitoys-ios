@@ -87,10 +87,10 @@
 - (IBAction)handfreeCalling:(id)sender {
     
     if (_btnSpeakerStatus.tag==0) {
-        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"call_keyb_pre"] forState:UIControlStateNormal];
+        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"hands_free_pre"] forState:UIControlStateNormal];
         _btnSpeakerStatus.tag=1;
     } else {
-        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"call_keyb_nor"] forState:UIControlStateNormal];
+        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"hands_free_nor"] forState:UIControlStateNormal];
         _btnSpeakerStatus.tag=0;
     }
     //解决通话前设置扩音无效问题

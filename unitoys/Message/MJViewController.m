@@ -16,6 +16,7 @@
 
 #import "UNEditMessageView.h"
 #import "ContactsCallDetailsController.h"
+#import "UNDataTools.h"
 
 @interface MJViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -57,6 +58,18 @@
         [self.view addSubview:_bottomView];
     }
     return _bottomView;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSLog(@"%s", __func__);
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"%s", __func__);
 }
 
 - (void)viewDidLoad
@@ -137,6 +150,9 @@
 
 - (void)cancelEdit
 {
+    if (_bottomView == nil) {
+        return;
+    }
     self.bottomInputView.hidden = NO;
     [self hideEditView];
     self.navigationItem.leftBarButtonItem = self.defaultLeftItem;
@@ -222,7 +238,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.navigationController.hidesBottomBarWhenPushed = NO;
+//    self.navigationController.hidesBottomBarWhenPushed = NO;
 }
 
 - (void)sendMessageStatuChange:(NSNotification *)noti
@@ -269,10 +285,11 @@
                     NSLog(@"%@", dict[@"SMSID"]);
                     if ([[dict objectForKey:@"IsSend"] boolValue]) {
                         //己方发送
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+                        //                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
                     }else{
                         //对方发送
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
                     }
                 }
                 
@@ -348,10 +365,11 @@
                 for (NSDictionary *dict in arrNewMessages){
                     if ([[dict objectForKey:@"IsSend"] boolValue]) {
                         //己方发送
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
                     }else{
                         //对方发送
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
+                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
                     }
                 }
                 
@@ -363,11 +381,11 @@
                     MJMessage *msg = [MJMessage messageWithDict:dict];
                     
                     // 取出上一个模型
-                    MJMessageFrame *lastMf = [mfArray lastObject];
-                    MJMessage *lastMsg = lastMf.message;
-                    
-                    // 判断两个消息的时间是否一致
-                    msg.hideTime = [msg.time isEqualToString:lastMsg.time];
+//                    MJMessageFrame *lastMf = [mfArray lastObject];
+//                    MJMessage *lastMsg = lastMf.message;
+//                    // 判断两个消息的时间是否一致
+//                    msg.hideTime = [msg.time isEqualToString:lastMsg.time];
+//                    //需要判断多久之内为同一时间
                     
                     // frame模型
                     MJMessageFrame *mf = [[MJMessageFrame alloc] init];
@@ -438,14 +456,12 @@
     kWeakSelf
     // 1.创建cell
     MJMessageCell *cell = [MJMessageCell cellWithTableView:tableView];
-//    cell.shouldIndentWhileEditing = NO;
     // 2.给cell传递模型
     cell.messageFrame = self.messageFrames[indexPath.row];
     cell.selectedBackgroundView = [[UIView alloc]init];
     cell.tag = indexPath.row;
     // 长按菜单
     cell.longPressCellBlock = ^(NSInteger index, NSString *content, UIView *longPressView){
-//        [weakSelf longPressActionWithContent:content longPressView:longPressView];
         [weakSelf longPressActionWithIndex:index Content:content longPressView:longPressView];
     };
     
@@ -622,6 +638,13 @@
 {
     NSArray *menus = [self menusItems];
     if ([menus count] && [self becomeFirstResponder]) {
+        UIWindow *window = [[UIApplication sharedApplication].delegate window];
+        if ([window isKeyWindow] == NO)
+        {
+            [window becomeKeyWindow];
+            [window makeKeyAndVisible];
+        }
+        
         UIMenuController *menuController = [UIMenuController sharedMenuController];
         menuController.menuItems = menus;
         _cellContent = content;
@@ -639,6 +662,13 @@
     [items addObject:[[UIMenuItem alloc] initWithTitle:INTERNATIONALSTRING(@"删除") action:@selector(deleteText:)]];
     [items addObject:[[UIMenuItem alloc] initWithTitle:INTERNATIONALSTRING(@"更多") action:@selector(deleteSelectText:)]];
     return items;
+}
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    if (action == @selector(copyText:) || action == @selector(deleteText:) || action == @selector(deleteSelectText:)){
+        return YES;
+    }
+    return NO;//隐藏系统默认的菜单项
 }
 
 //复制

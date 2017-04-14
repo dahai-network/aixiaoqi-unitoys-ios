@@ -12,6 +12,8 @@
 #import "MessageRecordCell.h"
 #import "MJViewController.h"
 #import "AddTouchAreaButton.h"
+#import "UITableView+RegisterNib.h"
+#import "UNDataTools.h"
 
 @interface MessageRecordController ()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
@@ -19,13 +21,12 @@
 @property (nonatomic, strong) AddTouchAreaButton *createMsgButton;
 @end
 
+static NSString *strMessageRecordCell = @"MessageRecordCell";
 @implementation MessageRecordController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self initTableView];
-    
     [self initRefresh];
     
     self.page = 1;
@@ -33,7 +34,6 @@
         [self loadMessage];
     }
 
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSMSContentAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessage) name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
     
@@ -43,15 +43,17 @@
 - (void)initTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.height -= (64 + 49);
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
-    [self.view addSubview:self.tableView];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, 10)];
+    self.tableView.tableHeaderView = topView;
     self.tableView.tableFooterView = [UIView new];
-    NSString *strMessageRecordCell = @"MessageRecordCell";
-    UINib * messageRecordNib = [UINib nibWithNibName:strMessageRecordCell bundle:nil];
-    [self.tableView registerNib:messageRecordNib forCellReuseIdentifier:strMessageRecordCell];
+    self.tableView.rowHeight = 90;
+    [self.view addSubview:self.tableView];
+    [self.tableView registerNibWithNibId:strMessageRecordCell];
 }
 
 - (void)updateSMSContentAction
@@ -86,11 +88,6 @@
     _createMsgButton.bottom = self.view.height - _createMsgButton.height - 49;
     
     [self.view addSubview:_createMsgButton];
-//    _window = [[UIWindow alloc]initWithFrame: CGRectMake(kScreenWidthValue - 10 - _phonePadButton.width, kScreenHeightValue - 49 - _phonePadButton.height, _phonePadButton.width, _phonePadButton.height)];
-//    _window.windowLevel = UIWindowLevelNormal;
-//    _window.hidden = NO;
-//    [_window addSubview:_phonePadButton];
-//    [_window makeKeyAndVisible];//关键语句,显示window
 }
 
 - (void)createMsgAction:(AddTouchAreaButton *)button
@@ -201,9 +198,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
 
-    MessageRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"MessageRecordCell"];
+    MessageRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:strMessageRecordCell];
     NSDictionary *dicMessageRecord = [self.arrMessageRecord objectAtIndex:indexPath.row];
-    
     if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
         //己方发送
         cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
@@ -211,16 +207,16 @@
         //对方发送
         cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
     }
-    
-    NSString *textStr = [NSString stringWithFormat:@"%@ >", [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]]];
+//    NSString *textStr = [NSString stringWithFormat:@"%@", [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]]];
+    NSString *textStr = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dicMessageRecord[@"SMSTime"]];
     cell.lblMessageDate.text = textStr;
     cell.lblContent.text = [dicMessageRecord objectForKey:@"SMSContent"];
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 80;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    return 80;
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     //消息记录，显示消息
@@ -228,21 +224,21 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     if (storyboard) {
         //            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
-        MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
-        if (MJViewController) {
+        MJViewController *mjViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
+        if (mjViewController) {
             
             if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
                 //己方发送
-                MJViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
-                MJViewController.toTelephone = [dicMessageRecord objectForKey:@"To"];
+                mjViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
+                mjViewController.toTelephone = [dicMessageRecord objectForKey:@"To"];
             }else{
                 //对方发送
-                MJViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
-                MJViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
+                mjViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
+                mjViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
             }
             
-            MJViewController.hidesBottomBarWhenPushed = YES;
-            [self.nav pushViewController:MJViewController animated:YES];
+            mjViewController.hidesBottomBarWhenPushed = YES;
+            [self.nav pushViewController:mjViewController animated:YES];
         }
     }
 }

@@ -17,6 +17,7 @@
 #import "MJViewController.h"
 #import "CallActionView.h"
 #import "BlueToothDataManager.h"
+#import "UNDataTools.h"
 
 @interface ContactsCallDetailsController ()<UITableViewDelegate, UITableViewDataSource, CallDetailsActionCellDelegate>
 
@@ -65,7 +66,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         }];
         self.phoneRecords = array;
         if (self.phoneRecords.count) {
-            self.lastTime = [self compareCurrentTimeString:self.phoneRecords.firstObject[@"calltime"]];
+            self.lastTime = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:self.phoneRecords.firstObject[@"calltime"]];
             self.phoneLocation = self.phoneRecords.firstObject[@"location"];
         }
         NSLog(@"通话记录数据%@", array);

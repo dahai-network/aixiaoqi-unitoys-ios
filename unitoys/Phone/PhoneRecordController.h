@@ -29,7 +29,7 @@ typedef void(^IsHideTitleViewBlock)(BOOL isHidden);
 @property (weak, nonatomic) PhoneOperationPad *callView;
 @property (readwrite) NSString *phoneNumber;
 
-@property (nonatomic, strong) UINavigationController *nav;
+@property (nonatomic, weak) UINavigationController *nav;
 
 @property (strong,nonatomic) NSMutableArray *arrPhoneRecord;
 

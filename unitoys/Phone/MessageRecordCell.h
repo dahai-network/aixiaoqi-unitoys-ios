@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TopLeftLabel.h"
+//#import "TopLeftLabel.h"
 
 @interface MessageRecordCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *lblPhoneNumber;
 @property (weak, nonatomic) IBOutlet UILabel *lblMessageDate;
-@property (weak, nonatomic) IBOutlet TopLeftLabel *lblContent;
+@property (weak, nonatomic) IBOutlet UILabel *lblContent;
 @end

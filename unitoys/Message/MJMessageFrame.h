@@ -7,7 +7,7 @@
 //
 
 // 正文的字体
-#define MJTextFont [UIFont systemFontOfSize:15]
+#define MJTextFont [UIFont systemFontOfSize:14]
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>

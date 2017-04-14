@@ -69,7 +69,7 @@
                                 <rect key="frame" x="0.0" y="108" width="375" height="80"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7XR-YU-FDm" id="wKP-DK-XJq">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="79"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JTV-Lr-I5w">
@@ -265,7 +265,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="call_backView" translatesAutoresizingMaskIntoConstraints="NO" id="FJ8-pG-6j0">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="phone_bg" translatesAutoresizingMaskIntoConstraints="NO" id="FJ8-pG-6j0">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5gX-7n-ooM">
@@ -343,7 +343,6 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="agh-Ye-1gB" firstAttribute="top" secondItem="M2e-B0-1ea" secondAttribute="bottom" constant="10" id="0Wc-cL-DIM"/>
                                     <constraint firstAttribute="height" constant="105" id="EUP-bN-PEq"/>
@@ -570,6 +569,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="bottomInputView" destination="Y88-Sr-bW6" id="qVc-pC-YEm"/>
                         <outlet property="btnSend" destination="bq9-oS-Jdl" id="TH1-vE-LKx"/>
                         <outlet property="tableView" destination="hqc-vL-BSW" id="muN-k2-Tk6"/>
                         <outlet property="topEditMessageView" destination="aAa-Mo-Zng" id="7zf-bP-MyE"/>
@@ -589,7 +589,6 @@
         <image name="add_addressee_pre" width="18" height="18"/>
         <image name="btn_dh_h_nor" width="70" height="70"/>
         <image name="btn_dh_h_pre" width="70" height="70"/>
-        <image name="call_backView" width="360" height="640"/>
         <image name="call_keyb_nor" width="72" height="72"/>
         <image name="contact_call" width="18" height="19"/>
         <image name="contact_message" width="18" height="19"/>
@@ -597,6 +596,7 @@
         <image name="down_arrow_pre" width="16" height="9"/>
         <image name="hands_free_nor" width="72" height="72"/>
         <image name="icon_jy_nor" width="72" height="72"/>
+        <image name="phone_bg" width="375" height="667"/>
         <image name="send_msg_nor" width="42" height="30"/>
         <image name="send_msg_pre" width="42" height="30"/>
     </resources>

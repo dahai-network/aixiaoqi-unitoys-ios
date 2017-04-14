@@ -48,6 +48,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setupViewChildControllers];
     [self setUpTitlesView];
 }
 
@@ -138,5 +139,6 @@
 {
     return NO;
 }
+
 
 @end

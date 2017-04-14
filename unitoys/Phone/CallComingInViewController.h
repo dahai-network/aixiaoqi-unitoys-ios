@@ -8,6 +8,7 @@
 
 #import "BaseViewController.h"
 
+@class AddTouchAreaButton;
 @interface CallComingInViewController : BaseViewController
 @property (nonatomic, copy) NSString *nameStr;
 
@@ -18,6 +19,10 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *btnMuteStatus;
 @property (weak, nonatomic) IBOutlet UIButton *btnSpeakerStatus;
+
+@property (weak, nonatomic) IBOutlet UIButton *callNumberStatus;
+@property (weak, nonatomic) IBOutlet AddTouchAreaButton *hideKeyboardButton;
+@property (weak, nonatomic) IBOutlet UIView *containerView;
 
 @property (readwrite) int callSeconds;   //通话时间
 @property (readwrite) NSTimer *callTimer;

@@ -63,16 +63,6 @@
 static NSString *searchContactsCellID = @"SearchContactsCell";
 @implementation PhoneRecordController
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-//    [self hideWindow];
-}
 
 - (NSMutableArray *)searchLists
 {
@@ -1527,7 +1517,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         if (callingViewController) {
             self.callStartTime = [NSDate date];
             callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
-            [self.view.window.rootViewController presentViewController:callingViewController animated:YES completion:^{
+            [self.nav presentViewController:callingViewController animated:YES completion:^{
                 SipEngine *theSipEngine = [SipEngineManager getSipEngine];
                 callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
                 if ([VSWManager shareManager].callPort) {
@@ -1605,6 +1595,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             kWeakSelf
             cell.lookDetailsBlock = ^(NSInteger index, NSString *phoneNumber, NSString *nickName) {
                 NSLog(@"当前index---%ld", index);
+                [weakSelf.phonePadView hideCallView];
+                //开始加载谁
+                [weakSelf switchNumberPad:YES];
+                weakSelf.isSearchStatu = NO;
+                [weakSelf.tableView reloadData];
+                
                 ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
                 callDetailsVc.nickName = nickName;
                 callDetailsVc.phoneNumber = phoneNumber;
@@ -1618,7 +1614,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             NSMutableString *bottomStr = [NSMutableString string];
             if ([[dicPhoneRecord objectForKey:@"calltype"] isEqualToString:@"来电"]) {
                 [cell.ivStatus setImage:[UIImage imageNamed:@"from_phone"]];
-                
                 NSString *phoneNum = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
                 cell.nickName = phoneNum;
                 cell.phoneNumber = [dicPhoneRecord objectForKey:@"hostnumber"];
@@ -1634,7 +1629,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                         [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
                     }
                     cell.lblPhoneNumber.attributedText = attriStr;
-                    
                 }
                 
                 //                    if ([[dicPhoneRecord objectForKey:@"status"] intValue]==0){  //如果未接听则显示红色
@@ -1748,7 +1742,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 60;
+    return 65;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
