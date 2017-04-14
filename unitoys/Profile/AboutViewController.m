@@ -53,18 +53,29 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBLEStatue) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBLEStatue) name:@"boundSuccess" object:@"boundSuccess"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statueChanged:) name:@"homeStatueChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkCannotUse:) name:@"netWorkNotToUse" object:nil];//网络状态改变
 }
 
-//- (void)changeDeviceStatue {
-//    [self.tableView reloadData];
-//    
-//}
+- (void)networkCannotUse:(NSNotification *)sender {
+    if ([sender.object isEqualToString:@"0"]) {
+        self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
+        self.operatorName.text = @"----";
+    } else {
+        NSLog(@"网络可用");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self checkBLEStatue];
+            [self checkPackageResidue];
+        });
+    }
+}
 
 - (void)statueChanged:(NSNotification *)sender {
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.operatorImg.image = [UIImage imageNamed:@"icon_nor"];
+        [self checkOpertaorTypeName];
     } else {
         self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
+        self.operatorName.text = @"----";
     }
 }
 
@@ -133,8 +144,42 @@
         } else {
             self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
         }
+        [self checkOpertaorTypeName];
     } else {
         self.connectedDeviceView.hidden = YES;
+    }
+}
+
+- (void)checkOpertaorTypeName {
+    switch ([[BlueToothDataManager shareManager].operatorType intValue]) {
+        case 0:
+            //                NSLog(@"插卡，上电失败");
+            self.operatorName.text = @"----";
+            break;
+        case 1:
+            //                NSLog(@"插卡，移动");
+            self.operatorName.text = @"中国移动";
+            break;
+        case 2:
+            //                NSLog(@"插卡，联通");
+            self.operatorName.text = @"中国联通";
+            break;
+        case 3:
+            //                NSLog(@"插卡，电信");
+            self.operatorName.text = @"中国电信";
+            break;
+        case 4:
+            //                NSLog(@"插卡，爱小器");
+            self.operatorName.text = @"爱小器卡";
+            break;
+        case 5:
+            //                NSLog(@"无卡");
+            self.operatorName.text = @"----";
+            break;
+        default:
+            //                NSLog(@"插卡，无法识别");
+            self.operatorName.text = @"----";
+            break;
     }
 }
 
@@ -422,5 +467,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"homeStatueChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
 }
 @end

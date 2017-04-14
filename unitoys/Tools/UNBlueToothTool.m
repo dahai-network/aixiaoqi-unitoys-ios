@@ -1036,7 +1036,7 @@ static UNBlueToothTool *instance = nil;
         if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
             //连接的是手环
             //对卡上电
-            [self phoneCardToUpeLectrify:@"01"];
+//            [self phoneCardToUpeLectrify:@"01"];
         } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
             //连接的是钥匙扣
             if (!self.boundedDeviceInfo[@"IMEI"]) {
@@ -1055,12 +1055,12 @@ static UNBlueToothTool *instance = nil;
                 });
             } else {
                 //对卡上电
-                [self phoneCardToUpeLectrify:@"01"];
+//                [self phoneCardToUpeLectrify:@"01"];
             }
         } else {
             NSLog(@"已绑定过之后上电");
             //对卡上电
-            [self phoneCardToUpeLectrify:@"01"];
+//            [self phoneCardToUpeLectrify:@"01"];
         }
         //是否是能通知
         if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
@@ -1236,7 +1236,7 @@ static UNBlueToothTool *instance = nil;
                 [self hideHud];
                 [self showHudNormalString:INTERNATIONALSTRING(@"绑定成功")];
                 //对卡上电
-                [self phoneCardToUpeLectrify:@"01"];
+//                [self phoneCardToUpeLectrify:@"01"];
                 break;
             case 5:
                 //实时计步
@@ -1494,35 +1494,112 @@ static UNBlueToothTool *instance = nil;
             case 12:
                 //卡状态改变(热插拔)
                 NSLog(@"蓝牙发送卡状态改变 -- %@", contentStr);
-                int isHaveCardStatue = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
-                switch (isHaveCardStatue) {
-                    case 0:
-                    {
-                        NSLog(@"卡状态改变 -- 无卡");
-                        [UNPushKitMessageManager shareManager].isNeedRegister = NO;
-                        [BlueToothDataManager shareManager].isHaveCard = NO;
-                        [BlueToothDataManager shareManager].isBeingRegisting = NO;
-                        [BlueToothDataManager shareManager].isChangeSimCard = YES;
-                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
+                if (contentStr.length == 4) {
+                    int isHaveCardStatue = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
+                    switch (isHaveCardStatue) {
+                        case 0:
+                        {
+                            NSLog(@"卡状态改变 -- 无卡");
+                            [BlueToothDataManager shareManager].operatorType = @"5";
+                            [UNPushKitMessageManager shareManager].isNeedRegister = NO;
+                            [BlueToothDataManager shareManager].isHaveCard = NO;
+                            [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                            [BlueToothDataManager shareManager].isChangeSimCard = YES;
+                            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
+                        }
+                            break;
+                        case 1:
+                            NSLog(@"卡状态改变 -- 有卡");
+                            
+                            int cardType = [self convertRangeStringToIntWithString:contentStr rangeLoc:2 rangeLen:2];
+                            switch (cardType) {
+                                case 0:
+                                    NSLog(@"插卡，上电失败");
+                                    break;
+                                case 1:
+                                    NSLog(@"插卡，移动");
+                                    break;
+                                case 2:
+                                    NSLog(@"插卡，联通");
+                                    break;
+                                case 3:
+                                    NSLog(@"插卡，电信");
+                                    break;
+                                case 4:
+                                    NSLog(@"插卡，爱小器");
+                                    break;
+                                default:
+                                    NSLog(@"插卡，无法识别");
+                                    break;
+                            }
+                            [BlueToothDataManager shareManager].operatorType = [NSString stringWithFormat:@"%d", cardType];
+                            self.simtype = [self checkSimType];
+                            if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"1"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"2"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"3"]) {
+                                //有电话卡
+                                [BlueToothDataManager shareManager].isHaveCard = YES;
+                                [BlueToothDataManager shareManager].cardType = @"2";
+                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+                                //判断是否有指定套餐，并创建连接
+                                [BlueToothDataManager shareManager].bleStatueForCard = 2;
+                                [BlueToothDataManager shareManager].isCanSendAuthData = YES;
+                                if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue && ![BlueToothDataManager shareManager].isNeedToCheckStatue) {
+                                    //查询tcp连接状态
+                                    [self checkRegistStatue];
+                                    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
+                                } else {
+                                    //注册卡
+                                    [BlueToothDataManager shareManager].isNeedToCheckStatue = NO;
+                                    if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
+                                        
+                                        // ---取消延时查询套餐
+                                        //                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                        [BlueToothDataManager shareManager].isRegisted = NO;
+                                        [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                                        //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
+                                        NSLog(@"判断用户是否存在指定套餐");
+                                        [self checkUserIsExistAppointPackage];
+                                        //                                });
+                                        
+                                    } else {
+                                        NSLog(@"注册卡---信号强");
+                                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                    }
+                                }
+                            } else if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"4"]) {
+                                //爱小器卡
+                                [BlueToothDataManager shareManager].isHaveCard = YES;
+                                [BlueToothDataManager shareManager].cardType = @"1";
+                                [BlueToothDataManager shareManager].isRegisted = NO;
+                                [BlueToothDataManager shareManager].isActivityCard = YES;
+                                [BlueToothDataManager shareManager].bleStatueForCard = 1;
+                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_AIXIAOQICARD];
+                                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
+                            } else {
+                                [UNPushKitMessageManager shareManager].isNeedRegister = NO;
+                                [BlueToothDataManager shareManager].isHaveCard = NO;
+                                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                                [BlueToothDataManager shareManager].isChangeSimCard = YES;
+                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
+                            }
+                            
+                            //更新蓝牙状态
+                            //                        [self refreshBLEStatue];
+                            //判断卡类型
+                            //                        [BlueToothDataManager shareManager].bleStatueForCard = 0;
+                            //                        [self phoneCardToUpeLectrify:@"03"];
+                            //                        [self checkCardType];
+                            break;
+                        default:
+                            NSLog(@"卡状态改变 -- 状态有问题");
+                            break;
                     }
-                        break;
-                    case 1:
-                        NSLog(@"卡状态改变 -- 有卡");
-                        [BlueToothDataManager shareManager].isHaveCard = YES;
-                        //更新蓝牙状态
-//                        [self refreshBLEStatue];
-                        //判断卡类型
-                        [BlueToothDataManager shareManager].bleStatueForCard = 0;
-                        [self phoneCardToUpeLectrify:@"03"];
-                        [self checkCardType];
-                        break;
-                    default:
-                        NSLog(@"卡状态改变 -- 状态有问题");
-                        break;
+                } else {
+                    NSLog(@"这是旧版本的设备，需要强制空中升级");
+                    return;
                 }
                 break;
             case 13:
-                //上一次充电时间
+                NSLog(@"接收到SIM卡ICCID -- %@", contentStr);
                 break;
             case 14:
                 //设置闹钟成功
@@ -2506,33 +2583,24 @@ static UNBlueToothTool *instance = nil;
 #pragma mark 判断网络运营商 1:移动或者联通 2:电信 0:网络运营商或号码有问题
 - (NSString *)checkSimType {
     NSString *type = @"0";
-    NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    if (userData[@"Tel"]) {
-        NSString *checkStr = [userData[@"Tel"] substringWithRange:NSMakeRange(0, 3)];
-        //电信
-        for (NSString *tel in TELECOM) {
-            if ([checkStr isEqualToString:tel]) {
-                type = @"2";
-                [BlueToothDataManager shareManager].operatorType = type;
-                return type;
-            }
-        }
-        //联通
-        for (NSString *tel in UNICOM) {
-            if ([checkStr isEqualToString:tel]) {
-                type = @"1";
-                [BlueToothDataManager shareManager].operatorType = type;
-                return type;
-            }
-        }
-        //移动
-        for (NSString *tel in CMCC) {
-            if ([checkStr isEqualToString:tel]) {
-                type = @"1";
-                [BlueToothDataManager shareManager].operatorType = type;
-                return type;
-            }
-        }
+    switch ([[BlueToothDataManager shareManager].operatorType intValue]) {
+        case 0:
+            NSLog(@"运营商类型有问题,上电失败");
+            break;
+        case 1:
+            type = @"1";
+            break;
+        case 2:
+            type = @"1";
+            break;
+        case 3:
+            type = @"2";
+            break;
+        case 4:
+            NSLog(@"爱小器卡");
+            break;
+        default:
+            break;
     }
     return type;
 }

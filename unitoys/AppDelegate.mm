@@ -105,15 +105,20 @@
     [UNNetWorkStatuManager shareManager].netWorkStatuChangeBlock = ^(NetworkStatus currentStatu){
         if (currentStatu != NotReachable) {
             NSLog(@"有网络");
-            if (self.sendTcpSocket && ![BlueToothDataManager shareManager].isTcpConnected && [self.sendTcpSocket.userData isEqualToString:SocketCloseByNet]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"1"];
+            });
+//            if (self.sendTcpSocket && ![BlueToothDataManager shareManager].isTcpConnected && [self.sendTcpSocket.userData isEqualToString:SocketCloseByNet]) {
                 [self closeTCP];
                 if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeNone) {
                     [UNPushKitMessageManager shareManager].isSendTcpString = NO;
                 }
                 [self creatAsocketTcp];
-            }
+//            }
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"netWorkNotToUse"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"0"];
+            });
         }
     };
     
@@ -340,7 +345,7 @@
     [BlueToothDataManager shareManager].isTcpConnected = NO;
     [BlueToothDataManager shareManager].isBeingRegisting = NO;
     [BlueToothDataManager shareManager].isRegisted = NO;
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOTCONNECTED];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOTCONNECTED];
 }
 
 - (void)connectingBLEAction {

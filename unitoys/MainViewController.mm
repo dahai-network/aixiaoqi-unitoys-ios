@@ -100,7 +100,7 @@ typedef enum : NSUInteger {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatueAll:) name:@"changeStatueAll" object:nil];//状态改变
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkNotUse) name:@"netWorkNotToUse" object:@"netWorkNotToUse"];//网络状态不可用
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkNotUse:) name:@"netWorkNotToUse" object:nil];//网络状态不可用
 
 }
 
@@ -109,9 +109,20 @@ typedef enum : NSUInteger {
     self.titleLabel.text = self.showLabelStr;
 }
 
-- (void)networkNotUse {
-    self.showLabelStr = @"当前网络不可用";
-    self.titleLabel.text = self.showLabelStr;
+- (void)networkNotUse:(NSNotification *)sender {
+    if ([sender.object isEqualToString:@"0"]) {
+        self.showLabelStr = @"当前网络不可用";
+        self.titleLabel.text = self.showLabelStr;
+    } else {
+        //有网络
+        NSLog(@"当前网络可用");
+//        if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+//            if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
+//                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
+//            }
+//        }
+    }
 }
 
 - (void)changeShowProgressStatue:(NSNotification *)sender {
@@ -271,7 +282,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"appIsKilled" object:@"appIsKilled"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isShowProgress" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:@"netWorkNotToUse"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
 }
 
 @end

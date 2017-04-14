@@ -340,5 +340,16 @@
 
 
 #define LBEUUID @"F9D77679-66D1-15A7-1052-EAD426D72C61"
+
+//#ifndef __OPTIMIZE__
+//
+//#define NSLog(...) NSLog(__VA_ARGS__)
+//
+//#else
+//
+//#define NSLog(...) {}
+//
+//#endif
+
 /*
 #endif */
