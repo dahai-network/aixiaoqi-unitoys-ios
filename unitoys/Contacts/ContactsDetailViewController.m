@@ -86,16 +86,16 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
-    callDetailsVc.nickName = self.contactMan;
-    callDetailsVc.phoneNumber = [self.arrNumbers objectAtIndex:indexPath.row];
-    [self.navigationController pushViewController:callDetailsVc animated:YES];
-    
-//    if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
-//        [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",self.lblContactMan.text,[_arrNumbers objectAtIndex:indexPath.row]]];
-//        [self.navigationController popToViewController:self.delegate animated:YES];
-//    }
+    if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
+        [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",self.lblContactMan.text,[_arrNumbers objectAtIndex:indexPath.row]]];
+        [self.navigationController popToViewController:self.delegate animated:YES];
+    }else{
+        [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+        callDetailsVc.nickName = self.contactMan;
+        callDetailsVc.phoneNumber = [self.arrNumbers objectAtIndex:indexPath.row];
+        [self.navigationController pushViewController:callDetailsVc animated:YES];
+    }
 }
 
 - (IBAction)rewriteMessage:(id)sender {

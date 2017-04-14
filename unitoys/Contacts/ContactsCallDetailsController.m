@@ -28,6 +28,7 @@
 
 @property (nonatomic, copy) NSString *lastTime;
 @property (nonatomic, copy) NSString *phoneLocation;
+@property (nonatomic, assign) NSInteger currentRecordPage;
 @end
 
 static NSString *callDetailsNameCellId = @"CallDetailsNameCell";
@@ -42,6 +43,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"拨打详情";
+    self.currentRecordPage = 1;
     [self getPhoneRecords];
     [self initData];
     [self initTableView];
@@ -133,8 +135,8 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
     if (section == 0) {
         return 3;
     }else if (section == 1){
-        if (self.phoneRecords.count > 10) {
-            return 11;
+        if (self.phoneRecords.count > self.currentRecordPage * 10) {
+            return self.currentRecordPage * 10 + 1;
         }else{
             return self.phoneRecords.count;
         }
@@ -167,7 +169,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             return cell;
         }
     }else if (indexPath.section == 1){
-        if (indexPath.row == 10) {
+        if (indexPath.row == self.currentRecordPage * 10) {
             CallDetailsLookAllCell *cell = [tableView dequeueReusableCellWithIdentifier:callDetailsLookAllCellId];
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             return cell;
@@ -190,8 +192,10 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     if (indexPath.section == 1) {
-        if (indexPath.row == 10) {
+        if (indexPath.row == self.currentRecordPage * 10) {
             NSLog(@"查看更多");
+            self.currentRecordPage++;
+            [self.tableView reloadData];
         }
     }
 }

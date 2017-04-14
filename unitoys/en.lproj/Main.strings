@@ -69,7 +69,7 @@
 "DOA-nY-aqS.normalTitle" = "11-11";
 
 /* Class = "UINavigationController"; title = "首页"; ObjectID = "DbG-xP-2CW"; */
-"DbG-xP-2CW.title" = "Home";
+"DbG-xP-2CW.title" = "Mall";
 
 /* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "Ehm-fa-WTq"; */
 "Ehm-fa-WTq.normalTitle" = "Stateless";
@@ -171,7 +171,7 @@
 "fXT-FG-dwB.text" = "|";
 
 /* Class = "UINavigationItem"; title = "首页"; ObjectID = "fZh-Fu-1Mz"; */
-"fZh-Fu-1Mz.title" = "Home";
+"fZh-Fu-1Mz.title" = "Mall";
 
 /* Class = "UILabel"; text = "00:00-23:59 活动"; ObjectID = "fnw-Ya-1fG"; */
 "fnw-Ya-1fG.text" = "00:00-23:59 Activity";
@@ -195,7 +195,7 @@
 "iCF-nU-x9b.text" = "NickName";
 
 /* Class = "UITabBarItem"; title = "首页"; ObjectID = "iJW-Ui-4cG"; */
-"iJW-Ui-4cG.title" = "Home";
+"iJW-Ui-4cG.title" = "Mall";
 
 /* Class = "UILabel"; text = "0"; ObjectID = "jnn-tt-EJg"; */
 "jnn-tt-EJg.text" = "0";
@@ -261,7 +261,7 @@
 "zAU-TR-hDJ.text" = "SMS alerts";
 
 /* Class = "UITabBarItem"; title = "个人中心"; ObjectID = "zL2-et-yt6"; */
-"zL2-et-yt6.title" = "Personal";
+"zL2-et-yt6.title" = "Me";
 
 /* Class = "UITextField"; placeholder = "请输入验证码"; ObjectID = "zL6-cc-V4v"; */
 "zL6-cc-V4v.placeholder" = "Input code";

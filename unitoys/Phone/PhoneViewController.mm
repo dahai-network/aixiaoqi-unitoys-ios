@@ -326,7 +326,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     // Do any additional setup after loading the view.
     
     kWeakSelf
-    self.phonePadView.completeBlock = ^(NSString *btnText){
+    self.phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum){
         //点击了删除按钮
         /*
          if (btnTag == 9) {

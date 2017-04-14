@@ -11,6 +11,7 @@
 #import "MessagePhoneDetailHeaderCell.h"
 #import "CallActionView.h"
 #import "BlueToothDataManager.h"
+#import "ContactsCallDetailsController.h"
 
 @interface MessagePhoneDetailController ()<UITableViewDelegate,UITableViewDataSource>
 
@@ -65,7 +66,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height - 64) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.allowsSelection = NO;
+//    self.tableView.allowsSelection = NO;
     [self.tableView registerNib:[UINib nibWithNibName:@"MessagePhoneDetailCell" bundle:nil] forCellReuseIdentifier:@"MessagePhoneDetailCell"];
     self.tableView.tableFooterView = [UIView new];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -83,12 +84,23 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MessagePhoneDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessagePhoneDetailCell"];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     NSDictionary *dict = self.phoneDatas[indexPath.row];
     cell.nameLabel.text = dict[@"phoneName"];
     cell.phoneLabel.text = dict[@"phone"];
     cell.callButton.tag = indexPath.row;
     [cell.callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    NSDictionary *dict = self.phoneDatas[indexPath.row];
+    ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+    callDetailsVc.nickName = dict[@"phoneName"];
+    callDetailsVc.phoneNumber = dict[@"phone"];
+    [self.navigationController pushViewController:callDetailsVc animated:YES];
 }
 
 

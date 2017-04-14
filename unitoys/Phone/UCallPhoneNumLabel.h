@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class AddTouchAreaButton;
-typedef void(^PhoneLabelChangeBlock)(NSString *currentText);
+typedef void(^PhoneLabelChangeBlock)(NSString *currentText, NSString *currentNum);
 @interface UCallPhoneNumLabel : UIView
 
 @property (nonatomic, strong) UILabel *phonelabel;
@@ -17,6 +17,6 @@ typedef void(^PhoneLabelChangeBlock)(NSString *currentText);
 
 @property (nonatomic, copy) PhoneLabelChangeBlock phoneLabelChangeBlock;
 
-- (void)updatePhoneLabel:(NSString *)phone;
+- (void)updatePhoneLabel:(NSString *)phone currentNum:(NSString *)number;
 
 @end

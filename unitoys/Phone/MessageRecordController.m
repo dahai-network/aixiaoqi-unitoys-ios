@@ -11,15 +11,19 @@
 #import "NewMessageViewController.h"
 #import "MessageRecordCell.h"
 #import "MJViewController.h"
+#import "AddTouchAreaButton.h"
 
 @interface MessageRecordController ()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
+
+@property (nonatomic, strong) AddTouchAreaButton *createMsgButton;
 @end
 
 @implementation MessageRecordController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self initTableView];
     
     [self initRefresh];
@@ -32,6 +36,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSMSContentAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessage) name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
+    
+    [self createButton];
 }
 
 - (void)initTableView
@@ -66,6 +72,35 @@
     self.tableView.mj_footer.hidden = YES;
 }
 
+- (void)createButton{
+    if (_createMsgButton) {
+        return;
+    }
+    _createMsgButton = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];
+//    _createMsgButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
+    [_createMsgButton setImage:[UIImage imageNamed:@"edit_Msg_nor"] forState:UIControlStateNormal];
+    [_createMsgButton setImage:[UIImage imageNamed:@"edit_Msg_pre"] forState:UIControlStateSelected];
+    [_createMsgButton addTarget:self action:@selector(createMsgAction:) forControlEvents:UIControlEventTouchUpInside];
+    [_createMsgButton sizeToFit];
+    _createMsgButton.right = kScreenWidthValue - 20;
+    _createMsgButton.bottom = self.view.height - _createMsgButton.height - 49;
+    
+    [self.view addSubview:_createMsgButton];
+//    _window = [[UIWindow alloc]initWithFrame: CGRectMake(kScreenWidthValue - 10 - _phonePadButton.width, kScreenHeightValue - 49 - _phonePadButton.height, _phonePadButton.width, _phonePadButton.height)];
+//    _window.windowLevel = UIWindowLevelNormal;
+//    _window.hidden = NO;
+//    [_window addSubview:_phonePadButton];
+//    [_window makeKeyAndVisible];//关键语句,显示window
+}
+
+- (void)createMsgAction:(AddTouchAreaButton *)button
+{
+    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+    NewMessageViewController *newMessageViewController = [mainStory instantiateViewControllerWithIdentifier:@"newMessageViewController"];
+    if (newMessageViewController) {
+        [self.nav pushViewController:newMessageViewController animated:YES];
+    }
+}
 
 - (void)loadMessage {
     self.checkToken = YES;

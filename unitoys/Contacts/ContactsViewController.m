@@ -289,7 +289,8 @@ UISearchBarDelegate,UISearchDisplayDelegate>
                 contactsDetailViewController.delegate = self.delegate; //设置选择后的委托
             }
             [self.navigationController pushViewController:contactsDetailViewController animated:YES];
-        }else{
+        }
+        else{
             ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
             callDetailsVc.nickName = [dicResult objectForKey:@"name"];
             callDetailsVc.phoneNumber = [dicResult objectForKey:@"phoneNumber"];
@@ -298,7 +299,7 @@ UISearchBarDelegate,UISearchDisplayDelegate>
     }else{
         ContactModel *model=_rowArr[indexPath.section][indexPath.row];
         NSLog(@"联系结果：%@",model);
-        if ([model.phoneNumber containsString:@","]) {
+        if ([model.phoneNumber containsString:@","] || self.bOnlySelectNumber) {
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
             if (!storyboard) {
                 return;

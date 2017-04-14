@@ -7,16 +7,22 @@
 //
 
 #import "CallingViewController.h"
+#import "UCallPhonePadView.h"
+#import "AddTouchAreaButton.h"
 
 @interface CallingViewController ()
 @property (nonatomic, assign) BOOL isDismissing;
+
+@property (nonatomic, strong) UCallPhonePadView *phonePadView;
+
+@property (nonatomic, copy) NSString *currentNickName;
 @end
 
 @implementation CallingViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.hideKeyboardButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.btnMuteStatus.tag = 0;
     self.btnSpeakerStatus.tag = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
@@ -26,17 +32,8 @@
     if (notification.object) {
         self.lblCallingHint.text = notification.object;
         if ([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"对方振铃...")]) {
-//            self.hadRing = YES;
-//            
-//            if (self.isHandfree) {
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
-//            }
-//            if (self.isMute) {
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
-//            }
-        }
-        
-        if ([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"呼叫接通")]) {
+            
+        }else if ([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"呼叫接通")]) {
             self.callingStatus = YES;
         }else if ([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"正在通话")]) {
             self.callingStatus = YES;
@@ -68,33 +65,17 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 - (IBAction)muteCalling:(id)sender {
     if (_btnMuteStatus.tag==0) {
-        [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteon"] forState:UIControlStateNormal];
+        [_btnMuteStatus setImage:[UIImage imageNamed:@"icon_jy_pre"] forState:UIControlStateNormal];
         _btnMuteStatus.tag=1;
     } else {
-        [_btnMuteStatus setImage:[UIImage imageNamed:@"tel_muteoff"] forState:UIControlStateNormal];
+        [_btnMuteStatus setImage:[UIImage imageNamed:@"icon_jy_nor"] forState:UIControlStateNormal];
         _btnMuteStatus.tag=0;
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound" userInfo:@{@"isMuteon" : @(_btnMuteStatus.tag)}];
-//    if (self.hadRing){
-////        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound"];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"MuteSound" userInfo:@{@"isMuteon" : @(_btnMuteStatus.tag)}];
-//        
-//    }else{
-//        self.isMute = !self.isMute;
-//    }
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
@@ -106,21 +87,58 @@
 - (IBAction)handfreeCalling:(id)sender {
     
     if (_btnSpeakerStatus.tag==0) {
-        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeon"] forState:UIControlStateNormal];
+        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"call_keyb_pre"] forState:UIControlStateNormal];
         _btnSpeakerStatus.tag=1;
     } else {
-        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"tel_handfreeoff"] forState:UIControlStateNormal];
+        [_btnSpeakerStatus setImage:[UIImage imageNamed:@"call_keyb_nor"] forState:UIControlStateNormal];
         _btnSpeakerStatus.tag=0;
     }
     //解决通话前设置扩音无效问题
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound" userInfo:@{@"isHandfreeon" : @(_btnSpeakerStatus.tag)}];
-//    if (self.hadRing){
-//        //        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound"];
-//        //解决通话前设置扩音无效问题
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SwitchSound" userInfo:@{@"isHandfreeon" : @(_btnSpeakerStatus.tag)}];
-//    }else{
-//        self.isHandfree = !self.isHandfree;
-//    }
+}
+
+- (IBAction)callNumAction:(UIButton *)sender
+{
+    [self showphonePadView];
+}
+
+- (IBAction)hideKeyBoardAction:(UIButton *)sender
+{
+    [self hidePhonePadView];
+}
+
+- (void)showphonePadView
+{
+    if (!self.currentNickName) {
+        self.currentNickName = [self.lblCallingInfo.text copy];
+    }
+    self.containerView.hidden = YES;
+    if (!_phonePadView) {
+        kWeakSelf
+        _phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 34 - 45 - 70 - 225, kScreenWidthValue, 225) IsTransparentBackground:YES];
+        _phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum) {
+            NSLog(@"总字符---%@=====当前字符-----%@", btnText, currentNum);
+            weakSelf.lblCallingInfo.text = btnText;
+            if ([currentNum isEqualToString:@"DEL"]) {
+                NSLog(@"输入异常");
+            }else{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"CallPhoneKeyBoard" object:currentNum];
+            }
+        };
+        [self.view addSubview:_phonePadView];
+    }
+    [self.phonePadView showCallViewNoDelLabel];
+    self.hideKeyboardButton.hidden = NO;
+}
+
+- (void)hidePhonePadView
+{
+    if (_phonePadView) {
+        [_phonePadView hideCallViewNoDelLabel];
+    }
+    self.hideKeyboardButton.hidden = YES;
+    self.containerView.hidden = NO;
+    self.lblCallingInfo.text = self.currentNickName;
 }
 
 - (void)endCallPhone
@@ -145,4 +163,5 @@
     [self endCallPhone];
     sender.enabled = YES;
 }
+
 @end

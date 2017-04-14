@@ -39,19 +39,21 @@
     _deleteButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
     [_deleteButton setImage:[UIImage imageNamed:@"delete_nor"] forState:UIControlStateNormal];
     [_deleteButton setImage:[UIImage imageNamed:@"delete_pre"] forState:UIControlStateHighlighted];
-    [_deleteButton sizeToFit];
+//    [_deleteButton sizeToFit];
+    _deleteButton.width = 60;
+    _deleteButton.height = self.height;
     [_deleteButton addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_deleteButton];
 }
 
-- (void)updatePhoneLabel:(NSString *)phone
+- (void)updatePhoneLabel:(NSString *)phone currentNum:(NSString *)number
 {
     if (phone) {
         _phonelabel.text = [phone copy];
     }else{
         _phonelabel.text = @"";
     }
-    [self currentLabelText:_phonelabel.text];
+    [self currentLabelText:_phonelabel.text currentNum:number];
 }
 
 - (void)deleteAction:(UIButton *)button
@@ -61,21 +63,21 @@
     }else{
         _phonelabel.text = @"";
     }
-    [self currentLabelText:_phonelabel.text];
+    [self currentLabelText:_phonelabel.text currentNum:@"DEL"];
 }
 
-- (void)currentLabelText:(NSString *)text
+- (void)currentLabelText:(NSString *)text currentNum:(NSString *)number
 {
     NSLog(@"当前输入文字---%@",text);
     if (_phoneLabelChangeBlock) {
-        _phoneLabelChangeBlock(text);
+        _phoneLabelChangeBlock(text,number);
     }
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    _deleteButton.right = self.width - 15;
+    _deleteButton.right = self.width;
     _deleteButton.centerY = self.height * 0.5;
     
     _phonelabel.frame = CGRectMake(0, 0, _deleteButton.left, self.height);

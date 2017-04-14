@@ -525,8 +525,6 @@
     self.txtLinkman.text = [self checkLinkmans];
     self.txtLinkman.textColor = [UIColor colorWithRed:43/255.0 green:182/255.0 blue:35/255.0 alpha:1];
     [self.txtLinkman resignFirstResponder];
-    
-    
 }
 
 //- (void)checkInputNumber

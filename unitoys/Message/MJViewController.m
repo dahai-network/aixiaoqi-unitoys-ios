@@ -15,6 +15,7 @@
 #import "MessagePhoneDetailController.h"
 
 #import "UNEditMessageView.h"
+#import "ContactsCallDetailsController.h"
 
 @interface MJViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -186,9 +187,16 @@
 
 - (void)rightBarButtonAction
 {
-    MessagePhoneDetailController *detailVc = [[MessagePhoneDetailController alloc] init];
-    detailVc.toPhoneStr = self.toTelephone;
-    [self.navigationController pushViewController:detailVc animated:YES];
+    if ([self.toTelephone containsString:@","]) {
+        MessagePhoneDetailController *detailVc = [[MessagePhoneDetailController alloc] init];
+        detailVc.toPhoneStr = self.toTelephone;
+        [self.navigationController pushViewController:detailVc animated:YES];
+    }else{
+        ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+        callDetailsVc.nickName = self.title;
+        callDetailsVc.phoneNumber = self.toTelephone;
+        [self.navigationController pushViewController:callDetailsVc animated:YES];
+    }
 }
 
 - (void)keyboardWillShow
@@ -430,6 +438,7 @@
     kWeakSelf
     // 1.创建cell
     MJMessageCell *cell = [MJMessageCell cellWithTableView:tableView];
+//    cell.shouldIndentWhileEditing = NO;
     // 2.给cell传递模型
     cell.messageFrame = self.messageFrames[indexPath.row];
     cell.selectedBackgroundView = [[UIView alloc]init];
@@ -453,6 +462,16 @@
 {
     MJMessageFrame *mf = self.messageFrames[indexPath.row];
     return mf.cellHeight;
+}
+
+//禁止编辑状态缩进
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    MJMessageFrame *messageFrame = self.messageFrames[indexPath.row];
+    if (messageFrame.message.type == MJMessageTypeOther) {
+        return YES;
+    }else{
+        return NO;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

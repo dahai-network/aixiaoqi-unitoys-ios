@@ -82,11 +82,11 @@
     HLTitlesView *titlesView = [HLTitlesView titlesViewWithTitles:@[@"通话历史", @"短信记录"]  Margin:15];
     titlesView.titlesButtonAction = ^(UIButton *button){
         NSLog(@"%ld", button.tag);
-        if (button.tag == 0) {
-            self.navigationItem.rightBarButtonItem = nil;
-        }else{
-            [self initRightButton];
-        }
+//        if (button.tag == 0) {
+//            self.navigationItem.rightBarButtonItem = nil;
+//        }else{
+//            [self initRightButton];
+//        }
         NSArray *startController = @[weakSelf.viewControllers[button.tag]];
         [weakSelf.pageViewController setViewControllers:startController
                                               direction: UIPageViewControllerNavigationDirectionReverse

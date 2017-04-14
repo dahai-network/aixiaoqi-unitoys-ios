@@ -60,15 +60,35 @@
     [self addSubview:bottomLabel];
 }
 
+- (void)setIsTransparent:(BOOL)isTransparent
+{
+    _isTransparent = isTransparent;
+    if (isTransparent) {
+        self.topLabel.textColor = [UIColor whiteColor];
+        self.bottomLabel.textColor = [UIColor whiteColor];
+    }
+}
+
 - (void)setHighlighted:(BOOL)highlighted
 {
     [super setHighlighted:highlighted];
-    if (highlighted) {
-        self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+    if (_isTransparent) {
+        if (highlighted) {
+//            self.backgroundColor = UIColorFromRGB(0x222222);
+            self.topLabel.textColor = UIColorFromRGB(0x00a0e9);
+            self.bottomLabel.textColor = UIColorFromRGB(0x00a0e9);
+        }else{
+//            self.backgroundColor = [UIColor clearColor];
+            self.topLabel.textColor = [UIColor whiteColor];
+            self.bottomLabel.textColor = [UIColor whiteColor];
+        }
     }else{
-        self.backgroundColor = [UIColor whiteColor];
+        if (highlighted) {
+            self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+        }else{
+            self.backgroundColor = [UIColor whiteColor];
+        }
     }
-    
 }
 
 - (void)longPressAction:(UILongPressGestureRecognizer *)pressGestureRecognizer

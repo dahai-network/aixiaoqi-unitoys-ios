@@ -33,11 +33,11 @@
             </objects>
             <point key="canvasLocation" x="0.0" y="177.86666666666665"/>
         </scene>
-        <!--首页-->
+        <!--商城-->
         <scene sceneID="2Oj-Fn-T1k">
             <objects>
-                <navigationController title="首页" id="DbG-xP-2CW" customClass="navHomeViewController" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="首页" image="mall_bar_nor" selectedImage="mall_bar_pre" id="iJW-Ui-4cG"/>
+                <navigationController title="商城" id="DbG-xP-2CW" customClass="navHomeViewController" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="商城" image="mall_bar_nor" selectedImage="mall_bar_pre" id="iJW-Ui-4cG"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="pyx-IF-q4Q">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -87,7 +87,7 @@
             </objects>
             <point key="canvasLocation" x="-1483" y="1761"/>
         </scene>
-        <!--首页-->
+        <!--商城-->
         <scene sceneID="aS0-Q1-KON">
             <objects>
                 <tableViewController storyboardIdentifier="homeViewController" id="fDG-5D-gMG" customClass="HomeViewController" sceneMemberID="viewController">
@@ -700,7 +700,7 @@
                             <outlet property="delegate" destination="fDG-5D-gMG" id="izY-d5-umE"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="首页" id="fZh-Fu-1Mz"/>
+                    <navigationItem key="navigationItem" title="商城" id="fZh-Fu-1Mz"/>
                     <connections>
                         <outlet property="AdView" destination="lbk-eH-AfM" id="wV9-vI-S50"/>
                         <outlet property="hotCollectionView" destination="2CZ-8V-QHe" id="o1S-cr-lva"/>
@@ -1156,7 +1156,7 @@
         <scene sceneID="lHW-qs-Moz">
             <objects>
                 <navigationController title="我" id="Asa-PC-QhR" customClass="navHomeViewController" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="个人中心" image="my_center_nor" selectedImage="my_center_pre" id="zL2-et-yt6"/>
+                    <tabBarItem key="tabBarItem" title="我的" image="my_center_nor" selectedImage="my_center_pre" id="zL2-et-yt6"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="y7e-2R-JgY">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

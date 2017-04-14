@@ -54,7 +54,7 @@
 
 @property (nonatomic, strong) AddTouchAreaButton *phonePadButton;
 
-@property (nonatomic, strong) UIWindow *window;
+//@property (nonatomic, strong) UIWindow *window;
 
 @property (nonatomic, copy) NSString *currentCallPhone;
 
@@ -66,13 +66,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self showWindow];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self hideWindow];
+//    [self hideWindow];
 }
 
 - (NSMutableArray *)searchLists
@@ -138,6 +137,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callingAction:) name:@"CallingAction" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(makeCallAction:) name:@"MakeCallAction" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(makeUnitysCallAction:) name:@"MakeUnitysCallAction" object:nil];
+    //监听数字键盘
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callPhoneKeyBoard:) name:@"CallPhoneKeyBoard" object:nil];
     
     
     kWeakSelf
@@ -283,9 +284,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self initTableView];
     //解压联系人数据库
     [self unZipNumberPhoneDB];
+    
 
     if (!_arrPhoneRecord) {
         [self loadPhoneRecord];
@@ -295,19 +298,20 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     self.phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 64 - 49, kScreenWidthValue, 225)];
     [self.view addSubview:self.phonePadView];
     
-    self.phonePadView.completeBlock = ^(NSString *btnText){
+    self.phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum){
         
         if (btnText.length>0) {
             //当前为搜索状态
             weakSelf.isSearchStatu = YES;
             weakSelf.phonePadView.hidden = NO;
+            weakSelf.tableView.height = kScreenHeightValue - (64 + 49) - 225 - 70;
             //搜索电话并展示
             [weakSelf searchInfoWithString:btnText];
-            
         }else{
             //当前不为搜索状态
             weakSelf.isSearchStatu = NO;
             weakSelf.isSearchStatu = NO;
+            weakSelf.tableView.height = kScreenHeightValue - (64 + 49) - 225;
             [weakSelf.tableView reloadData];
         }
         
@@ -315,6 +319,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     [self initCallActionView];
     
+    [self showWindow];
 }
 
 
@@ -387,38 +392,36 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)showWindow
 {
-    if (!_window) {
+    if (!_phonePadButton) {
         [self createButton];
     }else{
-        _window.hidden = NO;
+        _phonePadButton.hidden = NO;
+//        [self.view bringSubviewToFront:_phonePadButton];
     }
 }
 
 - (void)hideWindow
 {
-    if (_window) {
-        _window.hidden = YES;
+    if (_phonePadButton) {
+        _phonePadButton.hidden = YES;
     }
 }
 
 - (void)createButton{
-    if (_window) {
+    if (_phonePadButton) {
         return;
     }
     _phonePadButton = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];
-    _phonePadButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
+//    _phonePadButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
     [_phonePadButton setImage:[UIImage imageNamed:@"phonepad_btn_nor"] forState:UIControlStateNormal];
     [_phonePadButton setImage:[UIImage imageNamed:@"phonepad_btn_pre"] forState:UIControlStateSelected];
     [_phonePadButton addTarget:self action:@selector(showPhonePadView:) forControlEvents:UIControlEventTouchUpInside];
     [_phonePadButton sizeToFit];
-    _phonePadButton.left = 0;
-    _phonePadButton.top = 0;
-    
-    _window = [[UIWindow alloc]initWithFrame: CGRectMake(kScreenWidthValue - 10 - _phonePadButton.width, kScreenHeightValue - 49 - _phonePadButton.height, _phonePadButton.width, _phonePadButton.height)];
-    _window.windowLevel = UIWindowLevelNormal;
-    _window.hidden = NO;
-    [_window addSubview:_phonePadButton];
-    [_window makeKeyAndVisible];//关键语句,显示window
+//    _phonePadButton.left = 0;
+//    _phonePadButton.top = 0;
+    _phonePadButton.right = kScreenWidthValue - 20;
+    _phonePadButton.bottom = self.view.height - _phonePadButton.height - 49;
+    [self.view addSubview:_phonePadButton];
 }
 
 - (void)showPhonePadView:(AddTouchAreaButton *)button
@@ -509,16 +512,17 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 
 - (void)switchNumberPad :(BOOL)hidden {
-    [self.tableView setNeedsLayout];
-    [self.tableView layoutIfNeeded];
-    
+//    [self.tableView setNeedsLayout];
+//    [self.tableView layoutIfNeeded];
     if (hidden) {
         NSLog(@"关闭键盘");
         self.phonePadButton.hidden = NO;
         self.phonePadView.top = kScreenHeightValue - 64 - 49;
         self.callView.hidden = YES;
         self.isSearchStatu = NO;
+        self.phonePadView.inputedPhoneNumber = nil;
         [self setTitleViewIsHidden:YES];
+        self.tableView.height = kScreenHeightValue - (64 + 49);
     }else{
         NSLog(@"打开键盘");
         self.phonePadButton.hidden = YES;
@@ -526,6 +530,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         [self showOperation];
         self.isSearchStatu = YES;
         [self setTitleViewIsHidden:NO];
+//        self.tableView.height = kScreenHeightValue - (64 + 49) - 225 - 70;
+        self.tableView.height = kScreenHeightValue - (64 + 49) - 225;
     }
 }
 
@@ -1082,6 +1088,25 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+- (void)callPhoneKeyBoard:(NSNotification *)noti
+{
+    NSString *numer = [noti object];
+    if ([self verificationNumber:numer]) {
+        SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+        theSipEngine->SendDtmf([numer UTF8String]);
+    }
+}
+
+- (BOOL)verificationNumber:(NSString *)numer
+{
+    NSArray *allNumber = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"*",@"0",@"#"];
+    if ([allNumber containsObject:numer]) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
 -(void) OnNetworkQuality:(int)ms {
     //网络质量提示？
 }
@@ -1554,7 +1579,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.isSearchStatu && self.phonePadView.inputedPhoneNumber) {
+    if (self.isSearchStatu && self.phonePadView.inputedPhoneNumber && self.phonePadView.inputedPhoneNumber.length) {
         return self.searchLists.count;
     }else{
         return self.arrPhoneRecord.count;
@@ -1563,7 +1588,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (self.isSearchStatu && self.phonePadView.inputedPhoneNumber) {
+    if (self.isSearchStatu && self.phonePadView.inputedPhoneNumber && self.phonePadView.inputedPhoneNumber.length) {
         id model;
         if ([self.searchLists count] > indexPath.row ) {
             model = self.searchLists[indexPath.row];
@@ -1736,28 +1761,34 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         if ([contacts isKindOfClass:[ContactModel class]]) {
             ContactModel *model = (ContactModel *)contacts;
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-            if (storyboard) {
-                
-                ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
-                if (contactsDetailViewController) {
-                    NSLog(@"联系结果：%@",model);
-                    //重置状态
-                    [self.callActionView hideActionView];
-                    [self.phonePadView hideCallView];
-                    [self switchNumberPad:YES];
-//                    self.callView.hidden = YES;
-                    //清空搜索状态
-                    self.isSearchStatu = NO;
-                    [self.searchLists removeAllObjects];
-                    [self.tableView reloadData];
-                    
-                    contactsDetailViewController.contactMan = model.name;
-                    contactsDetailViewController.phoneNumbers = model.phoneNumber;
-                    contactsDetailViewController.contactHead = model.portrait;
-                    [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
-                    [self.nav pushViewController:contactsDetailViewController animated:YES];
+            NSLog(@"联系结果：%@",model);
+            //重置状态
+            [self.callActionView hideActionView];
+            [self.phonePadView hideCallView];
+            [self switchNumberPad:YES];
+            //                    self.callView.hidden = YES;
+            //清空搜索状态
+            self.isSearchStatu = NO;
+            [self.searchLists removeAllObjects];
+            [self.tableView reloadData];
+            
+            if ([model.phoneNumber containsString:@","]) {
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+                if (storyboard) {
+                    ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
+                    if (contactsDetailViewController) {
+                        contactsDetailViewController.contactMan = model.name;
+                        contactsDetailViewController.phoneNumbers = model.phoneNumber;
+                        contactsDetailViewController.contactHead = model.portrait;
+                        [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
+                        [self.nav pushViewController:contactsDetailViewController animated:YES];
+                    }
                 }
+            }else{
+                ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+                callDetailsVc.nickName = model.name;
+                callDetailsVc.phoneNumber = model.phoneNumber;
+                [self.nav pushViewController:callDetailsVc animated:YES];
             }
         }else if ([contacts isKindOfClass:[NSDictionary class]]){
             NSDictionary *dicCallRecord = (NSDictionary *)contacts;
@@ -1879,6 +1910,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallingAction" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeCallAction" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeUnitysCallAction" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallPhoneKeyBoard" object:nil];
 }
 
 @end

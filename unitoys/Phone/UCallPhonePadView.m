@@ -25,9 +25,24 @@
 @property (nonatomic, assign) NSInteger rowCount;
 @property (nonatomic, assign) CGFloat margin;
 
+//背景是否透明
+@property (nonatomic, assign) BOOL isTransparent;
+
 @end
 
 @implementation UCallPhonePadView
+
+
++ (instancetype)callPhonePadViewWithFrame:(CGRect)frame IsTransparentBackground:(BOOL)isTransparent
+{
+    return [[UCallPhonePadView alloc] initWithFrame:frame IsTransparentBackground:isTransparent];
+}
+
+- (instancetype)initWithFrame:(CGRect)frame IsTransparentBackground:(BOOL)isTransparent
+{
+    _isTransparent = isTransparent;
+    return [self initWithFrame:frame];
+}
 
 - (NSArray *)keyboardItems
 {
@@ -104,22 +119,27 @@
 - (void)initSubViews
 {
     self.clipsToBounds = NO;
-    self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+    if (self.isTransparent) {
+        self.backgroundColor = [UIColor clearColor];
+    }else{
+        self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+    }
+    
     
     _phoneNumLabel = [[UCallPhoneNumLabel alloc] initWithFrame:CGRectMake(0, - (PhoneLabelHeigth - 1), kScreenWidthValue, PhoneLabelHeigth - 1)];
     _phoneNumLabel.hidden = YES;
     kWeakSelf
-    _phoneNumLabel.phoneLabelChangeBlock = ^(NSString *currentText){
+    _phoneNumLabel.phoneLabelChangeBlock = ^(NSString *currentText, NSString *currentNum){
         weakSelf.inputedPhoneNumber = currentText;
         if (weakSelf.completeBlock) {
-            weakSelf.completeBlock(currentText);
+            weakSelf.completeBlock(currentText,currentNum);
         }
-        if (!currentText || !currentText.length) {
-            weakSelf.phoneNumLabel.hidden = YES;
-//            weakSelf.phoneNumLabel.userInteractionEnabled = NO;
-        }else{
-            weakSelf.phoneNumLabel.hidden = NO;
-//            weakSelf.phoneNumLabel.userInteractionEnabled = YES;
+        if (!weakSelf.isHideDelLabel) {
+            if (!currentText || !currentText.length) {
+                weakSelf.phoneNumLabel.hidden = YES;
+            }else{
+                weakSelf.phoneNumLabel.hidden = NO;
+            }
         }
     };
     [self addSubview:_phoneNumLabel];
@@ -130,13 +150,25 @@
     _margin = 1.0;
     
     self.buttonArray = [NSMutableArray arrayWithCapacity:_buttonCount];
-    for (NSInteger i = 0; i < _buttonCount; i++) {
-        NSDictionary *dict = self.keyboardItems[i];
-        UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
-        callButton.backgroundColor = [UIColor whiteColor];
-        [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [self.buttonArray addObject:callButton];
-        [self addSubview:callButton];
+    if (_isTransparent) {
+        for (NSInteger i = 0; i < _buttonCount; i++) {
+            NSDictionary *dict = self.keyboardItems[i];
+            UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
+            callButton.isTransparent = YES;
+            callButton.backgroundColor = [UIColor clearColor];
+            [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+            [self.buttonArray addObject:callButton];
+            [self addSubview:callButton];
+        }
+    }else{
+        for (NSInteger i = 0; i < _buttonCount; i++) {
+            NSDictionary *dict = self.keyboardItems[i];
+            UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
+            callButton.backgroundColor = [UIColor whiteColor];
+            [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+            [self.buttonArray addObject:callButton];
+            [self addSubview:callButton];
+        }
     }
 }
 
@@ -149,10 +181,15 @@
         }else{
             self.inputedPhoneNumber = sendchar;
         }
+        [_phoneNumLabel updatePhoneLabel:self.inputedPhoneNumber currentNum:sendchar];
     }
-    
-    [_phoneNumLabel updatePhoneLabel:self.inputedPhoneNumber];
-    
+}
+
+- (void)showCallView
+{
+    self.inputedPhoneNumber = @"";
+    self.phoneNumLabel.phonelabel.text = @"";
+    self.phoneNumLabel.hidden = NO;
 }
 
 - (void)hideCallView
@@ -160,6 +197,22 @@
     self.inputedPhoneNumber = @"";
     self.phoneNumLabel.phonelabel.text = @"";
     self.phoneNumLabel.hidden = YES;
+}
+
+- (void)showCallViewNoDelLabel
+{
+    self.inputedPhoneNumber = @"";
+    self.phoneNumLabel.phonelabel.text = @"";
+    self.isHideDelLabel = YES;
+    self.phoneNumLabel.hidden = YES;
+    self.hidden = NO;
+}
+
+- (void)hideCallViewNoDelLabel
+{
+    self.inputedPhoneNumber = @"";
+    self.phoneNumLabel.phonelabel.text = @"";
+    self.hidden = YES;
 }
 
 - (void)layoutSubviews

@@ -21,4 +21,6 @@ typedef void(^PhoneButtonLongPressAction)(NSString *topTitle);
 @property (nonatomic, readonly) NSString *topTitle;
 @property (nonatomic, readonly) NSString *bottomTitle;
 
+@property (nonatomic, assign) BOOL isTransparent;
+
 @end

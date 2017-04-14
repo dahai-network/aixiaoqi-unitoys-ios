@@ -8,6 +8,7 @@
 
 #import "BaseViewController.h"
 
+@class AddTouchAreaButton;
 @interface CallingViewController : BaseViewController
 
 - (IBAction)muteCalling:(id)sender;
@@ -16,13 +17,19 @@
 
 - (IBAction)hungupCalling:(id)sender;
 
+- (IBAction)callNumAction:(UIButton *)sender;
+
+- (IBAction)hideKeyBoardAction:(UIButton *)sender;
 
 @property (weak, nonatomic) IBOutlet UILabel *lblCallingHint;
 @property (weak, nonatomic) IBOutlet UILabel *lblCallingInfo;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnMuteStatus;
 @property (weak, nonatomic) IBOutlet UIButton *btnSpeakerStatus;
+@property (weak, nonatomic) IBOutlet UIButton *callNumberStatus;
+@property (weak, nonatomic) IBOutlet AddTouchAreaButton *hideKeyboardButton;
 
+@property (weak, nonatomic) IBOutlet UIView *containerView;
 
 @property (readwrite) BOOL callingStatus;
 
