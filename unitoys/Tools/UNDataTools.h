@@ -14,4 +14,7 @@
 
 - (NSString *)compareCurrentTimeStringWithRecord:(NSString *)compareDateString;
 
+//黑名单列表
+@property (nonatomic, strong) NSMutableArray *blackLists;
+
 @end

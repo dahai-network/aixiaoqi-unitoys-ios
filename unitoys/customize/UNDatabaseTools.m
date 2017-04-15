@@ -161,6 +161,161 @@
     return dict;
 }
 
+//插入一条数据
+- (BOOL)insertDataWithAPIName:(NSString *)apiName stringData:(NSString *)string
+{
+    BOOL isSuccess = NO;
+    //打开数据库
+    if ([self.database open]) {
+        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+        FMResultSet *rs = [self.database executeQuery:existsSql];
+        if ([rs next]) {
+            NSInteger count = [rs intForColumn:@"countNum"];
+            if (count == 0) {
+//                NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (datas Text)", apiName];
+                NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id integer PRIMARY KEY AUTOINCREMENT, data text NOT NULL)", apiName];
+                BOOL result = [self.database executeUpdate:sqlString];
+                if (result) {
+                    NSLog(@"成功创表");
+                } else {
+                    NSLog(@"创表失败");
+                }
+            }
+            
+            NSString *selectData = [NSString stringWithFormat:@"select * from %@ where data='%@'", apiName,string];
+            rs = [self.database executeQuery:selectData];
+            if (![rs next] || !rs) {
+                NSLog(@"数据不存在,插入数据");
+                //插入数据
+                NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(data) VALUES ('%@');", apiName, string];
+                BOOL isSuccessInsert = [self.database executeUpdate:insertStr];
+                if (!isSuccessInsert) {
+                    NSLog(@"插入数据库文件失败");
+                }
+                isSuccess = isSuccessInsert;
+            }
+            [rs close];
+        }
+        [self.database close];
+    }else{
+        isSuccess = NO;
+    }
+    return isSuccess;
+}
+
+- (BOOL)deleteDataWithAPIName:(NSString *)apiName stringData:(NSString *)string
+{
+    BOOL isSuccess = NO;
+    //打开数据库
+    if ([self.database open]) {
+        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+        FMResultSet *rs = [self.database executeQuery:existsSql];
+        if ([rs next]) {
+            NSInteger count = [rs intForColumn:@"countNum"];
+            if (count == 0) {
+                NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id integer PRIMARY KEY AUTOINCREMENT, data text NOT NULL)", apiName];
+                BOOL result = [self.database executeUpdate:sqlString];
+                if (result) {
+                    NSLog(@"成功创表");
+                } else {
+                    NSLog(@"创表失败");
+                }
+            }
+            
+            NSString *selectData = [NSString stringWithFormat:@"delete from %@ where data='%@'", apiName,string];
+            BOOL isSuccessDel = [self.database executeUpdate:selectData];
+            if (!isSuccessDel) {
+                NSLog(@"删除数据库文件失败");
+            }
+            isSuccess = isSuccessDel;
+            
+//            if ([rs next]) {
+//                NSLog(@"数据存在,删除数据");
+//                //插入数据
+//                NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(data) VALUES ('%@');", apiName, string];
+//                BOOL isSuccessInsert = [self.database executeUpdate:insertStr];
+//                if (!isSuccessInsert) {
+//                    NSLog(@"插入数据库文件失败");
+//                }
+//                isSuccess = isSuccessInsert;
+//            }
+            [rs close];
+        }
+        [self.database close];
+    }else{
+        isSuccess = NO;
+    }
+    return isSuccess;
+}
+
+//插入多个黑名单列表数据
+- (void)insertBlackListWithPhoneLists:(NSArray *)lists
+{
+    NSInteger successCount = 0;
+    NSInteger failedCount = 0;
+    for (NSDictionary *phoneDict in lists) {
+        if ([self insertBlackListWithPhoneString:phoneDict[@"BlackNum"]]) {
+            successCount++;
+        }else{
+            failedCount++;
+        }
+    }
+    NSLog(@"黑名单总数%ld条---成功%ld条---失败%ld条", lists.count, successCount, failedCount);
+}
+
+//将数据逐条取出
+- (NSArray *)getArrayResponseWithAPIName:(NSString *)apiName
+{
+    //打开数据库
+    NSMutableArray *arrayDatas = [NSMutableArray array];
+    if ([self.database open]) {
+        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+        FMResultSet *rs = [self.database executeQuery:existsSql];
+        if ([rs next]) {
+            NSInteger count = [rs intForColumn:@"countNum"];
+            if (count == 1) {
+                NSString *sqlString = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
+                FMResultSet *nextRs = [self.database executeQuery:sqlString];
+                while ([nextRs next]) {
+                    NSString *dataStr = [nextRs stringForColumn:@"data"];
+                    if (dataStr) {
+                        [arrayDatas addObject:dataStr];
+                    }
+                }
+                [nextRs close];
+            }
+            [rs close];
+        }
+        [self.database close];
+    }
+    return arrayDatas;
+}
+
+
+
+
+//插入黑名单数据
+- (BOOL)insertBlackListWithPhoneString:(NSString *)string
+{
+    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
+    return [self insertDataWithAPIName:apiName stringData:string];
+}
+
+//删除黑名单数据
+- (BOOL)deleteBlackListWithPhoneString:(NSString *)string
+{
+    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
+    return [self deleteDataWithAPIName:apiName stringData:string];
+}
+
+//获取黑名单数据
+- (NSArray *)getBlackLists
+{
+    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
+    return [self getArrayResponseWithAPIName:apiName];
+}
+
+
 - (NSString *)dictionaryToJson:(NSDictionary *)dic
 {
     NSError *parseError = nil;

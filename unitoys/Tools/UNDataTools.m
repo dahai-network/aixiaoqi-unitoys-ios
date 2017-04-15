@@ -8,6 +8,7 @@
 
 #import "UNDataTools.h"
 #import "global.h"
+#import "UNDatabaseTools.h"
 
 @implementation UNDataTools
 
@@ -19,6 +20,14 @@
         instance = [[super allocWithZone:nil] init];
     });
     return instance;
+}
+
+- (NSMutableArray *)blackLists
+{
+    if (!_blackLists) {
+        _blackLists = [NSMutableArray arrayWithArray:[[UNDatabaseTools sharedFMDBTools] getBlackLists]];
+    }
+    return _blackLists;
 }
 
 - (NSString *)compareCurrentTimeStringWithRecord:(NSString *)compareDateString

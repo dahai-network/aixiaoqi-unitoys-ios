@@ -29,6 +29,7 @@
 #import "ContactsDetailViewController.h"
 #import "AddTouchAreaButton.h"
 #import "ContactsCallDetailsController.h"
+#import "UNDataTools.h"
 
 @interface PhoneRecordController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -1160,26 +1161,20 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             cid = newcid;
         }
         
-        if (kSystemVersionValue >= 10.0 && isUseCallKit) {
-            [self InComingCallWithCallKitName:[self checkLinkNameWithPhoneStr:cid] PhoneNumber:cid];
-        }else{
-            //            msg = [NSString stringWithFormat:@"新来电 %@",cid];
-            //            //去掉“+”
-            //            if ([cid containsString:@"+"]) {
-            //                newcid = [cid stringByReplacingOccurrencesOfString:@"+" withString:@""];
-            //                cid = newcid;
-            //            }
-            //            //去掉86
-            //            if ([[cid substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
-            //                newcid = [cid substringFromIndex:2];
-            //                cid = newcid;
-            //            }
-            self.callCominginVC = [[CallComingInViewController alloc] init];
-            self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
-            [self.nav presentViewController:self.callCominginVC animated:YES completion:nil];
-            
-        }
         [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
+        
+        if ([[UNDataTools sharedInstance].blackLists containsObject:cid]) {
+            NSLog(@"在黑名单内,挂断电话");
+            [self hungupPhone];
+        }else{
+            if (kSystemVersionValue >= 10.0 && isUseCallKit) {
+                [self InComingCallWithCallKitName:[self checkLinkNameWithPhoneStr:cid] PhoneNumber:cid];
+            }else{
+                self.callCominginVC = [[CallComingInViewController alloc] init];
+                self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
+                [self.nav presentViewController:self.callCominginVC animated:YES completion:nil];
+            }
+        }
         
         /*
          SipEngine *theSipEngine = [SipEngineManager getSipEngine];
@@ -1192,10 +1187,21 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     //    [mStatus setText:msg];
 }
 
+- (void)hungupPhone
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.speakerStatus = NO;
+        SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+        if(theSipEngine->InCalling())
+            theSipEngine->TerminateCall();
+        self.callStopTime = [NSDate date];
+        self.hostHungup = @"source";
+    });
+}
+
 -(void) OnCallProcessing{
     //    NSLog(@"正在接续...");
     //    [mStatus setText:@"正在接续..."];
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 

@@ -235,6 +235,15 @@
 //使用签名，上传用户设置
 #define apiUploadConfig defaultHost@"api/UsersConfig/UploadConfig"
 
+//添加黑名单
+#define apiBlackListAdd defaultHost@"api/BlackList/Add"
+
+//删除黑名单
+#define apiBlackListDelete defaultHost@"api/BlackList/Delete"
+
+//查询黑名单列表
+#define apiBlackListGet defaultHost@"api/BlackList/Get"
+
 //环形进度条密集度系数
 #define AnnularProgressBar @"60"
 

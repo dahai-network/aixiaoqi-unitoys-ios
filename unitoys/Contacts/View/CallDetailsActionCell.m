@@ -45,6 +45,18 @@
     sender.enabled = YES;
 }
 
+- (void)setCellDatas:(NSDictionary *)cellDatas
+{
+    _cellDatas = cellDatas;
+    if ([_cellDatas[@"isBlack"] boolValue]) {
+        [self.defriendButton setImage:[UIImage imageNamed:@"already_defriend"] forState:UIControlStateNormal];
+        [self.defriendButton setTitle:@"已屏蔽" forState:UIControlStateNormal];
+    }else{
+        [self.defriendButton setImage:[UIImage imageNamed:@"defriend_nor"] forState:UIControlStateNormal];
+        [self.defriendButton setTitle:@"屏蔽" forState:UIControlStateNormal];
+    }
+}
+
 - (void)buttonAction:(NSInteger)type
 {
     if (self.delegate && [self.delegate respondsToSelector:@selector(callActionType:)]) {

@@ -21,7 +21,7 @@
 
 @property (nonatomic, weak) id<CallDetailsActionCellDelegate> delegate;
 
-//@property (nonatomic, copy) NSDictionary *cellDatas;
+@property (nonatomic, copy) NSDictionary *cellDatas;
 
 @end
 

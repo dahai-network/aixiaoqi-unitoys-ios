@@ -9,7 +9,7 @@
 #import "LoginViewController.h"
 #import "JPUSHService.h"
 #import <sys/utsname.h>
-
+#import "UNDatabaseTools.h"
 
 @implementation LoginViewController
 
@@ -36,15 +36,12 @@
     self.edtPassText.leftViewMode = UITextFieldViewModeAlways;
     
 //    [self checkLogin];
-    
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 
 {
-    
     return UIStatusBarStyleLightContent;
-    
 }
 
 - (void)checkLogin {
@@ -116,6 +113,7 @@
     NSString *phoneNameAndSystem = [NSString stringWithFormat:@"%@,%@", phoneModel, systemVersion];
     NSLog(@"登录的设备是 --> %@", phoneNameAndSystem);
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.edtUserName.text,@"Tel",self.edtPassText.text,@"PassWord", phoneNameAndSystem, @"LoginTerminal",nil];
+    kWeakSelf
     [SSNetworkRequest postRequest:[apiCheckLogin stringByAppendingString:[self getParamStr]] params:info success:^(id resonseObj){
         NSMutableDictionary *userData = [[NSMutableDictionary alloc] initWithDictionary:[resonseObj objectForKey:@"data"]];
         if (resonseObj) {
@@ -132,6 +130,9 @@
                 [userDefaults setObject:self.edtUserName.text forKey:@"KEY_USER_NAME"];
                 [userDefaults setObject:self.edtPassText.text forKey:@"KEY_PASS_WORD"];
                 [userDefaults synchronize];
+                
+                //从服务器获取黑名单列表
+                [weakSelf getBlackListsFromServer];
                 
 //                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userData[@"Tel"]];
                 //更新别名为token
@@ -165,6 +166,30 @@
         HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
 //        HUDNormal([error description])
     } headers:nil];
+}
+
+- (void)getBlackListsFromServer
+{
+    kWeakSelf
+    //从服务器获取黑名单
+    self.checkToken = YES;
+    [self getBasicHeader];
+    [SSNetworkRequest getRequest:apiBlackListGet params:nil success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [weakSelf addBlackLists:responseObj[@"data"]];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+        }
+        NSLog(@"查询到的消息数据：%@",responseObj);
+    } failure:^(id dataObj, NSError *error) {
+        
+    } headers:self.headers];
+}
+
+- (void)addBlackLists:(NSArray *)phoneList
+{
+    [[UNDatabaseTools sharedFMDBTools] insertBlackListWithPhoneLists:phoneList];
 }
 
 - (NSString *)iphoneType {

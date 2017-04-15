@@ -19,6 +19,8 @@
 #import "BlueToothDataManager.h"
 #import "UNDataTools.h"
 
+#import "UNDatabaseTools.h"
+
 @interface ContactsCallDetailsController ()<UITableViewDelegate, UITableViewDataSource, CallDetailsActionCellDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -30,6 +32,8 @@
 @property (nonatomic, copy) NSString *lastTime;
 @property (nonatomic, copy) NSString *phoneLocation;
 @property (nonatomic, assign) NSInteger currentRecordPage;
+
+@property (nonatomic, assign) BOOL isInBlackLists;
 @end
 
 static NSString *callDetailsNameCellId = @"CallDetailsNameCell";
@@ -75,6 +79,12 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         self.phoneLocation =@"";
         self.phoneRecords= [NSArray array];
     }
+    
+    if ([[UNDataTools sharedInstance].blackLists containsObject:self.phoneNumber]) {
+        _isInBlackLists = YES;
+    }else{
+        _isInBlackLists = NO;
+    }
 }
 
 //初始化展示数据
@@ -93,8 +103,20 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                       },
                   @{
                       @"cellName" : callDetailsActionCellId,
+                      @"isBlack" : @(_isInBlackLists),
                       }
                   ];
+}
+
+- (void)reloadTableView
+{
+    if ([[UNDataTools sharedInstance].blackLists containsObject:self.phoneNumber]) {
+        _isInBlackLists = YES;
+    }else{
+        _isInBlackLists = NO;
+    }
+    [self initData];
+    [self.tableView reloadData];
 }
 
 //初始化tableView
@@ -158,9 +180,8 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             if ([cell isKindOfClass:[CallDetailsActionCell class]]) {
                 CallDetailsActionCell *actionCell = (CallDetailsActionCell *)cell;
                 actionCell.delegate = self;
-            }else{
-                [cell setValue:dict forKeyPath:@"cellDatas"];
             }
+            [cell setValue:dict forKeyPath:@"cellDatas"];
             return cell;
         }else{
             UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
@@ -299,7 +320,110 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)defriend
 {
-    NSLog(@"屏蔽");
+    if (_isInBlackLists) {
+        NSLog(@"解除屏蔽");
+        self.checkToken = YES;
+        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.phoneNumber,@"BlackNum", nil];
+        [self getBasicHeader];
+        kWeakSelf
+        [SSNetworkRequest postRequest:apiBlackListDelete params:params success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [weakSelf deleteBlickList:weakSelf.phoneNumber];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==9946){
+                NSLog(@"不在黑名单内");
+            }else{
+            }
+            NSLog(@"查询到的消息数据：%@",responseObj);
+        } failure:^(id dataObj, NSError *error) {
+            HUDNormalTop(INTERNATIONALSTRING(@"解除屏蔽失败"))
+            NSLog(@"啥都没：%@",[error description]);
+        } headers:self.headers];
+    }else{
+        NSLog(@"屏蔽");
+        self.checkToken = YES;
+        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.phoneNumber,@"BlackNum", nil];
+        [self getBasicHeader];
+        kWeakSelf
+        [SSNetworkRequest postRequest:apiBlackListAdd params:params success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [weakSelf addBlackList:weakSelf.phoneNumber];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==9946){
+                NSLog(@"已经在黑名单内");
+            }else{
+            }
+            NSLog(@"查询到的消息数据：%@",responseObj);
+        } failure:^(id dataObj, NSError *error) {
+            HUDNormalTop(INTERNATIONALSTRING(@"屏蔽失败"))
+            NSLog(@"啥都没：%@",[error description]);
+        } headers:self.headers];
+    }
+}
+
+- (void)deleteBlickList:(NSString *)phone
+{
+    if (![[UNDatabaseTools sharedFMDBTools] deleteBlackListWithPhoneString:phone]) {
+        NSLog(@"删除黑名单失败");
+        //从服务器获取黑名单
+        self.checkToken = YES;
+        [self getBasicHeader];
+        kWeakSelf
+        [SSNetworkRequest getRequest:apiBlackListGet params:nil success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [weakSelf addBlackLists:responseObj[@"data"]];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+            }
+            NSLog(@"查询到的消息数据：%@",responseObj);
+            
+        } failure:^(id dataObj, NSError *error) {
+            
+        } headers:self.headers];
+    }else{
+        HUDNormalTop(INTERNATIONALSTRING(@"解除屏蔽成功"))
+        if ([[UNDataTools sharedInstance].blackLists containsObject:phone]) {
+            [[UNDataTools sharedInstance].blackLists removeObject:phone];
+        }
+        [self reloadTableView];
+    }
+}
+
+- (void)addBlackList:(NSString *)phone
+{
+    if (![[UNDatabaseTools sharedFMDBTools] insertBlackListWithPhoneString:phone]) {
+        NSLog(@"插入黑名单失败");
+        //从服务器获取黑名单
+        self.checkToken = YES;
+        [self getBasicHeader];
+        kWeakSelf
+        [SSNetworkRequest getRequest:apiBlackListGet params:nil success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [weakSelf addBlackLists:responseObj[@"data"]];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+            }
+            NSLog(@"查询到的消息数据：%@",responseObj);
+        } failure:^(id dataObj, NSError *error) {
+            
+        } headers:self.headers];
+    }else{
+        HUDNormalTop(INTERNATIONALSTRING(@"屏蔽成功"))
+        if (![[UNDataTools sharedInstance].blackLists containsObject:phone]) {
+            [[UNDataTools sharedInstance].blackLists addObject:phone];
+        }
+        [self reloadTableView];
+    }
+}
+
+- (void)addBlackLists:(NSArray *)phoneList
+{
+    [[UNDatabaseTools sharedFMDBTools] insertBlackListWithPhoneLists:phoneList];
+    [UNDataTools sharedInstance].blackLists = nil;
 }
 
 - (NSString *)formatPhoneNum:(NSString *)phone
