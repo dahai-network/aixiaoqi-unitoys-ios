@@ -115,9 +115,13 @@
 
 #pragma mark 解绑按钮点击事件
 - (IBAction)unboundAction:(CutomButton *)sender {
-    if ([BlueToothDataManager shareManager].isConnected) {
-        [[UNBlueToothTool shareBlueToothTool] buttonToUnboundAction];
-    }
+    [self dj_alertAction:self alertTitle:nil actionTitle:@"继续" message:@"您将要与蓝牙设备解除绑定？" alertAction:^{
+        if ([BlueToothDataManager shareManager].isConnected) {
+            [[UNBlueToothTool shareBlueToothTool] buttonToUnboundAction];
+        } else {
+           HUDNormal(@"蓝牙已断开")
+        }
+    }];
 }
 
 
@@ -334,22 +338,26 @@
             HUDNormal(@"激活套餐")
             break;
         case 2:
-            //跳转到设备界面
-            if ([BlueToothDataManager shareManager].isBounded) {
-                //有绑定
-                UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
-                BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
-                if (bindDeviceViewController) {
-                    self.tabBarController.tabBar.hidden = YES;
-                    bindDeviceViewController.hintStrFirst = [BlueToothDataManager shareManager].statuesTitleString;
-                    [self.navigationController pushViewController:bindDeviceViewController animated:YES];
+            if ([BlueToothDataManager shareManager].isOpened) {
+                //跳转到设备界面
+                if ([BlueToothDataManager shareManager].isBounded) {
+                    //有绑定
+                    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
+                    BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
+                    if (bindDeviceViewController) {
+                        self.tabBarController.tabBar.hidden = YES;
+                        bindDeviceViewController.hintStrFirst = [BlueToothDataManager shareManager].statuesTitleString;
+                        [self.navigationController pushViewController:bindDeviceViewController animated:YES];
+                    }
+                } else {
+                    //没绑定
+                    if (!self.chooseDeviceTypeVC) {
+                        self.chooseDeviceTypeVC = [[ChooseDeviceTypeViewController alloc] init];
+                    }
+                    [self.navigationController pushViewController:self.chooseDeviceTypeVC animated:YES];
                 }
             } else {
-                //没绑定
-                if (!self.chooseDeviceTypeVC) {
-                    self.chooseDeviceTypeVC = [[ChooseDeviceTypeViewController alloc] init];
-                }
-                [self.navigationController pushViewController:self.chooseDeviceTypeVC animated:YES];
+                HUDNormal(@"蓝牙未开")
             }
             break;
         case 3:

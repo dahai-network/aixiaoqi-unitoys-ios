@@ -12,5 +12,7 @@
 @property (nonatomic, strong) UIWindow *registProgress;
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, copy) NSString *showLabelStr;
+@property (nonatomic, assign) BOOL isMainView;
+@property (nonatomic, assign) BOOL isNetworkCanUse;
 
 @end

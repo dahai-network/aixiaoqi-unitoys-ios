@@ -107,10 +107,18 @@ typedef enum : NSUInteger {
 - (void)changeStatuesAll:(NSNotification *)sender {
     self.showLabelStr = sender.object;
     self.titleLabel.text = self.showLabelStr;
-    if (![self.showLabelStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+    if (![self.showLabelStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {
         [self addProgressWindow];
     } else {
-        self.registProgress = nil;
+        if ([BlueToothDataManager shareManager].isConnected && self.isNetworkCanUse) {
+            self.registProgress = nil;
+        } else {
+            if (self.isMainView) {
+                [self addProgressWindow];
+            } else {
+                self.registProgress = nil;
+            }
+        }
     }
 //    if (![BlueToothDataManager shareManager].isRegisted) {
 //        [self addProgressWindow];
@@ -121,13 +129,19 @@ typedef enum : NSUInteger {
 
 - (void)networkNotUse:(NSNotification *)sender {
     if ([sender.object isEqualToString:@"0"]) {
+        self.isNetworkCanUse = NO;
         self.showLabelStr = @"当前网络不可用";
         self.titleLabel.text = self.showLabelStr;
-        [self addProgressWindow];
+        if (self.isMainView) {
+            [self addProgressWindow];
+        } else {
+            self.registProgress = nil;
+        }
     } else {
         //有网络
         NSLog(@"当前网络可用");
-        if (![BlueToothDataManager shareManager].isRegisted) {
+        self.isNetworkCanUse = YES;
+        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {
             [self addProgressWindow];
         } else {
             self.registProgress = nil;
@@ -137,9 +151,19 @@ typedef enum : NSUInteger {
 
 - (void)changeShowProgressStatue:(NSNotification *)sender {
     NSString *str = sender.object;
-    if ([str isEqualToString:@"1"] && ![BlueToothDataManager shareManager].isRegisted) {
-        [self addProgressWindow];
+    if ([str isEqualToString:@"1"]) {
+        self.isMainView = YES;
+        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+            [self addProgressWindow];
+        } else {
+            if (self.isNetworkCanUse) {
+                self.registProgress = nil;
+            } else {
+                [self addProgressWindow];
+            }
+        }
     } else {
+        self.isMainView = NO;
         self.registProgress = nil;
     }
 }

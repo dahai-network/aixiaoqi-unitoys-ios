@@ -731,7 +731,7 @@ static UNBlueToothTool *instance = nil;
     [self.mgr stopScan];
     [self.timer setFireDate:[NSDate distantFuture]];
     peripheral.delegate = self;
-    if (![BlueToothDataManager shareManager].isBeingOTA) {
+    if (![BlueToothDataManager shareManager].isBeingOTA && self.boundedDeviceInfo[@"IMEI"]) {
         //将连接的信息存储到本地
         NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
         NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
@@ -962,7 +962,12 @@ static UNBlueToothTool *instance = nil;
     //同步时间
     [self checkNowTime];
     //请求基本信息
-    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+    if (self.boundedDeviceInfo[@"IMEI"]) {
+        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+    }
+//    if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
+//        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+//    }
     //请求电量
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
     //仅钥匙扣能连接
@@ -1044,6 +1049,7 @@ static UNBlueToothTool *instance = nil;
             //连接的是手环
             //对卡上电
 //            [self phoneCardToUpeLectrify:@"01"];
+            [self bindBoundDevice];
         } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
             //连接的是钥匙扣
             if (!self.boundedDeviceInfo[@"IMEI"]) {
@@ -1056,8 +1062,11 @@ static UNBlueToothTool *instance = nil;
                         [BlueToothDataManager shareManager].isAccordBreak = YES;
                         [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
                         [self.mgr cancelPeripheralConnection:self.peripheral];
-                        [self sendDataToUnBoundDevice];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
+//                        [self sendDataToUnBoundDevice];
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+                        [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
+                        return;
                     }
                 });
             } else {
@@ -1240,8 +1249,10 @@ static UNBlueToothTool *instance = nil;
                 NSLog(@"接收到同意绑定数据");
                 [BlueToothDataManager shareManager].isAllowToBound = YES;
                 [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"01"];
-                [self hideHud];
-                [self showHudNormalString:INTERNATIONALSTRING(@"绑定成功")];
+//                [self hideHud];
+//                [self showHudNormalString:INTERNATIONALSTRING(@"绑定成功")];
+                [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+                [self bindBoundDevice];
                 //对卡上电
 //                [self phoneCardToUpeLectrify:@"01"];
                 break;
@@ -2055,7 +2066,12 @@ static UNBlueToothTool *instance = nil;
             NSLog(@"手环是否已被绑定 -- %@", responseObj[@"data"][@"BindStatus"]);
             if ([responseObj[@"data"][@"BindStatus"] isEqualToString:@"0"]) {
                 //未绑定
-                [self bindBoundDevice];
+//                [self bindBoundDevice];
+                //先绑定蓝牙再走绑定接口
+                if (self.strongestRssiPeripheral) {
+                    self.peripheral = self.strongestRssiPeripheral;
+                    [self.mgr connectPeripheral:self.peripheral options:nil];
+                }
             } else if ([responseObj[@"data"][@"BindStatus"] isEqualToString:@"1"]) {
                 //已绑定
                 [self showHudNormalString:INTERNATIONALSTRING(@"此设备已被其他用户绑定")];
@@ -2091,16 +2107,24 @@ static UNBlueToothTool *instance = nil;
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
                     NSLog(@"绑定结果：%@", responseObj);
                     [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:saveData];
-                    
                     //绑定成功之后再绑定蓝牙
-                    if (self.strongestRssiPeripheral) {
-                        self.peripheral = self.strongestRssiPeripheral;
-                        [self.mgr connectPeripheral:self.peripheral options:nil];
-                    }
+//                    if (self.strongestRssiPeripheral) {
+//                        self.peripheral = self.strongestRssiPeripheral;
+//                        [self.mgr connectPeripheral:self.peripheral options:nil];
+//                    }
                     [BlueToothDataManager shareManager].isBounded = YES;
                     if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
                         [self showHudNormalString:responseObj[@"msg"]];
                     }
+                    
+                    if ([BlueToothDataManager shareManager].isConnected) {
+                        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+                        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+                        [boundedDeviceInfo setObject:[self.peripheral.identifier UUIDString] forKey:userdata[@"Tel"]];
+                        [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                    }
+                    
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                 }else{
