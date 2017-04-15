@@ -565,8 +565,11 @@ withDateFormat:(NSString *)format
 - (void)viewDidAppear:(BOOL)animated {
 //    NSLog(@"界面出现 -- HomeViewController -- %d", [self isKindOfClass:NSClassFromString(@"HomeViewController")]);
 //    NSLog(@"界面出现 -- AboutViewController -- %d", [self isKindOfClass:NSClassFromString(@"AboutViewController")]);
-    if ([self isKindOfClass:NSClassFromString(@"HomeViewController")] || [self isKindOfClass:NSClassFromString(@"AboutViewController")]) {
+    
+    if ([self isKindOfClass:NSClassFromString(@"HomeViewController")]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"isShowProgress" object:@"1"];
+    } else if ([self isKindOfClass:NSClassFromString(@"AboutViewController")]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"isShowProgress" object:@"2"];
     } else {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"isShowProgress" object:@"0"];
     }

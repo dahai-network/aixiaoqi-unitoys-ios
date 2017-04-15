@@ -14,5 +14,6 @@
 @property (nonatomic, copy) NSString *showLabelStr;
 @property (nonatomic, assign) BOOL isMainView;
 @property (nonatomic, assign) BOOL isNetworkCanUse;
+@property (nonatomic, copy) NSString *currentViewType;
 
 @end

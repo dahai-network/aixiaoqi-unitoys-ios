@@ -151,7 +151,8 @@ typedef enum : NSUInteger {
 
 - (void)changeShowProgressStatue:(NSNotification *)sender {
     NSString *str = sender.object;
-    if ([str isEqualToString:@"1"]) {
+    if ([str isEqualToString:@"1"] || [str isEqualToString:@"2"]) {
+        self.currentViewType = str;
         self.isMainView = YES;
         if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
             [self addProgressWindow];
@@ -172,7 +173,6 @@ typedef enum : NSUInteger {
     if (!self.registProgress) {
         self.registProgress = [[UIWindow alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, 24)];
         self.registProgress.windowLevel = UIWindowLevelStatusBar+1;
-        self.registProgress.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
         UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
         leftImg.frame = CGRectMake(15, 2, 20, 20);
         [self.registProgress addSubview:leftImg];
@@ -182,6 +182,11 @@ typedef enum : NSUInteger {
         self.titleLabel.textColor = UIColorFromRGB(0x999999);
         [self.registProgress addSubview:self.titleLabel];
         [self.registProgress makeKeyAndVisible];
+    }
+    if ([self.currentViewType isEqualToString:@"2"]) {
+        self.registProgress.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
+    } else {
+        self.registProgress.backgroundColor = UIColorFromRGB(0xffbfbf);
     }
 }
 
