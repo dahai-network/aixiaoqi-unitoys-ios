@@ -562,7 +562,7 @@ withDateFormat:(NSString *)format
     return YES;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
 //    NSLog(@"界面出现 -- HomeViewController -- %d", [self isKindOfClass:NSClassFromString(@"HomeViewController")]);
 //    NSLog(@"界面出现 -- AboutViewController -- %d", [self isKindOfClass:NSClassFromString(@"AboutViewController")]);
     if ([self isKindOfClass:NSClassFromString(@"HomeViewController")] || [self isKindOfClass:NSClassFromString(@"AboutViewController")]) {

@@ -65,6 +65,9 @@
 //不用签名，获取首页banner图片
 #define apiGetBannerList defaultHost@"api/config/getbannerlist"
 
+//不用签名，获取首页产品列表
+#define apiGetProductList defaultHost@"api/config/GetProductList"
+
 //不用签名，发送短信验证码
 #define apiSendSMS defaultHost@"api/Confirmation/SendSMS"
 

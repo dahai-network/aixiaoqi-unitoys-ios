@@ -56,6 +56,8 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, copy) NSString *normalAuthSimString;
 
+@property (nonatomic, assign) BOOL isClickButton;//是否点击了解绑按钮
+
 @end
 
 static UNBlueToothTool *instance = nil;
@@ -965,6 +967,11 @@ static UNBlueToothTool *instance = nil;
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
     //仅钥匙扣能连接
     [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+}
+
+- (void)checkSystemInfo {
+    //请求基本信息
+    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
 }
 
 - (void)sendLBEMessageWithPushKit
@@ -2123,8 +2130,22 @@ static UNBlueToothTool *instance = nil;
     }
 }
 
+#pragma mark 解绑
+- (void)buttonToUnboundAction {
+//    [self hideHud];
+    self.isClickButton = YES;
+    [BlueToothDataManager shareManager].isAccordBreak = YES;
+    [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
+    [self.mgr cancelPeripheralConnection:self.peripheral];
+    [self sendDataToUnBoundDevice];
+    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+}
+
 
 - (void)sendDataToUnBoundDevice {
+    if (self.isClickButton) {
+        [self showHudNormalTop1String:@"正在解绑"];
+    }
     self.checkToken = YES;
     [self getBasicHeader];
 //    NSLog(@"表头：%@",self.headers);
@@ -2144,7 +2165,11 @@ static UNBlueToothTool *instance = nil;
             if ([BlueToothDataManager shareManager].isConnected) {
                 [self.mgr cancelPeripheralConnection:self.peripheral];
             }
-            [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
+            if (!self.isClickButton) {
+                [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
+            } else {
+                [self showHudNormalString:INTERNATIONALSTRING(@"已解除绑定")];
+            }
             [BlueToothDataManager shareManager].isBounded = NO;
             [BlueToothDataManager shareManager].isConnected = NO;
             [BlueToothDataManager shareManager].isRegisted = NO;
@@ -2154,16 +2179,21 @@ static UNBlueToothTool *instance = nil;
             [BlueToothDataManager shareManager].stepNumber = nil;
             [BlueToothDataManager shareManager].bleStatueForCard = 0;
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
+            if (!self.isClickButton) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
+            }
+            self.isClickButton = NO;
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
+            self.isClickButton = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
             [self showHudNormalString:responseObj[@"msg"]];
+            self.isClickButton = NO;
         }
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"啥都没：%@",[error description]);
+        self.isClickButton = NO;
     } headers:self.headers];
 }
 

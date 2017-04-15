@@ -110,5 +110,9 @@ typedef void(^PaySuccessBlock)();
 - (void)checkNitifiCall;
 //检测到有短信
 - (void)checkNotifiMessage;
+//请求蓝牙基本信息
+- (void)checkSystemInfo;
+//解绑
+- (void)buttonToUnboundAction;
 
 @end

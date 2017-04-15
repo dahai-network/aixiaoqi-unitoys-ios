@@ -98,36 +98,46 @@ typedef enum : NSUInteger {
     //是否隐藏上面进度条
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeShowProgressStatue:) name:@"isShowProgress" object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatueAll:) name:@"changeStatueAll" object:nil];//状态改变
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatuesAll:) name:@"changeStatueAll" object:nil];//状态改变
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkNotUse:) name:@"netWorkNotToUse" object:nil];//网络状态不可用
 
 }
 
-- (void)changeStatueAll:(NSNotification *)sender {
+- (void)changeStatuesAll:(NSNotification *)sender {
     self.showLabelStr = sender.object;
     self.titleLabel.text = self.showLabelStr;
+    if (![self.showLabelStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        [self addProgressWindow];
+    } else {
+        self.registProgress = nil;
+    }
+//    if (![BlueToothDataManager shareManager].isRegisted) {
+//        [self addProgressWindow];
+//    } else {
+//        self.registProgress = nil;
+//    }
 }
 
 - (void)networkNotUse:(NSNotification *)sender {
     if ([sender.object isEqualToString:@"0"]) {
         self.showLabelStr = @"当前网络不可用";
         self.titleLabel.text = self.showLabelStr;
+        [self addProgressWindow];
     } else {
         //有网络
         NSLog(@"当前网络可用");
-//        if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
-//            if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
-//                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
-//            }
-//        }
-    }
+        if (![BlueToothDataManager shareManager].isRegisted) {
+            [self addProgressWindow];
+        } else {
+            self.registProgress = nil;
+        }
+     }
 }
 
 - (void)changeShowProgressStatue:(NSNotification *)sender {
     NSString *str = sender.object;
-    if ([str isEqualToString:@"1"]) {
+    if ([str isEqualToString:@"1"] && ![BlueToothDataManager shareManager].isRegisted) {
         [self addProgressWindow];
     } else {
         self.registProgress = nil;

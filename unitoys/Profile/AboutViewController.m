@@ -15,6 +15,7 @@
 #import "WristbandSettingViewController.h"
 #import "PurviewSettingViewController.h"
 #import "CutomButton.h"
+#import "UNBlueToothTool.h"
 
 #define CELLHEIGHT 44
 
@@ -54,6 +55,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBLEStatue) name:@"boundSuccess" object:@"boundSuccess"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statueChanged:) name:@"homeStatueChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkCannotUse:) name:@"netWorkNotToUse" object:nil];//网络状态改变
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkChangeStatuesAll:) name:@"changeStatueAll" object:nil];//状态改变
 }
 
 - (void)networkCannotUse:(NSNotification *)sender {
@@ -72,6 +74,19 @@
 - (void)statueChanged:(NSNotification *)sender {
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.operatorImg.image = [UIImage imageNamed:@"icon_nor"];
+        [self checkOpertaorTypeName];
+    } else {
+        self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
+        self.operatorName.text = @"----";
+    }
+}
+
+- (void)checkChangeStatuesAll:(NSNotification *)sender {
+    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        self.operatorImg.image = [UIImage imageNamed:@"icon_nor"];
+        [self checkOpertaorTypeName];
+    } else if ([sender.object isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
+        self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
         [self checkOpertaorTypeName];
     } else {
         self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
@@ -100,7 +115,9 @@
 
 #pragma mark 解绑按钮点击事件
 - (IBAction)unboundAction:(CutomButton *)sender {
-    HUDNormal(@"解绑")
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [[UNBlueToothTool shareBlueToothTool] buttonToUnboundAction];
+    }
 }
 
 
@@ -468,5 +485,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"homeStatueChanged" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
 }
 @end

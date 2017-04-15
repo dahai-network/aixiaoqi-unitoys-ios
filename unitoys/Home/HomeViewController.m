@@ -75,11 +75,19 @@
 @property (weak, nonatomic) IBOutlet UILabel *leftFlowSubNameLbl;
 @property (weak, nonatomic) IBOutlet UILabel *midFlowSubNameLbl;
 @property (weak, nonatomic) IBOutlet UILabel *rightFlowSubNameLbl;
+@property (nonatomic, strong) NSMutableArray *productInfoArr;
 
 
 @end
 
 @implementation HomeViewController
+
+- (NSMutableArray *)productInfoArr {
+    if (!_productInfoArr) {
+        self.productInfoArr = [NSMutableArray array];
+    }
+    return _productInfoArr;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -132,11 +140,13 @@
     
     [self loadAdvertisment];
     
-    [self loadOrderList];
+//    [self loadOrderList];
     
     [self loadHotCountry];
     
     [self loadBasicConfig];
+    
+    [self loadProductInfo];
     
     [self checkCommunicatePackageData];
     
@@ -153,27 +163,27 @@
     [self.ivTutorial addGestureRecognizer:phonePackage];
     
     //左边按钮
-    self.leftButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,120,30)];//原来宽是100
-    NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    if (userData[@"BraceletIMEI"]) {
-        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
-    } else {
-        //未绑定
-        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
-    }
-    self.leftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-    self.leftButton.titleLabel.font = [UIFont systemFontOfSize:14];
-    [self.leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 3.0, 0.0, 0.0)];
-    [self.leftButton addTarget:self action:@selector(leftButtonAction) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithCustomView:self.leftButton];
-    self.navigationItem.leftBarButtonItem = left;
+//    self.leftButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,120,30)];//原来宽是100
+//    NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+//    if (userData[@"BraceletIMEI"]) {
+//        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
+//    } else {
+//        //未绑定
+//        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+//    }
+//    self.leftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+//    self.leftButton.titleLabel.font = [UIFont systemFontOfSize:14];
+//    [self.leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 3.0, 0.0, 0.0)];
+//    [self.leftButton addTarget:self action:@selector(leftButtonAction) forControlEvents:UIControlEventTouchUpInside];
+//    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithCustomView:self.leftButton];
+//    self.navigationItem.leftBarButtonItem = left;
     
     //接收通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paySuccess) name:@"BuyConfrim" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(boundingConnectedDevice) name:@"boundingDevice" object:@"bound"];//绑定
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(relieveBoundAction) name:@"relieveBound" object:@"relieve"];//解绑
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBindedDeviceFromNet) name:@"scanToConnect" object:@"connect"];//扫描并连接设备
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activitySuccessAction) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];//激活套餐成功
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(activitySuccessAction) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];//激活套餐成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(upLoadToCard) name:@"upLoadToCard" object:@"upLoadToCard"];//对卡上电
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(senderNewMessageToBLE:) name:@"receiveNewMessageFromBLE" object:nil];//给蓝牙发送消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(homeStatueHasChanged:) name:@"homeStatueChanged" object:nil];//蓝牙状态改变
@@ -190,6 +200,8 @@
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];//接收PushKit消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLBEStatuWithPushKit) name:@"UpdateLBEStatuWithPushKit" object:nil];//通过PushKit启动程序更新蓝牙状态
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkStatues:) name:@"netWorkNotToUse" object:nil];//网络状态不可用
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据
     
@@ -211,6 +223,12 @@
     }
     //检查更新
     [self checkVersion];
+}
+
+- (void)networkStatues:(NSNotification *)sender {
+    if ([sender.object isEqualToString:@"1"] && [BlueToothDataManager shareManager].isConnected) {
+        [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
+    }
 }
 
 - (void)checkVersion {
@@ -498,39 +516,39 @@
     [BlueToothDataManager shareManager].homeVCLeftTitle = INTERNATIONALSTRING(title);
     [BlueToothDataManager shareManager].statuesTitleString = title;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:title];
-    if ([title isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
-        //蓝牙未开
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_BLNOTOPEN] forState:UIControlStateNormal];
-    } else if ([title isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
-        //未绑定
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOTBOUND] forState:UIControlStateNormal];
-    } else if ([title isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
-        //未插卡
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOTINSERTCARD] forState:UIControlStateNormal];
-    } else if ([title isEqualToString:HOMESTATUETITLE_NOTCONNECTED]) {
-        //未连接
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOTCONNECTED] forState:UIControlStateNormal];
-    } else if ([title isEqualToString:HOMESTATUETITLE_CONNECTING]) {
-        //连接中
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_CONNECTING] forState:UIControlStateNormal];
-    }else if ([title isEqualToString:HOMESTATUETITLE_REGISTING]) {
-        //注册中
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_CONNECTING] forState:UIControlStateNormal];
-    } else if ([title isEqualToString:HOMESTATUETITLE_NOPACKAGE]) {
-        //无套餐
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOPACKAGE] forState:UIControlStateNormal];
-    } else if ([title isEqualToString:HOMESTATUETITLE_NOSIGNAL]) {
-        //注册失败
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOSIGNAL] forState:UIControlStateNormal];
-    } else if ([title isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
-        //信号强
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_SIGNALSTRONG] forState:UIControlStateNormal];
-    } else if ([title isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
-        //爱小器卡
-        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_AIXIAOQICARD] forState:UIControlStateNormal];
-    } else {
-        NSLog(@"蓝牙状态有问题");
-    }
+//    if ([title isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
+//        //蓝牙未开
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_BLNOTOPEN] forState:UIControlStateNormal];
+//    } else if ([title isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
+//        //未绑定
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOTBOUND] forState:UIControlStateNormal];
+//    } else if ([title isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
+//        //未插卡
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOTINSERTCARD] forState:UIControlStateNormal];
+//    } else if ([title isEqualToString:HOMESTATUETITLE_NOTCONNECTED]) {
+//        //未连接
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOTCONNECTED] forState:UIControlStateNormal];
+//    } else if ([title isEqualToString:HOMESTATUETITLE_CONNECTING]) {
+//        //连接中
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_CONNECTING] forState:UIControlStateNormal];
+//    }else if ([title isEqualToString:HOMESTATUETITLE_REGISTING]) {
+//        //注册中
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_CONNECTING] forState:UIControlStateNormal];
+//    } else if ([title isEqualToString:HOMESTATUETITLE_NOPACKAGE]) {
+//        //无套餐
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOPACKAGE] forState:UIControlStateNormal];
+//    } else if ([title isEqualToString:HOMESTATUETITLE_NOSIGNAL]) {
+//        //注册失败
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_NOSIGNAL] forState:UIControlStateNormal];
+//    } else if ([title isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+//        //信号强
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_SIGNALSTRONG] forState:UIControlStateNormal];
+//    } else if ([title isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
+//        //爱小器卡
+//        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_AIXIAOQICARD] forState:UIControlStateNormal];
+//    } else {
+//        NSLog(@"蓝牙状态有问题");
+//    }
 }
 
 -(void)addressBookDidChange:(NSNotification*)notification{
@@ -981,20 +999,21 @@
 
 #pragma mark 支付成功刷新
 - (void)paySuccess {
-    [self loadOrderList];
+//    [self loadOrderList];
     if (![BlueToothDataManager shareManager].isHavePackage) {
         //对卡上电
         if ([BlueToothDataManager shareManager].isConnected) {
-            [BlueToothDataManager shareManager].bleStatueForCard = 0;
-//            [self phoneCardToUpeLectrify:@"01"];
-            [[UNBlueToothTool shareBlueToothTool] phoneCardToUpeLectrifyWithType:@"01"];
+//            [BlueToothDataManager shareManager].bleStatueForCard = 0;
+////            [self phoneCardToUpeLectrify:@"01"];
+//            [[UNBlueToothTool shareBlueToothTool] phoneCardToUpeLectrifyWithType:@"01"];
+            [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
         }
     }
 }
 
-- (void)activitySuccessAction {
-    [self loadOrderList];
-}
+//- (void)activitySuccessAction {
+//    [self loadOrderList];
+//}
 
 - (void)abroadMessageAction
 {
@@ -1046,208 +1065,208 @@
     self.tabBarController.tabBar.hidden = NO;
 }
 
-- (void)loadOrderList {
-    
-    if (self.isPushKitStatu) {
-        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiOrderList"];
-        if (responseObj) {
-            self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
-            [self viewOrders];
-            [self.tableView reloadData];
-        }else{
-            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        }
-    }else{
-        self.checkToken = YES;
-        
-        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"3",@"PageSize",@"1",@"PageNumber", nil];
-        
-        [self getBasicHeader];
-//        NSLog(@"表头：%@",self.headers);
-        
-        
-        [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
-            
-            if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiOrderList" dictData:responseObj];
-                self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
-                [self viewOrders];
-                
-                [self.tableView reloadData];
-                
-            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-            }else{
-                
-            }
-//            NSLog(@"查询到的套餐数据：%@",responseObj);
-        } failure:^(id dataObj, NSError *error) {
-            //
-            NSLog(@"啥都没：%@",[error description]);
-            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiOrderList"];
-            if (responseObj) {
-                self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
-                [self viewOrders];
-                [self.tableView reloadData];
-            }else{
-                HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-            }
-        } headers:self.headers];
-    }
-}
+//- (void)loadOrderList {
+//    
+//    if (self.isPushKitStatu) {
+//        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiOrderList"];
+//        if (responseObj) {
+//            self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+//            [self viewOrders];
+//            [self.tableView reloadData];
+//        }else{
+//            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+//        }
+//    }else{
+//        self.checkToken = YES;
+//        
+//        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"3",@"PageSize",@"1",@"PageNumber", nil];
+//        
+//        [self getBasicHeader];
+////        NSLog(@"表头：%@",self.headers);
+//        
+//        
+//        [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
+//            
+//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiOrderList" dictData:responseObj];
+//                self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+//                [self viewOrders];
+//                
+//                [self.tableView reloadData];
+//                
+//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//                
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//            }else{
+//                
+//            }
+////            NSLog(@"查询到的套餐数据：%@",responseObj);
+//        } failure:^(id dataObj, NSError *error) {
+//            //
+//            NSLog(@"啥都没：%@",[error description]);
+//            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiOrderList"];
+//            if (responseObj) {
+//                self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+//                [self viewOrders];
+//                [self.tableView reloadData];
+//            }else{
+//                HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+//            }
+//        } headers:self.headers];
+//    }
+//}
 
-- (void)viewOrders {
-    if (self.arrOrderList.count==0) {
-        //
-        [self.lblOrderHint setHidden:NO];
-        [self.ivLogoPic1 setHidden:YES];
-        [self.lblFlow1 setHidden:YES];
-        [self.lblExpireDays1 setHidden:YES];
-        [self.btnOrderStatus1 setHidden:YES];
-        
-        
-    } else {
-        [self.lblOrderHint setHidden:YES];
-        [self.ivLogoPic1 setHidden:NO];
-        [self.lblFlow1 setHidden:NO];
-        [self.lblExpireDays1 setHidden:NO];
-        [self.btnOrderStatus1 setHidden:NO];
-        
-        if (self.arrOrderList.count>0) {
-            NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:0];
-            [self.ivLogoPic1 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
-            
-            self.lblFlow1.text = [dicOrder objectForKey:@"PackageName"];
-            self.lblExpireDays1.text = [dicOrder objectForKey:@"ExpireDays"];
-            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
-                NSLog(@"未支付");
-            }else{
-                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
-                    case 0:
-                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
-                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 1:
-                        if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus1 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
-                            [self.btnOrderStatus1 setImage:nil forState:UIControlStateNormal];
-                        } else {
-                            [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
-                            [self.btnOrderStatus1 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
-                        }
-                        [self.btnOrderStatus1 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
-                        break;
-                    case 2:
-                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
-                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 3:
-                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
-                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 4:
-                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
-                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    default:
-                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
-                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                }
-            }
-        }
-        
-        if (self.arrOrderList.count>1) {
-            NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:1];
-            [self.ivLogoPic2 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
-            self.lblFlow2.text = [dicOrder objectForKey:@"PackageName"];
-            self.lblExpireDays2.text = [dicOrder objectForKey:@"ExpireDays"];
-            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
-                NSLog(@"未支付");
-            }else{
-                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
-                    case 0:
-                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
-                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 1:
-                        if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus2 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
-                            [self.btnOrderStatus2 setImage:nil forState:UIControlStateNormal];
-                        } else {
-                            [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
-                            [self.btnOrderStatus2 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
-                        }
-                        [self.btnOrderStatus2 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
-                        break;
-                    case 2:
-                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
-                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 3:
-                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
-                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 4:
-                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
-                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                        
-                    default:
-                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
-                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                }
-            }
-            
-        }
-        
-        if (self.arrOrderList.count>2) {
-            NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:2];
-            [self.ivLogoPic3 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
-            self.lblFlow3.text = [dicOrder objectForKey:@"PackageName"];
-            self.lblExpireDays3.text = [dicOrder objectForKey:@"ExpireDays"];
-            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
-                NSLog(@"未支付");
-            }else{
-                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
-                    case 0:
-                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
-                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 1:
-                        if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                            [self.btnOrderStatus3 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
-                            [self.btnOrderStatus3 setImage:nil forState:UIControlStateNormal];
-                        } else {
-                            [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
-                            [self.btnOrderStatus3 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
-                        }
-                        [self.btnOrderStatus3 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
-                        break;
-                    case 2:
-                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
-                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 3:
-                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
-                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                    case 4:
-                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
-                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                        
-                    default:
-                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
-                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                        break;
-                }
-            }
-        }
-    }
-}
+//- (void)viewOrders {
+//    if (self.arrOrderList.count==0) {
+//        //
+//        [self.lblOrderHint setHidden:NO];
+//        [self.ivLogoPic1 setHidden:YES];
+//        [self.lblFlow1 setHidden:YES];
+//        [self.lblExpireDays1 setHidden:YES];
+//        [self.btnOrderStatus1 setHidden:YES];
+//        
+//        
+//    } else {
+//        [self.lblOrderHint setHidden:YES];
+//        [self.ivLogoPic1 setHidden:NO];
+//        [self.lblFlow1 setHidden:NO];
+//        [self.lblExpireDays1 setHidden:NO];
+//        [self.btnOrderStatus1 setHidden:NO];
+//        
+//        if (self.arrOrderList.count>0) {
+//            NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:0];
+//            [self.ivLogoPic1 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
+//            
+//            self.lblFlow1.text = [dicOrder objectForKey:@"PackageName"];
+//            self.lblExpireDays1.text = [dicOrder objectForKey:@"ExpireDays"];
+//            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
+//                NSLog(@"未支付");
+//            }else{
+//                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
+//                    case 0:
+//                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 1:
+//                        if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
+//                            [self.btnOrderStatus1 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+//                            [self.btnOrderStatus1 setImage:nil forState:UIControlStateNormal];
+//                        } else {
+//                            [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
+//                            [self.btnOrderStatus1 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
+//                        }
+//                        [self.btnOrderStatus1 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
+//                        break;
+//                    case 2:
+//                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 3:
+//                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 4:
+//                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    default:
+//                        [self.btnOrderStatus1 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                }
+//            }
+//        }
+//        
+//        if (self.arrOrderList.count>1) {
+//            NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:1];
+//            [self.ivLogoPic2 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
+//            self.lblFlow2.text = [dicOrder objectForKey:@"PackageName"];
+//            self.lblExpireDays2.text = [dicOrder objectForKey:@"ExpireDays"];
+//            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
+//                NSLog(@"未支付");
+//            }else{
+//                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
+//                    case 0:
+//                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 1:
+//                        if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
+//                            [self.btnOrderStatus2 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+//                            [self.btnOrderStatus2 setImage:nil forState:UIControlStateNormal];
+//                        } else {
+//                            [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
+//                            [self.btnOrderStatus2 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
+//                        }
+//                        [self.btnOrderStatus2 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
+//                        break;
+//                    case 2:
+//                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 3:
+//                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 4:
+//                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                        
+//                    default:
+//                        [self.btnOrderStatus2 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                }
+//            }
+//            
+//        }
+//        
+//        if (self.arrOrderList.count>2) {
+//            NSDictionary *dicOrder = [self.arrOrderList objectAtIndex:2];
+//            [self.ivLogoPic3 sd_setImageWithURL:[NSURL URLWithString:dicOrder[@"LogoPic"]]];
+//            self.lblFlow3.text = [dicOrder objectForKey:@"PackageName"];
+//            self.lblExpireDays3.text = [dicOrder objectForKey:@"ExpireDays"];
+//            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
+//                NSLog(@"未支付");
+//            }else{
+//                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
+//                    case 0:
+//                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 1:
+//                        if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
+//                            [self.btnOrderStatus3 setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+//                            [self.btnOrderStatus3 setImage:nil forState:UIControlStateNormal];
+//                        } else {
+//                            [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
+//                            [self.btnOrderStatus3 setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
+//                        }
+//                        [self.btnOrderStatus3 setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
+//                        break;
+//                    case 2:
+//                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 3:
+//                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                    case 4:
+//                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                        
+//                    default:
+//                        [self.btnOrderStatus3 setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
+//                        [self.btnOrderStatus3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//                        break;
+//                }
+//            }
+//        }
+//    }
+//}
 
 - (void)loadAdvertisment {
     if (self.isPushKitStatu) {
@@ -1309,6 +1328,67 @@
             }else{
                 HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
             }
+            NSLog(@"数据错误：%@",[error description]);
+            
+        } headers:nil];
+        self.AdView.delegate = self;
+    }
+}
+
+- (void)loadProductInfo {
+    if (self.isPushKitStatu) {
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetProductList"];
+        NSLog(@"产品信息 -- %@", responseObj);
+        self.productInfoArr = responseObj[@"data"];
+        [self.hotCollectionView reloadData];
+//        if (responseObj) {
+//            self.arrPicUrls = [[NSMutableArray alloc] init];
+//            self.arrPicJump = [[NSMutableArray alloc] init];
+//            self.arrPicTitles = [[NSMutableArray alloc] init];
+//            //构造图片列表和链接列表
+//            for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
+//                [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
+//                [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
+//                [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
+//            }
+//            self.AdView.imageURLStringsGroup = self.arrPicUrls;
+//            self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
+//        }else{
+//            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+//        }
+    }else{
+        [SSNetworkRequest getRequest:[apiGetProductList stringByAppendingString:[self getParamStr]] params:nil success:^(id responseObj){
+            
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetProductList" dictData:responseObj];
+                NSLog(@"产品信息 -- %@", responseObj);
+                self.productInfoArr = responseObj[@"data"];
+                [self.hotCollectionView reloadData];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+            }
+        }failure:^(id dataObj, NSError *error) {
+            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetProductList"];
+            self.productInfoArr = responseObj[@"data"];
+            [self.hotCollectionView reloadData];
+//            if (responseObj) {
+//                self.arrPicUrls = [[NSMutableArray alloc] init];
+//                self.arrPicJump = [[NSMutableArray alloc] init];
+//                self.arrPicTitles = [[NSMutableArray alloc] init];
+//                //构造图片列表和链接列表
+//                for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
+//                    [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
+//                    [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
+//                    [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
+//                }
+//                self.AdView.imageURLStringsGroup = self.arrPicUrls;
+//                self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
+//            }else{
+//                HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+//            }
             NSLog(@"数据错误：%@",[error description]);
             
         } headers:nil];
@@ -1525,24 +1605,34 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return  4;
+    return  self.productInfoArr.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     ProductCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"ProductCollectionViewCell" forIndexPath:indexPath];
-//    NSDictionary *dicCountry = [self.arrCountry objectAtIndex:indexPath.row];
-    
-//    cell.lblCountryName.text = [dicCountry objectForKey:@"CountryName"];
-//    [cell.ivCountry sd_setImageWithURL:[NSURL URLWithString:[dicCountry objectForKey:@"LogoPic"]]];
-//    cell.urlPic = [dicCountry objectForKey:@"Pic"];
-//    cell.countryID = [dicCountry objectForKey:@"CountryID"];
+    NSDictionary *dicCountry = self.productInfoArr[indexPath.row];
+    [cell.productImg sd_setImageWithURL:[NSURL URLWithString:dicCountry[@"Image"]]];
+    cell.productName.text = dicCountry[@"Title"];
+    if ([dicCountry[@"Price"] intValue] != 0) {
+        cell.productPrice.text = [NSString stringWithFormat:@"￥%@", dicCountry[@"Price"]];
+    }
     
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    HUDNormal(@"敬请期待")
+    NSDictionary *dicCountry = self.productInfoArr[indexPath.row];
+    if (dicCountry[@"Url"]) {
+        UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        BrowserViewController *browserViewController = [mainStory instantiateViewControllerWithIdentifier:@"browserViewController"];
+        if (browserViewController) {
+            self.tabBarController.tabBar.hidden = YES;
+            browserViewController.loadUrl = dicCountry[@"Url"];
+            browserViewController.titleStr = dicCountry[@"Title"];
+            [self.navigationController pushViewController:browserViewController animated:YES];
+        }
+    }
 }
 
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {

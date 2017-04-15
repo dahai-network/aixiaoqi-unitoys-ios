@@ -575,7 +575,7 @@
     return YES;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
 //    NSLog(@"界面出现 -- PhoneRecordController -- %d", [self isKindOfClass:NSClassFromString(@"PhoneRecordController")]);
 //    NSLog(@"界面出现 -- MessageRecordController -- %d", [self isKindOfClass:NSClassFromString(@"MessageRecordController")]);
 //    NSLog(@"界面出现 -- ContactsViewController -- %d", [self isKindOfClass:NSClassFromString(@"ContactsViewController")]);

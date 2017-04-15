@@ -640,13 +640,13 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="170" height="189"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
-                                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="home_product_shouhuanyidai" translatesAutoresizingMaskIntoConstraints="NO" id="WJA-GK-wVe">
+                                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WJA-GK-wVe">
                                                                         <rect key="frame" x="0.0" y="0.0" width="170" height="127"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="width" secondItem="WJA-GK-wVe" secondAttribute="height" multiplier="170:127" id="gts-wk-zAl"/>
                                                                         </constraints>
                                                                     </imageView>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="爱小器手环1代" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qic-jU-Jnv">
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qic-jU-Jnv">
                                                                         <rect key="frame" x="5" y="133" width="160" height="21"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="height" constant="21" id="uBj-Zh-VCB"/>
@@ -655,7 +655,7 @@
                                                                         <color key="textColor" red="0.48627450980392156" green="0.48627450980392156" blue="0.48627450980392156" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="￥299" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wvz-TT-gFZ">
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wvz-TT-gFZ">
                                                                         <rect key="frame" x="5" y="157" width="160" height="21"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                                         <color key="textColor" red="0.96470588235294119" green="0.16470588235294117" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
@@ -676,6 +676,11 @@
                                                                 <constraint firstAttribute="trailing" secondItem="qic-jU-Jnv" secondAttribute="trailing" constant="5" id="om5-o7-f58"/>
                                                             </constraints>
                                                             <size key="customSize" width="170" height="189"/>
+                                                            <connections>
+                                                                <outlet property="productImg" destination="WJA-GK-wVe" id="MZB-6g-Jec"/>
+                                                                <outlet property="productName" destination="qic-jU-Jnv" id="A5i-gu-Mam"/>
+                                                                <outlet property="productPrice" destination="Wvz-TT-gFZ" id="EdT-VQ-ZtE"/>
+                                                            </connections>
                                                         </collectionViewCell>
                                                     </cells>
                                                     <connections>
@@ -2575,7 +2580,6 @@
         <image name="home_guide_abord" width="375" height="106"/>
         <image name="home_package_blue" width="167" height="92"/>
         <image name="home_package_orange" width="167" height="92"/>
-        <image name="home_product_shouhuanyidai" width="170" height="126"/>
         <image name="icoc_bj_nor" width="13" height="13"/>
         <image name="icon_dis" width="15" height="11"/>
         <image name="icon_jh" width="19" height="19"/>
