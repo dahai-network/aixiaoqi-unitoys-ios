@@ -118,6 +118,7 @@
                 [self creatAsocketTcp];
 //            }
         } else {
+            NSLog(@"无网络");
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"0"];
             });

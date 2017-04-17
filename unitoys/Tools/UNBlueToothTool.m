@@ -1055,7 +1055,7 @@ static UNBlueToothTool *instance = nil;
             if (!self.boundedDeviceInfo[@"IMEI"]) {
                 //发送绑定请求
                 [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
-                [self showHudNormalTop1String:INTERNATIONALSTRING(@"请点击双待王按钮确认绑定")];
+//                [self showHudNormalTop1String:INTERNATIONALSTRING(@"请点击双待王按钮确认绑定")];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     if (![BlueToothDataManager shareManager].isAllowToBound) {
                         [self hideHud];
@@ -1092,6 +1092,13 @@ static UNBlueToothTool *instance = nil;
         
     }
 
+}
+
+- (void)cancelToBound {
+    [BlueToothDataManager shareManager].isAccordBreak = YES;
+    [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
+    [self.mgr cancelPeripheralConnection:self.peripheral];
+    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
 }
 
 //初始化ICCID指令
@@ -2106,6 +2113,8 @@ static UNBlueToothTool *instance = nil;
             [SSNetworkRequest postRequest:apiBind params:info success:^(id responseObj) {
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
                     NSLog(@"绑定结果：%@", responseObj);
+                    //发送绑定成功通知
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"secondCkeckBoundSuccess" object:@"secondCkeckBoundSuccess"];
                     [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:saveData];
                     //绑定成功之后再绑定蓝牙
 //                    if (self.strongestRssiPeripheral) {

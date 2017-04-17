@@ -114,5 +114,7 @@ typedef void(^PaySuccessBlock)();
 - (void)checkSystemInfo;
 //解绑
 - (void)buttonToUnboundAction;
+//取消绑定
+- (void)cancelToBound;
 
 @end

@@ -335,7 +335,16 @@
             }
             break;
         case 1:
-            HUDNormal(@"激活套餐")
+        {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+            if (storyboard) {
+                self.tabBarController.tabBar.hidden = YES;
+                UIViewController *orderListViewController = [storyboard instantiateViewControllerWithIdentifier:@"orderListViewController"];
+                if (orderListViewController) {
+                    [self.navigationController pushViewController:orderListViewController animated:YES];
+                }
+            }
+        }
             break;
         case 2:
             if ([BlueToothDataManager shareManager].isOpened) {
