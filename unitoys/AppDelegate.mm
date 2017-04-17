@@ -82,6 +82,7 @@
 
 - (void)redirectNSLogToDocumentFolder
 {
+#if DEBUG
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentDirectory = [paths objectAtIndex:0];
     
@@ -91,6 +92,7 @@
     // 将log输入到文件
 //    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+", stdout);
     freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+",stderr);
+#endif
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

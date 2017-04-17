@@ -13,13 +13,17 @@
 
 + (void)createLocalNotiMessage:(NSDictionary *)dict
 {
+#if DEBUG
     [self creatLocalNoti:dict];
+#endif
 }
 
 + (void)createLocalNotiMessageString:(NSString *)string
 {
+#if DEBUG
     NSLog(@"Noti---%@", string);
     [self creatLocalNoti:@{@"name" : string, @"phone" : @"123456789"}];
+#endif
 }
 
 + (void)creatLocalNoti:(NSDictionary *)dict

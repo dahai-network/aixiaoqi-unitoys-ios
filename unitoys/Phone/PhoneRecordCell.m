@@ -15,7 +15,7 @@
     [super awakeFromNib];
 //    self.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     self.tintColor = [UIColor colorWithRed:0/255.0 green:121/255.0 blue:255/255.0 alpha:1.0];//0079ff
-    self.detailsButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
+    self.detailsButton.touchEdgeInset = UIEdgeInsetsMake(15, 15, 15, 15);
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

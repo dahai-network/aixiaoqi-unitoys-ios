@@ -27,9 +27,11 @@
 
 #import "ContactModel.h"
 #import "ContactsDetailViewController.h"
-#import "AddTouchAreaButton.h"
+//#import "AddTouchAreaButton.h"
+#import "HLDragView.h"
 #import "ContactsCallDetailsController.h"
 #import "UNDataTools.h"
+
 
 @interface PhoneRecordController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -53,7 +55,7 @@
 //搜索列表
 @property (nonatomic, strong) NSMutableArray *searchLists;
 
-@property (nonatomic, strong) AddTouchAreaButton *phonePadButton;
+@property (nonatomic, strong) HLDragButton *phonePadButton;
 
 //@property (nonatomic, strong) UIWindow *window;
 
@@ -402,15 +404,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (_phonePadButton) {
         return;
     }
-    _phonePadButton = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];
-//    _phonePadButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
+    _phonePadButton = [HLDragButton buttonWithType:UIButtonTypeCustom];
     [_phonePadButton setImage:[UIImage imageNamed:@"phonepad_btn_nor"] forState:UIControlStateNormal];
-    [_phonePadButton setImage:[UIImage imageNamed:@"phonepad_btn_pre"] forState:UIControlStateSelected];
+//    [_phonePadButton setImage:[UIImage imageNamed:@"phonepad_btn_pre"] forState:UIControlStateSelected];
     [_phonePadButton addTarget:self action:@selector(showPhonePadView:) forControlEvents:UIControlEventTouchUpInside];
     [_phonePadButton sizeToFit];
-//    _phonePadButton.left = 0;
-//    _phonePadButton.top = 0;
-    _phonePadButton.right = kScreenWidthValue - 20;
+    _phonePadButton.right = kScreenWidthValue - 10;
     _phonePadButton.bottom = self.view.height - _phonePadButton.height - 49;
     [self.view addSubview:_phonePadButton];
 }
@@ -420,9 +419,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self switchNumberPad:NO];
 }
 
-
 - (void)showOperation {
-    
     if (self.callView) {
         [self.callView setHidden:NO];
         [self.nav.tabBarController.tabBar bringSubviewToFront:self.callView];
@@ -439,7 +436,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         self.callView.calloutBlock = ^(){
             [weakSelf standardCall];
         };
-        
         self.callView.switchStatusBlock = ^(BOOL hidden) {
             [weakSelf.phonePadView hideCallView];
             //开始加载谁
@@ -1604,7 +1600,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [weakSelf.phonePadView hideCallView];
                 //开始加载谁
                 [weakSelf switchNumberPad:YES];
-                weakSelf.isSearchStatu = NO;
                 [weakSelf.tableView reloadData];
                 
                 ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
@@ -1679,6 +1674,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         
         kWeakSelf
         cell.lookDetailsBlock = ^(NSInteger index, NSString *phoneNumber, NSString *nickName) {
+            [weakSelf.phonePadView hideCallView];
+            //开始加载谁
+            [weakSelf switchNumberPad:YES];
+            
             NSLog(@"当前index---%ld", index);
             ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
             callDetailsVc.nickName = nickName;
