@@ -23,7 +23,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.lblExprieDays.text = [NSString stringWithFormat:@"%@",[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"ExpireDays"]];
+    self.lblExprieDays.text = [NSString stringWithFormat:@"%@",[self.dicOrderDetail objectForKey:@"ExpireDays"]];
     if ([BlueToothDataManager shareManager].isConnected) {
         self.lblDeviceStatus.text = INTERNATIONALSTRING(@"已连接");
     } else {
@@ -37,7 +37,7 @@
     pickerview.datePickerMode = UIDatePickerModeDate;
     pickerview.minimumDate = [NSDate date];
     
-    NSTimeInterval time=[self.dicOrderDetail[@"list"][@"LastCanActivationDate"] doubleValue];
+    NSTimeInterval time=[self.dicOrderDetail[@"LastCanActivationDate"] doubleValue];
     NSDate *lasteddate=[NSDate dateWithTimeIntervalSince1970:time];
     pickerview.maximumDate = lasteddate;
     
@@ -150,7 +150,7 @@
             [BlueToothDataManager shareManager].isShowHud = YES;
             HUDNoStop1(INTERNATIONALSTRING(@"正在激活..."))
             self.checkToken = YES;
-            NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.dicOrderDetail[@"list"][@"OrderID"],@"OrderID", self.selectedDateString,@"BeginTime", nil];
+            NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.dicOrderDetail[@"OrderID"],@"OrderID", self.selectedDateString,@"BeginTime", nil];
             
             [self getBasicHeader];
 //            NSLog(@"表演头：%@",self.headers);
@@ -159,7 +159,7 @@
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
                     //2.套餐激活完成之后获取蓝牙发送的序列号
                     [BlueToothDataManager shareManager].bleStatueForCard = 1;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"list"][@"OrderID"]];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"OrderID"]];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                     [BlueToothDataManager shareManager].isShowHud = NO;
                     HUDStop

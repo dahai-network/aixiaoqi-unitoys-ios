@@ -10,6 +10,9 @@
 		0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0404BB901E7FCDE6009DEA1D /* DJPageControl.m */; };
 		040FC5161E7F81EE0056745D /* CutomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FC5151E7F81EE0056745D /* CutomButton.m */; };
 		040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FC51A1E7FB0A50056745D /* HWNewfeatureViewController.m */; };
+		04127F631EA5F3BD00C18201 /* OrderListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04127F621EA5F3BD00C18201 /* OrderListViewController.xib */; };
+		04127F671EA5F69100C18201 /* OrderListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04127F651EA5F69100C18201 /* OrderListTableViewCell.m */; };
+		04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04127F661EA5F69100C18201 /* OrderListTableViewCell.xib */; };
 		041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */; };
 		0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0430A04F1E69623800FFE611 /* Default-568h@2x.png */; };
 		0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */; };
@@ -333,6 +336,10 @@
 		040FC5151E7F81EE0056745D /* CutomButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CutomButton.m; sourceTree = "<group>"; };
 		040FC5191E7FB0A50056745D /* HWNewfeatureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HWNewfeatureViewController.h; sourceTree = "<group>"; };
 		040FC51A1E7FB0A50056745D /* HWNewfeatureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HWNewfeatureViewController.m; sourceTree = "<group>"; };
+		04127F621EA5F3BD00C18201 /* OrderListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListViewController.xib; sourceTree = "<group>"; };
+		04127F641EA5F69100C18201 /* OrderListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderListTableViewCell.h; sourceTree = "<group>"; };
+		04127F651EA5F69100C18201 /* OrderListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OrderListTableViewCell.m; sourceTree = "<group>"; };
+		04127F661EA5F69100C18201 /* OrderListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListTableViewCell.xib; sourceTree = "<group>"; };
 		041BB4B61E5C1F05001C4841 /* TTRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSlider.h; sourceTree = "<group>"; };
 		041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRangeSlider.m; sourceTree = "<group>"; };
 		041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSliderDelegate.h; sourceTree = "<group>"; };
@@ -1635,6 +1642,10 @@
 				954A87E51D9A151500570843 /* OrderCommitViewController.m */,
 				95CD340D1D9D1B1900EE5DD3 /* OrderListViewController.h */,
 				95CD340E1D9D1B1900EE5DD3 /* OrderListViewController.m */,
+				04127F621EA5F3BD00C18201 /* OrderListViewController.xib */,
+				04127F641EA5F69100C18201 /* OrderListTableViewCell.h */,
+				04127F651EA5F69100C18201 /* OrderListTableViewCell.m */,
+				04127F661EA5F69100C18201 /* OrderListTableViewCell.xib */,
 				95CD34131D9D1D3B00EE5DD3 /* OrderCell.h */,
 				95CD34141D9D1D3B00EE5DD3 /* OrderCell.m */,
 				95CD34101D9D1C5800EE5DD3 /* OrderDetailViewController.h */,
@@ -2210,6 +2221,7 @@
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
 				0480E1681E7BD88900FCC33B /* ShowPathViewController.xib in Resources */,
 				04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */,
+				04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
 				3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */,
 				04440D141E779CF900206877 /* Device.storyboard in Resources */,
@@ -2219,6 +2231,7 @@
 				3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */,
 				04F727971E641CE4002EB54C /* About.txt in Resources */,
 				954A87E21D9A0DA400570843 /* PhonePadView.xib in Resources */,
+				04127F631EA5F3BD00C18201 /* OrderListViewController.xib in Resources */,
 				04F727991E641CE4002EB54C /* About.txt in Resources */,
 				95C575FD1DA77C1000F459DF /* MessageRecordCell.xib in Resources */,
 				04F727B71E641CE4002EB54C /* Release.xcconfig in Resources */,
@@ -2403,6 +2416,7 @@
 				0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */,
 				95B099171DC0DA6A00743877 /* SipEngineEventObserver.mm in Sources */,
 				3C4A07811E9CD54B00A6DDA9 /* CallDetailsActionCell.m in Sources */,
+				04127F671EA5F69100C18201 /* OrderListTableViewCell.m in Sources */,
 				740FD3941E287F9E009413F1 /* sim_com_preread.c in Sources */,
 				954A87AB1D98B6E800570843 /* ContactTableViewCell.m in Sources */,
 				04F727A91E641CE4002EB54C /* MultipartFormDataParser.m in Sources */,

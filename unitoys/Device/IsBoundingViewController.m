@@ -52,6 +52,9 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    self.handupImg.hidden = YES;
+    self.searchAnimationImg.image = [UIImage imageNamed:@"pic_by_z"];
+    [self.cancelButton setTitle:@"暂不搜索" forState:UIControlStateNormal];
     [self setLeftButton:@""];
     [BlueToothDataManager shareManager].isShowAlert = YES;
     self.isback = YES;
@@ -62,9 +65,13 @@
     if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
         //爱小器手环
         self.typeImg.image = [UIImage imageNamed:@"pic_cp_sh"];
+        self.firstTitle.text = @"正在搜索爱小器手环";
+        self.subTitleLbl.text = @"请将手环贴近手机";
     } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
         //爱小器双待王
         self.typeImg.image = [UIImage imageNamed:@"pic_sdw"];
+        self.firstTitle.text = @"正在搜索爱小器双待王";
+        self.subTitleLbl.text = @"请将双待王贴近手机";
     } else {
         NSLog(@"这是什么鬼类型？");
     }
@@ -72,11 +79,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    self.searchAnimationImg.image = [UIImage imageNamed:@"pic_by_z"];
-    self.handupImg.hidden = YES;
-    [self.cancelButton setTitle:@"暂不搜索" forState:UIControlStateNormal];
-    
-//    self.handupImg.frame = CGRectMake(self.handupImg.frame.origin.x, self.handupImg.frame.origin.y+15, self.handupImg.frame.size.width, self.handupImg.frame.size.height);
     [BlueToothDataManager shareManager].isShowAlert = NO;
     [self.timer setFireDate:[NSDate distantFuture]];
     [self.clickAnimationTimer setFireDate:[NSDate distantFuture]];

@@ -17,7 +17,7 @@
     CGFloat targetLinePointY;
     CGFloat amplitude;//振幅
     
-    CGFloat currentPercent;//但前百分比，用于保存第一次显示时的动画效果
+    CGFloat currentPercent;//当前百分比，用于保存第一次显示时的动画效果
     
     CGFloat a;
     CGFloat b;

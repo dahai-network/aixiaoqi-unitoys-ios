@@ -94,8 +94,8 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             
-            self.dicOrderDetail = [responseObj objectForKey:@"data"];
-            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
+            self.dicOrderDetail = [responseObj objectForKey:@"data"][@"list"];
+            self.packageCategory = [[self.dicOrderDetail objectForKey:@"PackageCategory"] intValue];
             setImage(self.firstCell.imgOrderView, [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"LogoPic"])
             self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
             self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
@@ -117,7 +117,7 @@
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
         if (responseObj) {
             self.dicOrderDetail = [responseObj objectForKey:@"data"];
-            self.packageCategory = [[self.dicOrderDetail[@"list"] objectForKey:@"PackageCategory"] intValue];
+            self.packageCategory = [[self.dicOrderDetail objectForKey:@"PackageCategory"] intValue];
             setImage(self.firstCell.imgOrderView, [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"LogoPic"])
             self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
             self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
@@ -245,20 +245,20 @@
             if (self.packageCategory == 2 || self.packageCategory == 3) {
                 if (indexPath.row == 0) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"最晚激活日期");
-                    self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"list"][@"LastCanActivationDate"]];
+                    self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"LastCanActivationDate"]];
                 } else if (indexPath.row == 1) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
-                    [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue]];
+                    [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue]];
                 } else {
                     NSLog(@"又出问题了");
                 }
             } else {
                 if (indexPath.row == 0) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"订单编号");
-                    self.secondCell.lblContent.text = self.dicOrderDetail[@"list"][@"OrderNum"];
+                    self.secondCell.lblContent.text = self.dicOrderDetail[@"OrderNum"];
                 } else if (indexPath.row == 1) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"支付时间");
-                    self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"list"][@"PayDate"]];
+                    self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"PayDate"]];
                 } else {
                     NSLog(@"又出问题了");
                 }
@@ -273,10 +273,10 @@
                 }
                 if (indexPath.row == 0) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"支付方式");
-                    self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"list"][@"PaymentMethod"]];
+                    self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"PaymentMethod"]];
                 } else if (indexPath.row == 1) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"总价");
-                    self.secondCell.lblContent.text = [NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"list"][@"TotalPrice"]];
+                    self.secondCell.lblContent.text = [NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"TotalPrice"]];
                 } else {
                     NSLog(@"又出问题了");
                 }
@@ -288,13 +288,13 @@
                 }
                 if (indexPath.row == 0) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"支付方式");
-                    self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"list"][@"PaymentMethod"]];
+                    self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"PaymentMethod"]];
                 } else if (indexPath.row == 1) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
-                    self.secondCell.lblContent.text = self.dicOrderDetail[@"list"][@"ExpireDays"];
+                    self.secondCell.lblContent.text = self.dicOrderDetail[@"ExpireDays"];
                 } else {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
-                    [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue]];
+                    [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue]];
                 }
                 return self.secondCell;
             } else if (self.packageCategory == 2 || self.packageCategory == 3) {
@@ -302,8 +302,8 @@
                 if (!self.thirdCell) {
                     self.thirdCell=[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil][2];
                 }
-                self.thirdCell.lblIntroduceFirst.text = self.dicOrderDetail[@"list"][@"PackageFeatures"];
-                self.thirdCell.lblIntroduceSecond.text = self.dicOrderDetail[@"list"][@"PackageDetails"];
+                self.thirdCell.lblIntroduceFirst.text = self.dicOrderDetail[@"PackageFeatures"];
+                self.thirdCell.lblIntroduceSecond.text = self.dicOrderDetail[@"PackageDetails"];
                 return self.thirdCell;
             } else {
                 self.secondCell = [tableView dequeueReusableCellWithIdentifier:identifier2];
@@ -312,10 +312,10 @@
                 }
                 if (indexPath.row == 0) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"支付方式");
-                    self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"list"][@"PaymentMethod"]];
+                    self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"PaymentMethod"]];
                 } else if (indexPath.row == 1) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"总价");
-                    self.secondCell.lblContent.text = self.dicOrderDetail[@"list"][@"TotalPrice"];
+                    self.secondCell.lblContent.text = self.dicOrderDetail[@"TotalPrice"];
                 } else {
                     NSLog(@"又出问题了");
                 }
@@ -329,13 +329,13 @@
             }
             if (indexPath.row == 0) {
                 self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
-                self.secondCell.lblContent.text = self.dicOrderDetail[@"list"][@"ExpireDays"];
+                self.secondCell.lblContent.text = self.dicOrderDetail[@"ExpireDays"];
             } else if (indexPath.row == 1) {
                 self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"最晚激活日期");
-                self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"list"][@"LastCanActivationDate"]];
+                self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"LastCanActivationDate"]];
             } else {
                 self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
-                [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue]];
+                [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue]];
             }
             return self.secondCell;
             break;
@@ -393,7 +393,7 @@
             break;
         case 1:
             if (self.packageCategory == 1) {
-                label.text = [NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), self.dicOrderDetail[@"list"][@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")];
+                label.text = [NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), self.dicOrderDetail[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")];
             } else {
                 [label setText:INTERNATIONALSTRING(@"已激活")];
             }
@@ -456,7 +456,7 @@
 - (IBAction)avtivateAction:(UIButton *)sender {
     self.isPaySuccess = NO;
     if (self.packageCategory == 2) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"list"][@"UnitPrice"]] message:INTERNATIONALSTRING(@"领取大王卡礼包") preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"UnitPrice"]] message:INTERNATIONALSTRING(@"领取大王卡礼包") preferredStyle:UIAlertControllerStyleAlert];
         // 为防止block与控制器间循环引用，我们这里需用__weak来预防
         __weak typeof(alert) wAlert = alert;
         [alert addAction:[UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
@@ -482,7 +482,7 @@
         // 3.显示alertController:presentViewController
         [self presentViewController:alert animated:YES completion:nil];
     } else {
-        if ([[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue] == 1 || [[[self.dicOrderDetail objectForKey:@"list"] objectForKey:@"OrderStatus"] intValue] == 4) {
+        if ([[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 1 || [[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 4) {
             //已激活
             [self activityOrderActivited];
         } else {
@@ -505,7 +505,7 @@
             HUDNoStop1(INTERNATIONALSTRING(@"正在激活..."))
             //2.套餐激活完成之后获取蓝牙发送的序列号
             [BlueToothDataManager shareManager].bleStatueForCard = 1;
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"list"][@"OrderID"]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"OrderID"]];
         } else {
             HUDNormal(INTERNATIONALSTRING(@"请插入爱小器卡"))
         }
@@ -524,7 +524,7 @@
 #pragma mark 取消订单接口
 - (void)cancelOrder {
     self.checkToken = YES;
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrderDetail[@"list"] objectForKey:@"OrderID"],@"OrderID", nil];
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrderDetail objectForKey:@"OrderID"],@"OrderID", nil];
     
     [self getBasicHeader];
 //    NSLog(@"表演头：%@",self.headers);

@@ -38,17 +38,9 @@
     self.btnSelected = _btn20;
     self.currentSelectButton = self.btnAlipay;
     
-    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"绑定充值卡") style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
-    self.navigationItem.rightBarButtonItem = right;
-    
-    NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
-    textAttrs[NSForegroundColorAttributeName] = [UIColor whiteColor];
-    textAttrs[NSFontAttributeName] = [UIFont systemFontOfSize:14];
-    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:textAttrs forState:UIControlStateNormal];
-    
 }
 
-- (void)rightButtonAction {
+- (IBAction)useChargeCard:(UIButton *)sender {
     BindChargeCardViewController *bindVC = [[BindChargeCardViewController alloc] init];
     [self.navigationController pushViewController:bindVC animated:YES];
 }
@@ -135,10 +127,14 @@
     
     for (UIButton *btn in self.arrValues) {
         if ([btn isEqual:sender]) {
-            [btn setBackgroundImage:[UIImage imageNamed:@"pay_valueselected"] forState:UIControlStateNormal];
+//            [btn setBackgroundImage:[UIImage imageNamed:@"pay_valueselected"] forState:UIControlStateNormal];
+            [btn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+            [btn setBackgroundColor:UIColorFromRGB(0xf62a2a)];
             self.btnSelected = sender;
         } else {
-            [btn setBackgroundImage:[UIImage imageNamed:@"pay_valuenormal"] forState:UIControlStateNormal];
+//            [btn setBackgroundImage:[UIImage imageNamed:@"pay_valuenormal"] forState:UIControlStateNormal];
+            [btn setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            [btn setBackgroundColor:UIColorFromRGB(0xeeeeee)];
         }
     }
 }
@@ -146,7 +142,9 @@
 - (IBAction)inputValue:(id)sender {
     
     if(self.btnSelected){
-        [self.btnSelected setBackgroundImage:[UIImage imageNamed:@"pay_valuenormal"] forState:UIControlStateNormal];
+//        [self.btnSelected setBackgroundImage:[UIImage imageNamed:@"pay_valuenormal"] forState:UIControlStateNormal];
+        [self.btnSelected setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+        [self.btnSelected setBackgroundColor:UIColorFromRGB(0xeeeeee)];
         self.btnSelected = nil;
         
     }
@@ -230,15 +228,16 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 15;
+    return 0.01;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 1) {
-        return 15;
-    } else {
-        return 0.01;
-    }
+//    if (section == 1) {
+//        return 15;
+//    } else {
+//        return 0.01;
+//    }
+    return 0.01;
 }
 
 

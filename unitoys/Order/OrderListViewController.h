@@ -7,9 +7,9 @@
 //  Copyright © 2016年 sumars. All rights reserved.
 //
 
-#import "BaseTableController.h"
+#import "BaseViewController.h"
 
-@interface OrderListViewController : BaseTableController<NSURLConnectionDelegate>
+@interface OrderListViewController : BaseViewController<NSURLConnectionDelegate>
 
 @property (strong,nonatomic) NSMutableArray *arrOrderData;
 
