@@ -209,7 +209,7 @@
     
     //通讯录
     if (!_contactsDataArr) {
-        if (SYSTEM_VERSION_LESS_THAN(@"11")) {
+        if (SYSTEM_VERSION_LESS_THAN(@"9")) {
             [self fetchAddressBookBeforeIOS9];
         }else {
             [self fetchAddressBookOnIOS9AndLater];

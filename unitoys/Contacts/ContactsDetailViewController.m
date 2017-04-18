@@ -51,7 +51,7 @@
 
 - (void)editContactInfo
 {
-    if ([[UIDevice currentDevice] systemVersion].floatValue > 9.0) {
+    if ([[UIDevice currentDevice] systemVersion].floatValue < 9.0) {
         if (self.contactModel && self.contactModel.recordRefId) {
             ABPersonViewController *personVc = [[ABPersonViewController alloc] init];
             ABAddressBookRef addressBook = ABAddressBookCreate();
