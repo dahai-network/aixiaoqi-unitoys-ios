@@ -7,8 +7,11 @@
 //
 
 #import "BaseViewController.h"
+@class ContactModel;
 
 @interface ContactsCallDetailsController : BaseViewController
+
+@property (nonatomic, strong) ContactModel *contactModel;
 
 @property (nonatomic, copy) NSString *nickName;
 @property (nonatomic, copy) NSString *phoneNumber;

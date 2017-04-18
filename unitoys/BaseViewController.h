@@ -16,6 +16,7 @@
 
 #import "UIView+Utils.h"
 
+@class ContactModel;
 /**
  *  HUD自动隐藏
  *
@@ -106,6 +107,9 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 - (BOOL)isBlankString:(NSString *)string;
 
 - (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr;
+
+//获取联系人信息
+- (ContactModel *)checkContactModelWithPhoneStr:(NSString *)phoneStr;
 
 //短信不显示组名
 - (NSString *)checkLinkNameWithPhoneStrNoGroupName:(NSString *)phoneStr;

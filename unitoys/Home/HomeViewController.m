@@ -209,7 +209,7 @@
     
     //通讯录
     if (!_contactsDataArr) {
-        if (SYSTEM_VERSION_LESS_THAN(@"9")) {
+        if (SYSTEM_VERSION_LESS_THAN(@"11")) {
             [self fetchAddressBookBeforeIOS9];
         }else {
             [self fetchAddressBookOnIOS9AndLater];
@@ -783,6 +783,9 @@
 #pragma mark - 通讯录
 - (void)fetchAddressBookBeforeIOS9{
     self.contactsDataArr = [[NSArray alloc] init];
+    if ([AddressBookManager shareManager].dataArr.count) {
+        [[AddressBookManager shareManager].dataArr removeAllObjects];
+    }
     ABAddressBookRef addressBook = ABAddressBookCreate(); //首次访问需用户授权
     if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {//首次访问通讯录
         ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) { if (!error) { if (granted) {//允许
@@ -830,9 +833,17 @@
         for (int i = 0; i < array.count; i++)
         { //获取联系人
             ABRecordRef people = CFArrayGetValueAtIndex((__bridge ABRecordRef)array, i); //获取联系人详细信息,如:姓名,电话,住址等信息
+            ABRecordID peopleValue = ABRecordGetRecordID(people);
             NSString *firstName = (__bridge NSString *)ABRecordCopyValue(people, kABPersonFirstNameProperty);
             NSString *lastName = (__bridge NSString *)ABRecordCopyValue(people, kABPersonLastNameProperty);
-            ABMutableMultiValueRef *phoneNumRef = ABRecordCopyValue(people, kABPersonPhoneProperty);
+            NSData * thumbnailImageData;
+            if(ABPersonHasImageData(people)){
+                thumbnailImageData = (__bridge NSData *)ABPersonCopyImageDataWithFormat(people,kABPersonImageFormatThumbnail);
+            }else{
+                UIImage *image = [UIImage imageNamed:@"pic_tx_pre"];
+                thumbnailImageData = UIImagePNGRepresentation(image);
+            }
+            ABMutableMultiValueRef phoneNumRef = ABRecordCopyValue(people, kABPersonPhoneProperty);
             NSArray *arrNumber = ((__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phoneNumRef));
             NSString *phoneNumber = arrNumber.firstObject;
             if (arrNumber.firstObject) {
@@ -842,20 +853,20 @@
             }
             if (firstName && lastName) {
                 if ((phoneNumber)&&([lastName stringByAppendingString:firstName])) {
-                    [contacts addObject:@{@"name": [lastName stringByAppendingString:firstName], @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]]}];
+                    [contacts addObject:@{@"name": [lastName stringByAppendingString:firstName], @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData, @"recordRefId" : @(peopleValue)}];
                 }
             } else if (firstName && !lastName) {
                 if (phoneNumber) {
-                    [contacts addObject:@{@"name": firstName, @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]]}];
+                    [contacts addObject:@{@"name": firstName, @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData, @"recordRefId" : @(peopleValue)}];
                 }
             } else if (!firstName && lastName) {
                 if (phoneNumber) {
-                    [contacts addObject:@{@"name": lastName, @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]]}];
+                    [contacts addObject:@{@"name": lastName, @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData, @"recordRefId" : @(peopleValue)}];
                 }
             } else {
                 NSLog(@"9.0以前的系统，通讯录数据格式不正确");
                 if (phoneNumber) {
-                    [contacts addObject:@{@"name": phoneNumber, @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]]}];
+                    [contacts addObject:@{@"name": phoneNumber, @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData, @"recordRefId" : @(peopleValue)}];
                 } else {
                     NSLog(@"通讯录没有号码");
                 }
@@ -871,6 +882,9 @@
 
 - (void)fetchAddressBookOnIOS9AndLater{ //创建CNContactStore对象
     self.contactsDataArr = [[NSArray alloc] init];
+    if ([AddressBookManager shareManager].dataArr.count) {
+        [[AddressBookManager shareManager].dataArr removeAllObjects];
+    }
     CNContactStore *contactStore = [[CNContactStore alloc] init]; //首次访问需用户授权
     if ([CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts] == CNAuthorizationStatusNotDetermined)
     {//首次访问通讯录
@@ -916,7 +930,9 @@
     if ([CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts] == CNAuthorizationStatusAuthorized)
     {//有权限访问
         NSError *error = nil; //创建数组,必须遵守CNKeyDescriptor协议,放入相应的字符串常量来获取对应的联系人信息
-        NSArray <id<CNKeyDescriptor>> *keysToFetch = @[CNContactFamilyNameKey, CNContactGivenNameKey, CNContactPhoneNumbersKey]; //获取通讯录数组
+        //需要传入所有的数据
+        NSArray <id<CNKeyDescriptor>> *keysToFetch = @[CNContactFamilyNameKey, CNContactGivenNameKey, CNContactPhoneNumbersKey, CNContactThumbnailImageDataKey]; //获取通讯录数组
+        
         NSArray<CNContact*> *arr = [contactStore unifiedContactsMatchingPredicate:nil keysToFetch:keysToFetch error:&error];
         if (!error){
             NSMutableArray *contacts = [NSMutableArray array];
@@ -925,6 +941,14 @@
                 NSString *givenName = contact.givenName;
                 NSString *familyName = contact.familyName;
                 NSArray *arrNumber = contact.phoneNumbers;
+                NSString *contactId = contact.identifier;
+                NSData * thumbnailImageData;
+                if (contact.thumbnailImageData) {
+                    thumbnailImageData = contact.thumbnailImageData;
+                }else{
+                    UIImage *image = [UIImage imageNamed:@"pic_tx_pre"];
+                    thumbnailImageData = UIImagePNGRepresentation(image);
+                }
                 NSString *phoneNumber = ((CNPhoneNumber *)(contact.phoneNumbers.firstObject.value)).stringValue;
                 if (arrNumber.firstObject) {
                     for (CNLabeledValue *labelValue in arrNumber) {
@@ -935,11 +959,12 @@
                     }
                 }
                 if ((phoneNumber)&&([familyName stringByAppendingString:givenName])&&![[familyName stringByAppendingString:givenName] isEqualToString:@""]) {
-                    [contacts addObject:@{@"name": [familyName stringByAppendingString:givenName], @"phoneNumber": phoneNumber,@"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]]}];
+//                    [contacts addObject:@{@"name": [familyName stringByAppendingString:givenName], @"phoneNumber": phoneNumber,@"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]]}];
+                    [contacts addObject:@{@"name": [familyName stringByAppendingString:givenName], @"phoneNumber": phoneNumber,@"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData, @"contactId":contactId}];
                 } else {
                     NSLog(@"9.0以后的系统，通讯录数据格式不正确");
                     if (phoneNumber) {
-                        [contacts addObject:@{@"name": phoneNumber, @"phoneNumber": phoneNumber,@"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]]}];
+                        [contacts addObject:@{@"name": phoneNumber, @"phoneNumber": phoneNumber,@"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData,@"contactId":contactId}];
                     } else {
                         NSLog(@"通讯录没有号码");
                     }

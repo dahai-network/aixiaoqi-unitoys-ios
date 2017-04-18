@@ -7,6 +7,7 @@
 //
 
 #import "JSONModel.h"
+//#import <AddressBook/AddressBook.h>
 
 @interface ContactModel : JSONModel
 
@@ -15,13 +16,16 @@
 @property (nonatomic,copy) NSString <Optional>*pinyinSpace;//拼音(包含空格)
 @property (nonatomic,copy) NSString <Optional>*pinyin;//拼音(不包含空格)
 @property (nonatomic,copy) NSString <Optional>*pinyinHeader;//拼音头部
-//@property (nonatomic,strong) NSString <Ignore>*pinyin;//拼音
-@property (nonatomic,copy) NSString <Optional>*phoneNumber;
 
-//@property (nonatomic,copy) NSArray <Optional> *phoneNumbers;
+@property (nonatomic,copy) NSString <Optional>*phoneNumber;
 
 @property (nonatomic,copy) NSString <Optional>*allPinyinNumber;//全拼音转九宫格键盘数字
 @property (nonatomic,copy) NSString <Optional>*headerPinyinNumber;//首字拼音转九宫格键盘数字
+
+@property (nonatomic,strong) NSData <Optional>*thumbnailImageData;//缩略头像
+
+@property (nonatomic, readwrite) int recordRefId;
+@property (nonatomic, readwrite) NSString *contactId;
 
 - (instancetype)initWithDic:(NSDictionary *)dic;
 

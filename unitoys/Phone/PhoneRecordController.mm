@@ -1591,6 +1591,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             [cell updateCellWithModel:model HightText:self.phonePadView.inputedPhoneNumber];
             return cell;
         }else{
+            
             PhoneRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"PhoneRecordCell"];
             NSDictionary *dicPhoneRecord = (NSDictionary *)model;
             
@@ -1603,6 +1604,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [weakSelf.tableView reloadData];
                 
                 ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+                callDetailsVc.contactModel = [weakSelf checkContactModelWithPhoneStr:phoneNumber];
                 callDetailsVc.nickName = nickName;
                 callDetailsVc.phoneNumber = phoneNumber;
                 [weakSelf.nav pushViewController:callDetailsVc animated:YES];
@@ -1680,6 +1682,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             
             NSLog(@"当前index---%ld", index);
             ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+            callDetailsVc.contactModel = [weakSelf checkContactModelWithPhoneStr:phoneNumber];
             callDetailsVc.nickName = nickName;
             callDetailsVc.phoneNumber = phoneNumber;
             [weakSelf.nav pushViewController:callDetailsVc animated:YES];
@@ -1776,15 +1779,17 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 if (storyboard) {
                     ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
                     if (contactsDetailViewController) {
+                        contactsDetailViewController.contactModel = model;
                         contactsDetailViewController.contactMan = model.name;
                         contactsDetailViewController.phoneNumbers = model.phoneNumber;
-                        contactsDetailViewController.contactHead = model.portrait;
-                        [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
+                        contactsDetailViewController.contactHead = model.thumbnailImageData;
+                        [contactsDetailViewController.ivContactMan  setImage:[UIImage imageWithData:model.thumbnailImageData]];
                         [self.nav pushViewController:contactsDetailViewController animated:YES];
                     }
                 }
             }else{
                 ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+                callDetailsVc.contactModel = model;
                 callDetailsVc.nickName = model.name;
                 callDetailsVc.phoneNumber = model.phoneNumber;
                 [self.nav pushViewController:callDetailsVc animated:YES];

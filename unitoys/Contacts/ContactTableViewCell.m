@@ -7,6 +7,7 @@
 //
 
 #import "ContactTableViewCell.h"
+#import "global.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
@@ -38,7 +39,8 @@
 }
 - (UILabel *)nameLabel{
     if (!_nameLabel) {
-        _nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_headImageView.frame) + 5, 10.0, kScreenWidth-60.0, 40.0)];\
+        _nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_headImageView.frame) + 5, 10.0, kScreenWidth-60.0, 40.0)];
+        _nameLabel.textColor = UIColorFromRGB(0x313131);
         [_nameLabel setFont:[UIFont systemFontOfSize:16.0]];
     }
     return _nameLabel;

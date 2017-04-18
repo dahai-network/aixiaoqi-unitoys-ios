@@ -20,8 +20,12 @@
 #import "UNDataTools.h"
 
 #import "UNDatabaseTools.h"
+#import <AddressBookUI/AddressBookUI.h>
+#import "global.h"
+#import "ContactModel.h"
+#import <ContactsUI/ContactsUI.h>
 
-@interface ContactsCallDetailsController ()<UITableViewDelegate, UITableViewDataSource, CallDetailsActionCellDelegate>
+@interface ContactsCallDetailsController ()<UITableViewDelegate, UITableViewDataSource, CallDetailsActionCellDelegate, ABPersonViewControllerDelegate,CNContactViewControllerDelegate,ABNewPersonViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, copy) NSArray *phoneRecords;
@@ -48,10 +52,122 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"拨打详情";
+    [self setUpNav];
     self.currentRecordPage = 1;
     [self getPhoneRecords];
     [self initData];
     [self initTableView];
+}
+
+- (void)setUpNav
+{
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_info_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(editContactInfo)];
+}
+
+- (void)editContactInfo
+{
+    if ([[UIDevice currentDevice] systemVersion].floatValue > 9.0) {
+        if (self.contactModel && self.contactModel.recordRefId) {
+            ABPersonViewController *personVc = [[ABPersonViewController alloc] init];
+            ABAddressBookRef addressBook = ABAddressBookCreate();
+            ABRecordRef recordRef = ABAddressBookGetPersonWithRecordID(addressBook, self.contactModel.recordRefId);
+            personVc.displayedPerson = recordRef;
+            CFRelease(recordRef);
+            personVc.allowsActions = YES;
+            personVc.allowsEditing = YES;
+            personVc.personViewDelegate = self;
+            [self.navigationController pushViewController:personVc animated:YES];
+        }else{
+            [self addContactsAction];
+        }
+    }else{
+        if (self.contactModel && self.contactModel.contactId) {
+            CNContactStore *contactStore = [[CNContactStore alloc] init];
+            CNContact *contact = [contactStore unifiedContactWithIdentifier:self.contactModel.contactId keysToFetch:@[[CNContactViewController descriptorForRequiredKeys]] error:nil];
+            CNContactViewController *contactVc = [CNContactViewController viewControllerForContact:contact];
+            contactVc.contactStore = contactStore;
+            contactVc.allowsEditing = YES;
+            contactVc.allowsActions = YES;
+            contactVc.delegate = self;
+            [self.navigationController pushViewController:contactVc animated:YES];
+        }else{
+            CNMutableContact *contact = [[CNMutableContact alloc] init];
+            contact.phoneNumbers = @[[CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberMobile value:[CNPhoneNumber phoneNumberWithStringValue:self.phoneNumber]]];
+            CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:contact];
+            contactVc.allowsEditing = YES;
+            contactVc.allowsActions = YES;
+            contactVc.delegate = self;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactVc];
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+    }
+
+}
+
+- (void)addContactsAction
+{
+    NSLog(@"添加联系人");
+    CFErrorRef error = NULL;
+    ABRecordRef person = ABPersonCreate ();
+    // Add phone number
+    ABMutableMultiValueRef multiValue = ABMultiValueCreateMutable(kABStringPropertyType);
+    //mainTitle.text是你要添加的手机号
+    ABMultiValueAddValueAndLabel(multiValue, (__bridge CFTypeRef)(self.phoneNumber), kABPersonPhoneMobileLabel,
+                                 NULL);
+    ABRecordSetValue(person, kABPersonPhoneProperty, multiValue, &error);
+    
+    ABNewPersonViewController *newPersonVc = [[ABNewPersonViewController alloc] init];
+    newPersonVc.displayedPerson = person;
+    newPersonVc.newPersonViewDelegate = self;
+    CFRelease(person);
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:newPersonVc];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+#pragma mark - ABNewPersonViewControllerDelegate
+- (void)newPersonViewController:(ABNewPersonViewController *)newPersonView didCompleteWithNewPerson:(nullable ABRecordRef)person
+{
+    if (person) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
+    }
+    [newPersonView dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - ABPersonViewControllerDelegate
+- (BOOL)personViewController:(ABPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier
+{
+    return YES;
+}
+
+#pragma mark - CNContactViewControllerDelegate
+- (BOOL)contactViewController:(CNContactViewController *)viewController shouldPerformDefaultActionForContactProperty:(CNContactProperty *)property
+{
+    return YES;
+}
+
+- (void)contactViewController:(CNContactViewController *)viewController didCompleteWithContact:(nullable CNContact *)contact
+{
+    NSLog(@"%@", contact);
+    if (contact) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
+        
+        NSString *givenName = contact.givenName;
+        NSString *familyName = contact.familyName;
+        NSString *phoneNumber = ((CNPhoneNumber *)(contact.phoneNumbers.firstObject.value)).stringValue;
+
+        NSString *nickName;
+        if ((phoneNumber)&&([familyName stringByAppendingString:givenName])&&![[familyName stringByAppendingString:givenName] isEqualToString:@""]) {
+            nickName = [familyName stringByAppendingString:givenName];
+        } else {
+            NSLog(@"9.0以后的系统，通讯录数据格式不正确");
+            nickName = phoneNumber;
+        }
+        self.nickName = nickName;
+        self.phoneNumber = phoneNumber;
+        self.contactModel.contactId = contact.identifier;
+        [self reloadTableView];
+    }
+    [viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 //获取通话记录

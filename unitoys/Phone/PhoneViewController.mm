@@ -2277,11 +2277,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                         self.isSearchStatu = NO;
                         [self.searchLists removeAllObjects];
                         [self.tableView reloadData];
-                        
+                        contactsDetailViewController.contactModel = model;
                         contactsDetailViewController.contactMan = model.name;
                         contactsDetailViewController.phoneNumbers = model.phoneNumber;
-                        contactsDetailViewController.contactHead = model.portrait;
-                        [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
+                        contactsDetailViewController.contactHead = model.thumbnailImageData;
+                        [contactsDetailViewController.ivContactMan  setImage:[UIImage imageWithData:model.thumbnailImageData]];
                         [self.navigationController pushViewController:contactsDetailViewController animated:YES];
                     }
                 }

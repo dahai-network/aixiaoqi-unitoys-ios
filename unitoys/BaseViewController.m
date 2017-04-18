@@ -489,6 +489,32 @@
     return linkName;
 }
 
+- (ContactModel *)checkContactModelWithPhoneStr:(NSString *)phoneStr
+{
+    ContactModel *model;
+    if ([phoneStr containsString:@"-"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@" "]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@"+86"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@"#"]) {
+        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        phoneStr = newStr;
+    }
+    if ([phoneStr containsString:@","]) {
+        NSArray *arr = [phoneStr componentsSeparatedByString:@","];
+        phoneStr = arr.firstObject;
+    }
+    model = [self checkModelWithNumber:phoneStr];
+    return model;
+}
 
 - (NSString *)checkNameWithNumberNoGroupName:(NSString *)number
 {
@@ -518,6 +544,41 @@
         }
     }
     return linkName;
+}
+
+- (ContactModel *)checkModelWithNumber:(NSString *)number
+{
+    ContactModel *tempModel;
+    ContactModel *resultModel;
+    for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
+        tempModel = model;
+        if ([model.phoneNumber containsString:@"-"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@" "]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
+        }
+        if ([model.phoneNumber containsString:@"+86"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@"#"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@","]) {
+            NSArray *phoneArr = [model.phoneNumber componentsSeparatedByString:@","];
+            for (NSString *phoneStr in phoneArr) {
+                if ([number isEqualToString:phoneStr]) {
+                    resultModel = tempModel;
+                    break;
+                }
+            }
+        }
+        if ([number isEqualToString:[NSString stringWithFormat:@"%@", tempModel.phoneNumber]]) {
+            resultModel = tempModel;
+            return resultModel;
+        }
+    }
+    return resultModel;
 }
 
 - (NSString *)checkNameWithNumber:(NSString *)number {

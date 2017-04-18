@@ -11,9 +11,12 @@
 #import "MJViewController.h"
 #import <AddressBook/AddressBook.h>
 #import "BlueToothDataManager.h"
-
+#import <AddressBookUI/AddressBookUI.h>
+#import "ContactModel.h"
+#import <ContactsUI/ContactsUI.h>
 #import "ContactsCallDetailsController.h"
-@interface ContactsDetailViewController ()
+
+@interface ContactsDetailViewController ()<ABPersonViewControllerDelegate,CNContactViewControllerDelegate,ABNewPersonViewControllerDelegate>
 
 @end
 
@@ -21,18 +24,143 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setUpNav];
     
-    self.lblContactMan.text = self.contactMan;
-    
-    [self.ivContactMan setImage:[UIImage imageNamed:self.contactHead]];
-    
-    self.arrNumbers = [self.phoneNumbers componentsSeparatedByString:@","];
-    
-    
+//    self.lblContactMan.text = self.contactMan;
+//    [self.ivContactMan setImage:[UIImage imageWithData:self.contactHead]];
+//    self.arrNumbers = [self.phoneNumbers componentsSeparatedByString:@","];
     self.tableView.delegate = self;
-    
+    self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
+    self.tableView.tableFooterView = [[UIView alloc] init];
+//    [self.tableView reloadData];
+    [self reloadTableView];
+}
+
+- (void)setUpNav
+{
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_info_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(editContactInfo)];
+}
+
+- (void)reloadTableView
+{
+    self.lblContactMan.text = self.contactMan;
+    [self.ivContactMan setImage:[UIImage imageWithData:self.contactHead]];
+    self.arrNumbers = [self.phoneNumbers componentsSeparatedByString:@","];
     [self.tableView reloadData];
-    // Do any additional setup after loading the view.
+}
+
+- (void)editContactInfo
+{
+    if ([[UIDevice currentDevice] systemVersion].floatValue > 9.0) {
+        if (self.contactModel && self.contactModel.recordRefId) {
+            ABPersonViewController *personVc = [[ABPersonViewController alloc] init];
+            ABAddressBookRef addressBook = ABAddressBookCreate();
+            ABRecordRef recordRef = ABAddressBookGetPersonWithRecordID(addressBook, self.contactModel.recordRefId);
+            personVc.displayedPerson = recordRef;
+            personVc.allowsActions = YES;
+            personVc.allowsEditing = YES;
+            personVc.personViewDelegate = self;
+            CFRelease(recordRef);
+            [self.navigationController pushViewController:personVc animated:YES];
+        }else{
+            [self addContactsAction];
+        }
+    }else{
+        if (self.contactModel && self.contactModel.contactId) {
+            CNContactStore *contactStore = [[CNContactStore alloc] init];
+            CNContact *contact = [contactStore unifiedContactWithIdentifier:self.contactModel.contactId keysToFetch:@[[CNContactViewController descriptorForRequiredKeys]] error:nil];
+            CNContactViewController *contactVc = [CNContactViewController viewControllerForContact:contact];
+            contactVc.contactStore = contactStore;
+            contactVc.allowsEditing = YES;
+            contactVc.allowsActions = YES;
+            contactVc.delegate = self;
+            [self.navigationController pushViewController:contactVc animated:YES];
+        }else{
+//            CNMutableContact *contact = [[CNMutableContact alloc] init];
+//            contact.phoneNumbers = @[[CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberiPhone value:[CNPhoneNumber phoneNumberWithStringValue:self.phoneNumber]]];
+            CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:nil];
+            contactVc.allowsEditing = YES;
+            contactVc.allowsActions = YES;
+            contactVc.delegate = self;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactVc];
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+    }
+    
+}
+
+- (void)addContactsAction
+{
+    NSLog(@"添加联系人");
+    ABNewPersonViewController *newPersonVc = [[ABNewPersonViewController alloc] init];
+    newPersonVc.newPersonViewDelegate = self;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:newPersonVc];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+#pragma mark - ABNewPersonViewControllerDelegate
+- (void)newPersonViewController:(ABNewPersonViewController *)newPersonView didCompleteWithNewPerson:(nullable ABRecordRef)person
+{
+    if (person) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
+    }
+    [newPersonView dismissViewControllerAnimated:YES completion:^{}];
+}
+
+
+#pragma mark - ABPersonViewControllerDelegate
+- (BOOL)personViewController:(ABPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier
+{
+    return YES;
+}
+
+#pragma mark - CNContactViewControllerDelegate
+- (BOOL)contactViewController:(CNContactViewController *)viewController shouldPerformDefaultActionForContactProperty:(CNContactProperty *)property
+{
+    return YES;
+}
+
+- (void)contactViewController:(CNContactViewController *)viewController didCompleteWithContact:(nullable CNContact *)contact
+{
+    NSLog(@"%@", contact);
+    if (contact) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
+        
+        NSString *givenName = contact.givenName;
+        NSString *familyName = contact.familyName;
+        NSArray *arrNumber = contact.phoneNumbers;
+        NSData * thumbnailImageData;
+        if (contact.thumbnailImageData) {
+            thumbnailImageData = contact.thumbnailImageData;
+        }else{
+            UIImage *image = [UIImage imageNamed:@"pic_tx_pre"];
+            thumbnailImageData = UIImagePNGRepresentation(image);
+        }
+        
+        NSString *phoneNumber = ((CNPhoneNumber *)(contact.phoneNumbers.firstObject.value)).stringValue;
+        if (arrNumber.firstObject) {
+            for (CNLabeledValue *labelValue in arrNumber) {
+                if (![phoneNumber containsString:[labelValue.value stringValue]]) {
+                    CNPhoneNumber *number = labelValue.value;
+                    phoneNumber = [phoneNumber stringByAppendingString:[NSString stringWithFormat:@",%@",number.stringValue]];
+                }
+            }
+        }
+        NSString *nickName;
+        if ((phoneNumber)&&([familyName stringByAppendingString:givenName])&&![[familyName stringByAppendingString:givenName] isEqualToString:@""]) {
+            nickName = [familyName stringByAppendingString:givenName];
+        } else {
+            NSLog(@"9.0以后的系统，通讯录数据格式不正确");
+            nickName = phoneNumber;
+        }
+        self.contactMan = nickName;
+        self.phoneNumbers = phoneNumber;
+        self.contactHead = thumbnailImageData;
+        [self.ivContactMan setImage:[UIImage imageWithData:thumbnailImageData]];
+        self.contactModel.contactId = contact.identifier;
+        [self reloadTableView];
+    }
+    [viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -57,30 +185,30 @@
     return self.arrNumbers.count;
 }
 
-- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
+//- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
+//    return 1;
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ContactPhoneCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ContactPhoneCell"];
-    
-    cell.lblPhoneLabel.text = INTERNATIONALSTRING(@"电话");
-    
+//    NSString *phoneText = [NSString stringWithFormat:@"%@%@", INTERNATIONALSTRING(@"电话"), indexPath]
+//    cell.textLabel.text =
+    cell.lblPhoneLabel.text = [NSString stringWithFormat:@"%@%ld", INTERNATIONALSTRING(@"电话"), indexPath.row + 1];
     cell.lblPhoneNumber.text = [self.arrNumbers objectAtIndex:indexPath.row];
     
-    cell.btnCall.tag = indexPath.row;
+//    cell.btnCall.tag = indexPath.row;
+//    
+//    cell.btnMessage.tag = indexPath.row;
     
-    cell.btnMessage.tag = indexPath.row;
-    
-    if (self.bOnlySelectNumber) {
-        UIView *cellView = [cell.subviews firstObject];
-        for (UIView *subView in cellView.subviews) {
-            if ([subView isKindOfClass:[UIButton class]]) {
-                [subView setHidden:YES];
-            }
-        }
-        
-    }
+//    if (self.bOnlySelectNumber) {
+//        UIView *cellView = [cell.subviews firstObject];
+//        for (UIView *subView in cellView.subviews) {
+//            if ([subView isKindOfClass:[UIButton class]]) {
+//                [subView setHidden:YES];
+//            }
+//        }
+//        
+//    }
     return cell;
 }
 

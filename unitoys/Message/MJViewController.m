@@ -45,7 +45,7 @@
 - (UNEditMessageView *)bottomView
 {
     if (!_bottomView) {
-        _bottomView = [[UNEditMessageView alloc] initWithFrame:CGRectMake(0, self.view.height, kScreenWidthValue, 50)];
+        _bottomView = [[UNEditMessageView alloc] initWithFrame:CGRectMake(0, self.view.height, kScreenWidthValue, self.bottomInputView.height)];
         _bottomView.backgroundColor = [UIColor clearColor];
         kWeakSelf
         _bottomView.editMessageActionBlock = ^(NSInteger buttonTag) {
@@ -120,7 +120,10 @@
 - (void)initAllItems
 {
     self.defaultLeftItem = self.navigationItem.leftBarButtonItem;
-    self.defaultRightItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"详细信息") style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
+//    self.defaultRightItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"详细信息") style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
+    self.defaultRightItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"msg_contacts_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonAction)];
+    
+    
     self.editLeftItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"取消") style:UIBarButtonItemStyleDone target:self action:@selector(cancelEdit)];
     self.editRightItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"全选") style:UIBarButtonItemStyleDone target:self action:@selector(selectAllCell)];
 }
@@ -128,14 +131,21 @@
 - (void)selectAllCell
 {
     if (self.selectRemoveData.count == self.messageFrames.count) {
-        return;
+        //取消全选
+        [self.selectRemoveData removeAllObjects];
+        for (int i = 0; i < self.messageFrames.count; i ++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        }
+    }else{
+        //全选
+        [self.selectRemoveData removeAllObjects];
+        for (int i = 0; i < self.messageFrames.count; i ++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        }
+        [self.selectRemoveData addObjectsFromArray:self.messageFrames];
     }
-    [self.selectRemoveData removeAllObjects];
-    for (int i = 0; i < self.messageFrames.count; i ++) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
-        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-    }
-    [self.selectRemoveData addObjectsFromArray:self.messageFrames];
 }
 
 - (void)beComeEditMode

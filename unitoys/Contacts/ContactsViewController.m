@@ -8,6 +8,7 @@
 
 #import "ContactsViewController.h"
 #import <AddressBook/AddressBook.h>
+#import <AddressBookUI/AddressBookUI.h>
 #import <Contacts/Contacts.h>
 #import "ContactModel.h"
 #import "ContactTableViewCell.h"
@@ -17,12 +18,13 @@
 #import "AddressBookManager.h"
 
 #import "ContactsCallDetailsController.h"
+#import <ContactsUI/ContactsUI.h>
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
 @interface ContactsViewController ()
 <UITableViewDelegate,UITableViewDataSource,
-UISearchBarDelegate,UISearchDisplayDelegate>
+UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, CNContactViewControllerDelegate>
 {
     NSArray *_rowArr;//row arr
     NSArray *_sectionArr;//section arr
@@ -98,7 +100,7 @@ UISearchBarDelegate,UISearchDisplayDelegate>
     _sectionArr=[ContactDataHelper getFriendListSectionBy:[_rowArr mutableCopy]];
     
     //设置Nav
-//    [self configNav];
+    [self configNav];
     //布局View
     [self setUpView];
     
@@ -123,18 +125,59 @@ UISearchBarDelegate,UISearchDisplayDelegate>
 }
 
 - (void)configNav{
-    UIButton *btn=[UIButton buttonWithType:UIButtonTypeCustom];
-    [btn setFrame:CGRectMake(0.0, 0.0, 30.0, 30.0)];
-//    [btn setBackgroundImage:[UIImage imageNamed:@"contacts_add_friend"] forState:UIControlStateNormal];
-    [btn setImage:[UIImage imageNamed:@"alarm_add"] forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(addContactsAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithCustomView:btn]];
+//    UIButton *btn=[UIButton buttonWithType:UIButtonTypeCustom];
+//    [btn setFrame:CGRectMake(0.0, 0.0, 30.0, 30.0)];
+////    [btn setBackgroundImage:[UIImage imageNamed:@"contacts_add_friend"] forState:UIControlStateNormal];
+//    [btn setImage:[UIImage imageNamed:@"alarm_add"] forState:UIControlStateNormal];
+//    [btn addTarget:self action:@selector(addContactsAction:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithCustomView:btn]];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_addressee_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(addContactsAction:)];
 }
 
 - (void)addContactsAction:(UIButton *)button
 {
     NSLog(@"添加联系人");
+    if ([[UIDevice currentDevice] systemVersion].floatValue < 9.0) {
+        ABNewPersonViewController *newPersonVc = [[ABNewPersonViewController alloc] init];
+        newPersonVc.newPersonViewDelegate = self;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:newPersonVc];
+        [self presentViewController:nav animated:YES completion:nil];
+    }else{
+        CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:nil];
+        contactVc.allowsEditing = YES;
+        contactVc.allowsActions = YES;
+        contactVc.delegate = self;
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactVc];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+
 }
+
+#pragma mark - ABNewPersonViewControllerDelegate
+- (void)newPersonViewController:(ABNewPersonViewController *)newPersonView didCompleteWithNewPerson:(nullable ABRecordRef)person
+{
+    if (person) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
+    }
+    [newPersonView.navigationController dismissViewControllerAnimated:YES completion:^{}];
+}
+
+#pragma mark - CNContactViewControllerDelegate
+- (BOOL)contactViewController:(CNContactViewController *)viewController shouldPerformDefaultActionForContactProperty:(CNContactProperty *)property
+{
+    return YES;
+}
+
+- (void)contactViewController:(CNContactViewController *)viewController didCompleteWithContact:(nullable CNContact *)contact
+{
+    NSLog(@"%@", contact);
+    if (contact) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
+    }
+    [viewController.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+
 
 #pragma mark - setUpView
 - (void)setUpView{
@@ -236,12 +279,15 @@ UISearchBarDelegate,UISearchDisplayDelegate>
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     
     if (tableView==_searchDisplayController.searchResultsTableView){
-        [cell.headImageView setImage:[UIImage imageNamed:[_searchResultArr[indexPath.row] valueForKey:@"portrait"]]];
-        [cell.nameLabel setText:[_searchResultArr[indexPath.row] valueForKey:@"name"]];
+//        [cell.headImageView setImage:[UIImage imageNamed:[_searchResultArr[indexPath.row] valueForKey:@"portrait"]]];
+        ContactModel *model = _searchResultArr[indexPath.row];
+        [cell.headImageView setImage:[UIImage imageWithData:model.thumbnailImageData]];
+        [cell.nameLabel setText:model.name];
     }else{
         ContactModel *model=_rowArr[indexPath.section][indexPath.row];
         
-        [cell.headImageView setImage:[UIImage imageNamed:model.portrait]];
+//        [cell.headImageView setImage:[UIImage imageNamed:model.portrait]];
+        [cell.headImageView setImage:[UIImage imageWithData:model.thumbnailImageData]];
         [cell.nameLabel setText:model.name];
     }
     
@@ -249,12 +295,11 @@ UISearchBarDelegate,UISearchDisplayDelegate>
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
     
     if (tableView==_searchDisplayController.searchResultsTableView){
-        NSDictionary *dicResult = _searchResultArr[indexPath.row];
-        NSLog(@"搜索结果：%@",dicResult);
-        
-        if ([[dicResult objectForKey:@"phoneNumber"] containsString:@","]) {
+            ContactModel *contact = _searchResultArr[indexPath.row];
+        if ([contact.phoneNumber containsString:@","]) {
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
             if (!storyboard) {
                 return;
@@ -266,24 +311,21 @@ UISearchBarDelegate,UISearchDisplayDelegate>
             contactsDetailViewController.bOnlySelectNumber = self.bOnlySelectNumber;
             
             if (self.bOnlySelectNumber) {
-                if ([[[dicResult objectForKey:@"phoneNumber"] componentsSeparatedByString:@","] count]==1) {
+                if ([[contact.phoneNumber componentsSeparatedByString:@","] count]==1) {
                     if (self.delegate) {
                         if (self.delegate&&[self.delegate respondsToSelector:@selector(didSelectPhoneNumber:)]) {
-                            [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",[dicResult objectForKey:@"name"],[dicResult objectForKey:@"phoneNumber"]]];
+                            [self.delegate didSelectPhoneNumber:[NSString stringWithFormat:@"%@|%@",contact.name,contact.phoneNumber]];
                             [self.navigationController popToViewController:self.delegate animated:YES];
                         }
                     }
                     return;
                 }
             }
-            
-            contactsDetailViewController.contactMan = [dicResult objectForKey:@"name"];
-            
-            contactsDetailViewController.phoneNumbers = [dicResult objectForKey:@"phoneNumber"];
-            
-            contactsDetailViewController.contactHead = [dicResult objectForKey:@"portrait"];
-            
-            [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:[dicResult objectForKey:@"portrait"]] ];
+            contactsDetailViewController.contactModel = contact;
+            contactsDetailViewController.contactMan = contact.name;
+            contactsDetailViewController.phoneNumbers = contact.phoneNumber;
+            contactsDetailViewController.contactHead = contact.thumbnailImageData;
+            [contactsDetailViewController.ivContactMan  setImage:[UIImage imageWithData:contact.thumbnailImageData] ];
             
             if (self.delegate) {
                 contactsDetailViewController.delegate = self.delegate; //设置选择后的委托
@@ -292,8 +334,9 @@ UISearchBarDelegate,UISearchDisplayDelegate>
         }
         else{
             ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
-            callDetailsVc.nickName = [dicResult objectForKey:@"name"];
-            callDetailsVc.phoneNumber = [dicResult objectForKey:@"phoneNumber"];
+            callDetailsVc.nickName = contact.name;
+            callDetailsVc.phoneNumber = contact.phoneNumber;
+            callDetailsVc.contactModel = contact;
             [self.navigationController pushViewController:callDetailsVc animated:YES];
         }
     }else{
@@ -324,15 +367,16 @@ UISearchBarDelegate,UISearchDisplayDelegate>
             
             contactsDetailViewController.contactMan = model.name;
             contactsDetailViewController.phoneNumbers = model.phoneNumber;
-            contactsDetailViewController.contactHead = model.portrait;
-            [contactsDetailViewController.ivContactMan  setImage:[UIImage imageNamed:model.portrait]];
-            
+            contactsDetailViewController.contactHead = model.thumbnailImageData;
+            [contactsDetailViewController.ivContactMan  setImage:[UIImage imageWithData:model.thumbnailImageData]];
+            contactsDetailViewController.contactModel = model;
             if (self.delegate) {
                 contactsDetailViewController.delegate = self.delegate; //设置选择后的委托
             }
             [self.navigationController pushViewController:contactsDetailViewController animated:YES];
         }else{
             ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+            callDetailsVc.contactModel = model;
             callDetailsVc.nickName = model.name;
             callDetailsVc.phoneNumber = model.phoneNumber;
             [self.navigationController pushViewController:callDetailsVc animated:YES];
@@ -406,19 +450,19 @@ UISearchBarDelegate,UISearchDisplayDelegate>
     NSUInteger searchOptions = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
     
     for (int i = 0; i < self.dataArr.count; i++) {
-        NSString *storeString = [(ContactModel *)self.dataArr[i] name];
-        
-        NSString *storeNumber = [(ContactModel *)self.dataArr[i] phoneNumber];
-        
-        NSString *storeImageString=[(ContactModel *)self.dataArr[i] portrait]?[(ContactModel *)self.dataArr[i] portrait]:@"";
+        ContactModel *contact = self.dataArr[i];
+        NSString *storeString = [contact name];
+//        NSString *storeNumber = [contact phoneNumber];
+//        NSString *storeImageString=[(ContactModel *)self.dataArr[i] portrait]?[(ContactModel *)self.dataArr[i] portrait]:@"";
+//        NSData *storeImageString=[contact thumbnailImageData]?[contact thumbnailImageData]:nil;
         
         NSRange storeRange = NSMakeRange(0, storeString.length);
         
         NSRange foundRange = [storeString rangeOfString:searchText options:searchOptions range:storeRange];
         if (foundRange.length) {
-            NSDictionary *dic=@{@"name":storeString,@"portrait":storeImageString,@"phoneNumber":storeNumber};
+//            NSDictionary *dic=@{@"name":storeString,@"thumbnailImageData":storeImageString,@"phoneNumber":storeNumber};
             
-            [tempResults addObject:dic];
+            [tempResults addObject:contact];
         }
         
     }

@@ -11,7 +11,7 @@
 @interface ContactPhoneCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *lblPhoneNumber;
 @property (weak, nonatomic) IBOutlet UILabel *lblPhoneLabel;
-@property (weak, nonatomic) IBOutlet UIButton *btnMessage;
-@property (weak, nonatomic) IBOutlet UIButton *btnCall;
+//@property (weak, nonatomic) IBOutlet UIButton *btnMessage;
+//@property (weak, nonatomic) IBOutlet UIButton *btnCall;
 
 @end
