@@ -1740,7 +1740,7 @@
             </objects>
             <point key="canvasLocation" x="234.5" y="1759.5"/>
         </scene>
-        <!--我-->
+        <!--我的-->
         <scene sceneID="IxB-7t-lsu">
             <objects>
                 <tableViewController id="wn9-cs-emF" customClass="AboutViewController" sceneMemberID="viewController">
@@ -2445,7 +2445,7 @@
                             <outlet property="delegate" destination="wn9-cs-emF" id="9ej-z7-Vix"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="我" id="C5B-0N-FGx"/>
+                    <navigationItem key="navigationItem" title="我的" id="C5B-0N-FGx"/>
                     <connections>
                         <outlet property="commicateMin" destination="5Y6-8b-Co2" id="Hv4-JB-SjS"/>
                         <outlet property="connectedDeviceView" destination="MA6-ta-aXc" id="U0u-VJ-hLs"/>

@@ -109,15 +109,16 @@
     self.subTitleLbl.text = [NSString stringWithFormat:@"已找到双待王%@，请连接", [BlueToothDataManager shareManager].deviceMacAddress];
     [self.cancelButton setTitle:@"暂不绑定" forState:UIControlStateNormal];
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
-    self.handupImg.hidden = NO;
     [self startToShowClickAnimation];
 }
 
 - (void)startToShowClickAnimation {
+    self.handupImg.hidden = NO;
     if (!self.clickAnimationTimer) {
-        self.clickAnimationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showClickAnimation) userInfo:nil repeats:YES];
-        //如果不添加下面这条语句，在UITableView拖动的时候，会阻塞定时器的调用
-        [[NSRunLoop currentRunLoop] addTimer:self.clickAnimationTimer forMode:UITrackingRunLoopMode];
+//        self.clickAnimationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showClickAnimation) userInfo:nil repeats:YES];
+//        //如果不添加下面这条语句，在UITableView拖动的时候，会阻塞定时器的调用
+//        [[NSRunLoop currentRunLoop] addTimer:self.clickAnimationTimer forMode:UITrackingRunLoopMode];
+        [self showClickAnimation];
     } else {
         [self.clickAnimationTimer setFireDate:[NSDate distantPast]];
     }
@@ -129,9 +130,9 @@
     //    动画执行多长时间
     [UIView setAnimationDuration:1];
     //    设置是否有路径回退效果
-//        [UIView setAnimationRepeatAutoreverses:YES];
+        [UIView setAnimationRepeatAutoreverses:YES];
     //    设置重复次数（可以设置窗口抖动效果）
-    [UIView setAnimationRepeatCount:1];
+    [UIView setAnimationRepeatCount:15];
     //    位置的变化,会有一个位置的平移效果
     self.handupImg.frame = CGRectMake(self.handupImg.frame.origin.x, self.handupImg.frame.origin.y, self.handupImg.frame.size.width, self.handupImg.frame.size.height);
     self.handupImg.frame = CGRectMake(self.handupImg.frame.origin.x, self.handupImg.frame.origin.y-15, self.handupImg.frame.size.width, self.handupImg.frame.size.height);

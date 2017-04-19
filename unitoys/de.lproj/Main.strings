@@ -59,10 +59,10 @@
 /* Class = "UINavigationItem"; title = "注册"; ObjectID = "AcE-tB-633"; */
 "AcE-tB-633.title" = "Sign in";
 
-/* Class = "UINavigationController"; title = "我"; ObjectID = "Asa-PC-QhR"; */
+/* Class = "UINavigationController"; title = "我的"; ObjectID = "Asa-PC-QhR"; */
 "Asa-PC-QhR.title" = "Personal";
 
-/* Class = "UINavigationItem"; title = "我"; ObjectID = "C5B-0N-FGx"; */
+/* Class = "UINavigationItem"; title = "我的"; ObjectID = "C5B-0N-FGx"; */
 "C5B-0N-FGx.title" = "Personal";
 
 /* Class = "UIButton"; normalTitle = "11月11"; ObjectID = "DOA-nY-aqS"; */

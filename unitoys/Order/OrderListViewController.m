@@ -260,38 +260,46 @@
         //order_actived
         switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
             case 0:
-                [cell.activityButton setTitle:INTERNATIONALSTRING(@"未激活") forState:UIControlStateNormal];
+                [cell.activityButton setTitle:INTERNATIONALSTRING(@"去激活") forState:UIControlStateNormal];
+                cell.activityButton.hidden = NO;
 //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
 //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 1:
-                if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-                    [cell.activityButton setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
-//                    [cell.activityButton setImage:nil forState:UIControlStateNormal];
-                } else {
-                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
-//                    [cell.activityButton setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
-                }
+                [cell.activityButton setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
+                cell.activityButton.hidden = YES;
+//                if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
+//                    [cell.activityButton setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+////                    [cell.activityButton setImage:nil forState:UIControlStateNormal];
+//                } else {
+//                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
+////                    [cell.activityButton setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
+//                }
 //                [cell.activityButton setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
                 break;
             case 2:
                 [cell.activityButton setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
+                cell.activityButton.hidden = YES;
 //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
 //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 3:
                 [cell.activityButton setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
+                cell.activityButton.hidden = YES;
 //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
 //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
             case 4:
-                [cell.activityButton setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
+                [cell.activityButton setTitle:INTERNATIONALSTRING(@"去激活") forState:UIControlStateNormal];
+//                [cell.activityButton setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
+                cell.activityButton.hidden = NO;
 //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
 //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;
                 
             default:
                 [cell.activityButton setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
+                cell.activityButton.hidden = YES;
 //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
 //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
                 break;

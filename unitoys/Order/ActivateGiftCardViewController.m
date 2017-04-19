@@ -146,13 +146,13 @@
 }
 
 #pragma mark - tableView代理方法
--(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    return 15;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
-    return 0.01;
-}
+//-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+//    return 0.01;
+//}
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
+//    return 0.01;
+//}
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     if (self.packageCategory == 0) {
         return 4;
@@ -230,11 +230,11 @@
                 self.firstCell=[[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil] firstObject];
             }
             
-            if (self.packageCategory == 2 || self.packageCategory == 3) {
-                self.firstCell.accessoryType = UITableViewCellAccessoryNone;
-            }else{
-                self.firstCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            }
+//            if (self.packageCategory == 2 || self.packageCategory == 3) {
+//                self.firstCell.accessoryType = UITableViewCellAccessoryNone;
+//            }else{
+//                self.firstCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//            }
             return self.firstCell;
             break;
         case 1:

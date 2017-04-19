@@ -60,10 +60,10 @@
 "AcE-tB-633.title" = "注册";
 
 /* Class = "UINavigationController"; title = "我"; ObjectID = "Asa-PC-QhR"; */
-"Asa-PC-QhR.title" = "我";
+"Asa-PC-QhR.title" = "我的";
 
 /* Class = "UINavigationItem"; title = "我"; ObjectID = "C5B-0N-FGx"; */
-"C5B-0N-FGx.title" = "我";
+"C5B-0N-FGx.title" = "我的";
 
 /* Class = "UIButton"; normalTitle = "11月11"; ObjectID = "DOA-nY-aqS"; */
 "DOA-nY-aqS.normalTitle" = "11月11";
