@@ -13,28 +13,26 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PhoneOperationPad">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HSH-a9-rgm">
-                    <rect key="frame" x="110.5" y="0.0" width="154" height="44"/>
+                    <rect key="frame" x="137.5" y="0.0" width="100" height="100"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="HSH-a9-rgm" secondAttribute="height" multiplier="7:2" id="7TM-ow-w1s"/>
-                        <constraint firstAttribute="width" secondItem="HSH-a9-rgm" secondAttribute="height" multiplier="7:2" id="f5y-ux-mBh"/>
+                        <constraint firstAttribute="width" secondItem="HSH-a9-rgm" secondAttribute="height" id="h1h-7C-ZEW"/>
                     </constraints>
-                    <state key="normal" image="localPhone_nor"/>
-                    <state key="highlighted" image="localPhone_pre"/>
+                    <state key="normal" image="btn_dh_l_nor"/>
+                    <state key="highlighted" image="btn_dh_l_pre"/>
                     <connections>
                         <action selector="callout:" destination="iN0-l3-epB" eventType="touchUpInside" id="BmG-kt-Jps"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UwM-kO-3sF">
-                    <rect key="frame" x="316" y="0.0" width="44" height="44"/>
+                    <rect key="frame" x="260" y="0.0" width="100" height="100"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="UwM-kO-3sF" secondAttribute="height" multiplier="1:1" id="toO-uG-uQ0"/>
                     </constraints>
-                    <state key="normal" image="down_arrow_nor"/>
-                    <state key="highlighted" image="down_arrow_pre"/>
+                    <state key="normal" image="icon_sq_nor"/>
                     <connections>
                         <action selector="switchNumberPad:" destination="iN0-l3-epB" eventType="touchUpInside" id="X70-q8-PIf"/>
                     </connections>
@@ -58,9 +56,8 @@
         </view>
     </objects>
     <resources>
-        <image name="down_arrow_nor" width="16" height="9"/>
-        <image name="down_arrow_pre" width="16" height="9"/>
-        <image name="localPhone_nor" width="31" height="31"/>
-        <image name="localPhone_pre" width="31" height="31"/>
+        <image name="btn_dh_l_nor" width="16" height="16"/>
+        <image name="btn_dh_l_pre" width="16" height="16"/>
+        <image name="icon_sq_nor" width="16" height="16"/>
     </resources>
 </document>

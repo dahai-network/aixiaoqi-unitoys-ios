@@ -70,6 +70,7 @@
             CNContactStore *contactStore = [[CNContactStore alloc] init];
             CNContact *contact = [contactStore unifiedContactWithIdentifier:self.contactModel.contactId keysToFetch:@[[CNContactViewController descriptorForRequiredKeys]] error:nil];
             CNContactViewController *contactVc = [CNContactViewController viewControllerForContact:contact];
+            contactVc.view.tag = 100;
             contactVc.contactStore = contactStore;
             contactVc.allowsEditing = YES;
             contactVc.allowsActions = YES;
@@ -79,6 +80,7 @@
 //            CNMutableContact *contact = [[CNMutableContact alloc] init];
 //            contact.phoneNumbers = @[[CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberiPhone value:[CNPhoneNumber phoneNumberWithStringValue:self.phoneNumber]]];
             CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:nil];
+            contactVc.view.tag = 200;
             contactVc.allowsEditing = YES;
             contactVc.allowsActions = YES;
             contactVc.delegate = self;
@@ -160,7 +162,9 @@
         self.contactModel.contactId = contact.identifier;
         [self reloadTableView];
     }
-    [viewController dismissViewControllerAnimated:YES completion:nil];
+    if (viewController.view.tag == 200) {
+        [viewController dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

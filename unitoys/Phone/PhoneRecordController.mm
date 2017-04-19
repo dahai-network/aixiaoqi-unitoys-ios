@@ -288,7 +288,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
     
     kWeakSelf
-    self.phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 64 - 49, kScreenWidthValue, 225)];
+    self.phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 64, kScreenWidthValue, 225)];
     [self.view addSubview:self.phonePadView];
     
     self.phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum){
@@ -297,14 +297,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //当前为搜索状态
             weakSelf.isSearchStatu = YES;
             weakSelf.phonePadView.hidden = NO;
-            weakSelf.tableView.height = kScreenHeightValue - (64 + 49) - 225 - 70;
+            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225 - 70;
             //搜索电话并展示
             [weakSelf searchInfoWithString:btnText];
         }else{
             //当前不为搜索状态
             weakSelf.isSearchStatu = NO;
             weakSelf.isSearchStatu = NO;
-            weakSelf.tableView.height = kScreenHeightValue - (64 + 49) - 225;
+            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225;
             [weakSelf.tableView reloadData];
         }
         
@@ -427,7 +427,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         NSArray *nibContents = [[NSBundle mainBundle] loadNibNamed:@"PhoneOperationPad" owner:nil options:nil];
         
         PhoneOperationPad *callView = [nibContents lastObject];
-        [callView setFrame:self.nav.tabBarController.tabBar.bounds];
+//        [callView setFrame:self.nav.tabBarController.tabBar.bounds];
+        CGRect tabbarRect = self.nav.tabBarController.tabBar.bounds;
+        [callView setFrame:CGRectMake(0, tabbarRect.size.height - 100, tabbarRect.size.width, 100)];
         callView.hidden = NO;
         [self.nav.tabBarController.tabBar addSubview:callView];
         
@@ -504,7 +506,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (hidden) {
         NSLog(@"关闭键盘");
         self.phonePadButton.hidden = NO;
-        self.phonePadView.top = kScreenHeightValue - 64 - 49;
+//        self.phonePadView.top = kScreenHeightValue - 64 - 49;
+        self.phonePadView.top = kScreenHeightValue - 64;
         self.callView.hidden = YES;
         self.isSearchStatu = NO;
         self.phonePadView.inputedPhoneNumber = nil;
@@ -513,12 +516,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }else{
         NSLog(@"打开键盘");
         self.phonePadButton.hidden = YES;
-        self.phonePadView.top = kScreenHeightValue - 64 - 49 - 225;
+//        self.phonePadView.top = kScreenHeightValue - 64 - 49 - 225;
+        self.phonePadView.top = kScreenHeightValue - 64 - 100 - 225;
         [self showOperation];
         self.isSearchStatu = YES;
         [self setTitleViewIsHidden:NO];
 //        self.tableView.height = kScreenHeightValue - (64 + 49) - 225 - 70;
-        self.tableView.height = kScreenHeightValue - (64 + 49) - 225;
+        self.tableView.height = kScreenHeightValue - (64 + 100) - 225;
     }
 }
 

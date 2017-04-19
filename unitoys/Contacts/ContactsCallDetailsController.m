@@ -85,6 +85,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             CNContactStore *contactStore = [[CNContactStore alloc] init];
             CNContact *contact = [contactStore unifiedContactWithIdentifier:self.contactModel.contactId keysToFetch:@[[CNContactViewController descriptorForRequiredKeys]] error:nil];
             CNContactViewController *contactVc = [CNContactViewController viewControllerForContact:contact];
+            contactVc.view.tag = 100;
             contactVc.contactStore = contactStore;
             contactVc.allowsEditing = YES;
             contactVc.allowsActions = YES;
@@ -94,6 +95,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             CNMutableContact *contact = [[CNMutableContact alloc] init];
             contact.phoneNumbers = @[[CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberMobile value:[CNPhoneNumber phoneNumberWithStringValue:self.phoneNumber]]];
             CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:contact];
+            contactVc.view.tag = 200;
             contactVc.allowsEditing = YES;
             contactVc.allowsActions = YES;
             contactVc.delegate = self;
@@ -167,7 +169,9 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         self.contactModel.contactId = contact.identifier;
         [self reloadTableView];
     }
-    [viewController dismissViewControllerAnimated:YES completion:nil];
+    if (viewController.view.tag == 200) {
+        [viewController dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 //获取通话记录
@@ -239,6 +243,14 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 - (void)initTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    [self.tableView registerNibWithNibId:callDetailsNameCellId];
+    [self.tableView registerNibWithNibId:callDetailsNumberCellId];
+    [self.tableView registerNibWithNibId:callDetailsActionCellId];
+    if (self.phoneRecords.count) {
+        [self.tableView registerNibWithNibId:callDetailsRecordCellId];
+        [self.tableView registerNibWithNibId:callDetailsLookAllCellId];
+    }
+    
     self.tableView.height -= 64;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -250,13 +262,6 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.tableView];
 
-    [self.tableView registerNibWithNibId:callDetailsNameCellId];
-    [self.tableView registerNibWithNibId:callDetailsNumberCellId];
-    [self.tableView registerNibWithNibId:callDetailsActionCellId];
-    if (self.phoneRecords.count) {
-        [self.tableView registerNibWithNibId:callDetailsRecordCellId];
-        [self.tableView registerNibWithNibId:callDetailsLookAllCellId];
-    }
     [self.tableView reloadData];
 }
 

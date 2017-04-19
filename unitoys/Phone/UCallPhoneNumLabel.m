@@ -37,9 +37,7 @@
     
     _deleteButton = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];
     _deleteButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
-    [_deleteButton setImage:[UIImage imageNamed:@"delete_nor"] forState:UIControlStateNormal];
-    [_deleteButton setImage:[UIImage imageNamed:@"delete_pre"] forState:UIControlStateHighlighted];
-//    [_deleteButton sizeToFit];
+    [_deleteButton setImage:[UIImage imageNamed:@"icon_del_nor"] forState:UIControlStateNormal];
     _deleteButton.width = 60;
     _deleteButton.height = self.height;
     [_deleteButton addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
