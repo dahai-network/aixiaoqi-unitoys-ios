@@ -12,8 +12,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"btn_back"] style:UIBarButtonItemStyleDone target:self action:@selector(dismissAction)];
     [self loadWebViewWithUrl];
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)dismissAction
+{
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

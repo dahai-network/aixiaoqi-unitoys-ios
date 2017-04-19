@@ -9,7 +9,8 @@
 #import "MainViewController.h"
 //#import "PhoneViewController.h"
 #import "PhoneIndexController.h"
-#import "LoginViewController.h"
+//#import "LoginViewController.h"
+#import "UNLoginViewController.h"
 #import "JPUSHService.h"
 #import "navHomeViewController.h"
 #import "UNDatabaseTools.h"
@@ -227,20 +228,24 @@ typedef enum : NSUInteger {
     [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
     
     UIApplication *application = [UIApplication sharedApplication];
-    if ([application.keyWindow.rootViewController isKindOfClass:[LoginViewController class]]) {
+    if ([application.keyWindow.rootViewController isKindOfClass:[UNLoginViewController class]]) {
         [self dismissViewControllerAnimated:YES completion:nil];
-        
     }else{
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        if (storyboard) {
-            UIViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-            if (loginViewController) {
-                application.keyWindow.rootViewController = loginViewController;
-                
-                [application.keyWindow makeKeyAndVisible];
-                
-                //                        [self presentViewController:mainViewController animated:YES completion:nil];
-            }
+//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//        if (storyboard) {
+//            UIViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+//            if (loginViewController) {
+//                application.keyWindow.rootViewController = loginViewController;
+//                
+//                [application.keyWindow makeKeyAndVisible];
+//                
+//                //                        [self presentViewController:mainViewController animated:YES completion:nil];
+//            }
+//        }
+        UNLoginViewController *loginVc = [[UNLoginViewController alloc] init];
+        if (loginVc) {
+            application.keyWindow.rootViewController = loginVc;
+            [application.keyWindow makeKeyAndVisible];
         }
     }
     

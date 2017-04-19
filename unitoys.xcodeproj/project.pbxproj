@@ -173,6 +173,8 @@
 		3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */; };
 		3CD0C8A01E864BDB00ABD21B /* UNPushKitMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */; };
 		3CD76A8E1EA45E55001E6466 /* HLDragView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD76A8D1EA45E55001E6466 /* HLDragView.m */; };
+		3CD76AA21EA73394001E6466 /* UNLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD76AA01EA73394001E6466 /* UNLoginViewController.m */; };
+		3CD76AA31EA73394001E6466 /* UNLoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CD76AA11EA73394001E6466 /* UNLoginViewController.xib */; };
 		3CD9134C1E70E59F00434465 /* UNBLEDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD913471E70E59F00434465 /* UNBLEDataManager.m */; };
 		3CD9134D1E70E59F00434465 /* UNGetSimData.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD913491E70E59F00434465 /* UNGetSimData.m */; };
 		3CD9134E1E70E59F00434465 /* UNSimCardAuthenticationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */; };
@@ -652,6 +654,9 @@
 		3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPushKitMessageManager.m; sourceTree = "<group>"; };
 		3CD76A8C1EA45E55001E6466 /* HLDragView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLDragView.h; sourceTree = "<group>"; };
 		3CD76A8D1EA45E55001E6466 /* HLDragView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLDragView.m; sourceTree = "<group>"; };
+		3CD76A9F1EA73394001E6466 /* UNLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNLoginViewController.h; sourceTree = "<group>"; };
+		3CD76AA01EA73394001E6466 /* UNLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNLoginViewController.m; sourceTree = "<group>"; };
+		3CD76AA11EA73394001E6466 /* UNLoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UNLoginViewController.xib; sourceTree = "<group>"; };
 		3CD913461E70E59F00434465 /* UNBLEDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNBLEDataManager.h; sourceTree = "<group>"; };
 		3CD913471E70E59F00434465 /* UNBLEDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNBLEDataManager.m; sourceTree = "<group>"; };
 		3CD913481E70E59F00434465 /* UNGetSimData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNGetSimData.h; sourceTree = "<group>"; };
@@ -1395,6 +1400,9 @@
 		95334A641D8A89B9002C1CFB /* Account */ = {
 			isa = PBXGroup;
 			children = (
+				3CD76A9F1EA73394001E6466 /* UNLoginViewController.h */,
+				3CD76AA01EA73394001E6466 /* UNLoginViewController.m */,
+				3CD76AA11EA73394001E6466 /* UNLoginViewController.xib */,
 				953B01F61D8C16A300EDF5ED /* LoginViewController.h */,
 				953B01F71D8C16A300EDF5ED /* LoginViewController.m */,
 				954D37ED1D8CD5A7002A8F46 /* RegisterViewController.h */,
@@ -2212,6 +2220,7 @@
 				04440CFF1E77910F00206877 /* Package.storyboard in Resources */,
 				3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */,
 				740FD3961E287F9E009413F1 /* simcom in Resources */,
+				3CD76AA31EA73394001E6466 /* UNLoginViewController.xib in Resources */,
 				04440D3E1E77CE9500206877 /* ActivateGiftCardViewController.xib in Resources */,
 				3CA898791E8DFD1600C38387 /* MBProgressHUD.bundle in Resources */,
 				04F727A11E641CE4002EB54C /* README.txt in Resources */,
@@ -2454,6 +2463,7 @@
 				9536B9741D8FC16600CD6B78 /* UnderlineField.m in Sources */,
 				04F7279D1E641CE4002EB54C /* DDLog.m in Sources */,
 				95CD33EC1D9CE4F300EE5DD3 /* base64.m in Sources */,
+				3CD76AA21EA73394001E6466 /* UNLoginViewController.m in Sources */,
 				3C8CFA721E55AF4E0035A460 /* SearchContactsCell.m in Sources */,
 				954A87AA1D98B6E800570843 /* ContactModel.m in Sources */,
 				955CCC3C1D90D55C00BC8110 /* AboutViewController.m in Sources */,
@@ -2852,8 +2862,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.aixiaoqi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a70d5725-0507-4c47-beca-165fa93da837";
-				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170323;
+				PROVISIONING_PROFILE = "1fae48ed-5a5e-4942-851d-b7643cee2fa2";
+				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170419;
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
 			};
@@ -2910,8 +2920,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.com.aixiaoqi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a70d5725-0507-4c47-beca-165fa93da837";
-				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170323;
+				PROVISIONING_PROFILE = "1fae48ed-5a5e-4942-851d-b7643cee2fa2";
+				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170419;
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
 			};

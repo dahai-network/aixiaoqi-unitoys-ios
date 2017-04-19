@@ -10,11 +10,17 @@
 
 @implementation CutomButton
 
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    lineColor = [UIColor whiteColor];
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        
+        lineColor = [UIColor whiteColor];
     }
     return self;
 }
@@ -26,12 +32,12 @@
 
 
 - (void) drawRect:(CGRect)rect {
+    [super drawRect:rect];
+    
     CGRect textRect = self.titleLabel.frame;
     CGContextRef contextRef = UIGraphicsGetCurrentContext();
     
     CGFloat descender = self.titleLabel.font.descender;
-#warning 若要在外面临时改变下划线颜色，注销下面这行代码，然后在外面调用setColor方法即可
-    lineColor = [UIColor whiteColor];
     if([lineColor isKindOfClass:[UIColor class]]){
         CGContextSetStrokeColorWithColor(contextRef, lineColor.CGColor);
     }
@@ -42,6 +48,7 @@
     CGContextClosePath(contextRef);
     CGContextDrawPath(contextRef, kCGPathStroke);
 }
+
 
 /*
 // Only override drawRect: if you perform custom drawing.

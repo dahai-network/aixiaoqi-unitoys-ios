@@ -7,11 +7,12 @@
 //
 
 #import "HWNewfeatureViewController.h"
-#import "LoginViewController.h"
+//#import "LoginViewController.h"
+#import "UNLoginViewController.h"
 #import "UIView+Extension.h"
 #import "navHomeViewController.h"
 #import "DJPageControl.h"
-#import <CommonCrypto/CommonDigest.h>
+#import <CommonCrypto/CommonDigest.h>s
 #import "JPUSHService.h"
 #define HWNewfeatureCount 4
 
@@ -334,13 +335,18 @@
 }
 
 - (void)loadLoginViewController {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    if (storyboard) {
-        UIViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-        if (loginViewController) {
-            UIWindow *window = [UIApplication sharedApplication].keyWindow;
-            window.rootViewController = loginViewController;
-        }
+    //    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    //    if (storyboard) {
+    //        UIViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+    //        if (loginViewController) {
+    //            UIWindow *window = [UIApplication sharedApplication].keyWindow;
+    //            window.rootViewController = loginViewController;
+    //        }
+    //    }
+    UNLoginViewController *loginVc = [[UNLoginViewController alloc] init];
+    if (loginVc) {
+        UIWindow *window = [UIApplication sharedApplication].keyWindow;
+        window.rootViewController = loginVc;
     }
 }
 

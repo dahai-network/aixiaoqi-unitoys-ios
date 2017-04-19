@@ -52,6 +52,8 @@
 
 #import "MBProgressHUD+UNTip.h"
 
+#import "UNLoginViewController.h"
+
 #endif
 // 如果需要使 idfa功能所需要引 的头 件(可选) #import <AdSupport/AdSupport.h>
 
@@ -134,6 +136,9 @@
         pushRegistry.delegate = self;
         pushRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
     }
+    
+    //获取基本配置
+    [self loadBasicConfig];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -218,7 +223,6 @@
 //        [_udpSocket beginReceiving:&error];
 //    }
     
-    
 #warning 先不创建udp,获取imsi
 //    [self setUpUdpSocket];
     
@@ -240,6 +244,30 @@
     
     return YES;
 }
+
+- (void)loadBasicConfig {
+    [SSNetworkRequest getRequest:apiGetBasicConfig params:nil success:^(id responseObj){
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetBasicConfig" dictData:responseObj];
+            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"paymentOfTerms"] forKey:@"paymentOfTerms"];
+            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"howToUse"]  forKey:@"howToUse"];
+            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"userAgreementUrl"] forKey:@"userAgreementUrl"];
+            //双卡双待教程
+            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
+            //出国前教程
+            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+        }
+    }failure:^(id dataObj, NSError *error) {
+        NSLog(@"数据错误：%@",[error description]);
+    } headers:nil];
+}
+
 
 - (void)showLaunchView {
 //    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
@@ -1411,16 +1439,21 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 }
 
 - (void)loadLoginViewController {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    if (storyboard) {
-        UIViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-        if (loginViewController) {
-            self.window.rootViewController = loginViewController;
-            
-            //            [self.window makeKeyAndVisible];
-            
-            //                        [self presentViewController:mainViewController animated:YES completion:nil];
-        }
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+//    if (storyboard) {
+//        UIViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+//        if (loginViewController) {
+//            self.window.rootViewController = loginViewController;
+//            
+//            //            [self.window makeKeyAndVisible];
+//            
+//            //                        [self presentViewController:mainViewController animated:YES completion:nil];
+//        }
+//    }
+    
+    UNLoginViewController *loginVc = [[UNLoginViewController alloc] init];
+    if (loginVc) {
+        self.window.rootViewController = loginVc;
     }
 }
 
