@@ -29,7 +29,6 @@
     self.readButton.touchEdgeInset = UIEdgeInsetsMake(15, 15, 15, 15);
     self.agreementButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
     [self.forgetPwdBtn setColor:UIColorFromRGB(0x00A0E9)];
-    
     if (kScreenHeightValue < 667) {
         //iphone6以下
         self.forgetBottomMargin.constant = Y(25);
@@ -469,7 +468,6 @@
         }else{
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[NSString stringWithFormat:@"%@：%@", INTERNATIONALSTRING(@"密码找回失败"),[resonseObj objectForKey:@"msg"]] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         }
-        
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
@@ -555,7 +553,8 @@
     self.secondsCountDown = 60;
     self.getCaptchaBtn.enabled = NO;
     [self.getCaptchaBtn setTitle:[NSString stringWithFormat:@"%ld 秒后重发",self.secondsCountDown] forState:UIControlStateNormal];
-    [self.getCaptchaBtn setTitleColor:UIColorFromRGB(0xff6a70) forState:UIControlStateNormal];
+    [self.getCaptchaBtn setBackgroundImage:[UIImage imageNamed:@"btn_yzm_pre"] forState:UIControlStateNormal];
+    [self.getCaptchaBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     if (!self.time) {
         self.time = [NSTimer scheduledTimerWithTimeInterval:1.00
@@ -569,14 +568,11 @@
 {
     self.secondsCountDown --;
     if (self.secondsCountDown <= 0) {
-        [self.getCaptchaBtn setTitle:@"发送验证码" forState:UIControlStateNormal];
-        [self.getCaptchaBtn setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
-        self.getCaptchaBtn.enabled = YES;
-        [self.time invalidate];
-        self.time = nil;
+        [self resetCaptchButton];
         return;
+    }else{
+        [self.getCaptchaBtn setTitle:[NSString stringWithFormat:@"%ld 秒后重发",self.secondsCountDown] forState:UIControlStateNormal];
     }
-    [self.getCaptchaBtn setTitle:[NSString stringWithFormat:@"%ld 秒后重发",self.secondsCountDown] forState:UIControlStateNormal];
 }
 
 //重置验证按钮
@@ -588,7 +584,8 @@
     }
     self.secondsCountDown = 0;
     [self.getCaptchaBtn setTitle:@"发送验证码" forState:UIControlStateNormal];
-    [self.getCaptchaBtn setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+    [self.getCaptchaBtn setBackgroundImage:[UIImage imageNamed:@"btn_yzm_nor"] forState:UIControlStateNormal];
+    [self.getCaptchaBtn setTitleColor:UIColorFromRGB(0x00A0E9) forState:UIControlStateNormal];
     self.getCaptchaBtn.enabled = YES;
 }
 
@@ -657,6 +654,24 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self.view endEditing:YES];
+    return YES;
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    if (textField == self.reCaptchaField) {
+        if (range.location >= 4){
+            return NO;
+        }else{
+            return YES;
+        }
+    }else if (textField == self.passWordField){
+        if (range.location >= 12) {
+            return NO;
+        }else{
+            return YES;
+        }
+    }
     return YES;
 }
 
