@@ -58,6 +58,12 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, assign) BOOL isClickButton;//是否点击了解绑按钮
 
+@property (nonatomic, assign) BOOL isNewCard;//是否是新的爱小器卡
+
+@property (nonatomic, copy) NSString *lastDataStr;//激活卡的时候记录上一条发送的指令
+
+@property (nonatomic, copy)NSString *activityCardData;
+
 @end
 
 static UNBlueToothTool *instance = nil;
@@ -337,7 +343,7 @@ static UNBlueToothTool *instance = nil;
             NSLog(@"只有一个包，最终发送的包内容 -> %@", totalStr);
             [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
         } else {
-            NSString *totalNumber = [NSString stringWithFormat:@"%u", ((firstStr.length - 15*2)/2)/17 + 2];
+            NSString *totalNumber = [NSString stringWithFormat:@"%lu", ((firstStr.length - 15*2)/2)/17 + 2];
             for (int i = 0; i < [totalNumber integerValue]; i++) {
                 NSString *tempStr;//后面拼接的字节
                 NSString *currentNumStr;//数据包编号
@@ -1479,19 +1485,55 @@ static UNBlueToothTool *instance = nil;
                         NSString *totalString = contentStr;
                         NSLog(@"totalString -- %@", totalString);
                         if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f17"]) {
-                            [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0a40000022f02"];
+                            if (!self.isNewCard) {
+                                [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0a40000022f02"];
+                            } else {
+                                [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a01000001dffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"];
+                                self.lastDataStr = @"a01000001dffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+                            }
                         } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f0f"]) {
                             //A0B000000A
                             [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0b000000a"];
-                        } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"]) {
+                        } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"] || [[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0345"]) {
                             //对卡断电
                             [self phoneCardToOutageNew];
                             self.bigKingCardNumber = [totalString substringWithRange:NSMakeRange(4, 16)];
+                            
+                            NSString *checkTypeStr = [totalString substringFromIndex:totalString.length-4];
+#warning 此处为判断爱小器卡是新版还是旧版用，正常情况应判断最后四位是否大于等于301
+                            if ([checkTypeStr isEqualToString:@"0004"]) {
+                                self.isNewCard = YES;
+                            }
                             [self checkQueueOrderData];
                         } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9000"]) {
+                            if (!self.isNewCard) {
+                                //对卡断电
+                                [self phoneCardToOutageNew];
+                                [self activitySuccess];
+                            } else {
+                                if ([self.lastDataStr isEqualToString:@"a01400000c810301250082028281830100"]) {
+                                    [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0c2000009d30782020181900101"];
+                                    self.lastDataStr = @"a0c2000009d30782020181900101";
+                                } else {
+                                    NSLog(@"激活卡有问题");
+                                }
+                            }
+                        } else if ([[totalString substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"91"]) {
+                            
+                            NSString *str = [NSString stringWithFormat:@"a0120000%@", [totalString substringWithRange:NSMakeRange(2, 2)]];
+                            [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:str];
+                            self.lastDataStr = @"a0120000";
+                        } else if ([[totalString substringFromIndex:totalString.length - 10] isEqualToString:@"c06d3b9000"]) {
+                            [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a01400000c810301250082028281830100"];
+                            self.lastDataStr = @"a01400000c810301250082028281830100";
+                        } else if ([[totalString substringFromIndex:totalString.length - 10] isEqualToString:@"0201e69000"]) {
+                            [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:self.activityCardData];
+                        } else if ([[totalString substringFromIndex:totalString.length - 10] isEqualToString:@"6500649000"]) {
+                            //激活成功
                             //对卡断电
                             [self phoneCardToOutageNew];
                             [self activitySuccess];
+                            self.isNewCard = NO;
                         } else {
                             //对卡断电
                             [self phoneCardToOutageNew];
@@ -1499,10 +1541,11 @@ static UNBlueToothTool *instance = nil;
                             [self hideHud];
                             [self showHudNormalString:INTERNATIONALSTRING(@"激活失败")];
                             [BlueToothDataManager shareManager].isShowHud = NO;
+                            self.isNewCard = NO;
                             
                             [self paySuccess];
                         }
-                    }else {
+                    } else {
                         NSLog(@"激活大王卡状态有问题");
                     }
                 } else if ([BlueToothDataManager shareManager].bleStatueForCard == 2) {
@@ -1639,7 +1682,12 @@ static UNBlueToothTool *instance = nil;
 #pragma mark 查询订单卡数据
 - (void)checkQueueOrderData {
     self.checkToken = YES;
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.bigKingCardNumber,@"EmptyCardSerialNumber", self.activityOrderId, @"OrderID", nil];
+    NSDictionary *params;
+    if (!self.isNewCard) {
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:self.bigKingCardNumber,@"EmptyCardSerialNumber", self.activityOrderId, @"OrderID", nil];
+    } else {
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"",@"EmptyCardSerialNumber", self.activityOrderId, @"OrderID", nil];
+    }
     
     [self getBasicHeader];
 //    NSLog(@"表演头：%@",self.headers);
@@ -1652,7 +1700,12 @@ static UNBlueToothTool *instance = nil;
             //对卡上电
             [self phoneCardToUpeLectrify:@"03"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:responseObj[@"data"][@"Data"]];
+                if (!self.isNewCard) {
+                    [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:responseObj[@"data"][@"Data"]];
+                } else {
+                    [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0a40000023f00"];
+                    self.activityCardData = [NSString stringWithFormat:@"a0140000738103012301820282818301008d6504%@", responseObj[@"data"][@"Data"]];
+                }
             });
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
