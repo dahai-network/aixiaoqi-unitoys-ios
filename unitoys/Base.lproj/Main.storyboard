@@ -38,9 +38,10 @@
             <objects>
                 <navigationController title="商城" id="DbG-xP-2CW" customClass="navHomeViewController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="商城" image="mall_bar_nor" selectedImage="mall_bar_pre" id="iJW-Ui-4cG"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="pyx-IF-q4Q">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="pyx-IF-q4Q">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" red="0.0" green="0.62745098039215685" blue="0.9137254901960784" alpha="1" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="H3X-oB-asU">
                         <rect key="frame" x="0.0" y="623" width="375" height="44"/>
@@ -1263,7 +1264,7 @@
                                                 <rect key="frame" x="0.0" y="88" width="375" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="n2J-77-fTC" id="Sf1-d9-K1E">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Header" translatesAutoresizingMaskIntoConstraints="NO" id="NYo-0a-O5a">

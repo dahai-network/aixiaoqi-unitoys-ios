@@ -73,7 +73,8 @@ typedef enum : NSUInteger {
 //        }
 //    }
     
-    self.tabBar.tintColor = [UIColor colorWithRed:1/255.0 green:208/255.0 blue:192/255.0 alpha:1];
+//    self.tabBar.tintColor = [UIColor colorWithRed:1/255.0 green:208/255.0 blue:192/255.0 alpha:1];
+    self.tabBar.tintColor = DefultColor;
     self.tabBar.backgroundColor = [UIColor whiteColor];
     
     

@@ -20,6 +20,10 @@ typedef NS_ENUM(NSUInteger, LoginVCStatuType) {
 //@property (strong, nonatomic) UIWindow *window;
 //顶部提示label
 @property (weak, nonatomic) IBOutlet UILabel *tipLabel;
+@property (weak, nonatomic) IBOutlet UILabel *pwdTipLabel;
+@property (weak, nonatomic) IBOutlet UILabel *reCaptchaTipLabel;
+
+
 //是否阅读协议button
 @property (weak, nonatomic) IBOutlet AddTouchAreaButton *readButton;
 //协议button

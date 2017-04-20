@@ -26,8 +26,8 @@
 /* Class = "UILabel"; text = "类型"; ObjectID = "PlH-PP-hqw"; */
 "PlH-PP-hqw.text" = "Type";
 
-/* Class = "UILabel"; text = "身高"; ObjectID = "QJC-MD-oKH"; */
-"QJC-MD-oKH.text" = "Height";
+/* Class = "UILabel"; text = "手机号"; ObjectID = "QJC-MD-oKH"; */
+"QJC-MD-oKH.text" = "Phone";
 
 /* Class = "UITextField"; placeholder = "昵称"; ObjectID = "Ty6-7I-26W"; */
 "Ty6-7I-26W.placeholder" = "Nickname";

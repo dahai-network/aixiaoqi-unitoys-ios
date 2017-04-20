@@ -18,10 +18,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblName;
 @property (weak, nonatomic) IBOutlet UILabel *lblSex;
 @property (weak, nonatomic) IBOutlet UILabel *lblAge;
-@property (weak, nonatomic) IBOutlet UILabel *lblHeight;
-@property (weak, nonatomic) IBOutlet UILabel *lblWeight;
-@property (weak, nonatomic) IBOutlet UILabel *lblTarget;
-@property (weak, nonatomic) IBOutlet UILabel *lblBmi;
+@property (weak, nonatomic) IBOutlet UILabel *lblPhone;
+//@property (weak, nonatomic) IBOutlet UILabel *lblWeight;
+//@property (weak, nonatomic) IBOutlet UILabel *lblTarget;
+//@property (weak, nonatomic) IBOutlet UILabel *lblBmi;
 
 @property (weak, nonatomic) UIView *valueView;
 

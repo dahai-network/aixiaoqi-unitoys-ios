@@ -26,8 +26,8 @@
 /* Class = "UILabel"; text = "类型"; ObjectID = "PlH-PP-hqw"; */
 "PlH-PP-hqw.text" = "类型";
 
-/* Class = "UILabel"; text = "身高"; ObjectID = "QJC-MD-oKH"; */
-"QJC-MD-oKH.text" = "身高";
+/* Class = "UILabel"; text = "手机号"; ObjectID = "QJC-MD-oKH"; */
+"QJC-MD-oKH.text" = "手机号";
 
 /* Class = "UITextField"; placeholder = "昵称"; ObjectID = "Ty6-7I-26W"; */
 "Ty6-7I-26W.placeholder" = "昵称";
@@ -74,8 +74,8 @@
 /* Class = "UIButton"; normalTitle = "300"; ObjectID = "rEo-P3-fio"; */
 "rEo-P3-fio.normalTitle" = "300";
 
-/* Class = "UIViewController"; title = "名字"; ObjectID = "rTM-C2-9X9"; */
-"rTM-C2-9X9.title" = "名字";
+/* Class = "UIViewController"; title = "资料"; ObjectID = "rTM-C2-9X9"; */
+"rTM-C2-9X9.title" = "资料";
 
 /* Class = "UILabel"; text = "推荐有支付宝账户的用户使用"; ObjectID = "u4Y-gI-6rt"; */
 "u4Y-gI-6rt.text" = "推荐有支付宝账户的用户使用";

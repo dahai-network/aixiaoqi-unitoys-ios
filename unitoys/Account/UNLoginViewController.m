@@ -20,6 +20,8 @@
 @property (nonatomic, assign) NSInteger secondsCountDown;
 
 @property (nonatomic, strong) NSTimer *time;
+
+@property (nonatomic, weak) UILabel *currentLabel;
 @end
 
 @implementation UNLoginViewController
@@ -246,8 +248,9 @@
     _accountField.text = nil;
     _passWordField.text = nil;
     _reCaptchaField.text = nil;
-    self.tipLabel.text = nil;
     self.tipLabel.hidden = YES;
+    self.pwdTipLabel.hidden = YES;
+    self.reCaptchaTipLabel.hidden = YES;
     if (type == LoginVCStatuTypeRegister) {
         //展开折叠动画
         [self startAnimation];
@@ -298,10 +301,12 @@
         self.accountField.textAlignment = NSTextAlignmentLeft;
         self.passWordField.textAlignment = NSTextAlignmentLeft;
         self.tipLabel.textAlignment = NSTextAlignmentLeft;
+        self.pwdTipLabel.textAlignment = NSTextAlignmentLeft;
     }else{
         self.accountField.textAlignment = NSTextAlignmentCenter;
         self.passWordField.textAlignment = NSTextAlignmentCenter;
         self.tipLabel.textAlignment = NSTextAlignmentCenter;
+        self.pwdTipLabel.textAlignment = NSTextAlignmentCenter;
     }
 }
 
@@ -322,9 +327,10 @@
 {
     UIView *leftV   = [UIView new];
     leftV.frame     = CGRectMake(0, 0, 11, 11);
-    
     tf.leftView     = leftV;
+    tf.rightView    = leftV;
     tf.leftViewMode = UITextFieldViewModeAlways;
+    tf.rightViewMode = UITextFieldViewModeAlways;
 }
 
 //判断格式是否正确
@@ -390,7 +396,6 @@
                 [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
                     NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
                 }];
-                //                NSLog(@"拿到数据：%@",resonseObj);
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 if (storyboard) {
                     UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
@@ -401,23 +406,19 @@
                         }];
                     }
                 }
-                //                [[UITabBar appearance] setBackgroundImage:<#(UIImage * _Nullable)#>:[UIColor blueColor]];
             }else{
                 if (resonseObj[@"msg"]) {
                     [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
                 }else{
                     HUDNormal(INTERNATIONALSTRING(@"登录失败"))
                 }
-                //                HUDNormal(resonseObj[@"msg"])
             }
         }else{
             [self showAlertViewWithMessage:@"服务器好像有点忙，请稍后重试"];
         }
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"登录失败：%@",[error description]);
-        //        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器可能罢工中，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
         HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-        //        HUDNormal([error description])
     } headers:nil];
 }
 
@@ -443,7 +444,6 @@
         
     } headers:self.headers];
 }
-
 - (void)addBlackLists:(NSArray *)phoneList
 {
     [[UNDatabaseTools sharedFMDBTools] insertBlackListWithPhoneLists:phoneList];
@@ -489,8 +489,6 @@
     
     [SSNetworkRequest postRequest:[apiRegisterUser stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
-            //            [[[UIAlertView alloc] initWithTitle:@"注册提示" message:@"用户注册成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-            //            [self dismissViewControllerAnimated:YES completion:nil];
             //注册成功之后登录
             [self registerSuccessAndLogin];
         }else{
@@ -606,30 +604,35 @@
     CGFloat offsetY = 0;
     if (self.currentStatuType == LoginVCStatuTypeLogin) {
         if (textField == self.accountField) {
-            self.tipLabel.text = @"登录账号";
+            [self updateTipLabelShow:self.tipLabel];
+            self.currentLabel.text = @"登录账号";
         }else{
-            self.tipLabel.text = @"登录密码";
+            [self updateTipLabelShow:self.pwdTipLabel];
+            self.currentLabel.text = @"登录密码";
             offsetY = - 72;
         }
     }else if (self.currentStatuType == LoginVCStatuTypeRegister){
         if (textField == self.accountField) {
-            self.tipLabel.text = @"注册账号";
+            [self updateTipLabelShow:self.tipLabel];
+            self.currentLabel.text = @"注册账号";
         }else if (textField == self.reCaptchaField){
-            self.tipLabel.text = @"验证码";
+            [self updateTipLabelShow:self.reCaptchaTipLabel];
             offsetY = - 72;
         }else{
-            self.tipLabel.text = @"注册密码";
-
+            [self updateTipLabelShow:self.pwdTipLabel];
+            self.currentLabel.text = @"注册密码";
             offsetY = - 72;
         }
     }else{
         if (textField == self.accountField) {
-            self.tipLabel.text = @"账号";
+            [self updateTipLabelShow:self.tipLabel];
+            self.currentLabel.text = @"登录账号";
         }else if (textField == self.reCaptchaField){
-            self.tipLabel.text = @"验证码";
+            [self updateTipLabelShow:self.reCaptchaTipLabel];
             offsetY = - 72;
         }else{
-            self.tipLabel.text = @"密码";
+            [self updateTipLabelShow:self.pwdTipLabel];
+            self.currentLabel.text = @"登录密码";
             offsetY = - 72;
         }
     }
@@ -638,14 +641,26 @@
             self.view.frame = CGRectMake(0.0f, offsetY, self.view.frame.size.width, self.view.frame.size.height);
         }];
     }
-    self.tipLabel.hidden = NO;
+}
+
+- (void)updateTipLabelShow:(UILabel *)label
+{
+    self.currentLabel = label;
+    self.currentLabel.hidden = NO;
 }
 
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    self.tipLabel.text = nil;
-    self.tipLabel.hidden = YES;
+    if (self.currentLabel) {
+//        self.currentLabel.hidden = YES;
+    }else{
+        self.tipLabel.hidden = YES;
+        self.tipLabel.text = nil;
+        self.reCaptchaTipLabel.hidden = YES;
+        self.pwdTipLabel.hidden = YES;
+        self.pwdTipLabel.text = nil;
+    }
     [UIView animateWithDuration:0.3f animations:^{
         self.view.frame = CGRectMake(0.0f, 0.0f, self.view.frame.size.width, self.view.frame.size.height);
     }];

@@ -29,9 +29,10 @@
 //    self.tableView.scrollEnabled = NO;
     
     UIView *valueView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    valueView.height -= 64;
     valueView.backgroundColor = [UIColor colorWithRed:32/255 green:34/255 blue:42/255 alpha:0.2];
     
-    UIPickerView *pickerview = [[UIPickerView alloc] initWithFrame: CGRectMake(0,self.view.bounds.size.height-210,self.view.bounds.size.width,105)];
+    UIPickerView *pickerview = [[UIPickerView alloc] initWithFrame: CGRectMake(0,valueView.height-(216 + 35 + 1 + 5),self.view.bounds.size.width,216)];
     [pickerview setBackgroundColor:[UIColor whiteColor]];
     [valueView addSubview:pickerview];
     self.pickerView = pickerview;
@@ -42,7 +43,7 @@
     [valueView addSubview:titleLabel];
     self.titleLabel = titleLabel;
     
-    UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(pickerview.frame) + 3, self.view.bounds.size.width, 35)];
+    UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,valueView.height - 35 - 1, self.view.bounds.size.width, 35)];
     btnOK.hidden = NO;
     [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
@@ -93,23 +94,21 @@
     self.arrAgeMonth = [[NSArray alloc] initWithArray:arrTemp];
     
     
-    arrTemp = [[NSMutableArray alloc] init];
-    for (int i=0;i<=110;i++) {
-        [arrTemp addObject:[NSString stringWithFormat:@"%dkg",i]];
-    }
-    
-    self.arrWeight = [[NSArray alloc] initWithArray:arrTemp];
-    
-    arrTemp = [[NSMutableArray alloc] init];
-    
-    for (int i=0;i<=31000;i=i+1000) {
-        [arrTemp addObject:[NSString stringWithFormat:@"%d%@",i, INTERNATIONALSTRING(@"步")]];
-    }
+//    arrTemp = [[NSMutableArray alloc] init];
+//    for (int i=0;i<=110;i++) {
+//        [arrTemp addObject:[NSString stringWithFormat:@"%dkg",i]];
+//    }
+//    
+//    self.arrWeight = [[NSArray alloc] initWithArray:arrTemp];
+//    
+//    arrTemp = [[NSMutableArray alloc] init];
+//    
+//    for (int i=0;i<=31000;i=i+1000) {
+//        [arrTemp addObject:[NSString stringWithFormat:@"%d%@",i, INTERNATIONALSTRING(@"步")]];
+//    }
     
     self.arrTarget = [[NSArray alloc] initWithArray:arrTemp];
-    
     [self loadUserInfo];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setValue:) name:@"setValue" object:nil];
 }
 
@@ -168,11 +167,8 @@
 }
 
 - (void)selectValue {
-    //
     
     self.checkToken = YES;
-    //    ;
-    //
     NSDictionary *params; /*[[NSDictionary alloc] initWithObjectsAndKeys:[[UIDevice currentDevice] systemVersion],@"Version",[[UIDevice currentDevice] model],@"Model",self.contentFeedback.text,@"Info", nil];*/
     NSString *aValue;
     NSString *avalue1;
@@ -303,21 +299,21 @@
         self.lblSex.text = INTERNATIONALSTRING(@"女");
     }
     if (userData[@"Birthday"]) {
-        self.lblAge.text = [[self timeWithTimeIntervalString:userData[@"Birthday"]] substringWithRange:NSMakeRange(0, 8)];
+        self.lblAge.text = [[self timeWithTimeIntervalString:userData[@"Birthday"]] substringWithRange:NSMakeRange(0, 7)];
     } else {
         if (userData[@"year"] && userData[@"month"]) {
-            self.lblAge.text = [NSString stringWithFormat:@"%@年%@月",[userData objectForKey:@"year"], [userData objectForKey:@"month"]];
+            self.lblAge.text = [NSString stringWithFormat:@"%@-%@",[userData objectForKey:@"year"], [userData objectForKey:@"month"]];
         } else {
-            self.lblAge.text = [NSString stringWithFormat:@"%d年%d月", self.yearStr, self.monthStr];
+            self.lblAge.text = [NSString stringWithFormat:@"%d-%d", self.yearStr, self.monthStr];
         }
     }
     
-    self.lblHeight.text = [NSString stringWithFormat:@"%@cm",[userData objectForKey:@"Height"]];
-    self.lblWeight.text = [NSString stringWithFormat:@"%@kg",[userData objectForKey:@"Weight"]];
-    
-    self.lblTarget.text = [NSString stringWithFormat:@"%@%@",[userData objectForKey:@"MovingTarget"], INTERNATIONALSTRING(@"步")];
+    self.lblPhone.text = [userData objectForKey:@"Tel"];
+//    self.lblWeight.text = [NSString stringWithFormat:@"%@kg",[userData objectForKey:@"Weight"]];
+//    
+//    self.lblTarget.text = [NSString stringWithFormat:@"%@%@",[userData objectForKey:@"MovingTarget"], INTERNATIONALSTRING(@"步")];
     [BlueToothDataManager shareManager].movingTarget = [userData objectForKey:@"MovingTarget"];
-    [self calcBMI];
+//    [self calcBMI];
     
     self.dicInfo = [[NSMutableDictionary alloc] initWithDictionary:userData];
     
@@ -332,7 +328,7 @@
     formatter.timeZone = [NSTimeZone timeZoneWithName:@"shanghai"];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setTimeStyle:NSDateFormatterShortStyle];
-    [formatter setDateFormat:@"yyyy年MM月dd日 HH:mm"];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
     
     // 毫秒值转化为秒
     NSTimeInterval time=[timeString doubleValue];//因为时差问题要加8小时 == 28800 sec?
@@ -342,21 +338,21 @@
     return dateString;
 }
 
-- (void)calcBMI{
-    
-    if ([self.lblHeight.text length]>0) {
-        if ([self.lblWeight.text floatValue] > 30) {
-            self.lblBmi.text = [NSString stringWithFormat:@"%.2f",[self.lblWeight.text floatValue]/[self.lblHeight.text intValue]/[self.lblHeight.text intValue]*10000];
-        } else {
-            NSString *weight = @"30";
-            self.lblBmi.text = [NSString stringWithFormat:@"%.2f",[weight floatValue]/[self.lblHeight.text intValue]/[self.lblHeight.text intValue]*10000];
-        }
-    }else{
-        self.lblBmi.text = @"";
-    }
-    
-    
-}
+//- (void)calcBMI{
+//    
+//    if ([self.lblHeight.text length]>0) {
+//        if ([self.lblWeight.text floatValue] > 30) {
+//            self.lblBmi.text = [NSString stringWithFormat:@"%.2f",[self.lblWeight.text floatValue]/[self.lblHeight.text intValue]/[self.lblHeight.text intValue]*10000];
+//        } else {
+//            NSString *weight = @"30";
+//            self.lblBmi.text = [NSString stringWithFormat:@"%.2f",[weight floatValue]/[self.lblHeight.text intValue]/[self.lblHeight.text intValue]*10000];
+//        }
+//    }else{
+//        self.lblBmi.text = @"";
+//    }
+//    
+//    
+//}
 
 - (void)loadNewHead{
     UIActionSheet *choiceSheet = [[UIActionSheet alloc] initWithTitle:nil
@@ -540,7 +536,6 @@
 -(void)callSetValue {
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Profile" bundle:nil];
     if (storyboard) {
-        
         SetValueViewController *setValueViewController = [storyboard instantiateViewControllerWithIdentifier:@"setValueViewController"];
         setValueViewController.name = [self.dicInfo objectForKey:@"NickName"];
         if (setValueViewController) {
@@ -567,7 +562,7 @@
                 break;
             case 1:
                 self.pickerType = 1;
-                self.titleLabel.hidden = YES;
+                self.titleLabel.hidden = NO;
                 self.titleLabel.text = INTERNATIONALSTRING(@"性别");
                 self.arrSource = self.arrSex;
                 self.valueView.hidden = NO;
@@ -575,24 +570,25 @@
             case 2:
                 self.pickerType = 2;
                 self.titleLabel.hidden = NO;
-                self.titleLabel.text = INTERNATIONALSTRING(@"出生年月");
+                self.titleLabel.text = INTERNATIONALSTRING(@"年龄");
                 self.arrSource = self.arrAgeYear;
                 self.valueView.hidden = NO;
                 break;
-            case 3:
-                self.pickerType = 3;
-                self.titleLabel.hidden = NO;
-                self.titleLabel.text = INTERNATIONALSTRING(@"身高");
-                self.arrSource = self.arrHeight;
-                self.valueView.hidden = NO;
-                break;
-            case 4:
-                self.pickerType = 4;
-                self.titleLabel.hidden = NO;
-                self.titleLabel.text = INTERNATIONALSTRING(@"体重");
-                self.arrSource = self.arrWeight;
-                self.valueView.hidden = NO;
-                break;
+//            case 3:
+//                self.pickerType = 3;
+//                self.titleLabel.hidden = NO;
+////                self.titleLabel.text = INTERNATIONALSTRING(@"身高");
+//                self.titleLabel.text = INTERNATIONALSTRING(@"手机号");
+//                self.arrSource = self.arrHeight;
+//                self.valueView.hidden = NO;
+//                break;
+//            case 4:
+//                self.pickerType = 4;
+//                self.titleLabel.hidden = NO;
+//                self.titleLabel.text = INTERNATIONALSTRING(@"体重");
+//                self.arrSource = self.arrWeight;
+//                self.valueView.hidden = NO;
+//                break;
             
             default:
                 break;
@@ -633,13 +629,13 @@
                         [self.pickerView selectRow:[self.arrAgeMonth indexOfObject:[NSString stringWithFormat:@"%d月", self.monthStr]] inComponent:1 animated:YES];
                     }
                     break;
-                case 3:
-                    
-                    [self.pickerView selectRow:[self.arrHeight indexOfObject:[NSString stringWithFormat:@"%dcm",[[self.dicInfo objectForKey:@"Height"] intValue]]] inComponent:0 animated:YES];
-                    break;
-                case 4:
-                    [self.pickerView selectRow:[self.arrWeight indexOfObject:[NSString stringWithFormat:@"%dkg",[[self.dicInfo objectForKey:@"Weight"] intValue]]] inComponent:0 animated:YES];
-                    break;
+//                case 3:
+//                    
+//                    [self.pickerView selectRow:[self.arrHeight indexOfObject:[NSString stringWithFormat:@"%dcm",[[self.dicInfo objectForKey:@"Height"] intValue]]] inComponent:0 animated:YES];
+//                    break;
+//                case 4:
+//                    [self.pickerView selectRow:[self.arrWeight indexOfObject:[NSString stringWithFormat:@"%dkg",[[self.dicInfo objectForKey:@"Weight"] intValue]]] inComponent:0 animated:YES];
+//                    break;
                     
                 default:
                     break;
@@ -655,21 +651,22 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 15;
+    return 10;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch (indexPath.section) {
-        case 0:
-            return 79;
-            break;
-        case 1:
-            return 42;
-            break;
-        default:
-            return 42;
-            break;
-    }
+//    switch (indexPath.section) {
+//        case 0:
+//            return 79;
+//            break;
+//        case 1:
+//            return 42;
+//            break;
+//        default:
+//            return 42;
+//            break;
+//    }
+    return 60;
 }
 
 #pragma mark - UIPickviewDelegate,UIPickViewDatasource
