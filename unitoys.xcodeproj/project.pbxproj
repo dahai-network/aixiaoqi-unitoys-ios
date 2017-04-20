@@ -155,6 +155,8 @@
 		3C9035651E9B5D2700FF95C0 /* MessageRecordController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C9035641E9B5D2700FF95C0 /* MessageRecordController.m */; };
 		3C90356B1E9B6A5C00FF95C0 /* PhoneRecordController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3C90356A1E9B6A5C00FF95C0 /* PhoneRecordController.mm */; };
 		3C98E99A1E9B736900B51419 /* PhoneRecordSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C98E9991E9B736900B51419 /* PhoneRecordSearchController.m */; };
+		3C99A8911EA85CD100C96BE7 /* ExplainDetailsLastController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C99A88F1EA85CD100C96BE7 /* ExplainDetailsLastController.m */; };
+		3C99A8921EA85CD100C96BE7 /* ExplainDetailsLastController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C99A8901EA85CD100C96BE7 /* ExplainDetailsLastController.xib */; };
 		3CA898771E8DF33F00C38387 /* MBProgressHUD+UNTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */; };
 		3CA898791E8DFD1600C38387 /* MBProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */; };
 		3CC3E0A31E63BE2500A62F8C /* AbroadMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A21E63BE2500A62F8C /* AbroadMessageController.m */; };
@@ -623,6 +625,9 @@
 		3C90356A1E9B6A5C00FF95C0 /* PhoneRecordController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PhoneRecordController.mm; sourceTree = "<group>"; };
 		3C98E9981E9B736900B51419 /* PhoneRecordSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneRecordSearchController.h; sourceTree = "<group>"; };
 		3C98E9991E9B736900B51419 /* PhoneRecordSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneRecordSearchController.m; sourceTree = "<group>"; };
+		3C99A88E1EA85CD100C96BE7 /* ExplainDetailsLastController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExplainDetailsLastController.h; sourceTree = "<group>"; };
+		3C99A88F1EA85CD100C96BE7 /* ExplainDetailsLastController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExplainDetailsLastController.m; sourceTree = "<group>"; };
+		3C99A8901EA85CD100C96BE7 /* ExplainDetailsLastController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExplainDetailsLastController.xib; sourceTree = "<group>"; };
 		3CA898751E8DF33F00C38387 /* MBProgressHUD+UNTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MBProgressHUD+UNTip.h"; sourceTree = "<group>"; };
 		3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD+UNTip.m"; sourceTree = "<group>"; };
 		3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MBProgressHUD.bundle; sourceTree = "<group>"; };
@@ -1764,6 +1769,9 @@
 				04440D2B1E77C6BA00206877 /* ExplainDetailsChildController.xib */,
 				3CC3E0CD1E64346700A62F8C /* AbroadPackageDescView.h */,
 				3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */,
+				3C99A88E1EA85CD100C96BE7 /* ExplainDetailsLastController.h */,
+				3C99A88F1EA85CD100C96BE7 /* ExplainDetailsLastController.m */,
+				3C99A8901EA85CD100C96BE7 /* ExplainDetailsLastController.xib */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -2224,6 +2232,7 @@
 				04440D3E1E77CE9500206877 /* ActivateGiftCardViewController.xib in Resources */,
 				3CA898791E8DFD1600C38387 /* MBProgressHUD.bundle in Resources */,
 				04F727A11E641CE4002EB54C /* README.txt in Resources */,
+				3C99A8921EA85CD100C96BE7 /* ExplainDetailsLastController.xib in Resources */,
 				952B2B071DC22D75006A7C69 /* messages.plist in Resources */,
 				0480516D1E86682F00E8AB55 /* PurviewSettingViewController.xib in Resources */,
 				3C4A07821E9CD54B00A6DDA9 /* CallDetailsActionCell.xib in Resources */,
@@ -2348,6 +2357,7 @@
 				95938D541D951F63008A0A21 /* ContactsViewController.m in Sources */,
 				3C20C20E1E6CF3CC008078BB /* UNSipEngineInitialize.mm in Sources */,
 				95938D351D933FFA008A0A21 /* CountryCell.m in Sources */,
+				3C99A8911EA85CD100C96BE7 /* ExplainDetailsLastController.m in Sources */,
 				9520BCB01DA1048100F0B286 /* RechargeViewController.m in Sources */,
 				04F7279F1E641CE4002EB54C /* ContextFilterLogFormatter.m in Sources */,
 				3C9035561E9B344700FF95C0 /* PhoneIndexController.mm in Sources */,

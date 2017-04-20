@@ -100,10 +100,20 @@
             self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
             self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
             self.IsSupport4G = responseObj[@"data"][@"list"][@"PackageIsSupport4G"];
-            self.IsApn = responseObj[@"data"][@"list"][@"PackageIsApn"];
+            self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
+            
+            if ([responseObj[@"data"][@"list"][@"PackageIsApn"] boolValue]) {
+                if ([self.apnName isEqualToString:@"3gnet"]) {
+                    self.IsApn= @(NO);
+                }else{
+                    self.IsApn = @(YES);
+                }
+            }else{
+                self.IsApn = @(NO);
+            }
+            
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
             self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
-            self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
             [self.tableView reloadData];
             self.cancelButton.enabled = YES;
             self.activateButton.enabled = YES;
@@ -122,7 +132,9 @@
             self.packageId = responseObj[@"data"][@"list"][@"PackageId"];
             self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
             self.IsSupport4G = responseObj[@"data"][@"list"][@"PackageIsSupport4G"];
+            
             self.IsApn = responseObj[@"data"][@"list"][@"PackageIsApn"];
+            
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
             self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
             self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];

@@ -659,7 +659,13 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    if (textField == self.reCaptchaField) {
+    if (textField == self.accountField) {
+        if (range.location >= 11){
+            return NO;
+        }else{
+            return YES;
+        }
+    }else if (textField == self.reCaptchaField) {
         if (range.location >= 4){
             return NO;
         }else{
