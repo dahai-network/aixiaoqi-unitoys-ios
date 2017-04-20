@@ -26,6 +26,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblDetails;
 @property (weak, nonatomic) IBOutlet UILabel *paymentOfTerms;
 @property (weak, nonatomic) IBOutlet UILabel *howToUse;
+@property (weak, nonatomic) IBOutlet UIButton *firstButton;
+@property (weak, nonatomic) IBOutlet UIButton *secondButton;
+@property (weak, nonatomic) IBOutlet UIButton *thirdButton;
+@property (weak, nonatomic) IBOutlet UIView *firstButtonView;
+@property (weak, nonatomic) IBOutlet UIView *secondButtonView;
+@property (weak, nonatomic) IBOutlet UIView *thirdButtonView;
+@property (nonatomic, assign) int chooseButtonIndex;
 
 @property (readwrite) NSDictionary *dicPackage;
 

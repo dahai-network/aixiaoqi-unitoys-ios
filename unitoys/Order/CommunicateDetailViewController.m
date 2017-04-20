@@ -16,7 +16,8 @@
 @property (nonatomic, strong)NSDictionary *communicateDetailInfo;
 @property (nonatomic, strong)CommunicateDetailTableViewCell *firstCell;
 @property (nonatomic, strong)CommunicateDetailTableViewCell *secondCell;
-@property (strong, nonatomic) IBOutlet UIView *footView;
+@property (nonatomic, assign)int showIndex;
+//@property (strong, nonatomic) IBOutlet UIView *footView;
 
 @end
 
@@ -26,9 +27,9 @@
     [super viewDidLoad];
     
     self.title = INTERNATIONALSTRING(@"套餐详情");
+    self.showIndex = 1;
     
     self.communicateDetailInfo = [[NSDictionary alloc] init];
-    self.tableView.tableFooterView = self.footView;
     
     //cell高度自适应
     self.tableView.estimatedRowHeight = 44.0f;
@@ -81,7 +82,7 @@
 #pragma mark - tableView代理方法
 #pragma mark 返回行数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return 2;
 }
 
 //#pragma mark 返回行高
@@ -96,19 +97,44 @@
         self.firstCell = [tableView dequeueReusableCellWithIdentifier:identifier];
         if (!self.firstCell) {
             self.firstCell=[[[NSBundle mainBundle] loadNibNamed:@"CommunicateDetailTableViewCell" owner:nil options:nil] firstObject];
+            [self.firstCell.buyButton addTarget:self action:@selector(jumpToBuyView) forControlEvents:UIControlEventTouchUpInside];
         }
         setImage(self.firstCell.imgCommunicatePhoto, self.communicateDetailInfo[@"LogoPic"])
         self.firstCell.lblCommunicateName.text = self.communicateDetailInfo[@"PackageName"];
+        self.firstCell.lblValidity.text = [NSString stringWithFormat:@"有效期：%@天", self.communicateDetailInfo[@"ExpireDays"]];
         self.firstCell.lblCommunicatePrice.text = [NSString stringWithFormat:@"￥%@", self.communicateDetailInfo[@"Price"]];
         return self.firstCell;
     } else if (indexPath.row == 1) {
         static NSString *identifier=@"ContentTableViewCell";
         self.secondCell = [tableView dequeueReusableCellWithIdentifier:identifier];
         if (!self.secondCell) {
-            self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"CommunicateDetailTableViewCell" owner:nil options:nil] [1];
+            self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"CommunicateDetailTableViewCell" owner:nil options:nil][1];
+            [self.secondCell.firstButton addTarget:self action:@selector(changeShowData:) forControlEvents:UIControlEventTouchUpInside];
+            [self.secondCell.secondButton addTarget:self action:@selector(changeShowData:) forControlEvents:UIControlEventTouchUpInside];
         }
-        self.secondCell.lblFirstName.text = INTERNATIONALSTRING(@"使用介绍:");
-        self.secondCell.lblContent.text = self.communicateDetailInfo[@"Features"];
+        switch (self.showIndex) {
+            case 1:
+                self.secondCell.lblContent.text = self.communicateDetailInfo[@"Features"];
+                [self.secondCell.firstButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
+                self.secondCell.firstButtonView.hidden = NO;
+                [self.secondCell.secondButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+                self.secondCell.secondButtonView.hidden = YES;
+                break;
+            case 2:
+                self.secondCell.lblContent.text = self.communicateDetailInfo[@"Details"];
+                [self.secondCell.firstButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+                self.secondCell.firstButtonView.hidden = YES;
+                [self.secondCell.secondButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
+                self.secondCell.secondButtonView.hidden = NO;
+                break;
+            default:
+                self.secondCell.lblContent.text = self.communicateDetailInfo[@"Features"];
+                [self.secondCell.firstButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
+                self.secondCell.firstButtonView.hidden = NO;
+                [self.secondCell.secondButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+                self.secondCell.secondButtonView.hidden = YES;
+                break;
+        }
         return self.secondCell; 
     } else {
         static NSString *identifier=@"ContentTableViewCell";
@@ -116,13 +142,30 @@
         if (!self.secondCell) {
             self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"CommunicateDetailTableViewCell" owner:nil options:nil][1];
         }
-        self.secondCell.lblFirstName.text = INTERNATIONALSTRING(@"注意事项:");
+//        self.secondCell.lblFirstName.text = INTERNATIONALSTRING(@"注意事项:");
         self.secondCell.lblContent.text = self.communicateDetailInfo[@"Details"];
         return self.secondCell;
     }
 }
+
+- (void)changeShowData:(UIButton *)sender {
+    switch (sender.tag) {
+        case 101:
+            self.showIndex = 1;
+            break;
+        case 102:
+            self.showIndex = 2;
+            break;
+        default:
+            self.showIndex = 1;
+            break;
+    }
+    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:1 inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+}
+
 #pragma mark 点击购买按钮点击事件
-- (IBAction)bitToBuyAction:(UIButton *)sender {
+- (void)jumpToBuyView {
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
     OrderCommitViewController *orderCommitViewController = [mainStory instantiateViewControllerWithIdentifier:@"orderCommitViewController"];
     if (orderCommitViewController) {

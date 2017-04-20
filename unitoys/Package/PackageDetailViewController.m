@@ -15,6 +15,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.chooseButtonIndex = 1;
     
     if (self.isAbroadMessage) {
 //        self.title = self.currentTitle;
@@ -45,11 +46,12 @@
             self.ivPic.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Pic"]]]];
             self.dicPackage = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
             
-            self.lblFeatures.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Features"];
-            self.lblDetails.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Details"];
-            self.paymentOfTerms.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"paymentOfTerms"];
+            self.lblFeatures.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Details"];
+//            self.lblFeatures.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Features"];
+//            self.lblDetails.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Details"];
+//            self.paymentOfTerms.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"paymentOfTerms"];
 //            self.howToUse.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"howToUse"];
-            self.howToUse.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"UseDescr"];
+//            self.howToUse.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"UseDescr"];
             
             [self.tableView reloadData];
 //            [self.tableView needsUpdateConstraints];
@@ -108,7 +110,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row==0) {
-        return 300*[UIScreen mainScreen].bounds.size.width/375.00;
+        return 262*[UIScreen mainScreen].bounds.size.width/375.00+10;
     } else {
         return UITableViewAutomaticDimension;
     }
@@ -118,8 +120,54 @@
     return 10;
 }
 
+- (IBAction)showDetailAction:(UIButton *)sender {
+    switch (sender.tag) {
+        case 101:
+            self.chooseButtonIndex = 1;
+            self.lblFeatures.text = [self.dicPackage objectForKey:@"Details"];
+            [self.firstButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
+            self.firstButtonView.hidden = NO;
+            [self.secondButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            self.secondButtonView.hidden = YES;
+            [self.thirdButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            self.thirdButtonView.hidden = YES;
+            break;
+        case 102:
+            self.chooseButtonIndex = 2;
+            self.lblFeatures.text = [self.dicPackage objectForKey:@"Features"];
+            [self.firstButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            self.firstButtonView.hidden = YES;
+            [self.secondButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
+            self.secondButtonView.hidden = NO;
+            [self.thirdButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            self.thirdButtonView.hidden = YES;
+            break;
+        case 103:
+            self.chooseButtonIndex = 3;
+            self.lblFeatures.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"paymentOfTerms"];
+            [self.firstButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            self.firstButtonView.hidden = YES;
+            [self.secondButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            self.secondButtonView.hidden = YES;
+            [self.thirdButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
+            self.thirdButtonView.hidden = NO;
+            break;
+        default:
+            self.chooseButtonIndex = 1;
+            self.lblFeatures.text = [self.dicPackage objectForKey:@"Details"];
+            [self.firstButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
+            self.firstButtonView.hidden = NO;
+            [self.secondButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            self.secondButtonView.hidden = YES;
+            [self.thirdButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
+            self.thirdButtonView.hidden = YES;
+            break;
+    }
+    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:1 inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+}
+
 - (IBAction)buyPackage:(id)sender {
-    
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
     OrderCommitViewController *orderCommitViewController = [mainStory instantiateViewControllerWithIdentifier:@"orderCommitViewController"];
     if (orderCommitViewController) {

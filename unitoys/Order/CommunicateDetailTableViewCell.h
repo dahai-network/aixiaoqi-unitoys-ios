@@ -14,5 +14,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblCommunicatePrice;
 @property (weak, nonatomic) IBOutlet UILabel *lblFirstName;
 @property (weak, nonatomic) IBOutlet UILabel *lblContent;
+@property (weak, nonatomic) IBOutlet UIButton *firstButton;
+@property (weak, nonatomic) IBOutlet UIButton *secondButton;
+@property (weak, nonatomic) IBOutlet UIView *firstButtonView;
+@property (weak, nonatomic) IBOutlet UIView *secondButtonView;
+@property (weak, nonatomic) IBOutlet UILabel *lblValidity;
+@property (weak, nonatomic) IBOutlet UIButton *buyButton;
 
 @end

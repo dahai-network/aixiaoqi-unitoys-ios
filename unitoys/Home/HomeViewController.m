@@ -1366,21 +1366,6 @@
         NSLog(@"产品信息 -- %@", responseObj);
         self.productInfoArr = responseObj[@"data"];
         [self.hotCollectionView reloadData];
-//        if (responseObj) {
-//            self.arrPicUrls = [[NSMutableArray alloc] init];
-//            self.arrPicJump = [[NSMutableArray alloc] init];
-//            self.arrPicTitles = [[NSMutableArray alloc] init];
-//            //构造图片列表和链接列表
-//            for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
-//                [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
-//                [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
-//                [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
-//            }
-//            self.AdView.imageURLStringsGroup = self.arrPicUrls;
-//            self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
-//        }else{
-//            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-//        }
     }else{
         [SSNetworkRequest getRequest:[apiGetProductList stringByAppendingString:[self getParamStr]] params:nil success:^(id responseObj){
             
@@ -1399,21 +1384,6 @@
             NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetProductList"];
             self.productInfoArr = responseObj[@"data"];
             [self.hotCollectionView reloadData];
-//            if (responseObj) {
-//                self.arrPicUrls = [[NSMutableArray alloc] init];
-//                self.arrPicJump = [[NSMutableArray alloc] init];
-//                self.arrPicTitles = [[NSMutableArray alloc] init];
-//                //构造图片列表和链接列表
-//                for (NSDictionary *dicPic in [responseObj objectForKey:@"data"]) {
-//                    [self.arrPicUrls addObject:[dicPic objectForKey:@"Image"]];
-//                    [self.arrPicJump addObject:[dicPic objectForKey:@"Url"]];
-//                    [self.arrPicTitles addObject:[dicPic objectForKey:@"Title"]];
-//                }
-//                self.AdView.imageURLStringsGroup = self.arrPicUrls;
-//                self.AdView.placeholderImage = [UIImage imageNamed:@"img_placeHolder"];
-//            }else{
-//                HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-//            }
             NSLog(@"数据错误：%@",[error description]);
             
         } headers:nil];
