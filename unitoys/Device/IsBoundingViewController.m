@@ -81,7 +81,7 @@
     [super viewWillDisappear:animated];
     [BlueToothDataManager shareManager].isShowAlert = NO;
     [self.timer setFireDate:[NSDate distantFuture]];
-    [self.clickAnimationTimer setFireDate:[NSDate distantFuture]];
+//    [self.clickAnimationTimer setFireDate:[NSDate distantFuture]];
     if (self.isback) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
         [BlueToothDataManager shareManager].isShowAlert = YES;
@@ -114,14 +114,14 @@
 
 - (void)startToShowClickAnimation {
     self.handupImg.hidden = NO;
-    if (!self.clickAnimationTimer) {
+    [self showClickAnimation];
+//    if (!self.clickAnimationTimer) {
 //        self.clickAnimationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showClickAnimation) userInfo:nil repeats:YES];
 //        //如果不添加下面这条语句，在UITableView拖动的时候，会阻塞定时器的调用
 //        [[NSRunLoop currentRunLoop] addTimer:self.clickAnimationTimer forMode:UITrackingRunLoopMode];
-        [self showClickAnimation];
-    } else {
-        [self.clickAnimationTimer setFireDate:[NSDate distantPast]];
-    }
+//    } else {
+//        [self.clickAnimationTimer setFireDate:[NSDate distantPast]];
+//    }
 }
 
 - (void)showClickAnimation {
@@ -146,19 +146,24 @@
 
 - (void)boundSuccess {
     self.isback = NO;
-    //    有绑定
-    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
-    if (!self.bindDeviceVC) {
-        self.bindDeviceVC = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
-    }
-    
-    if(![self.navigationController.topViewController isKindOfClass:[BindDeviceViewController class]]) {
-        self.time = 0;
-        [self.timer setFireDate:[NSDate distantFuture]];
-        self.tabBarController.tabBar.hidden = YES;
-        self.bindDeviceVC.hintStrFirst = INTERNATIONALSTRING(@"连接中");
-        [self.navigationController pushViewController:self.bindDeviceVC animated:YES];
-    }
+    self.typeImg.image = [UIImage imageNamed:@"icon_bound_success"];
+    self.handupImg.hidden = YES;
+    self.cancelButton.hidden = YES;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        //    有绑定
+        UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
+        if (!self.bindDeviceVC) {
+            self.bindDeviceVC = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
+        }
+        
+        if(![self.navigationController.topViewController isKindOfClass:[BindDeviceViewController class]]) {
+            self.time = 0;
+            [self.timer setFireDate:[NSDate distantFuture]];
+            self.tabBarController.tabBar.hidden = YES;
+            self.bindDeviceVC.hintStrFirst = INTERNATIONALSTRING(@"连接中");
+            [self.navigationController pushViewController:self.bindDeviceVC animated:YES];
+        }
+    });
 }
 
 

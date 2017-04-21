@@ -64,6 +64,9 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, copy)NSString *activityCardData;
 
+@property (nonatomic, strong) NSTimer *boundTimer;
+@property (nonatomic, assign) int boundTimeValue;
+
 @end
 
 static UNBlueToothTool *instance = nil;
@@ -1061,20 +1064,21 @@ static UNBlueToothTool *instance = nil;
             if (!self.boundedDeviceInfo[@"IMEI"]) {
                 //发送绑定请求
                 [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
+                [self startBoundTimer];
 //                [self showHudNormalTop1String:INTERNATIONALSTRING(@"请点击双待王按钮确认绑定")];
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    if (![BlueToothDataManager shareManager].isAllowToBound) {
-                        [self hideHud];
-                        [BlueToothDataManager shareManager].isAccordBreak = YES;
-                        [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
-                        [self.mgr cancelPeripheralConnection:self.peripheral];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
-//                        [self sendDataToUnBoundDevice];
-                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
-                        [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
-                        return;
-                    }
-                });
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    if (![BlueToothDataManager shareManager].isAllowToBound) {
+//                        [self hideHud];
+//                        [BlueToothDataManager shareManager].isAccordBreak = YES;
+//                        [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
+//                        [self.mgr cancelPeripheralConnection:self.peripheral];
+//                        [[NSNotificationCenter defaultCenter] postNotificationName:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
+////                        [self sendDataToUnBoundDevice];
+//                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+//                        [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
+//                        return;
+//                    }
+//                });
             } else {
                 //对卡上电
 //                [self phoneCardToUpeLectrify:@"01"];
@@ -1100,11 +1104,41 @@ static UNBlueToothTool *instance = nil;
 
 }
 
+- (void)startBoundTimer {
+    self.boundTimeValue = 0;
+    if (!self.boundTimer) {
+        self.boundTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(actionToBound) userInfo:nil repeats:YES];
+        //如果不添加下面这条语句，在UITableView拖动的时候，会阻塞定时器的调用
+        [[NSRunLoop currentRunLoop] addTimer:self.boundTimer forMode:UITrackingRunLoopMode];
+    } else {
+        [self.boundTimer setFireDate:[NSDate distantPast]];
+    }
+}
+
+- (void)actionToBound {
+    if (self.boundTimeValue == 20) {
+        if (![BlueToothDataManager shareManager].isAllowToBound) {
+            [self hideHud];
+            [BlueToothDataManager shareManager].isAccordBreak = YES;
+            [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
+            [self.mgr cancelPeripheralConnection:self.peripheral];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
+            //                        [self sendDataToUnBoundDevice];
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+            [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
+            [self.boundTimer setFireDate:[NSDate distantFuture]];
+        }
+    }
+    self.boundTimeValue++;
+    NSLog(@"正在计时 -- %d", self.boundTimeValue);
+}
+
 - (void)cancelToBound {
     [BlueToothDataManager shareManager].isAccordBreak = YES;
     [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
     [self.mgr cancelPeripheralConnection:self.peripheral];
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+    [self.boundTimer setFireDate:[NSDate distantFuture]];
 }
 
 //初始化ICCID指令
@@ -1207,7 +1241,11 @@ static UNBlueToothTool *instance = nil;
                 //版本号
                 int versionNumber1 = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
                 int versionNumber2 = [self convertRangeStringToIntWithString:contentStr rangeLoc:2 rangeLen:2];
-                versionNumber = [NSString stringWithFormat:@"%d.%d", versionNumber1, versionNumber2];
+                if (versionNumber2 < 10) {
+                    versionNumber = [NSString stringWithFormat:@"%d.0%d", versionNumber1, versionNumber2];
+                } else {
+                    versionNumber = [NSString stringWithFormat:@"%d.%d", versionNumber1, versionNumber2];
+                }
                 NSLog(@"版本号:%@", versionNumber);
                 [BlueToothDataManager shareManager].versionNumber = versionNumber;
                 //电量
@@ -1260,6 +1298,7 @@ static UNBlueToothTool *instance = nil;
             case 4:
                 //同意绑定
                 NSLog(@"接收到同意绑定数据");
+                [self.boundTimer setFireDate:[NSDate distantFuture]];
                 [BlueToothDataManager shareManager].isAllowToBound = YES;
                 [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"01"];
 //                [self hideHud];
