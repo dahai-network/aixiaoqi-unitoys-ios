@@ -43,6 +43,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
+//    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"img_nav_bj"] forBarMetrics:UIBarMetricsDefault];
     self.lblStatue.text = self.hintStrFirst;
     if ([BlueToothDataManager shareManager].isConnected) {
         [self addElectricQue];
@@ -69,6 +71,8 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+//    self.navigationController.navigationBarHidden = NO;
     if (!self.isNeedToPushNextVC) {
         [self.navigationController popToRootViewControllerAnimated:YES];
         self.isNeedToPushNextVC = NO;
@@ -254,7 +258,8 @@
         self.macAddress.text = [BlueToothDataManager shareManager].deviceMacAddress;
         [self checkChargeStatue];
         if (!self.customView) {
-            self.customView = [[WaterIdentifyView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2) - 50, 13, 100, 100)];
+            self.customView = [[WaterIdentifyView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2) - 50, self.disconnectedImageView.frame.origin.y, 100, 100)];
+//            self.customView = [[WaterIdentifyView alloc]initWithFrame:self.disconnectedImageView.frame];
             self.customView.showBgLineView = YES;
             [self.headView addSubview:self.customView];
         }
@@ -485,17 +490,17 @@
     } headers:self.headers];
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 15;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 1) {
-        return 15;
-    } else {
-        return 0.01;
-    }
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+//    return 15;
+//}
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+//    if (section == 1) {
+//        return 15;
+//    } else {
+//        return 0.01;
+//    }
+//}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {

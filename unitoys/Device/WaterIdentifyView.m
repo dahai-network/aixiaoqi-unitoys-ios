@@ -52,7 +52,7 @@
     
     
     _waterBgColor = [UIColor colorWithRed:63/255.0 green:70/255.0 blue:85/255.0 alpha:1.00];
-    _circleBgColor = [UIColor colorWithRed:42/255.0 green:48/255.0 blue:59/255.0 alpha:1.00];
+    _circleBgColor = [UIColor whiteColor];
 
     
     _percent = 0.45;
