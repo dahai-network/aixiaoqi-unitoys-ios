@@ -26,8 +26,6 @@
     
     [self getBasicHeader];
 //    NSLog(@"表头：%@",self.headers);
-    
-    
     [SSNetworkRequest getRequest:apiGetUserBill params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {

@@ -18,6 +18,9 @@
 #import "UNBlueToothTool.h"
 #import "OrderListViewController.h"
 
+#import "UNDataTools.h"
+#import "UITabBar+UNRedTip.h"
+
 #define CELLHEIGHT 44
 
 @interface AboutViewController ()
@@ -39,7 +42,8 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.leftBarButtonItem = nil;
-//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    [self tipMessageStatuChange];
     
     //消除导航栏横线
     //自定义一个NaVIgationBar
@@ -57,7 +61,24 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statueChanged:) name:@"homeStatueChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkCannotUse:) name:@"netWorkNotToUse" object:nil];//网络状态改变
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkChangeStatuesAll:) name:@"changeStatueAll" object:nil];//状态改变
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipMessageStatuChange) name:@"TipMessageStatuChange" object:nil];
 }
+
+- (void)tipMessageStatuChange
+{
+    //刷新提示界面
+    if ([UNDataTools sharedInstance].isHasNotActiveTip) {
+        self.haspackageTipMsgLabel.hidden = NO;
+    }else{
+        self.haspackageTipMsgLabel.hidden = YES;
+    }
+    if ([UNDataTools sharedInstance].isHasFirmwareUpdateTip) {
+        self.hasNewVersionLabel.hidden = NO;
+    }else{
+        self.hasNewVersionLabel.hidden = YES;
+    }
+}
+
 
 - (void)networkCannotUse:(NSNotification *)sender {
     if ([sender.object isEqualToString:@"0"]) {
@@ -216,7 +237,6 @@
                 self.havePackageView.hidden = YES;
                 NSLog(@"没有已激活的套餐");
             } else {
-                
                 self.totalPackageNum.text = [NSString stringWithFormat:@"%@个", responseObj[@"data"][@"Used"][@"TotalNum"]];
                 self.commicateMin.text = [NSString stringWithFormat:@"%@分钟", responseObj[@"data"][@"Used"][@"TotalRemainingCallMinutes"]];
                 switch ([responseObj[@"data"][@"Used"][@"TotalNumFlow"] intValue]) {
@@ -249,6 +269,14 @@
                 self.havePackageView.hidden = NO;
             }
             
+//            if ([responseObj[@"data"][@"Unactivated"][@"TotalNumFlow"] intValue]) {
+//                //总未激活流量套餐数
+//                [UNDataTools sharedInstance].isHasNotActiveTip = YES;
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+//            }else{
+//                [UNDataTools sharedInstance].isHasNotActiveTip = NO;
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+//            }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             self.havePackageView.hidden = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -339,6 +367,10 @@
         {
             OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
             if (orderListViewController) {
+                if ([UNDataTools sharedInstance].isHasNotActiveTip) {
+                    [UNDataTools sharedInstance].isHasNotActiveTip = NO;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+                }
                 [self.navigationController pushViewController:orderListViewController animated:YES];
             }
             
@@ -353,6 +385,10 @@
         }
             break;
         case 2:
+            if ([UNDataTools sharedInstance].isHasFirmwareUpdateTip) {
+                [UNDataTools sharedInstance].isHasFirmwareUpdateTip = NO;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+            }
             if ([BlueToothDataManager shareManager].isOpened) {
                 //跳转到设备界面
                 if ([BlueToothDataManager shareManager].isBounded) {

@@ -53,6 +53,7 @@
 #import "MBProgressHUD+UNTip.h"
 
 #import "UNLoginViewController.h"
+#import "UNDataTools.h"
 
 #endif
 // 如果需要使 idfa功能所需要引 的头 件(可选) #import <AdSupport/AdSupport.h>
@@ -1504,7 +1505,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         
 //        [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
         
-    } if ([contentType isEqualToString:@"SMSSendResult"]) {
+    }else if ([contentType isEqualToString:@"SMSSendResult"]) {
         //发送短信成功
         if ([extras[@"Status"] isEqualToString:@"1"]) {
             [self addNotificationWithTitle:INTERNATIONALSTRING(@"短信发送提醒") body:content userInfo:userInfo];
@@ -1515,6 +1516,10 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         } else {
             NSLog(@"收到短信发送结果的推送，状态码有问题");
         }
+    }else if ([contentType isEqualToString:@"ProductNew"]){
+        [UNDataTools sharedInstance].isHasMallMessage = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"MallExtendMessage" object:nil userInfo:extras];
+        [[NSUserDefaults standardUserDefaults] setObject:extras forKey:@"JPushMallMessage"];
     }
     
 }

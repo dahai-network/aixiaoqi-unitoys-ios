@@ -22,13 +22,20 @@
 
 @implementation ContactsDetailViewController
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0){
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+        self.navigationController.navigationBar.translucent = NO;
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setUpNav];
     
-//    self.lblContactMan.text = self.contactMan;
-//    [self.ivContactMan setImage:[UIImage imageWithData:self.contactHead]];
-//    self.arrNumbers = [self.phoneNumbers componentsSeparatedByString:@","];
     self.tableView.delegate = self;
     self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.tableFooterView = [[UIView alloc] init];
@@ -75,7 +82,14 @@
             contactVc.allowsEditing = YES;
             contactVc.allowsActions = YES;
             contactVc.delegate = self;
+            if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0) {
+                //修改导航栏颜色
+                self.navigationController.navigationBar.tintColor = DefultColor;
+                self.navigationController.navigationBar.translucent = YES;
+                self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+            }
             [self.navigationController pushViewController:contactVc animated:YES];
+           
         }else{
 //            CNMutableContact *contact = [[CNMutableContact alloc] init];
 //            contact.phoneNumbers = @[[CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberiPhone value:[CNPhoneNumber phoneNumberWithStringValue:self.phoneNumber]]];
@@ -135,7 +149,7 @@
         if (contact.thumbnailImageData) {
             thumbnailImageData = contact.thumbnailImageData;
         }else{
-            UIImage *image = [UIImage imageNamed:@"pic_tx_pre"];
+            UIImage *image = [UIImage imageNamed:@"default_icon"];
             thumbnailImageData = UIImagePNGRepresentation(image);
         }
         

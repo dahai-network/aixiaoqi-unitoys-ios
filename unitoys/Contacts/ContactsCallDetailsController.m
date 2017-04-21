@@ -49,6 +49,16 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 @implementation ContactsCallDetailsController
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0){
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+        self.navigationController.navigationBar.translucent = NO;
+    }
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"拨打详情";
@@ -77,6 +87,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             personVc.allowsEditing = YES;
             personVc.personViewDelegate = self;
             [self.navigationController pushViewController:personVc animated:YES];
+            self.navigationController.interactivePopGestureRecognizer.enabled = NO;
         }else{
             [self addContactsAction];
         }
@@ -90,6 +101,12 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             contactVc.allowsEditing = YES;
             contactVc.allowsActions = YES;
             contactVc.delegate = self;
+            if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0) {
+                //修改导航栏颜色
+                self.navigationController.navigationBar.tintColor = DefultColor;
+                self.navigationController.navigationBar.translucent = YES;
+                self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+            }
             [self.navigationController pushViewController:contactVc animated:YES];
         }else{
             CNMutableContact *contact = [[CNMutableContact alloc] init];
@@ -103,7 +120,6 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             [self presentViewController:nav animated:YES completion:nil];
         }
     }
-
 }
 
 - (void)addContactsAction

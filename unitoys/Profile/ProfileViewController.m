@@ -15,6 +15,10 @@
 
 #import "AFNetworking.h"
 
+#if DEBUG
+#import "UNTestViewController.h"
+#endif
+
 @interface ProfileViewController ()
 
 @end
@@ -26,7 +30,7 @@
     self.tableView.delegate = self;
     // Do any additional setup after loading the view.
     
-//    self.tableView.scrollEnabled = NO;
+    
     
     UIView *valueView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     valueView.height -= 64;
@@ -110,6 +114,17 @@
     self.arrTarget = [[NSArray alloc] initWithArray:arrTemp];
     [self loadUserInfo];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setValue:) name:@"setValue" object:nil];
+    
+#if DEBUG
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Test" style:UIBarButtonItemStyleDone target:self action:@selector(testVcAction)];
+#endif
+    
+}
+
+- (void)testVcAction
+{
+    UNTestViewController *vc = [[UNTestViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)tapAction {

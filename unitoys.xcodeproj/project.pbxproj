@@ -157,6 +157,11 @@
 		3C98E99A1E9B736900B51419 /* PhoneRecordSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C98E9991E9B736900B51419 /* PhoneRecordSearchController.m */; };
 		3C99A8911EA85CD100C96BE7 /* ExplainDetailsLastController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C99A88F1EA85CD100C96BE7 /* ExplainDetailsLastController.m */; };
 		3C99A8921EA85CD100C96BE7 /* ExplainDetailsLastController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C99A8901EA85CD100C96BE7 /* ExplainDetailsLastController.xib */; };
+		3C99A8981EA9B02000C96BE7 /* UITabBar+UNRedTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C99A8971EA9B02000C96BE7 /* UITabBar+UNRedTip.m */; };
+		3C99A89B1EA9B37600C96BE7 /* UIView+UNRedTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C99A89A1EA9B37600C96BE7 /* UIView+UNRedTip.m */; };
+		3C99A89E1EA9D63300C96BE7 /* UNPopTipMsgView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C99A89D1EA9D63300C96BE7 /* UNPopTipMsgView.m */; };
+		3C99A8A11EA9DF9C00C96BE7 /* UNPresentTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C99A8A01EA9DF9C00C96BE7 /* UNPresentTool.m */; };
+		3C99A8A41EA9E4DC00C96BE7 /* UNTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C99A8A31EA9E4DC00C96BE7 /* UNTestViewController.m */; };
 		3CA898771E8DF33F00C38387 /* MBProgressHUD+UNTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */; };
 		3CA898791E8DFD1600C38387 /* MBProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */; };
 		3CC3E0A31E63BE2500A62F8C /* AbroadMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A21E63BE2500A62F8C /* AbroadMessageController.m */; };
@@ -628,6 +633,16 @@
 		3C99A88E1EA85CD100C96BE7 /* ExplainDetailsLastController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExplainDetailsLastController.h; sourceTree = "<group>"; };
 		3C99A88F1EA85CD100C96BE7 /* ExplainDetailsLastController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExplainDetailsLastController.m; sourceTree = "<group>"; };
 		3C99A8901EA85CD100C96BE7 /* ExplainDetailsLastController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExplainDetailsLastController.xib; sourceTree = "<group>"; };
+		3C99A8961EA9B02000C96BE7 /* UITabBar+UNRedTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBar+UNRedTip.h"; sourceTree = "<group>"; };
+		3C99A8971EA9B02000C96BE7 /* UITabBar+UNRedTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBar+UNRedTip.m"; sourceTree = "<group>"; };
+		3C99A8991EA9B37600C96BE7 /* UIView+UNRedTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+UNRedTip.h"; sourceTree = "<group>"; };
+		3C99A89A1EA9B37600C96BE7 /* UIView+UNRedTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+UNRedTip.m"; sourceTree = "<group>"; };
+		3C99A89C1EA9D63300C96BE7 /* UNPopTipMsgView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPopTipMsgView.h; sourceTree = "<group>"; };
+		3C99A89D1EA9D63300C96BE7 /* UNPopTipMsgView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPopTipMsgView.m; sourceTree = "<group>"; };
+		3C99A89F1EA9DF9C00C96BE7 /* UNPresentTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPresentTool.h; sourceTree = "<group>"; };
+		3C99A8A01EA9DF9C00C96BE7 /* UNPresentTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPresentTool.m; sourceTree = "<group>"; };
+		3C99A8A21EA9E4DC00C96BE7 /* UNTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNTestViewController.h; sourceTree = "<group>"; };
+		3C99A8A31EA9E4DC00C96BE7 /* UNTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNTestViewController.m; sourceTree = "<group>"; };
 		3CA898751E8DF33F00C38387 /* MBProgressHUD+UNTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MBProgressHUD+UNTip.h"; sourceTree = "<group>"; };
 		3CA898761E8DF33F00C38387 /* MBProgressHUD+UNTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MBProgressHUD+UNTip.m"; sourceTree = "<group>"; };
 		3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = MBProgressHUD.bundle; sourceTree = "<group>"; };
@@ -1490,6 +1505,16 @@
 				3C85E1C01E9E39BB006459F9 /* UNEditMessageView.m */,
 				3CD76A8C1EA45E55001E6466 /* HLDragView.h */,
 				3CD76A8D1EA45E55001E6466 /* HLDragView.m */,
+				3C99A8961EA9B02000C96BE7 /* UITabBar+UNRedTip.h */,
+				3C99A8971EA9B02000C96BE7 /* UITabBar+UNRedTip.m */,
+				3C99A8991EA9B37600C96BE7 /* UIView+UNRedTip.h */,
+				3C99A89A1EA9B37600C96BE7 /* UIView+UNRedTip.m */,
+				3C99A89C1EA9D63300C96BE7 /* UNPopTipMsgView.h */,
+				3C99A89D1EA9D63300C96BE7 /* UNPopTipMsgView.m */,
+				3C99A89F1EA9DF9C00C96BE7 /* UNPresentTool.h */,
+				3C99A8A01EA9DF9C00C96BE7 /* UNPresentTool.m */,
+				3C99A8A21EA9E4DC00C96BE7 /* UNTestViewController.h */,
+				3C99A8A31EA9E4DC00C96BE7 /* UNTestViewController.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -2397,6 +2422,7 @@
 				3C20C20D1E6CF3CC008078BB /* UNDataTransformation.m in Sources */,
 				95CD340F1D9D1B1900EE5DD3 /* OrderListViewController.m in Sources */,
 				95938D441D93DF87008A0A21 /* AgreementViewController.m in Sources */,
+				3C99A8A41EA9E4DC00C96BE7 /* UNTestViewController.m in Sources */,
 				3C9035591E9B52C100FF95C0 /* HLTitlesView.m in Sources */,
 				95938D3E1D93ABCC008A0A21 /* PackageCell.m in Sources */,
 				04F727A71E641CE4002EB54C /* HTTPMessage.m in Sources */,
@@ -2432,14 +2458,17 @@
 				954D37EF1D8CD5A7002A8F46 /* RegisterViewController.m in Sources */,
 				95FB44211DC82B9C00B81A0D /* AmountDetailViewController.m in Sources */,
 				3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */,
+				3C99A8A11EA9DF9C00C96BE7 /* UNPresentTool.m in Sources */,
 				0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */,
 				95B099171DC0DA6A00743877 /* SipEngineEventObserver.mm in Sources */,
 				3C4A07811E9CD54B00A6DDA9 /* CallDetailsActionCell.m in Sources */,
 				04127F671EA5F69100C18201 /* OrderListTableViewCell.m in Sources */,
 				740FD3941E287F9E009413F1 /* sim_com_preread.c in Sources */,
+				3C99A89B1EA9B37600C96BE7 /* UIView+UNRedTip.m in Sources */,
 				954A87AB1D98B6E800570843 /* ContactTableViewCell.m in Sources */,
 				04F727A91E641CE4002EB54C /* MultipartFormDataParser.m in Sources */,
 				95FB44241DC82C0000B81A0D /* AmountDetailCell.m in Sources */,
+				3C99A89E1EA9D63300C96BE7 /* UNPopTipMsgView.m in Sources */,
 				3CD9134D1E70E59F00434465 /* UNGetSimData.m in Sources */,
 				95DD7FED1DAA5748006E1B0D /* KTKeyboardAvoidingView.m in Sources */,
 				3CC3E0B61E63FA1800A62F8C /* AbroadExplainController.m in Sources */,
@@ -2529,6 +2558,7 @@
 				3CCA72D51E65716200931B20 /* MessagePhoneDetailController.m in Sources */,
 				953B01F51D8BDA6C00EDF5ED /* SSNetworkRequest.m in Sources */,
 				04F727A81E641CE4002EB54C /* HTTPServer.m in Sources */,
+				3C99A8981EA9B02000C96BE7 /* UITabBar+UNRedTip.m in Sources */,
 				740FD38F1E287F9E009413F1 /* euble_interface.c in Sources */,
 				3C4A07901E9CD9B500A6DDA9 /* CallDetailsRecordCell.m in Sources */,
 				95FB44271DC8663800B81A0D /* navHomeViewController.m in Sources */,

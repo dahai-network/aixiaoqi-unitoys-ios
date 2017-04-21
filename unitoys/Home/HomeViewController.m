@@ -37,6 +37,11 @@
 #import "UNBlueToothTool.h"
 #import "UNPushKitMessageManager.h"
 #import "CommunicateDetailViewController.h"
+#import "UNDataTools.h"
+
+#import "UITabBar+UNRedTip.h"
+#import "UNPresentTool.h"
+#import "UNPopTipMsgView.h"
 
 //#import "AbroadMessageController.h"
 
@@ -91,6 +96,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self checkPackageResidue];
     
     self.communicatePackageDataArr = [NSMutableArray array];
     
@@ -203,6 +210,10 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkStatues:) name:@"netWorkNotToUse" object:nil];//网络状态不可用
     
+    //tabbar显示红点
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mallExtendMessage:) name:@"MallExtendMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipMessageStatuChange) name:@"TipMessageStatuChange" object:nil];
+    
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
@@ -223,7 +234,82 @@
     }
     //检查更新
     [self checkVersion];
+    
+    NSDictionary *extras = [[NSUserDefaults standardUserDefaults] objectForKey:@"JPushMallMessage"];
+    if (extras) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [UNDataTools sharedInstance].isHasMallMessage = YES;
+            //弹出页面
+            [self showMallExtendMessageView:extras];
+            [self.tabBarController.tabBar showBadgeOnItemIndex:0];
+        });
+    }
+    [self tipMessageStatuChange];
 }
+
+//商城红点
+- (void)mallExtendMessage:(NSNotification *)noti
+{
+    if ([UNDataTools sharedInstance].isHasMallMessage) {
+        //展示红点
+        [self.tabBarController.tabBar showBadgeOnItemIndex:0];
+        //弹出提示页面
+        [self showMallExtendMessageView:noti.userInfo];
+    }else{
+        //隐藏红点
+        [self.tabBarController.tabBar hideBadgeOnItemIndex:0];
+        //删除消息
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JPushMallMessage"];
+    }
+}
+
+//我的Tabbar红点
+- (void)tipMessageStatuChange
+{
+    if ([UNDataTools sharedInstance].isHasNotActiveTip || [UNDataTools sharedInstance].isHasFirmwareUpdateTip) {
+        [self.tabBarController.tabBar showBadgeOnItemIndex:3];
+    }else{
+        [self.tabBarController.tabBar hideBadgeOnItemIndex:3];
+    }
+}
+
+- (void)showMallExtendMessageView:(NSDictionary *)extras
+{
+    //Title:标题
+    //Url:链接地址
+    //ID:唯一标识
+    if (extras) {
+        
+    }
+}
+
+//查询是否有未激活套餐
+- (void)checkPackageResidue {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    [SSNetworkRequest getRequest:apiGetUserOrderUsageRemaining params:nil success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            if ([responseObj[@"data"][@"Unactivated"][@"TotalNumFlow"] intValue]) {
+                //总未激活流量套餐数
+                [UNDataTools sharedInstance].isHasNotActiveTip = YES;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+            }else{
+                [UNDataTools sharedInstance].isHasNotActiveTip = NO;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+            }
+            
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+        }
+        
+        NSLog(@"查询到的用户套餐余量：%@",responseObj);
+    } failure:^(id dataObj, NSError *error) {
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
 
 - (void)networkStatues:(NSNotification *)sender {
     if ([sender.object isEqualToString:@"1"] && [BlueToothDataManager shareManager].isConnected) {
@@ -840,7 +926,7 @@
             if(ABPersonHasImageData(people)){
                 thumbnailImageData = (__bridge NSData *)ABPersonCopyImageDataWithFormat(people,kABPersonImageFormatThumbnail);
             }else{
-                UIImage *image = [UIImage imageNamed:@"pic_tx_pre"];
+                UIImage *image = [UIImage imageNamed:@"default_icon"];
                 thumbnailImageData = UIImagePNGRepresentation(image);
             }
             ABMutableMultiValueRef phoneNumRef = ABRecordCopyValue(people, kABPersonPhoneProperty);
@@ -946,7 +1032,7 @@
                 if (contact.thumbnailImageData) {
                     thumbnailImageData = contact.thumbnailImageData;
                 }else{
-                    UIImage *image = [UIImage imageNamed:@"pic_tx_pre"];
+                    UIImage *image = [UIImage imageNamed:@"default_icon"];
                     thumbnailImageData = UIImagePNGRepresentation(image);
                 }
                 NSString *phoneNumber = ((CNPhoneNumber *)(contact.phoneNumbers.firstObject.value)).stringValue;

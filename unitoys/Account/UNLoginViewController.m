@@ -653,7 +653,7 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
     if (self.currentLabel) {
-//        self.currentLabel.hidden = YES;
+        self.currentLabel.hidden = YES;
     }else{
         self.tipLabel.hidden = YES;
         self.tipLabel.text = nil;

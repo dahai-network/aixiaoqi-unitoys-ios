@@ -17,6 +17,11 @@
 @property (weak, nonatomic) IBOutlet UIView *havePackageView;
 @property (weak, nonatomic) IBOutlet UIView *connectedDeviceView;
 
+//有套餐可激活label
+@property (weak, nonatomic) IBOutlet UILabel *haspackageTipMsgLabel;
+//有新版本
+@property (weak, nonatomic) IBOutlet UILabel *hasNewVersionLabel;
+
 - (IBAction)accountRecharge:(id)sender;
 
 - (IBAction)editProfile:(id)sender;
