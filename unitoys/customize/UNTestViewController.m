@@ -10,8 +10,12 @@
 #import "global.h"
 #import "UNPresentTool.h"
 
+#import "UNPopTipMsgView.h"
+#import "UIView+Utils.h"
+
 @interface UNTestViewController ()
 @property (nonatomic, strong) UNPresentTool *presentTool;
+@property (nonatomic, weak) UNPopTipMsgView *popView;
 @end
 
 @implementation UNTestViewController
@@ -30,27 +34,31 @@
 - (void)initPopView
 {
     if (!_presentTool) {
-        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue - 100, kScreenWidthValue - 100)];
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
-        [view addGestureRecognizer:tap];
-        view.backgroundColor = [UIColor redColor];
-        [self.view addSubview:view];
         _presentTool = [UNPresentTool new];
-        [_presentTool presentContentView:view duration:0.85 inView:self.view];
     }
+    if (_popView) {
+        return;
+    }
+    UNPopTipMsgView *view = [UNPopTipMsgView sharePopTipMsgViewTitle:@"提示" detailTitle:@"有新的流量套餐出现了,是否去看看"];
+    _popView = view;
+    view.leftButtonText = @"下次再去";
+    view.rightButtonText = @"去看看";
+    kWeakSelf
+    view.popTipButtonAction = ^(NSInteger type) {
+        [weakSelf.presentTool dismissDuration:0.5 completion:^{
+            if (type == 2) {
+                NSLog(@"push新界面");
+            }
+            weakSelf.presentTool = nil;
+        }];
+    };
+    view.topOffset = 64;
+    [_presentTool presentContentView:view duration:0.85 inView:nil];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)tapAction
-{
-    if (_presentTool) {
-        [_presentTool dismissDuration:0.5];
-        _presentTool = nil;
-    }
 }
 
 /*

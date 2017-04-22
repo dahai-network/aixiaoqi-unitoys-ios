@@ -229,12 +229,16 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
             
             if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
                 //己方发送
-                mjViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
+                NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
+                mjViewController.title = titleName;
+                mjViewController.titleName = titleName;
                 mjViewController.toTelephone = [dicMessageRecord objectForKey:@"To"];
             }else{
                 //对方发送
-                mjViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
-                mjViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
+                NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
+                mjViewController.title = titleName;
+                mjViewController.titleName = titleName;
+                mjViewController.toTelephone = titleName;
             }
             
             mjViewController.hidesBottomBarWhenPushed = YES;

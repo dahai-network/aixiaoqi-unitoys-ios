@@ -14,6 +14,6 @@
 //- (void)presentContentView:(UIView *)contentView duration:(NSTimeInterval)duration;
 - (void)presentContentView:(UIView *)contentView duration:(NSTimeInterval)duration inView:(UIView *)superView;
 
-- (void)dismissDuration:(NSTimeInterval)duration;
+- (void)dismissDuration:(NSTimeInterval)duration completion: (void (^)(void))completion;
 
 @end

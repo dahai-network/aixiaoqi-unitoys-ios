@@ -62,6 +62,11 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"拨打详情";
+    
+    if (!self.contactModel) {
+        self.contactModel = [self checkContactModelWithPhoneStr:self.phoneNumber];
+    }
+    
     [self setUpNav];
     self.currentRecordPage = 1;
     [self getPhoneRecords];
@@ -83,7 +88,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             ABRecordRef recordRef = ABAddressBookGetPersonWithRecordID(addressBook, self.contactModel.recordRefId);
             personVc.displayedPerson = recordRef;
             CFRelease(recordRef);
-            personVc.allowsActions = YES;
+            personVc.allowsActions = NO;
             personVc.allowsEditing = YES;
             personVc.personViewDelegate = self;
             [self.navigationController pushViewController:personVc animated:YES];
@@ -99,7 +104,8 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             contactVc.view.tag = 100;
             contactVc.contactStore = contactStore;
             contactVc.allowsEditing = YES;
-            contactVc.allowsActions = YES;
+//            contactVc.allowsActions = YES;
+            contactVc.allowsActions = NO;
             contactVc.delegate = self;
             if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0) {
                 //修改导航栏颜色
@@ -114,7 +120,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:contact];
             contactVc.view.tag = 200;
             contactVc.allowsEditing = YES;
-            contactVc.allowsActions = YES;
+            contactVc.allowsActions = NO;
             contactVc.delegate = self;
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactVc];
             [self presentViewController:nav animated:YES completion:nil];

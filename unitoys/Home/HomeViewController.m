@@ -82,7 +82,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *rightFlowSubNameLbl;
 @property (nonatomic, strong) NSMutableArray *productInfoArr;
 
-
+@property (nonatomic, strong) UNPresentTool *presentTool;
+@property (nonatomic, weak) UNPopTipMsgView *popView;
 @end
 
 @implementation HomeViewController
@@ -100,7 +101,6 @@
     [self checkPackageResidue];
     
     self.communicatePackageDataArr = [NSMutableArray array];
-    
     [UNPushKitMessageManager shareManager].isAppAlreadyLoad = YES;
     self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
     self.navigationItem.leftBarButtonItem = nil;
@@ -240,26 +240,48 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [UNDataTools sharedInstance].isHasMallMessage = YES;
             //弹出页面
-            [self showMallExtendMessageView:extras];
-            [self.tabBarController.tabBar showBadgeOnItemIndex:0];
+            [self updateMallTipMessage:extras];
         });
     }
     [self tipMessageStatuChange];
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [UNDataTools sharedInstance].isHasMallMessage = YES;
+//        NSDictionary *dict = @{@"Title" : @"新商品", @"Url" : @"www.baidu.com", @"ID" : @"123456789"};
+//        [self updateMallTipMessage:dict];
+//    });
 }
 
 //商城红点
 - (void)mallExtendMessage:(NSNotification *)noti
 {
+    [self updateMallTipMessage:noti.userInfo];
+}
+
+- (void)updateMallTipMessage:(NSDictionary *)extras
+{
     if ([UNDataTools sharedInstance].isHasMallMessage) {
-        //展示红点
-        [self.tabBarController.tabBar showBadgeOnItemIndex:0];
-        //弹出提示页面
-        [self showMallExtendMessageView:noti.userInfo];
+        if (extras) {
+            //展示红点
+            [self.tabBarController.tabBar showBadgeOnItemIndex:0];
+            //弹出提示页面
+            [self showMallExtendMessageView:extras];
+        }else{
+            [UNDataTools sharedInstance].isHasMallMessage = NO;
+            //隐藏红点
+            [self.tabBarController.tabBar hideBadgeOnItemIndex:0];
+            //删除消息
+            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"JPushMallMessage"]) {
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JPushMallMessage"];
+            }
+        }
     }else{
         //隐藏红点
         [self.tabBarController.tabBar hideBadgeOnItemIndex:0];
         //删除消息
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JPushMallMessage"];
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"JPushMallMessage"]) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"JPushMallMessage"];
+        }
     }
 }
 
@@ -275,12 +297,51 @@
 
 - (void)showMallExtendMessageView:(NSDictionary *)extras
 {
+    
     //Title:标题
     //Url:链接地址
     //ID:唯一标识
-    if (extras) {
-        
+//    if (extras) {
+//        [self initPopView:extras];
+//    }
+    
+    [self loadProductInfo];
+}
+
+- (void)initPopView:(NSDictionary *)extras
+{
+    if (!_presentTool) {
+        _presentTool = [UNPresentTool new];
     }
+    if (_popView) {
+        return;
+    }
+    
+    NSString *title;
+//    NSString *url = extras[@"Url"];
+//    NSString *productId = extras[@"ID"];
+    if (extras[@"Title"]) {
+        title = extras[@"Title"];
+    }else{
+        title = @"提示";
+    }
+    UNPopTipMsgView *view = [UNPopTipMsgView sharePopTipMsgViewTitle:title detailTitle:@"有新的流量套餐出现了,是否去看看"];
+    _popView = view;
+    view.leftButtonText = @"下次再去";
+    view.rightButtonText = @"去看看";
+    kWeakSelf
+    view.popTipButtonAction = ^(NSInteger type) {
+        [UNDataTools sharedInstance].isHasMallMessage = NO;
+        //隐藏红点
+        [weakSelf updateMallTipMessage:nil];
+        [weakSelf.presentTool dismissDuration:0.5 completion:^{
+            weakSelf.presentTool = nil;
+            if (type == 2) {
+                NSLog(@"push新界面----%@",extras);
+            }
+        }];
+    };
+    [_presentTool presentContentView:view duration:0.85 inView:nil];
 }
 
 //查询是否有未激活套餐

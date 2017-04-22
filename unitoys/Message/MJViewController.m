@@ -16,6 +16,7 @@
 
 #import "UNEditMessageView.h"
 #import "ContactsCallDetailsController.h"
+#import "ContactsDetailViewController.h"
 #import "UNDataTools.h"
 
 @interface MJViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -214,11 +215,23 @@
 - (void)rightBarButtonAction
 {
     if ([self.toTelephone containsString:@","]) {
-        MessagePhoneDetailController *detailVc = [[MessagePhoneDetailController alloc] init];
-        detailVc.toPhoneStr = self.toTelephone;
-        [self.navigationController pushViewController:detailVc animated:YES];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+        if (!storyboard) {
+            return;
+        }
+        ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
+        if (!contactsDetailViewController) {
+            return;
+        }
+        contactsDetailViewController.contactMan = self.titleName;
+        contactsDetailViewController.phoneNumbers = self.toTelephone;
+//        contactsDetailViewController.contactHead = model.thumbnailImageData;
+//        [contactsDetailViewController.ivContactMan  setImage:[UIImage imageWithData:model.thumbnailImageData]];
+        contactsDetailViewController.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];;
+        [self.navigationController pushViewController:contactsDetailViewController animated:YES];
     }else{
         ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+        callDetailsVc.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         callDetailsVc.nickName = self.title;
         callDetailsVc.phoneNumber = self.toTelephone;
         [self.navigationController pushViewController:callDetailsVc animated:YES];

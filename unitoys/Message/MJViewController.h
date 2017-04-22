@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnSend;
 @property (weak, nonatomic) IBOutlet KTAutoHeightTextView *txtSendText;
 @property (nonatomic, copy) NSString *toTelephone;
+@property (nonatomic, copy) NSString *titleName;
 //@property (nonatomic, copy) NSString *toTelName;
 
 - (IBAction)sendMessage:(id)sender;

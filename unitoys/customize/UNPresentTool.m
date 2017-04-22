@@ -7,16 +7,40 @@
 //
 
 #import "UNPresentTool.h"
+//#import "global.h"
 
 @interface UNPresentTool()
 
-//@property (nonatomic, strong) UIView *popupView;
-@property (nonatomic, weak) UIView *contentView;
+@property (nonatomic, strong) UIView *contentView;
 
+@property (nonatomic, strong) UIWindow *superview;
+@property (nonatomic, strong) UIView *maskView;
 @property (nonatomic, assign) BOOL isPresenting;
+
+@property (nonatomic, weak) UIWindow *mainWindow;
 @end
 
 @implementation UNPresentTool
+
+- (instancetype)init {
+    self = [super init];
+    if (!self)  return nil;
+    _isPresenting             = NO;
+    _maskView = [UIApplication sharedApplication].keyWindow;
+    
+    _superview = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    _superview.windowLevel = UIWindowLevelAlert;
+    [_superview makeKeyAndVisible];
+    
+    _maskView = [[UIView alloc] initWithFrame:_superview.bounds];
+    _maskView.userInteractionEnabled = YES;
+    _maskView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.5];
+    return self;
+}
+
+- (UIWindow *)keyWindow {
+    return [UIApplication sharedApplication].keyWindow;
+}
 
 - (void)presentContentView:(UIView *)contentView duration:(NSTimeInterval)duration inView:(UIView *)superView
 {
@@ -27,11 +51,14 @@
     }
     CGPoint viewCenter;
     if (superView) {
-        viewCenter = superView.center;
-    }else{
+        viewCenter = CGPointMake(superView.bounds.size.width * 0.5, superView.bounds.size.height * 0.5);
+    }else if (contentView.frame.origin.x == 0){
         viewCenter = CGPointMake([UIScreen mainScreen].bounds.size.width * 0.5, ([UIScreen mainScreen].bounds.size.height - 64) * 0.5);
+    }else{
+        viewCenter = _contentView.center;
     }
-    _contentView = contentView;
+    [self setContentView:contentView];
+    [_superview addSubview:_maskView];
     _contentView.userInteractionEnabled = NO;
     _contentView.transform = CGAffineTransformMakeScale(0.1, 0.1);
     _contentView.center = viewCenter;
@@ -42,7 +69,7 @@
                         options:UIViewAnimationOptionCurveLinear
                      animations:^{
                          _contentView.transform = CGAffineTransformIdentity;
-//                         _contentView.center = viewCenter;
+                         _maskView.alpha = 1;
                      } completion:^(BOOL finished) {
                          if (!finished) return;
                          _contentView.userInteractionEnabled = YES;
@@ -50,7 +77,7 @@
                      }];
 }
 
-- (void)dismissDuration:(NSTimeInterval)duration
+- (void)dismissDuration:(NSTimeInterval)duration completion: (void (^ __nullable)(void))completion
 {
     if (!self.isPresenting) return;
     if (!_contentView) return;
@@ -60,25 +87,37 @@
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          _contentView.transform = CGAffineTransformMakeScale(1.05, 1.05);
+                         _maskView.alpha = 0.95;
                      } completion:^(BOOL finished) {
-                         
                          [UIView animateWithDuration:duration2
                                                delay:0.0
                                              options:UIViewAnimationOptionCurveEaseInOut
                                           animations:^{
                                               _contentView.transform = CGAffineTransformMakeScale(0.05, 0.05);
-                                              
+                                              _maskView.alpha = 0;
                                           } completion:^(BOOL finished) {
-                                              
                                               if (!finished) return;
-//                                              [self removeSubviews];
-                                              [_contentView removeFromSuperview];
-                                              _isPresenting = NO;
                                               _contentView.transform = CGAffineTransformIdentity;
+                                              [_contentView removeFromSuperview];
                                               _contentView = nil;
+                                              [_maskView removeFromSuperview];
+                                              _isPresenting = NO;
+                                              
+                                              [_mainWindow makeKeyAndVisible];
+                                              _superview = nil;
+                                              if (completion) {
+                                                  completion();
+                                              }
                                           }];
                      }];
+}
 
+- (void)setContentView:(UIView *)contentView {
+    _contentView = contentView;
+    if (nil == _contentView) {
+        return;
+    }
+    [_maskView addSubview:_contentView];
 }
 
 @end

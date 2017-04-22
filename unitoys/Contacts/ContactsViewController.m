@@ -63,7 +63,6 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     if (![AddressBookManager shareManager].isOpenedAddress && !self.bOnlySelectNumber) {
         self.navigationItem.leftBarButtonItem = nil;
         [AddressBookManager shareManager].isOpenedAddress = YES;
-        
         [self.view addSubview:self.searchBar];
         self.tableView.frame = CGRectMake(0, 44, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - 44);
     }else{
@@ -185,13 +184,11 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [imageView setImage:[UIImage imageNamed:@"footerImage"]];
     [imageView setContentMode:UIViewContentModeScaleToFill];
     [self.view addSubview:imageView];
-    
     [self.view insertSubview:self.tableView belowSubview:imageView];
 }
 - (UISearchBar *)searchBar{
     if (!_searchBar) {
         _searchBar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 44)];
-//        [_searchBar setBackgroundImage:[UIImage imageNamed:@"ic_searchBar_bgImage"]];
         
         [_searchBar sizeToFit];
         [_searchBar setPlaceholder:INTERNATIONALSTRING(@"搜索")];
@@ -211,7 +208,6 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
         [_tableView setSectionIndexColor:[UIColor darkGrayColor]];
         [_tableView setBackgroundColor:[UIColor colorWithRed:240.0/255 green:240.0/255 blue:240.0/255 alpha:1]];
 //        _tableView.tableHeaderView=self.searchBar;
-        
         //cell无数据时，不显示间隔线
         UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
         [_tableView setTableFooterView:v];

@@ -16,6 +16,7 @@
 #import "UNDatabaseTools.h"
 #import "UNBlueToothTool.h"
 #import "BlueToothDataManager.h"
+#import "UNDataTools.h"
 
 typedef enum : NSUInteger {
     DEFULTCOLOR,
@@ -276,7 +277,14 @@ typedef enum : NSUInteger {
 #pragma mark - UITabBarControllerDelegate
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController{
     
-//    UIViewController *currentViewController = [tabBarController.selectedViewController.childViewControllers objectAtIndex:0];
+    if ([UNDataTools sharedInstance].isHasMallMessage) {
+        UIViewController *nextViewController = [viewController.childViewControllers objectAtIndex:0];
+        if ([nextViewController isKindOfClass:NSClassFromString(@"HomeViewController")]) {
+            [UNDataTools sharedInstance].isHasMallMessage = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MallExtendMessage" object:nil];
+        }
+    }
+    
 //    if ([currentViewController isKindOfClass:[PhoneViewController class]]) {
 //        //设置键盘的图标为拨打图标
 //        [[self.tabBar.items objectAtIndex:1] setImage:[UIImage imageNamed:@"nav_call"]];
@@ -317,7 +325,6 @@ typedef enum : NSUInteger {
             
 //        }
 //    }
-    
     return YES;
 }
 

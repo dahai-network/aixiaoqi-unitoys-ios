@@ -78,6 +78,9 @@
     containerY = CGRectGetMaxY(_timeF);
     CGSize textMaxSize = CGSizeMake(screenW * 3.0 / 4.0, MAXFLOAT);
     CGSize contentSize = [self sizeWithText:message.text font:MJTextFont maxSize:textMaxSize];
+    if (contentSize.width < 15) {
+        contentSize.width = 15;
+    }
     containerW = contentSize.width + _contentEdge.left + _contentEdge.right;
     containerH = contentSize.height + _contentEdge.top + _contentEdge.bottom;
     if (message.type == MJMessageTypeOther) {
@@ -87,7 +90,6 @@
     }
     NSLog(@"%.2f", containerH);
     _containerViewF = CGRectMake(containerX, containerY, containerW, containerH);
-    
     
     // 4.cell的高度
     CGFloat textMaxY = CGRectGetMaxY(_containerViewF);

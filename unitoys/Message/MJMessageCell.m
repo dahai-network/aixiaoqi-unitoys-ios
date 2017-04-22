@@ -110,6 +110,7 @@
         
         UILabel *contentLabel = [[UILabel alloc] init];
         self.contentLabel = contentLabel;
+        contentLabel.textAlignment = NSTextAlignmentCenter;
         contentLabel.userInteractionEnabled = YES;
         contentLabel.font = MJTextFont;
         contentLabel.numberOfLines = 0;

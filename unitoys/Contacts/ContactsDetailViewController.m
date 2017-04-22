@@ -33,7 +33,7 @@
 }
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+    [super viewDidLoad];    
     [self setUpNav];
     
     self.tableView.delegate = self;
