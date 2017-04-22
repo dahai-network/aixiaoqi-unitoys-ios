@@ -107,6 +107,10 @@ typedef enum : NSUInteger {
 
 }
 
+//- (void)viewWillAppear:(BOOL)animated {
+//    self.navigationController.navigationBar.translucent = NO;
+//}
+
 - (void)changeStatuesAll:(NSNotification *)sender {
     self.showLabelStr = sender.object;
     self.titleLabel.text = self.showLabelStr;

@@ -10,5 +10,6 @@
 
 @interface AgreementViewController : BaseViewController
 @property (weak, nonatomic) IBOutlet UIWebView *loadWebView;
+@property (nonatomic, copy) NSString *lastControllerName;//上一个界面的名称
 
 @end

@@ -8,7 +8,6 @@
 
 #import "BindDeviceViewController.h"
 #import "BlueToothDataManager.h"
-#import "WaterIdentifyView.h"
 #import "UIImage+GIF.h"
 #import "WristbandSettingViewController.h"
 #import "UNBlueToothTool.h"
@@ -52,7 +51,7 @@
         if (self.customView) {
             self.customView.hidden = YES;
         }
-        self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
+        self.deviceName.hidden = YES;
         self.versionNumber.hidden = YES;
         self.macAddress.hidden = YES;
         self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
@@ -72,6 +71,10 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    //自定义一个NaVIgationBar
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    //消除阴影
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
 //    self.navigationController.navigationBarHidden = NO;
     if (!self.isNeedToPushNextVC) {
         [self.navigationController popToRootViewControllerAnimated:YES];
@@ -86,19 +89,19 @@
 - (void)checkChargeStatue {
     switch ([BlueToothDataManager shareManager].chargingState) {
         case 1:
-            self.customView.labelStr = @"剩余电量";
+            self.customView.subTitleLabel.text = @"剩余电量";
             NSLog(@"剩余电量");
             break;
         case 2:
-            self.customView.labelStr = @"正在充电";
+            self.customView.subTitleLabel.text = @"正在充电";
             NSLog(@"正在充电");
             break;
         case 3:
-            self.customView.labelStr = @"充电完成";
+            self.customView.subTitleLabel.text = @"充电完成";
             NSLog(@"充电完成");
             break;
         default:
-            self.customView.labelStr = @"剩余电量";
+            self.customView.subTitleLabel.text = @"剩余电量";
             NSLog(@"充电状态有问题");
             break;
     }
@@ -239,8 +242,8 @@
     if (self.customView) {
         self.customView.hidden = YES;
     }
-    self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
-    self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
+    self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
+    self.deviceName.hidden = YES;
     self.versionNumber.hidden = YES;
     self.macAddress.hidden = YES;
     self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
@@ -258,19 +261,24 @@
         self.macAddress.text = [BlueToothDataManager shareManager].deviceMacAddress;
         [self checkChargeStatue];
         if (!self.customView) {
-            self.customView = [[WaterIdentifyView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2) - 50, self.disconnectedImageView.frame.origin.y, 100, 100)];
+            self.customView = [[LXWaveProgressView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2), self.disconnectedImageView.frame.origin.y, 105, 105)];
+            CGFloat flox = [UIScreen mainScreen].bounds.size.width/2;
+            CGFloat floy = self.disconnectedImageView.center.y;
+            self.customView.center = CGPointMake(flox, floy);
 //            self.customView = [[WaterIdentifyView alloc]initWithFrame:self.disconnectedImageView.frame];
-            self.customView.showBgLineView = YES;
+//            self.customView.showBgLineView = YES;
             [self.headView addSubview:self.customView];
         }
         self.customView.hidden = NO;
         NSString *num = [BlueToothDataManager shareManager].electricQuantity;
         CGFloat a = (float)[num intValue]/100.00;
-        self.customView.percent = a;
+        self.customView.progress = a;
         if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-            self.hintLabel.text = INTERNATIONALSTRING(@"已连接爱小器手环");
+            self.deviceName.text = @"手环";
+            self.deviceName.hidden = NO;
         } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
-            self.hintLabel.text = INTERNATIONALSTRING(@"已连接爱小器双待王");
+            self.deviceName.text = @"双待王";
+            self.deviceName.hidden = NO;
         } else {
             NSLog(@"这是连接的什么？");
         }
@@ -279,13 +287,13 @@
             [self.customView removeFromSuperview];
         }
         if (![BlueToothDataManager shareManager].isConnected) {
-            self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
+            self.deviceName.hidden = YES;
         }
         if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBounded) {
-            self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击绑定");
+            self.deviceName.hidden = YES;
         }
     }
-    self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
+    self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
     [self.tableView reloadData];
 }
 
@@ -304,11 +312,9 @@
             //点击绑定设备
             [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
             [self addScanView];
-            self.hintLabel.text = INTERNATIONALSTRING(@"正在搜索设备");
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![BlueToothDataManager shareManager].isConnected) {
-                    self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
-                    self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
+                    self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
                 }
             });
         } else if (![BlueToothDataManager shareManager].isConnected) {
@@ -316,11 +322,9 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
             [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
             [self addScanView];
-            self.hintLabel.text = INTERNATIONALSTRING(@"正在搜索设备");
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (![BlueToothDataManager shareManager].isConnected) {
-                    self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
-                    self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
+                    self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
                 }
             });
         } else {
@@ -402,7 +406,7 @@
                 if ([[BlueToothDataManager shareManager].boundedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
                     HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))
                 }
-                self.disconnectedImageView.image = [UIImage imageNamed:@"blue_disconnected"];
+                self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
                 //发送解除绑定成功通知
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
                 [BlueToothDataManager shareManager].isBounded = NO;
@@ -421,7 +425,7 @@
                 }
                 self.versionNumber.hidden = YES;
                 self.macAddress.hidden = YES;
-                self.hintLabel.text = INTERNATIONALSTRING(@"还没有连接设备，点击连接");
+                self.deviceName.hidden = YES;
                 self.lblStatue.text = INTERNATIONALSTRING(@"未绑定");
                 if (self.timer) {
                     [self.timer setFireDate:[NSDate distantFuture]];

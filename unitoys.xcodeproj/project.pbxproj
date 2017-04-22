@@ -70,9 +70,10 @@
 		04A9497E1E826875007611F7 /* WristbandSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04A9497C1E826875007611F7 /* WristbandSettingViewController.xib */; };
 		04A949821E82691F007611F7 /* WristbandSettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A949801E82691F007611F7 /* WristbandSettingTableViewCell.m */; };
 		04A949831E82691F007611F7 /* WristbandSettingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04A949811E82691F007611F7 /* WristbandSettingTableViewCell.xib */; };
+		04ABBE2D1EAAEADA0070AFD1 /* LXWaveProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04ABBE2A1EAAEADA0070AFD1 /* LXWaveProgressView.m */; };
+		04ABBE2E1EAAEADA0070AFD1 /* YYWeakProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 04ABBE2C1EAAEADA0070AFD1 /* YYWeakProxy.m */; };
 		04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */; };
 		04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */; };
-		04D90E8C1DF172FD00035C46 /* WaterIdentifyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */; };
 		04DA1B971E12958C00C50904 /* CallComingInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA1B951E12958C00C50904 /* CallComingInViewController.m */; };
 		04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */ = {isa = PBXBuildFile; fileRef = 04DA1BF01E164A6400C50904 /* appleCallComing.wav */; };
 		04EAB8BC1E2787F6000D3D13 /* AlarmListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EAB8BA1E2787F6000D3D13 /* AlarmListViewController.m */; };
@@ -481,12 +482,14 @@
 		04A9497F1E82691F007611F7 /* WristbandSettingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WristbandSettingTableViewCell.h; sourceTree = "<group>"; };
 		04A949801E82691F007611F7 /* WristbandSettingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WristbandSettingTableViewCell.m; sourceTree = "<group>"; };
 		04A949811E82691F007611F7 /* WristbandSettingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WristbandSettingTableViewCell.xib; sourceTree = "<group>"; };
+		04ABBE291EAAEADA0070AFD1 /* LXWaveProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LXWaveProgressView.h; sourceTree = "<group>"; };
+		04ABBE2A1EAAEADA0070AFD1 /* LXWaveProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LXWaveProgressView.m; sourceTree = "<group>"; };
+		04ABBE2B1EAAEADA0070AFD1 /* YYWeakProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYWeakProxy.h; sourceTree = "<group>"; };
+		04ABBE2C1EAAEADA0070AFD1 /* YYWeakProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYWeakProxy.m; sourceTree = "<group>"; };
 		04D5EED21E9B959D0015B8DA /* ProductCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductCollectionViewCell.h; sourceTree = "<group>"; };
 		04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductCollectionViewCell.m; sourceTree = "<group>"; };
 		04D90E871DEEDC5C00035C46 /* BlueToothDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlueToothDataManager.h; sourceTree = "<group>"; };
 		04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlueToothDataManager.m; sourceTree = "<group>"; };
-		04D90E8A1DF172FD00035C46 /* WaterIdentifyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaterIdentifyView.h; sourceTree = "<group>"; };
-		04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaterIdentifyView.m; sourceTree = "<group>"; };
 		04DA1B941E12958C00C50904 /* CallComingInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallComingInViewController.h; sourceTree = "<group>"; };
 		04DA1B951E12958C00C50904 /* CallComingInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallComingInViewController.m; sourceTree = "<group>"; };
 		04DA1BF01E164A6400C50904 /* appleCallComing.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = appleCallComing.wav; sourceTree = "<group>"; };
@@ -1436,6 +1439,10 @@
 		95334A651D8A89B9002C1CFB /* customize */ = {
 			isa = PBXGroup;
 			children = (
+				04ABBE291EAAEADA0070AFD1 /* LXWaveProgressView.h */,
+				04ABBE2A1EAAEADA0070AFD1 /* LXWaveProgressView.m */,
+				04ABBE2B1EAAEADA0070AFD1 /* YYWeakProxy.h */,
+				04ABBE2C1EAAEADA0070AFD1 /* YYWeakProxy.m */,
 				3C85E1BC1E9DBF28006459F9 /* CustomButtonInset.h */,
 				3C85E1BD1E9DBF28006459F9 /* CustomButtonInset.m */,
 				3C9035571E9B52C100FF95C0 /* HLTitlesView.h */,
@@ -2016,8 +2023,6 @@
 				043965C11E07DF9D00B67989 /* IsBoundingViewController.h */,
 				043965C21E07DF9D00B67989 /* IsBoundingViewController.m */,
 				04440D4E1E77D15900206877 /* IsBoundingViewController.xib */,
-				04D90E8A1DF172FD00035C46 /* WaterIdentifyView.h */,
-				04D90E8B1DF172FD00035C46 /* WaterIdentifyView.m */,
 				95E918541DDC7AA8005DABC0 /* BindDeviceViewController.h */,
 				95E918551DDC7AA8005DABC0 /* BindDeviceViewController.m */,
 				04553F2D1E70EE980025CA34 /* ChooseDeviceTypeViewController.h */,
@@ -2361,6 +2366,7 @@
 				95F1ED5B1DE6BC6A002E9259 /* LineProgressLayer.m in Sources */,
 				740FD3951E287F9E009413F1 /* sim_com_serial.c in Sources */,
 				04F727A21E641CE4002EB54C /* DDData.m in Sources */,
+				04ABBE2D1EAAEADA0070AFD1 /* LXWaveProgressView.m in Sources */,
 				95C576001DA79FAE00F459DF /* TopLeftLabel.m in Sources */,
 				954A87D31D98BBA700570843 /* JSONHTTPClient.m in Sources */,
 				95E918691DDCAB9C005DABC0 /* RoundLable.m in Sources */,
@@ -2403,7 +2409,6 @@
 				0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */,
 				952B2AEE1DC224F4006A7C69 /* UIImage+Extension.m in Sources */,
 				04F7279B1E641CE4002EB54C /* DDASLLogger.m in Sources */,
-				04D90E8C1DF172FD00035C46 /* WaterIdentifyView.m in Sources */,
 				954A87D21D98BBA700570843 /* JSONAPI.m in Sources */,
 				041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */,
 				48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */,
@@ -2478,6 +2483,7 @@
 				3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */,
 				95C575F01DA7750000F459DF /* ConerSegment.m in Sources */,
 				3C4A07991E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m in Sources */,
+				04ABBE2E1EAAEADA0070AFD1 /* YYWeakProxy.m in Sources */,
 				740FD3B91E2A58CB009413F1 /* Test.m in Sources */,
 				04F727AF1E641CE4002EB54C /* HTTPErrorResponse.m in Sources */,
 				04A9497D1E826875007611F7 /* WristbandSettingViewController.m in Sources */,

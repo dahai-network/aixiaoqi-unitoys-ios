@@ -27,21 +27,32 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="正在搜索设备" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XKL-WN-Ezg">
-                    <rect key="frame" x="124" y="90" width="128.5" height="25.5"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="21"/>
-                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="请将设备贴近手机" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M7m-mR-Pbj">
-                    <rect key="frame" x="10" y="125.5" width="355" height="14.5"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rpw-K9-g9C">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="223"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="正在搜索设备" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XKL-WN-Ezg">
+                            <rect key="frame" x="123" y="94" width="128.5" height="25.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="请将设备贴近手机" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M7m-mR-Pbj">
+                            <rect key="frame" x="138" y="129.5" width="98.5" height="14.5"/>
+                            <constraints>
+                                <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="nTY-0h-0kQ"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
                     <constraints>
-                        <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="nTY-0h-0kQ"/>
+                        <constraint firstItem="XKL-WN-Ezg" firstAttribute="centerY" secondItem="Rpw-K9-g9C" secondAttribute="centerY" constant="-5" id="ffg-mv-hCc"/>
+                        <constraint firstItem="M7m-mR-Pbj" firstAttribute="top" secondItem="XKL-WN-Ezg" secondAttribute="bottom" constant="10" id="ni9-4F-Qtq"/>
+                        <constraint firstItem="XKL-WN-Ezg" firstAttribute="centerX" secondItem="Rpw-K9-g9C" secondAttribute="centerX" id="pvb-lD-Gxc"/>
+                        <constraint firstItem="M7m-mR-Pbj" firstAttribute="centerX" secondItem="XKL-WN-Ezg" secondAttribute="centerX" id="tLR-0a-o5L"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
+                </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_by_w" translatesAutoresizingMaskIntoConstraints="NO" id="MSn-Mb-LS9">
                     <rect key="frame" x="76.5" y="223" width="222" height="222"/>
                     <constraints>
@@ -83,22 +94,21 @@
             <color key="backgroundColor" red="0.0" green="0.62745098039215685" blue="0.9137254901960784" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="AGE-Ca-9oh" firstAttribute="centerY" secondItem="MSn-Mb-LS9" secondAttribute="centerY" id="72j-WR-8HP"/>
+                <constraint firstItem="Rpw-K9-g9C" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="9x9-d9-aHJ"/>
                 <constraint firstItem="YnT-At-OBY" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="CMw-k1-mYr"/>
-                <constraint firstItem="M7m-mR-Pbj" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="10" id="FBy-BG-MfS"/>
                 <constraint firstItem="AGE-Ca-9oh" firstAttribute="width" secondItem="MSn-Mb-LS9" secondAttribute="width" constant="-40" id="IPs-48-ob8"/>
                 <constraint firstItem="MSn-Mb-LS9" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="IVS-Ov-lEw"/>
                 <constraint firstItem="Hag-dG-wJm" firstAttribute="width" secondItem="AGE-Ca-9oh" secondAttribute="width" multiplier="1:2" id="K7N-7p-IaM"/>
                 <constraint firstAttribute="bottom" secondItem="YnT-At-OBY" secondAttribute="bottom" constant="40" id="MfI-hw-6eR"/>
+                <constraint firstItem="MSn-Mb-LS9" firstAttribute="top" secondItem="Rpw-K9-g9C" secondAttribute="bottom" id="NG5-HD-ese"/>
+                <constraint firstAttribute="trailing" secondItem="Rpw-K9-g9C" secondAttribute="trailing" id="QOE-xz-S5Z"/>
+                <constraint firstItem="Rpw-K9-g9C" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="TQg-Pl-bkb"/>
                 <constraint firstItem="AGE-Ca-9oh" firstAttribute="centerX" secondItem="MSn-Mb-LS9" secondAttribute="centerX" id="XFo-oA-s0a"/>
-                <constraint firstItem="XKL-WN-Ezg" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="90" id="Xgd-tz-gBl"/>
                 <constraint firstItem="MSn-Mb-LS9" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="a4J-WU-qUF"/>
                 <constraint firstItem="AOx-dj-DGB" firstAttribute="leading" secondItem="Hag-dG-wJm" secondAttribute="leading" constant="56" id="aaX-n4-UZg"/>
-                <constraint firstItem="M7m-mR-Pbj" firstAttribute="top" secondItem="XKL-WN-Ezg" secondAttribute="bottom" constant="10" id="bx0-ec-SCj"/>
                 <constraint firstItem="AOx-dj-DGB" firstAttribute="top" secondItem="Hag-dG-wJm" secondAttribute="bottom" constant="5" id="cuf-XP-IYe"/>
-                <constraint firstItem="XKL-WN-Ezg" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="dE9-BP-Hot"/>
                 <constraint firstItem="Hag-dG-wJm" firstAttribute="centerY" secondItem="AGE-Ca-9oh" secondAttribute="centerY" id="dw7-3M-5uE"/>
                 <constraint firstItem="Hag-dG-wJm" firstAttribute="centerX" secondItem="AGE-Ca-9oh" secondAttribute="centerX" id="g9g-Ee-ZZi"/>
-                <constraint firstAttribute="trailing" secondItem="M7m-mR-Pbj" secondAttribute="trailing" constant="10" id="qw0-Fh-fkb"/>
             </constraints>
             <point key="canvasLocation" x="35.5" y="53.5"/>
         </view>

@@ -14,6 +14,7 @@
 #import "UNDatabaseTools.h"
 #import <sys/utsname.h>
 #import "CutomButton.h"
+#import "AgreementViewController.h"
 
 @interface UNLoginViewController ()<UITextFieldDelegate>
 // 时间计数
@@ -111,7 +112,8 @@
 {
     button.enabled = NO;
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Setting" bundle:nil];
-    UIViewController *agreementViewController = [mainStory instantiateViewControllerWithIdentifier:@"agreementViewController"];
+    AgreementViewController *agreementViewController = [mainStory instantiateViewControllerWithIdentifier:@"agreementViewController"];
+    agreementViewController.lastControllerName = @"UNLoginViewController";
     if (agreementViewController) {
 //        [self.navigationController pushViewController:agreementViewController animated:YES];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:agreementViewController];
