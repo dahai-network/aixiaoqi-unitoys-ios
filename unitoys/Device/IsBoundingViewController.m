@@ -55,6 +55,7 @@
     self.handupImg.hidden = YES;
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_by_z"];
     [self.cancelButton setTitle:@"暂不搜索" forState:UIControlStateNormal];
+    self.cancelButton.hidden = NO;
     [self setLeftButton:@""];
     [BlueToothDataManager shareManager].isShowAlert = YES;
     self.isback = YES;
@@ -147,6 +148,7 @@
 - (void)boundSuccess {
     self.isback = NO;
     self.typeImg.image = [UIImage imageNamed:@"icon_bound_success"];
+    [self.handupImg stopAnimating];
     self.handupImg.hidden = YES;
     self.cancelButton.hidden = YES;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
