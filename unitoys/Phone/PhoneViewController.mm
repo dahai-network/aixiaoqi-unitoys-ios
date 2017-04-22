@@ -1776,62 +1776,90 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //    [self callNumber:[self formatPhoneNum:strPhoneNumber]];
     
     //展示拨打电话选项
-    [self selectCallPhoneType:[self formatPhoneNum:strPhoneNumber]];
+    [self startCallPhoneAction:[self formatPhoneNum:strPhoneNumber]];
     
 
 }
 
-- (void)selectCallPhoneType:(NSString *)phoneNumber
+//- (void)selectCallPhoneType:(NSString *)phoneNumber
+//{
+//    //电话记录，拨打电话
+//    if (!self.callActionView){
+//        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
+//        
+////        [self.view addSubview:self.callActionView];
+//    }
+//    
+//    __weak typeof(self) weakSelf = self;
+//    
+//    self.callActionView.cancelBlock = ^(){
+//
+//        [weakSelf.callActionView hideActionView];
+//    };
+//    
+//    self.callActionView.actionBlock = ^(NSInteger callType){
+//
+//        [weakSelf.callActionView hideActionView];
+//        
+//        weakSelf.phonePadView.inputedPhoneNumber = nil;
+//        weakSelf.lblPhoneNumber.text = nil;
+//    //    [self showOperation];
+//        weakSelf.lblPhoneNumber.hidden = YES;
+//        weakSelf.segmentType.hidden = NO;
+//        weakSelf.callView.hidden = YES;
+//        //清空搜索状态
+//        weakSelf.isSearchStatu = NO;
+//        [weakSelf.searchLists removeAllObjects];
+//        [weakSelf.tableView reloadData];
+//        
+//        if (callType==1) {
+//            //网络电话
+//            //电话记录，拨打电话
+//            [weakSelf callNumber:phoneNumber];
+//        }else if (callType==2){
+//            //手环电话
+//            if ([BlueToothDataManager shareManager].isRegisted) {
+//                //电话记录，拨打电话
+//                [weakSelf callUnitysNumber:phoneNumber];
+//            } else {
+//                HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+//                if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+//                }
+//            }
+//        }
+//    };
+//
+//    [self.callActionView showActionView];
+//}
+
+
+- (void)startCallPhoneAction:(NSString *)phoneNumber
 {
-    //电话记录，拨打电话
-    if (!self.callActionView){
-        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
-        
-//        [self.view addSubview:self.callActionView];
-    }
-    
-    __weak typeof(self) weakSelf = self;
-    
-    self.callActionView.cancelBlock = ^(){
-
-        [weakSelf.callActionView hideActionView];
-    };
-    
-    self.callActionView.actionBlock = ^(NSInteger callType){
-
-        [weakSelf.callActionView hideActionView];
-        
-        weakSelf.phonePadView.inputedPhoneNumber = nil;
-        weakSelf.lblPhoneNumber.text = nil;
-    //    [self showOperation];
-        weakSelf.lblPhoneNumber.hidden = YES;
-        weakSelf.segmentType.hidden = NO;
-        weakSelf.callView.hidden = YES;
-        //清空搜索状态
-        weakSelf.isSearchStatu = NO;
-        [weakSelf.searchLists removeAllObjects];
-        [weakSelf.tableView reloadData];
-        
-        if (callType==1) {
-            //网络电话
+    //手环电话
+    if ([BlueToothDataManager shareManager].isRegisted) {
+        //电话记录，拨打电话
+            self.phonePadView.inputedPhoneNumber = nil;
+            self.lblPhoneNumber.text = nil;
+            //    [self showOperation];
+            self.lblPhoneNumber.hidden = YES;
+            self.segmentType.hidden = NO;
+            self.callView.hidden = YES;
+            //清空搜索状态
+            self.isSearchStatu = NO;
+            [self.searchLists removeAllObjects];
+            [self.tableView reloadData];
+            
             //电话记录，拨打电话
-            [weakSelf callNumber:phoneNumber];
-        }else if (callType==2){
-            //手环电话
-            if ([BlueToothDataManager shareManager].isRegisted) {
-                //电话记录，拨打电话
-                [weakSelf callUnitysNumber:phoneNumber];
-            } else {
-                HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
-                if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
-                }
-            }
+            [self callUnitysNumber:phoneNumber];
+    } else {
+        HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+        if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
         }
-    };
-
-    [self.callActionView showActionView];
+    }
 }
+
 
 - (NSString *)formatPhoneNum:(NSString *)phone
 {
@@ -2010,7 +2038,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (IBAction)switchOperation:(id)sender {
     
-    if (self.callActionView)  [self.callActionView hideActionView]; //切换过程中隐藏电话拨号的弹出面板
+//    if (self.callActionView)  [self.callActionView hideActionView]; //切换过程中隐藏电话拨号的弹出面板
     
     UISegmentedControl *seg = (UISegmentedControl *)sender;
     self.phoneOperation = seg.selectedSegmentIndex;
@@ -2265,7 +2293,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     if (contactsDetailViewController) {
                         NSLog(@"联系结果：%@",model);
                         //重置状态
-                        [self.callActionView hideActionView];
+//                        [self.callActionView hideActionView];
                         
                         self.phonePadView.inputedPhoneNumber = nil;
                         self.lblPhoneNumber.text = nil;
@@ -2287,126 +2315,160 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 }
             }else if ([contacts isKindOfClass:[NSDictionary class]]){
                 NSDictionary *dicCallRecord = (NSDictionary *)contacts;
-                
-                //电话记录，拨打电话
-                if (!self.callActionView){
-                    self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
-                    
-//                    [self.view addSubview:self.callActionView];
+                if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+                    [self startCallPhoneAction:[dicCallRecord objectForKey:@"hostnumber"]];
+                } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+                    [self startCallPhoneAction:[dicCallRecord objectForKey:@"destnumber"]];
+                } else {
+                    NSLog(@"无法识别的电话方式");
                 }
-                
-                __weak typeof(self) weakSelf = self;
-                
-                self.callActionView.cancelBlock = ^(){
-                    [weakSelf.callActionView hideActionView];
-                };
-                
-                self.callActionView.actionBlock = ^(NSInteger callType){
-                    [weakSelf.callActionView hideActionView];
-                    if (callType==1) {
-                        //网络电话
-                        //电话记录，拨打电话
-                        if (dicCallRecord) {
-                            if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
-                                [weakSelf callNumber:[dicCallRecord objectForKey:@"hostnumber"]];
-                            } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
-                                [weakSelf callNumber:[dicCallRecord objectForKey:@"destnumber"]];
-                            } else {
-                                //                HUDNormal(@"无法识别的电话方式")
-                                NSLog(@"无法识别的电话方式");
-                            }
-                            NSLog(@"%@", dicCallRecord[@"calltype"]);
-                        }
-                    }else if (callType==2){
-                        //手环电话
-                        if ([BlueToothDataManager shareManager].isRegisted) {
-                            //电话记录，拨打电话
-//                            NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
-                            if (dicCallRecord) {
-                                if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
-                                    [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"hostnumber"]];
-                                } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
-                                    [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"destnumber"]];
-                                } else {
-                                    //                HUDNormal(@"无法识别的电话方式")
-                                    NSLog(@"无法识别的电话方式");
-                                }
-                                NSLog(@"%@", dicCallRecord[@"calltype"]);
-                            }
-                        } else {
-                            HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
-                            if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
-                            }
-                        }
-                    }
-                };
-                [self.callActionView showActionView];
+//                //电话记录，拨打电话
+//                if (!self.callActionView){
+//                    self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
+//                    
+////                    [self.view addSubview:self.callActionView];
+//                }
+//                
+//                __weak typeof(self) weakSelf = self;
+//                
+//                self.callActionView.cancelBlock = ^(){
+//                    [weakSelf.callActionView hideActionView];
+//                };
+//                
+//                self.callActionView.actionBlock = ^(NSInteger callType){
+//                    [weakSelf.callActionView hideActionView];
+//                    if (callType==1) {
+//                        //网络电话
+//                        //电话记录，拨打电话
+//                        if (dicCallRecord) {
+//                            if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+//                                [weakSelf callNumber:[dicCallRecord objectForKey:@"hostnumber"]];
+//                            } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+//                                [weakSelf callNumber:[dicCallRecord objectForKey:@"destnumber"]];
+//                            } else {
+//                                //                HUDNormal(@"无法识别的电话方式")
+//                                NSLog(@"无法识别的电话方式");
+//                            }
+//                            NSLog(@"%@", dicCallRecord[@"calltype"]);
+//                        }
+//                    }else if (callType==2){
+//                        //手环电话
+//                        if ([BlueToothDataManager shareManager].isRegisted) {
+//                            //电话记录，拨打电话
+////                            NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+//                            if (dicCallRecord) {
+//                                if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+//                                    [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"hostnumber"]];
+//                                } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+//                                    [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"destnumber"]];
+//                                } else {
+//                                    //                HUDNormal(@"无法识别的电话方式")
+//                                    NSLog(@"无法识别的电话方式");
+//                                }
+//                                NSLog(@"%@", dicCallRecord[@"calltype"]);
+//                            }
+//                        } else {
+//                            HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+//                            if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+//                                [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+//                            }
+//                        }
+//                    }
+//                };
+//                [self.callActionView showActionView];
             }
         }else{
-            //电话记录，拨打电话
-            if (!self.callActionView){
-                self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
+//            NSDictionary *dicCallRecord = (NSDictionary *)contacts;
+//            if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+//                [self startCallPhoneAction:[dicCallRecord objectForKey:@"hostnumber"]];
+//            } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+//                [self startCallPhoneAction:[dicCallRecord objectForKey:@"destnumber"]];
+//            } else {
+//                NSLog(@"无法识别的电话方式");
+//            }
+            
+            NSArray *records = [self.arrPhoneRecord objectAtIndex:indexPath.row];
+            NSDictionary *dicCallRecord;
+            if (records.count) {
+                dicCallRecord = records[0];
             }
-            __weak typeof(self) weakSelf = self;
-            
-            self.callActionView.cancelBlock = ^(){
-                [weakSelf.callActionView hideActionView];
-            };
-            
-            self.callActionView.actionBlock = ^(NSInteger callType){
-                [weakSelf.callActionView hideActionView];
-                if (callType==1) {
-                    //网络电话
-                    //电话记录，拨打电话
-//                    NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
-                    NSArray *records = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
-                    NSDictionary *dicCallRecord;
-                    if (records.count) {
-                        dicCallRecord = records[0];
-                    }
-                    if (dicCallRecord) {
-                        if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
-                            [weakSelf callNumber:[dicCallRecord objectForKey:@"hostnumber"]];
-                        } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
-                            [weakSelf callNumber:[dicCallRecord objectForKey:@"destnumber"]];
-                        } else {
-                            //                HUDNormal(@"无法识别的电话方式")
-                            NSLog(@"无法识别的电话方式");
-                        }
-                        NSLog(@"%@", dicCallRecord[@"calltype"]);
-                    }
-                }else if (callType==2){
-                    //手环电话
-                    if ([BlueToothDataManager shareManager].isRegisted) {
-                        //电话记录，拨打电话
-//                        NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
-                        NSArray *records = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
-                        NSDictionary *dicCallRecord;
-                        if (records.count) {
-                            dicCallRecord = records[0];
-                        }
-                        if (dicCallRecord) {
-                            if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
-                                [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"hostnumber"]];
-                            } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
-                                [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"destnumber"]];
-                            } else {
-                                //                HUDNormal(@"无法识别的电话方式")
-                                NSLog(@"无法识别的电话方式");
-                            }
-                            NSLog(@"%@", dicCallRecord[@"calltype"]);
-                        }
-                    } else {
-                        HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
-                        if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
-                            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
-                        }
-                    }
+            if (dicCallRecord) {
+                if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+//                    [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"hostnumber"]];
+                    [self startCallPhoneAction:[dicCallRecord objectForKey:@"hostnumber"]];
+                } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+//                    [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"destnumber"]];
+                    [self startCallPhoneAction:[dicCallRecord objectForKey:@"destnumber"]];
+                } else {
+                    NSLog(@"无法识别的电话方式");
                 }
-            };
+                NSLog(@"%@", dicCallRecord[@"calltype"]);
+            }
 
-            [self.callActionView showActionView];
+            
+            //电话记录，拨打电话
+//            if (!self.callActionView){
+//                self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
+//            }
+//            __weak typeof(self) weakSelf = self;
+//            
+//            self.callActionView.cancelBlock = ^(){
+//                [weakSelf.callActionView hideActionView];
+//            };
+//            
+//            self.callActionView.actionBlock = ^(NSInteger callType){
+//                [weakSelf.callActionView hideActionView];
+//                if (callType==1) {
+//                    //网络电话
+//                    //电话记录，拨打电话
+////                    NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+//                    NSArray *records = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+//                    NSDictionary *dicCallRecord;
+//                    if (records.count) {
+//                        dicCallRecord = records[0];
+//                    }
+//                    if (dicCallRecord) {
+//                        if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+//                            [weakSelf callNumber:[dicCallRecord objectForKey:@"hostnumber"]];
+//                        } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+//                            [weakSelf callNumber:[dicCallRecord objectForKey:@"destnumber"]];
+//                        } else {
+//                            //                HUDNormal(@"无法识别的电话方式")
+//                            NSLog(@"无法识别的电话方式");
+//                        }
+//                        NSLog(@"%@", dicCallRecord[@"calltype"]);
+//                    }
+//                }else if (callType==2){
+//                    //手环电话
+//                    if ([BlueToothDataManager shareManager].isRegisted) {
+//                        //电话记录，拨打电话
+////                        NSDictionary *dicCallRecord = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+//                        NSArray *records = [weakSelf.arrPhoneRecord objectAtIndex:indexPath.row];
+//                        NSDictionary *dicCallRecord;
+//                        if (records.count) {
+//                            dicCallRecord = records[0];
+//                        }
+//                        if (dicCallRecord) {
+//                            if ([dicCallRecord[@"calltype"] isEqualToString:@"来电"]) {
+//                                [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"hostnumber"]];
+//                            } else if ([dicCallRecord[@"calltype"] isEqualToString:@"去电"]) {
+//                                [weakSelf callUnitysNumber:[dicCallRecord objectForKey:@"destnumber"]];
+//                            } else {
+//                                //                HUDNormal(@"无法识别的电话方式")
+//                                NSLog(@"无法识别的电话方式");
+//                            }
+//                            NSLog(@"%@", dicCallRecord[@"calltype"]);
+//                        }
+//                    } else {
+//                        HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+//                        if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+//                            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+//                        }
+//                    }
+//                }
+//            };
+//
+//            [self.callActionView showActionView];
         }
     } else {
         //消息记录，显示消息

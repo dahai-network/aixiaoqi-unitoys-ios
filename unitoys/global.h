@@ -45,6 +45,7 @@
 
 #define kScreenWidthValue  [UIScreen mainScreen].bounds.size.width
 #define kScreenHeightValue  [UIScreen mainScreen].bounds.size.height
+#define kStatusBarHeight [UIApplication sharedApplication].statusBarFrame.size.height
 
 #define kWeakSelf __weak typeof(self) weakSelf = self;
 

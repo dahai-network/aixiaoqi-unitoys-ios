@@ -9,7 +9,7 @@
 #import "BaseViewController.h"
 //#import "PhonePadView.h"
 #import "UCallPhonePadView.h"
-#import "CallActionView.h"
+//#import "CallActionView.h"
 
 #import "PhoneOperationPad.h"
 
@@ -26,7 +26,7 @@
 
 @property (weak, nonatomic) IBOutlet UCallPhonePadView *phonePadView;
 
-@property (strong, nonatomic) CallActionView *callActionView;
+//@property (strong, nonatomic) CallActionView *callActionView;
 
 @property (readwrite) NSInteger phoneOperation;
 

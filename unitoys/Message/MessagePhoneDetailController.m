@@ -9,14 +9,14 @@
 #import "MessagePhoneDetailController.h"
 #import "MessagePhoneDetailCell.h"
 #import "MessagePhoneDetailHeaderCell.h"
-#import "CallActionView.h"
+//#import "CallActionView.h"
 #import "BlueToothDataManager.h"
 #import "ContactsCallDetailsController.h"
 
 @interface MessagePhoneDetailController ()<UITableViewDelegate,UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
-@property (strong, nonatomic) CallActionView *callActionView;
+//@property (strong, nonatomic) CallActionView *callActionView;
 
 @property (nonatomic, strong) NSMutableArray *phoneDatas;
 //@property (nonatomic, copy) NSString *phoneName;
@@ -108,35 +108,46 @@
 {
     NSDictionary *dict = self.phoneDatas[button.tag];
     NSString *number = dict[@"phone"];
-    
-    if (!self.callActionView){
-        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
-    }
-    __weak typeof(self) weakSelf = self;
-    self.callActionView.cancelBlock = ^(){
-        [weakSelf.callActionView hideActionView];
-    };
-    
-    self.callActionView.actionBlock = ^(NSInteger callType){
-        [weakSelf.callActionView hideActionView];
-        if (callType==1) {
-            //网络电话
-            //电话记录，拨打电话
-            if (number) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeCallAction" object:[weakSelf formatPhoneNum:number]];
-            }
-        }else if (callType==2){
-            //手环电话
-            if ([BlueToothDataManager shareManager].isRegisted) {
-                if (number) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeUnitysCallAction" object:[weakSelf formatPhoneNum:number]];
-                }
-            } else {
-                HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
-            }
+    //手环电话
+    if ([BlueToothDataManager shareManager].isRegisted) {
+        if (number) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeUnitysCallAction" object:[self formatPhoneNum:number]];
         }
-    };
-    [self.callActionView showActionView];
+    } else {
+        HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+    }
+    
+//    NSDictionary *dict = self.phoneDatas[button.tag];
+//    NSString *number = dict[@"phone"];
+//    
+//    if (!self.callActionView){
+//        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
+//    }
+//    __weak typeof(self) weakSelf = self;
+//    self.callActionView.cancelBlock = ^(){
+//        [weakSelf.callActionView hideActionView];
+//    };
+//    
+//    self.callActionView.actionBlock = ^(NSInteger callType){
+//        [weakSelf.callActionView hideActionView];
+//        if (callType==1) {
+//            //网络电话
+//            //电话记录，拨打电话
+//            if (number) {
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeCallAction" object:[weakSelf formatPhoneNum:number]];
+//            }
+//        }else if (callType==2){
+//            //手环电话
+//            if ([BlueToothDataManager shareManager].isRegisted) {
+//                if (number) {
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeUnitysCallAction" object:[weakSelf formatPhoneNum:number]];
+//                }
+//            } else {
+//                HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+//            }
+//        }
+//    };
+//    [self.callActionView showActionView];
 }
 
 - (NSString *)formatPhoneNum:(NSString *)phone

@@ -9,7 +9,7 @@
 //#import "BaseTableController.h"
 #import "BaseViewController.h"
 #import "SipEngineUIDelegate.h"
-#import "CallActionView.h"
+//#import "CallActionView.h"
 #import "UCallPhonePadView.h"
 #import "PhoneOperationPad.h"
 //#import "UCallPhoneNumLabel.h"
@@ -20,7 +20,7 @@ typedef void(^IsHideTitleViewBlock)(BOOL isHidden);
 
 @property (strong, nonatomic) UCallPhonePadView *phonePadView;
 
-@property (strong, nonatomic) CallActionView *callActionView;
+//@property (strong, nonatomic) CallActionView *callActionView;
 
 
 //@property (weak, nonatomic) UILabel *lblPhoneNumber;

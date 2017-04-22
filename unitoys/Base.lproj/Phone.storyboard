@@ -226,7 +226,7 @@
         <!--Calling View Controller-->
         <scene sceneID="oKo-K1-PWB">
             <objects>
-                <viewController storyboardIdentifier="callingViewController" id="tAa-Z6-WMO" customClass="CallingViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="callingViewController" hidesBottomBarWhenPushed="YES" id="tAa-Z6-WMO" customClass="CallingViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="oQQ-Jf-ZNQ"/>
                         <viewControllerLayoutGuide type="bottom" id="mQR-hR-vhR"/>

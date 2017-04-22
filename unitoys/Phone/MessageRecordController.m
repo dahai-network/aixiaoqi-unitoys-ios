@@ -238,7 +238,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
                 NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
                 mjViewController.title = titleName;
                 mjViewController.titleName = titleName;
-                mjViewController.toTelephone = titleName;
+                mjViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
             }
             
             mjViewController.hidesBottomBarWhenPushed = YES;

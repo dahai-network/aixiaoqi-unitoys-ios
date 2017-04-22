@@ -170,9 +170,11 @@
     if (self.callTimer) {
         [self.callTimer setFireDate:[NSDate distantFuture]];
     }
-    [self dismissViewControllerAnimated:NO completion:^{
-        self.isDismissing = NO;
-    }];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self dismissViewControllerAnimated:NO completion:^{
+            self.isDismissing = NO;
+        }];
+    });
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion

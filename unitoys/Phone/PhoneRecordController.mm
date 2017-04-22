@@ -109,6 +109,51 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self initTableView];
+    //解压联系人数据库
+    [self unZipNumberPhoneDB];
+    
+    
+    if (!_arrPhoneRecord) {
+        [self loadPhoneRecord];
+    }
+    
+    kWeakSelf
+    self.phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 64, kScreenWidthValue, 225)];
+    [self.view addSubview:self.phonePadView];
+    
+    self.phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum){
+        
+        if (btnText.length>0) {
+            //当前为搜索状态
+            weakSelf.isSearchStatu = YES;
+            weakSelf.phonePadView.hidden = NO;
+            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225 - 70;
+            //搜索电话并展示
+            [weakSelf searchInfoWithString:btnText];
+        }else{
+            //当前不为搜索状态
+            weakSelf.isSearchStatu = NO;
+            weakSelf.isSearchStatu = NO;
+            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225;
+            [weakSelf.tableView reloadData];
+        }
+        
+    };
+    
+    //    [self initCallActionView];
+    
+    [self showWindow];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarHeightChange) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+    
+//    self.tabbarTop = self.tabBarController.tabBar.frame;
+    NSLog(@"--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
+}
+
+
 - (BOOL)initEngine {
     [[SipEngineManager instance] Init];
     [[SipEngineManager instance] LoadConfig];
@@ -132,7 +177,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(makeUnitysCallAction:) name:@"MakeUnitysCallAction" object:nil];
     //监听数字键盘
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(callPhoneKeyBoard:) name:@"CallPhoneKeyBoard" object:nil];
-    
     
     kWeakSelf
     if (kSystemVersionValue >= 10.0) {
@@ -223,6 +267,19 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     return YES;
 }
 
+- (void)statusBarHeightChange
+{
+//    [self viewDidLayoutSubviews];
+//    if (kStatusBarHeight == 20) {
+//        NSLog(@"statusBarHeightChange-20-%.f", self.tabbarTop);
+//        self.view.height -= 20;
+//    }
+//    else{
+//        NSLog(@"statusBarHeightChange-40-%.f", self.tabbarTop);
+//        self.view.height -= 20;
+//    }
+}
+
 
 - (void)refreshAddressBook {
     if (_arrPhoneRecord) {
@@ -275,95 +332,84 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    [self initTableView];
-    //解压联系人数据库
-    [self unZipNumberPhoneDB];
-    
-
-    if (!_arrPhoneRecord) {
-        [self loadPhoneRecord];
-    }
-    
-    kWeakSelf
-    self.phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 64, kScreenWidthValue, 225)];
-    [self.view addSubview:self.phonePadView];
-    
-    self.phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum){
-        
-        if (btnText.length>0) {
-            //当前为搜索状态
-            weakSelf.isSearchStatu = YES;
-            weakSelf.phonePadView.hidden = NO;
-            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225 - 70;
-            //搜索电话并展示
-            [weakSelf searchInfoWithString:btnText];
-        }else{
-            //当前不为搜索状态
-            weakSelf.isSearchStatu = NO;
-            weakSelf.isSearchStatu = NO;
-            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225;
-            [weakSelf.tableView reloadData];
-        }
-        
-    };
-    
-    [self initCallActionView];
-    
-    [self showWindow];
-}
 
 
-- (void)initCallActionView
+//- (void)initCallActionView
+//{
+//    if (!self.callActionView){
+//        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
+//        __weak typeof(self) weakSelf = self;
+//        
+//        self.callActionView.cancelBlock = ^(){
+//            [weakSelf.callActionView hideActionView];
+//        };
+//        
+//        self.callActionView.actionBlock = ^(NSInteger callType){
+//            [weakSelf.callActionView hideActionView];
+//            
+//            [weakSelf.phonePadView hideCallView];
+//            [weakSelf switchNumberPad:YES];
+//            
+//            //        weakSelf.callView.hidden = YES;
+//            //清空搜索状态
+//            weakSelf.isSearchStatu = NO;
+//            [weakSelf.searchLists removeAllObjects];
+//            [weakSelf.tableView reloadData];
+//            
+//            if (callType==1) {
+//                //网络电话
+//                //电话记录，拨打电话
+//                if (weakSelf.currentCallPhone) {
+//                    [weakSelf callNumber:weakSelf.currentCallPhone];
+//                }else{
+//                    NSLog(@"当前拨打号码为空");
+//                }
+//            }else if (callType==2){
+//                //手环电话
+//                if ([BlueToothDataManager shareManager].isRegisted) {
+//                    //电话记录，拨打电话
+//                    if (weakSelf.currentCallPhone) {
+//                        [weakSelf callUnitysNumber:weakSelf.currentCallPhone];
+//                    }else{
+//                        NSLog(@"当前拨打号码为空");
+//                    }
+//                } else {
+//                    HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+//                    if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+//                        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+//                    }
+//                }
+//            }
+//        };
+//        
+//    }
+//}
+
+- (void)startCallPhoneAction
 {
-    if (!self.callActionView){
-        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
-        __weak typeof(self) weakSelf = self;
-        
-        self.callActionView.cancelBlock = ^(){
-            [weakSelf.callActionView hideActionView];
-        };
-        
-        self.callActionView.actionBlock = ^(NSInteger callType){
-            [weakSelf.callActionView hideActionView];
+    //手环电话
+    if ([BlueToothDataManager shareManager].isRegisted) {
+        //电话记录，拨打电话
+        if (self.currentCallPhone) {
             
-            [weakSelf.phonePadView hideCallView];
-            [weakSelf switchNumberPad:YES];
+            [self.phonePadView hideCallView];
+            [self switchNumberPad:YES];
             
             //        weakSelf.callView.hidden = YES;
             //清空搜索状态
-            weakSelf.isSearchStatu = NO;
-            [weakSelf.searchLists removeAllObjects];
-            [weakSelf.tableView reloadData];
+            self.isSearchStatu = NO;
+            [self.searchLists removeAllObjects];
+            [self.tableView reloadData];
             
-            if (callType==1) {
-                //网络电话
-                //电话记录，拨打电话
-                if (weakSelf.currentCallPhone) {
-                    [weakSelf callNumber:weakSelf.currentCallPhone];
-                }else{
-                    NSLog(@"当前拨打号码为空");
-                }
-            }else if (callType==2){
-                //手环电话
-                if ([BlueToothDataManager shareManager].isRegisted) {
-                    //电话记录，拨打电话
-                    if (weakSelf.currentCallPhone) {
-                        [weakSelf callUnitysNumber:weakSelf.currentCallPhone];
-                    }else{
-                        NSLog(@"当前拨打号码为空");
-                    }
-                } else {
-                    HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
-                    if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
-                    }
-                }
-            }
-        };
-        
+            [self callUnitysNumber:self.currentCallPhone];
+        }else{
+            NSLog(@"当前拨打号码为空");
+        }
+    } else {
+        HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+        if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
+        }
     }
 }
 
@@ -496,7 +542,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)selectCallPhoneType:(NSString *)phoneNumber
 {
     self.currentCallPhone = phoneNumber;
-    [self.callActionView showActionView];
+//    [self.callActionView showActionView];
+    [self startCallPhoneAction];
 }
 
 
@@ -989,6 +1036,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             self.speakerStatus = NO;
             if(theSipEngine->InCalling())
                 theSipEngine->TerminateCall();
+//            [self.tabBarController.tabBar setNeedsLayout];
+//            [self.tabBarController.tabBar layoutIfNeeded];
+//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                [self.tabBarController.tabBar setNeedsLayout];
+//                [self.tabBarController.tabBar layoutIfNeeded];
+//            });
             
             //挂断系统的通话界面
             if (kSystemVersionValue >= 10.0 && isUseCallKit) {
@@ -1769,7 +1822,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             ContactModel *model = (ContactModel *)contacts;
             NSLog(@"联系结果：%@",model);
             //重置状态
-            [self.callActionView hideActionView];
             [self.phonePadView hideCallView];
             [self switchNumberPad:YES];
             //                    self.callView.hidden = YES;
@@ -1809,7 +1861,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     NSLog(@"无法识别的电话方式");
                 }
             }
-            [self.callActionView showActionView];
+//            [self.callActionView showActionView];
+            [self startCallPhoneAction];
         }
     }else{
         NSArray *records = [self.arrPhoneRecord objectAtIndex:indexPath.row];
@@ -1827,7 +1880,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             NSLog(@"%@", dicCallRecord[@"calltype"]);
         }
-        [self.callActionView showActionView];
+//        [self.callActionView showActionView];
+        [self startCallPhoneAction];
     }
 }
 

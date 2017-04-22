@@ -7,7 +7,7 @@
 //
 
 #import "BaseTableController.h"
-#import "CallActionView.h"
+//#import "CallActionView.h"
 @class ContactModel;
 
 @interface ContactsDetailViewController : BaseTableController
@@ -17,7 +17,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblContactMan;
 @property (weak, nonatomic) IBOutlet UIImageView *ivContactMan;
 
-@property (strong,nonatomic) CallActionView *callActionView;
+//@property (strong,nonatomic) CallActionView *callActionView;
 
 @property (readwrite) NSString *contactMan;
 @property (readwrite) NSString *phoneNumbers;
