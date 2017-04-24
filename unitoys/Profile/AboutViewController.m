@@ -35,6 +35,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *deviceName;//设备类型
 @property (weak, nonatomic) IBOutlet UIButton *offButton;
 @property (nonatomic, assign) BOOL isOpened;//开关是否打开
+@property (nonatomic, strong)UIView *statuesView;
+@property (nonatomic, strong)UILabel *statuesLabel;
 
 @end
 
@@ -45,6 +47,18 @@
     self.navigationItem.leftBarButtonItem = nil;
     
     [self tipMessageStatuChange];
+    
+    //添加状态栏
+    self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 24)];
+    self.statuesView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
+    UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
+    leftImg.frame = CGRectMake(15, 2, 20, 20);
+    [self.statuesView addSubview:leftImg];
+    self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, [UIScreen mainScreen].bounds.size.width-30-leftImg.frame.size.width, 24)];
+    self.statuesLabel.text = @"这个状态栏比较6";
+    self.statuesLabel.font = [UIFont systemFontOfSize:14];
+    self.statuesLabel.textColor = UIColorFromRGB(0x999999);
+    [self.statuesView addSubview:self.statuesLabel];
     
     //消除导航栏横线
     //自定义一个NaVIgationBar
@@ -367,14 +381,11 @@
 
 #pragma mark ---TableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    switch (indexPath.section) {
-        case 0:
-            if (indexPath.row == 2) {
-                [self amountDetail];
-            }
+    switch (indexPath.row) {
+        case 2:
+            [self amountDetail];
             break;
-        case 1:
+        case 3:
         {
             OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
             if (orderListViewController) {
@@ -384,18 +395,9 @@
                 }
                 [self.navigationController pushViewController:orderListViewController animated:YES];
             }
-            
-//            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-//            if (storyboard) {
-//                self.tabBarController.tabBar.hidden = YES;
-//                UIViewController *orderListViewController = [storyboard instantiateViewControllerWithIdentifier:@"orderListViewController"];
-//                if (orderListViewController) {
-//                    [self.navigationController pushViewController:orderListViewController animated:YES];
-//                }
-//            }
         }
             break;
-        case 2:
+        case 4:
             if ([UNDataTools sharedInstance].isHasFirmwareUpdateTip) {
                 [UNDataTools sharedInstance].isHasFirmwareUpdateTip = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
@@ -422,30 +424,24 @@
                 HUDNormal(@"蓝牙未开")
             }
             break;
-        case 3:
-            switch (indexPath.row) {
-                case 0:
-                {
-                    PurviewSettingViewController *purviewSettingVC = [[PurviewSettingViewController alloc] init];
-                    [self.navigationController pushViewController:purviewSettingVC animated:YES];
+        case 5:
+        {
+            PurviewSettingViewController *purviewSettingVC = [[PurviewSettingViewController alloc] init];
+            [self.navigationController pushViewController:purviewSettingVC animated:YES];
+        }
+            break;
+        case 6:
+        {
+            //开始调用设置
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Setting" bundle:nil];
+            if (storyboard) {
+                self.tabBarController.tabBar.hidden = YES;
+                UIViewController *settingViewController = [storyboard instantiateViewControllerWithIdentifier:@"settingViewController"];
+                if (settingViewController) {
+                    [self.navigationController pushViewController:settingViewController animated:YES];
                 }
-                    break;
-                case 1:
-                {
-                    //开始调用设置
-                    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Setting" bundle:nil];
-                    if (storyboard) {
-                        self.tabBarController.tabBar.hidden = YES;
-                        UIViewController *settingViewController = [storyboard instantiateViewControllerWithIdentifier:@"settingViewController"];
-                        if (settingViewController) {
-                            [self.navigationController pushViewController:settingViewController animated:YES];
-                        }
-                    }
-                }
-                    break;
-                default:
-                    break;
             }
+        }
             break;
         default:
             break;
@@ -457,66 +453,45 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 3) {
-        return 10;
-    } else {
-        return 5;
-    }
+    return CGFLOAT_MIN;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 0.01;
+    return self.statuesView.frame.size.height;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return self.statuesView;
 }
 
 #pragma mark -- Table
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    switch (section) {
-        case 0:
-            return 3;
-            break;
-        case 1:
-            return 1;
-            break;
-        case 2:
-            return 1;
-            break;
-        case 3:
-            return 2;
-            break;
-            
-        default:
-            return 0;
-            break;
-    }
+    return 7;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch (indexPath.section) {
+    switch (indexPath.row) {
         case 0:
-            switch (indexPath.row) {
-                case 0:
-                    return 171;
-                    break;
-                case 1:
-                    return 55;
-                    break;
-                case 2:
-                    return 55;
-                    break;
-                default:
-                    return 55;
-                    break;
-            }
+            return 171;
             break;
         case 1:
-            return 120;
+            return 55;
             break;
         case 2:
-            return 120;
+            return 60;
             break;
         case 3:
+            return 125;
+            break;
+        case 4:
+            return 125;
+            break;
+        case 5:
             return 55;
+            break;
+        case 6:
+            return 65;
             break;
         default:
             return 55;

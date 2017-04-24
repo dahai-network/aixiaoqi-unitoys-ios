@@ -84,6 +84,8 @@
 
 @property (nonatomic, strong) UNPresentTool *presentTool;
 @property (nonatomic, weak) UNPopTipMsgView *popView;
+@property (nonatomic, strong)UIView *statuesView;
+@property (nonatomic, strong)UILabel *statuesLabel;
 @end
 
 @implementation HomeViewController
@@ -99,6 +101,19 @@
     [super viewDidLoad];
     
     [self checkPackageResidue];
+    
+    //添加状态栏
+    self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 24)];
+    self.statuesView.backgroundColor = UIColorFromRGB(0xffbfbf);
+    UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
+    leftImg.frame = CGRectMake(15, 2, 20, 20);
+    [self.statuesView addSubview:leftImg];
+    self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, [UIScreen mainScreen].bounds.size.width-30-leftImg.frame.size.width, 24)];
+    self.statuesLabel.text = @"这个状态栏比较6";
+    self.statuesLabel.font = [UIFont systemFontOfSize:14];
+    self.statuesLabel.textColor = UIColorFromRGB(0x999999);
+    [self.statuesView addSubview:self.statuesLabel];
+    
     
     self.communicatePackageDataArr = [NSMutableArray array];
     [UNPushKitMessageManager shareManager].isAppAlreadyLoad = YES;
@@ -1638,65 +1653,74 @@
     [self presentViewController:alertVC animated:YES completion:nil];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return CGFLOAT_MIN;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return self.statuesView.frame.size.height;
+    } else {
+        return CGFLOAT_MIN;
+    }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return self.statuesView;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    switch (section) {
+    return 6;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    switch (indexPath.row) {
         case 0:
-            return 1;
+            return [UIScreen mainScreen].bounds.size.width*360.00/750.00+(([UIScreen mainScreen].bounds.size.width-40)/2)*92.00/167.00+80.00;
             break;
         case 1:
-            return 3;
+            return 46;
             break;
         case 2:
-            return 2;
+            return 151;
             break;
-            
+        case 3:
+            return [UIScreen mainScreen].bounds.size.width*21.00/75.00+5.00;
+            break;
+        case 4:
+            return 46;
+            break;
+        case 5:
+        {
+            //后边按实际的热门套餐数量
+            NSInteger sizeWidth=[UIScreen mainScreen].bounds.size.width/2.00-18.00;
+            NSInteger sizeHeight = sizeWidth*189.00/170.00;
+            return sizeHeight*2+6+15;
+        }
+            break;
         default:
             return 0;
             break;
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section==0) {
-        return [UIScreen mainScreen].bounds.size.width*360.00/750.00+(([UIScreen mainScreen].bounds.size.width-40)/2)*92.00/167.00+80.00;
-    } else if(indexPath.section==1){
-        switch (indexPath.row) {
-            case 0:
-                return 46;
-                break;
-            case 1:
-                return 151;
-                break;
-            case 2:
-                return [UIScreen mainScreen].bounds.size.width*21.00/75.00+5.00;
-                break;
-            default:
-                return 46;
-                break;
-        }
-    }else if(indexPath.section==2){
-        if (indexPath.row==0) {
-            return 46;
-        } else {
-            //后边按实际的热门套餐数量
-            NSInteger sizeWidth=[UIScreen mainScreen].bounds.size.width/2.00-18.00;
-            NSInteger sizeHeight = sizeWidth*189.00/170.00;
-            return sizeHeight*2+6+15;
-        }
-    }else return 0;
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section==1 && indexPath.row == 0) {
-        UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
-        UIViewController *countryListViewController = [mainStory instantiateViewControllerWithIdentifier:@"countryListViewController"];
-        if (countryListViewController) {
-            self.tabBarController.tabBar.hidden = YES;
-            [self.navigationController pushViewController:countryListViewController animated:YES];
+    switch (indexPath.row) {
+        case 1:
+        {
+            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+            UIViewController *countryListViewController = [mainStory instantiateViewControllerWithIdentifier:@"countryListViewController"];
+            if (countryListViewController) {
+                self.tabBarController.tabBar.hidden = YES;
+                [self.navigationController pushViewController:countryListViewController animated:YES];
+            }
         }
-    }
-    if (indexPath.section == 2 && indexPath.row == 0) {
-        HUDNormal(@"敬请期待")
+            break;
+        case 4:
+            HUDNormal(@"敬请期待")
+            break;
+        default:
+            break;
     }
 }
 
