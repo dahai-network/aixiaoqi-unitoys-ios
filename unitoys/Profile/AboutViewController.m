@@ -33,7 +33,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *operatorImg;//信号
 @property (weak, nonatomic) IBOutlet UILabel *flowName;//流量套餐显示名称
 @property (weak, nonatomic) IBOutlet UILabel *deviceName;//设备类型
-
+@property (weak, nonatomic) IBOutlet UIButton *offButton;
+@property (nonatomic, assign) BOOL isOpened;//开关是否打开
 
 @end
 
@@ -319,6 +320,16 @@
     } headers:self.headers];
 }
 
+#pragma mark 开关点击事件
+- (IBAction)offButtonAction:(UIButton *)sender {
+//    btn_kg_close
+    self.isOpened = !self.isOpened;
+    if (self.isOpened) {
+        [sender setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
+    } else {
+        [sender setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
+    }
+}
 
 
 - (void)queryAmount {

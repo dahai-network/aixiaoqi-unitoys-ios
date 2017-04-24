@@ -2260,12 +2260,21 @@
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OPN-Np-A7g">
-                                                                    <rect key="frame" x="10" y="39.5" width="29" height="22"/>
+                                                                    <rect key="frame" x="10" y="9.5" width="80" height="60"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="width" constant="80" id="a5d-dF-5Rl"/>
+                                                                        <constraint firstAttribute="height" constant="60" id="fgK-Cx-Y9X"/>
+                                                                    </constraints>
+                                                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="49" maxY="-25"/>
                                                                     <state key="normal" image="btn_kg_close"/>
+                                                                    <connections>
+                                                                        <action selector="offButtonAction:" destination="wn9-cs-emF" eventType="touchUpInside" id="VOc-9S-gep"/>
+                                                                    </connections>
                                                                 </button>
                                                             </subviews>
                                                             <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <constraints>
+                                                                <constraint firstAttribute="bottom" secondItem="OPN-Np-A7g" secondAttribute="bottom" constant="10" id="Fbc-Zc-MUE"/>
                                                                 <constraint firstItem="9l2-VY-kAR" firstAttribute="top" secondItem="E33-dw-odU" secondAttribute="top" constant="20" id="Phb-Jv-FzY"/>
                                                                 <constraint firstItem="9l2-VY-kAR" firstAttribute="leading" secondItem="E33-dw-odU" secondAttribute="leading" constant="10" id="Z0y-Ke-xz4"/>
                                                                 <constraint firstItem="OPN-Np-A7g" firstAttribute="leading" secondItem="9l2-VY-kAR" secondAttribute="leading" id="oaB-23-D1z"/>
@@ -2280,7 +2289,6 @@
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstItem="OPN-Np-A7g" firstAttribute="top" secondItem="OxZ-Ou-Brb" secondAttribute="top" id="0bn-a5-Yb1"/>
                                                         <constraint firstItem="E33-dw-odU" firstAttribute="height" secondItem="asN-Jp-puT" secondAttribute="height" id="1bf-hM-Xgj"/>
                                                         <constraint firstItem="ZvK-ed-giB" firstAttribute="top" secondItem="MA6-ta-aXc" secondAttribute="top" id="2B8-p8-lRb"/>
                                                         <constraint firstItem="asN-Jp-puT" firstAttribute="centerX" secondItem="GAf-kG-pnb" secondAttribute="centerX" id="38W-Mc-BbS"/>
@@ -2475,6 +2483,7 @@
                         <outlet property="lblAmount" destination="Znh-lG-7hi" id="akn-yt-byg"/>
                         <outlet property="lblNickName" destination="O8n-hY-VBl" id="akV-2W-R2b"/>
                         <outlet property="lblPhoneNumber" destination="phu-w2-dfD" id="UiD-le-Cuo"/>
+                        <outlet property="offButton" destination="OPN-Np-A7g" id="Jco-G8-H6Q"/>
                         <outlet property="operatorImg" destination="W6K-Cg-a3M" id="h6g-Oo-vkm"/>
                         <outlet property="operatorName" destination="GPr-yw-2wQ" id="9kr-PP-LfW"/>
                         <outlet property="totalPackageNum" destination="itK-b0-n4F" id="neX-wn-3Pr"/>
@@ -2618,7 +2627,7 @@
         <image name="phone_bar_pre" width="18" height="17"/>
         <image name="pic_line" width="1" height="1"/>
         <image name="pic_tx_pre" width="70" height="70"/>
-        <image name="pro_purving" width="22" height="28"/>
+        <image name="pro_purving" width="13" height="16"/>
         <image name="pro_setting" width="22" height="28"/>
         <image name="reg_checked" width="14" height="14"/>
         <image name="reg_hidewords" width="33" height="32"/>
