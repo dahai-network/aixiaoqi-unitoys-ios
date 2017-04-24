@@ -179,7 +179,7 @@ typedef enum : NSUInteger {
 - (void)addProgressWindow {
     if (!self.registProgress) {
         self.registProgress = [[UIWindow alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, 24)];
-        self.registProgress.windowLevel = UIWindowLevelStatusBar+1;
+        self.registProgress.windowLevel = UIWindowLevelAlert+1;
         UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
         leftImg.frame = CGRectMake(15, 2, 20, 20);
         [self.registProgress addSubview:leftImg];

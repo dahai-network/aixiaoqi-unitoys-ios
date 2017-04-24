@@ -10,6 +10,7 @@
 //#import "CallActionView.h"
 
 @interface PhoneOperationPad : UIView
+@property (weak, nonatomic) IBOutlet UIButton *callPhoneButton;
 
 @property (weak, nonatomic) IBOutlet UIButton *btnSwitchNumberPad;
 //@property (weak, nonatomic) IBOutlet UIButton *btnDelNumber;

@@ -110,10 +110,10 @@
         
         UILabel *contentLabel = [[UILabel alloc] init];
         self.contentLabel = contentLabel;
-        contentLabel.textAlignment = NSTextAlignmentCenter;
         contentLabel.userInteractionEnabled = YES;
         contentLabel.font = MJTextFont;
         contentLabel.numberOfLines = 0;
+        contentLabel.lineBreakMode = NSLineBreakByCharWrapping;
         [containerView addSubview:contentLabel];
         
         UIActivityIndicatorView *indicatorView = [[UIActivityIndicatorView alloc] init];
@@ -133,7 +133,6 @@
         failedButton.enabled = NO;
         self.failedbutton = failedButton;
         [self.contentView addSubview:failedButton];
-        
         // 4.设置cell的背景色
         self.backgroundColor = [UIColor clearColor];
         
@@ -167,17 +166,17 @@
     MJMessage *message = messageFrame.message;
     
     // 1.时间
-    self.timeView.text = message.time;
     self.timeView.frame = messageFrame.timeF;
-
-    self.contentLabel.text = message.text;
+    self.timeView.text = message.time;
+    
     self.containerView.frame = messageFrame.containerViewF;
     self.bgImageView.frame = self.containerView.bounds;
     self.contentLabel.frame = CGRectMake(messageFrame.contentEdge.left, messageFrame.contentEdge.top, messageFrame.containerViewF.size.width - messageFrame.contentEdge.left - messageFrame.contentEdge.right, messageFrame.containerViewF.size.height - messageFrame.contentEdge.top - messageFrame.contentEdge.bottom);
+    self.contentLabel.text = message.text;
+    
     if (message.type == MJMessageTypeMe) {
         [self.bgImageView setImage:[UIImage resizableImage:@"msg_send_new"]];
         [self.contentLabel setTextColor:[UIColor whiteColor]];
-        
         switch (message.Status) {
             case MJMessageStatuProcessing:
             {
@@ -229,7 +228,6 @@
         [self.bgImageView setImage:[UIImage resizableImage1:@"msg_receive_new"]];
         [self.contentLabel setTextColor:UIColorFromRGB(0x333333)];
     }
-    
     
     // 4.正文的背景(设置拉升效果）
 //    if (message.type == MJMessageTypeMe) { // 自己发的,蓝色

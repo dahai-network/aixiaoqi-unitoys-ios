@@ -38,10 +38,6 @@
     return self;
 }
 
-- (UIWindow *)keyWindow {
-    return [UIApplication sharedApplication].keyWindow;
-}
-
 - (void)presentContentView:(UIView *)contentView duration:(NSTimeInterval)duration inView:(UIView *)superView
 {
     if (self.isPresenting) return;

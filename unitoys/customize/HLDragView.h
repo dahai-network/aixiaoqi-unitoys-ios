@@ -11,5 +11,6 @@
 @interface HLDragButton : AddTouchAreaButton
 
 @property (nonatomic, assign) CGPoint startPoint;
+@property (nonatomic, assign) CGPoint startCenter;
 
 @end

@@ -34,7 +34,6 @@
     [deleteButtn setImage:[UIImage imageNamed:@"delete_msg_nor"] forState:UIControlStateNormal];
     [deleteButtn setImage:[UIImage imageNamed:@"delete_msg_pre"] forState:UIControlStateHighlighted];
     [deleteButtn addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
-//    [deleteButtn sizeToFit];
     deleteButtn.width = self.height;
     deleteButtn.height = self.height;
     [self addSubview:deleteButtn];
@@ -44,7 +43,6 @@
     [cancelButtn setImage:[UIImage imageNamed:@"exit_msg_nor"] forState:UIControlStateNormal];
     [cancelButtn setImage:[UIImage imageNamed:@"exit_msg_pre"] forState:UIControlStateHighlighted];
     [cancelButtn addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
-//    [cancelButtn sizeToFit];
     cancelButtn.width = self.height;
     cancelButtn.height = self.height;
     [self addSubview:cancelButtn];

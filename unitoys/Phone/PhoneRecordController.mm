@@ -147,10 +147,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     [self showWindow];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarHeightChange) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarHeightChange) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     
 //    self.tabbarTop = self.tabBarController.tabBar.frame;
-    NSLog(@"--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
+    NSLog(@"statusBarHeight--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
 }
 
 
@@ -269,15 +269,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)statusBarHeightChange
 {
-//    [self viewDidLayoutSubviews];
 //    if (kStatusBarHeight == 20) {
-//        NSLog(@"statusBarHeightChange-20-%.f", self.tabbarTop);
-//        self.view.height -= 20;
+//        if (kScreenHeightValue - self.tabBarController.tabBar.frame.origin.y - 49 == 40) {
+//            self.tabBarController.tabBar.top = kScreenHeightValue - 49 - 40 - 20;
+//        }
 //    }
-//    else{
-//        NSLog(@"statusBarHeightChange-40-%.f", self.tabbarTop);
-//        self.view.height -= 20;
-//    }
+    NSLog(@"StatusBarHeight--------%.f", kStatusBarHeight);
+    NSLog(@"statusBarHeight--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
 }
 
 

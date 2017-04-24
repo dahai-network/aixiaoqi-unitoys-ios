@@ -27,8 +27,8 @@
                         <action selector="callout:" destination="iN0-l3-epB" eventType="touchUpInside" id="BmG-kt-Jps"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UwM-kO-3sF">
-                    <rect key="frame" x="260" y="0.0" width="100" height="100"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UwM-kO-3sF">
+                    <rect key="frame" x="275" y="0.0" width="100" height="100"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="UwM-kO-3sF" secondAttribute="height" multiplier="1:1" id="toO-uG-uQ0"/>
                     </constraints>
@@ -41,7 +41,7 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="HSH-a9-rgm" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="26G-Tq-ysu"/>
-                <constraint firstAttribute="trailing" secondItem="UwM-kO-3sF" secondAttribute="trailing" constant="15" id="4Sc-Wv-7aw"/>
+                <constraint firstAttribute="trailing" secondItem="UwM-kO-3sF" secondAttribute="trailing" id="4Sc-Wv-7aw"/>
                 <constraint firstAttribute="bottom" secondItem="HSH-a9-rgm" secondAttribute="bottom" id="W6N-XP-qRP"/>
                 <constraint firstItem="HSH-a9-rgm" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Ycl-HW-THx"/>
                 <constraint firstItem="UwM-kO-3sF" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="sOd-6c-TTU"/>
@@ -51,13 +51,14 @@
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
                 <outlet property="btnSwitchNumberPad" destination="UwM-kO-3sF" id="3lN-IG-5yh"/>
+                <outlet property="callPhoneButton" destination="HSH-a9-rgm" id="d5l-u4-0o6"/>
             </connections>
             <point key="canvasLocation" x="33.5" y="119"/>
         </view>
     </objects>
     <resources>
-        <image name="btn_dh_l_nor" width="16" height="16"/>
-        <image name="btn_dh_l_pre" width="16" height="16"/>
-        <image name="icon_sq_nor" width="16" height="16"/>
+        <image name="btn_dh_l_nor" width="70" height="70"/>
+        <image name="btn_dh_l_pre" width="70" height="70"/>
+        <image name="icon_sq_nor" width="16" height="9"/>
     </resources>
 </document>

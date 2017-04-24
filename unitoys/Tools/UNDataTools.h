@@ -17,10 +17,20 @@
 //黑名单列表
 @property (nonatomic, strong) NSMutableArray *blackLists;
 
-//当前境外说明步数
-@property (nonatomic, assign) NSInteger currentAbroadStep;
-//总步数
-@property (nonatomic, assign) NSInteger totalStep;
+//是否去国外
+@property (nonatomic, assign) BOOL isGoAbroad;
+
+//去国外当前境外说明步数
+@property (nonatomic, assign) NSInteger goAbroadCurrentAbroadStep;
+//去国外总步数
+@property (nonatomic, assign) NSInteger goAbroadTotalStep;
+
+
+//回国后当前境外说明步数
+@property (nonatomic, assign) NSInteger goHomeCurrentAbroadStep;
+//回国后总步数
+@property (nonatomic, assign) NSInteger goHomeTotalStep;
+
 //教程数据
 @property (nonatomic, copy) NSArray *pagesData;
 

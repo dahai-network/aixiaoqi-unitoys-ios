@@ -65,4 +65,29 @@
     */
 }
 
+
+//- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+//    UIView *view = [super hitTest:point withEvent:event];
+//    if (view == nil) {
+//        for (UIView *subView in self.subviews) {
+//            if ([subView isKindOfClass:[UIButton class]]) {
+//                if (!subView.isHidden) {
+//                    CGPoint p = [subView convertPoint:point fromView:self];
+//                    if (CGRectContainsPoint(subView.bounds, p)) {
+//                        view = subView;
+////                        for (UIView *subView2 in subView.subviews) {
+////                            CGPoint p2 = [subView2 convertPoint:p fromView:subView];
+////                            if (CGRectContainsPoint(subView2.bounds, p2)) {
+////                                view = subView2;
+////                            }
+////                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    NSLog(@"PhoneOperationPad-hitTest-------%@", view);
+//    return view;
+//}
+
 @end

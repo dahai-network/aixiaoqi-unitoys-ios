@@ -17,6 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = INTERNATIONALSTRING(@"出境后使用引导");
     self.titleLabel.text = [UNDataTools sharedInstance].pagesData.lastObject[@"detailTitle"];
 }
 

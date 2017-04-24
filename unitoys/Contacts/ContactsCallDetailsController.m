@@ -61,7 +61,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"拨打详情";
+    self.title = @"详情";
     
     if (!self.contactModel) {
         self.contactModel = [self checkContactModelWithPhoneStr:self.phoneNumber];

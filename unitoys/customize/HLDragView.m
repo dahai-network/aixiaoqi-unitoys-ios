@@ -36,6 +36,7 @@
 {
     CGPoint currentPoint = [[touches anyObject] locationInView:self];
     self.startPoint = currentPoint;
+    self.startCenter = self.center;
     [self.superview bringSubviewToFront:self];
     [super touchesBegan:touches withEvent:event];
 }
@@ -47,30 +48,50 @@
     CGFloat offsetY = currentPoint.y - self.startPoint.y;
     CGPoint newCenter = CGPointMake(self.center.x + offsetX, self.center.y + offsetY);
     
-    CGFloat halfx = CGRectGetMidX(self.bounds);
-    //x坐标左边界
-    newCenter.x = MAX(halfx, newCenter.x);
-    //x坐标右边界
-    newCenter.x = MIN(self.superview.bounds.size.width - halfx, newCenter.x);
-    
-    //y坐标同理
-    CGFloat halfy = CGRectGetMidY(self.bounds);
-    newCenter.y = MAX(halfy, newCenter.y);
-    newCenter.y = MIN(self.superview.bounds.size.height - 49 - halfy, newCenter.y);
+    //设置拖动边界
+    CGFloat midX = CGRectGetMidX(self.bounds);
+    newCenter.x = MAX(midX, newCenter.x);
+    newCenter.x = MIN(self.superview.bounds.size.width - midX, newCenter.x);
+    CGFloat midY = CGRectGetMidY(self.bounds);
+    newCenter.y = MAX(midY, newCenter.y);
+    newCenter.y = MIN(self.superview.bounds.size.height - 49 - midY, newCenter.y);
     
     self.center = newCenter;
-    if (!self.isDragged) {
-        self.isDragged = YES;
+    //只要位移过大,直接设置为已拖动(不使用center计算是为了防止拖动了而控件center没变)
+    if (fabs(offsetX) > 5.0 || fabs(offsetY) > 5.0) {
+        if (!self.isDragged) {
+            self.isDragged = YES;
+        }
     }
+//    CGPoint currentCenter = self.center;
+//    CGFloat centerOffsetX = currentCenter.x - self.startCenter.x;
+//    CGFloat centerOffsetY = currentCenter.y - self.startCenter.y;
+//    if (fabs(centerOffsetX) > 2.0 || fabs(centerOffsetY) > 2.0) {
+//        if (!self.isDragged) {
+//            self.isDragged = YES;
+//        }
+//    }
+
 //    [super touchesMoved:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
-    if (!self.isDragged) {
-        [super touchesEnded:touches withEvent:event];
-    }else{
+//    CGPoint endPoint = [[touches anyObject] locationInView:self];
+//    //计算总的偏移量.为了防止多次小距离拖动
+//    CGFloat offsetX = endPoint.x - self.startPoint.x;
+//    CGFloat offsetY = endPoint.y - self.startPoint.y;
+    CGPoint currentCenter = self.center;
+    CGFloat centerOffsetX = currentCenter.x - self.startCenter.x;
+    CGFloat centerOffsetY = currentCenter.y - self.startCenter.y;
+    if (fabs(centerOffsetX) > 2.0 || fabs(centerOffsetY) > 2.0) {
         self.isDragged = NO;
+    }else{
+        if (!self.isDragged) {
+            [super touchesEnded:touches withEvent:event];
+        }else{
+            self.isDragged = NO;
+        }
     }
     [self setHighlighted:NO];
 }

@@ -26,18 +26,36 @@
         self.gotoSystemButton.hidden = YES;
     }else{
         self.gotoSystemButton.hidden = NO;
-        if (_currentPage <= [UNDataTools sharedInstance].currentAbroadStep) {
-            self.nextStepButton.enabled = YES;
-            [self.nextStepButton setBackgroundColor:UIColorFromRGB(0x00a0e9)];
+        if ([UNDataTools sharedInstance].isGoAbroad) {
+            if (_currentPage <= [UNDataTools sharedInstance].goAbroadCurrentAbroadStep) {
+                self.nextStepButton.enabled = YES;
+                [self.nextStepButton setBackgroundColor:UIColorFromRGB(0x00a0e9)];
+            }else{
+                self.nextStepButton.enabled = NO;
+                [self.nextStepButton setBackgroundColor:UIColorFromRGB(0xe5e5e5)];
+            }
         }else{
-            self.nextStepButton.enabled = NO;
-            [self.nextStepButton setBackgroundColor:UIColorFromRGB(0xe5e5e5)];
+            if (_currentPage <= [UNDataTools sharedInstance].goHomeCurrentAbroadStep) {
+                self.nextStepButton.enabled = YES;
+                [self.nextStepButton setBackgroundColor:UIColorFromRGB(0x00a0e9)];
+            }else{
+                self.nextStepButton.enabled = NO;
+                [self.nextStepButton setBackgroundColor:UIColorFromRGB(0xe5e5e5)];
+            }
+            if (_currentPage == [UNDataTools sharedInstance].goHomeTotalStep) {
+                [self.nextStepButton setTitle:@"完成" forState:UIControlStateNormal];
+            }
         }
+
     }
     [self.nextStepButton addTarget:self action:@selector(nextStepButtonAction:) forControlEvents:UIControlEventTouchUpInside];
 }
 - (IBAction)goSystemAction:(UIButton *)sender {
-    [UNDataTools sharedInstance].currentAbroadStep = _currentPage;
+    if ([UNDataTools sharedInstance].isGoAbroad) {
+        [UNDataTools sharedInstance].goAbroadCurrentAbroadStep = _currentPage;
+    }else{
+        [UNDataTools sharedInstance].goHomeCurrentAbroadStep = _currentPage;
+    }
     self.nextStepButton.enabled = YES;
     [self.nextStepButton setBackgroundColor:UIColorFromRGB(0x00a0e9)];
 }
@@ -56,10 +74,21 @@
 
 - (void)setUpCurrentVc
 {
-    self.title = INTERNATIONALSTRING(@"出境后使用引导");
-    if ([UNDataTools sharedInstance].pagesData.count - 2 < _currentPage) {
-        return;
+    if ([UNDataTools sharedInstance].isGoAbroad) {
+        self.title = INTERNATIONALSTRING(@"出境后使用引导");
+    }else{
+        self.title = INTERNATIONALSTRING(@"回国后设置引导");
     }
+    if ([UNDataTools sharedInstance].isGoAbroad) {
+        if ([UNDataTools sharedInstance].pagesData.count - 2 < _currentPage) {
+            return;
+        }
+    }else{
+        if ([UNDataTools sharedInstance].pagesData.count - 1 < _currentPage) {
+            return;
+        }
+    }
+    
     NSDictionary *dict = [UNDataTools sharedInstance].pagesData[_currentPage];
     self.pageNumber.text = [NSString stringWithFormat:@"%ld", _currentPage + 1];
     if (dict[@"nameTitle"]) {
@@ -104,17 +133,46 @@
 
 - (void)gotoNextPage
 {
-    if (_currentPage < _totalPage - 1) {
-        ExplainDetailsChildController *detailsVc = [[ExplainDetailsChildController alloc] init];
-        detailsVc.apnName = self.apnName;
-        detailsVc.currentPage = self.currentPage + 1;
-        detailsVc.totalPage = self.totalPage;
-        detailsVc.rootClassName = self.rootClassName;
-        [self.navigationController pushViewController:detailsVc animated:YES];
-    }else if (_currentPage == _totalPage - 1){
-        ExplainDetailsLastController *detailsVc = [[ExplainDetailsLastController alloc] init];
-        detailsVc.rootClassName = self.rootClassName;
-        [self.navigationController pushViewController:detailsVc animated:YES];
+    NSLog(@"_currentPage--%ld,_totalPage--%ld", _currentPage, _totalPage);
+    
+    if ([UNDataTools sharedInstance].isGoAbroad) {
+        if (_currentPage < _totalPage - 1) {
+            ExplainDetailsChildController *detailsVc = [[ExplainDetailsChildController alloc] init];
+            detailsVc.apnName = self.apnName;
+            detailsVc.currentPage = self.currentPage + 1;
+            detailsVc.totalPage = self.totalPage;
+            detailsVc.rootClassName = self.rootClassName;
+            [self.navigationController pushViewController:detailsVc animated:YES];
+        }else if (_currentPage == _totalPage - 1){
+            ExplainDetailsLastController *detailsVc = [[ExplainDetailsLastController alloc] init];
+            detailsVc.rootClassName = self.rootClassName;
+            [self.navigationController pushViewController:detailsVc animated:YES];
+        }
+    }else{
+        if (_currentPage < _totalPage) {
+            ExplainDetailsChildController *detailsVc = [[ExplainDetailsChildController alloc] init];
+            detailsVc.apnName = self.apnName;
+            detailsVc.currentPage = self.currentPage + 1;
+            detailsVc.totalPage = self.totalPage;
+            detailsVc.rootClassName = self.rootClassName;
+            [self.navigationController pushViewController:detailsVc animated:YES];
+        }else if (_currentPage == _totalPage){
+            [self finishSetting];
+        }
+    }
+
+}
+
+- (void)finishSetting
+{
+    UIViewController *popVc;
+    for (UIViewController *vc in self.navigationController.viewControllers) {
+        if ([vc isKindOfClass:NSClassFromString(self.rootClassName)]) {
+            popVc = vc;
+        }
+    }
+    if (popVc) {
+        [self.navigationController popToViewController:popVc animated:YES];
     }
 }
 

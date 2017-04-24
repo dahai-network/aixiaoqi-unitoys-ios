@@ -14,6 +14,10 @@
 #import "UNDatabaseTools.h"
 #import "BlueToothDataManager.h"
 #import "CommunicateDetailViewController.h"
+#import "UNDataTools.h"
+#import "ExplainDetailsChildController.h"
+
+#import "HTTPServer.h"
 
 @interface ActivateGiftCardViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *footView;
@@ -41,6 +45,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnResetGoBack;
 
 
+@property (nonatomic, strong) HTTPServer *localHttpServer;//本地服务器
 @end
 
 @implementation ActivateGiftCardViewController
@@ -603,11 +608,15 @@
 
 #pragma mark 出国后如何使用
 - (IBAction)howToUseAbord:(UIButton *)sender {
+    [self initExplainDetailsData:YES];
+    self.isPaySuccess = NO;
     HUDNormal(@"出国后如何使用")
 }
 
 #pragma mark 回国后恢复设置
 - (IBAction)resetGoBack:(UIButton *)sender {
+    [self initExplainDetailsData:NO];
+    self.isPaySuccess = NO;
     HUDNormal(@"回国后恢复设置")
 }
 
@@ -626,5 +635,170 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+
+- (void)initExplainDetailsData:(BOOL)isGoAbroad
+{
+    if (isGoAbroad) {
+        [self performSelector:@selector(configLocalHttpServer) withObject:nil afterDelay:1];
+    }
+    [self initDetailsData:isGoAbroad];
+    [self pushDetailsVc];
+}
+- (void)initDetailsData:(BOOL)isGoAbroad
+{
+    NSMutableArray *dataArray = [NSMutableArray array];
+    if (isGoAbroad) {
+        NSDictionary *page1 = @{
+                                @"nameTitle" : INTERNATIONALSTRING(@"插电话卡"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"将爱小器国际卡插入手机中,然后将您的国内电话卡插入到手环或双待王中"),
+                                @"explainImage" : @"pic_cdhk",
+                                @"pageType" : @(1),
+                                };
+        
+        NSDictionary *page2 = @{
+                                @"nameTitle" : INTERNATIONALSTRING(@"安装APN"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"点击按钮会跳转到系统设置,点击右上角\"安装\"按钮后,输入验证码同意安装"),
+                                @"explainImage" : @"ios_apn",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"安装APN"),
+                                @"buttonAction" : @"apnSettingAction",
+                                @"pageType" : @(1),
+                                };
+        
+        NSString *page3Title;
+        NSString *page3ImageStr;
+        if ([self.IsSupport4G boolValue]) {
+            page3Title = INTERNATIONALSTRING(@"点击按钮会跳转到系统设置，点击\"蜂窝移动网络数据选项\"然后开启数据漫游,开启4G网络(或选择4G网络)");
+            page3ImageStr = @"pic_ios_open_sj";
+        }else{
+            page3Title = INTERNATIONALSTRING(@"点击按钮会跳转到系统设置，点击\"蜂窝移动网络数据选项\"然后开启数据漫游,关闭4G网络(或选择3G网络)");
+            page3ImageStr = @"pic_ios_sj";
+        }
+        NSDictionary *page3 = @{
+                                @"nameTitle" : INTERNATIONALSTRING(@"修改移动网络设置"),
+                                @"detailTitle" : page3Title,
+                                @"explainImage" : page3ImageStr,
+                                @"buttonTitle" : INTERNATIONALSTRING(@"移动网络设置"),
+                                @"buttonAction" : @"gotoSystemSettingAction",
+                                @"pageType" : @(1),
+                                };
+        
+        NSDictionary *page4 = @{
+                                //                            @"nameTitle" : INTERNATIONALSTRING(@"接打电话，收发短信"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"激活套餐后,在境外按以上步骤操作完成后,重启APP,即可免国际漫游在境外上网.接打电话,收发短信"),
+                                @"pageType" : @(2),
+                                };
+        //根据类型确定需要添加的页面
+        [dataArray addObject:page1];
+        if ([self.IsApn boolValue]) {
+            [dataArray addObject:page2];
+        }
+        [dataArray addObject:page3];
+        [dataArray addObject:page4];
+        [UNDataTools sharedInstance].isGoAbroad = YES;
+        if ([UNDataTools sharedInstance].goAbroadTotalStep < dataArray.count - 1) {
+            [UNDataTools sharedInstance].goAbroadTotalStep = dataArray.count - 1;
+            [UNDataTools sharedInstance].goAbroadCurrentAbroadStep = 0;
+        }
+    }else{
+        NSDictionary *page1 = @{
+                                @"nameTitle" : INTERNATIONALSTRING(@"插电话卡"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"将爱小器国际卡从手机取出,然后将您的国内电话卡插回手机中"),
+                                @"explainImage" : @"pic_hg_cdhk",
+                                @"pageType" : @(1),
+                                };
+        
+        NSDictionary *page2 = @{
+                                @"nameTitle" : INTERNATIONALSTRING(@"删除APN"),
+                                @"detailTitle" : INTERNATIONALSTRING(@"打开系统的APN设置页面,选择\"爱小器APN\",再点击\"删除描述文件\""),
+                                @"explainImage" : @"pic_ios_hg_delapn",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"打开APN设置"),
+                                @"buttonAction" : @"apnDeleteAction",
+                                @"pageType" : @(1),
+                                };
+        
+        NSString *page3Title;
+        if ([self.IsSupport4G boolValue]) {
+            page3Title = INTERNATIONALSTRING(@"点击按钮跳转到系统设置，点击\"蜂窝移动网络数据选项\"然后关闭数据漫游");
+        }else{
+            page3Title = INTERNATIONALSTRING(@"点击按钮会跳转到系统设置，点击\"蜂窝移动网络数据选项\"然后关闭数据漫游,开启4G网络");
+        }
+        NSDictionary *page3 = @{
+                                @"nameTitle" : INTERNATIONALSTRING(@"修改移动网络设置"),
+                                @"detailTitle" : page3Title,
+                                @"explainImage" : @"pic_ios_hg_4g",
+                                @"buttonTitle" : INTERNATIONALSTRING(@"移动网络设置"),
+                                @"buttonAction" : @"gotoSystemSettingAction",
+                                @"pageType" : @(1),
+                                };
+        
+        //        NSDictionary *page4 = @{
+        //                                //                            @"nameTitle" : INTERNATIONALSTRING(@"接打电话，收发短信"),
+        //                                @"detailTitle" : INTERNATIONALSTRING(@"激活套餐后,在境外按以上步骤操作完成后,重启APP,即可免国际漫游在境外上网.接打电话,收发短信"),
+        //                                @"pageType" : @(2),
+        //                                };
+        //根据类型确定需要添加的页面
+        [dataArray addObject:page1];
+        if ([self.IsApn boolValue]) {
+            [dataArray addObject:page2];
+        }
+        [dataArray addObject:page3];
+        [UNDataTools sharedInstance].isGoAbroad = NO;
+        if ([UNDataTools sharedInstance].goHomeTotalStep < dataArray.count - 1) {
+            [UNDataTools sharedInstance].goHomeTotalStep = dataArray.count - 1;
+            [UNDataTools sharedInstance].goHomeCurrentAbroadStep = 0;
+        }
+    }
+    [UNDataTools sharedInstance].pagesData = dataArray;
+}
+
+- (void)pushDetailsVc
+{
+    ExplainDetailsChildController *detailsVc = [[ExplainDetailsChildController alloc] init];
+    detailsVc.rootClassName = NSStringFromClass([self class]);
+    detailsVc.apnName = self.apnName;
+    detailsVc.currentPage = 0;
+    detailsVc.totalPage = [UNDataTools sharedInstance].pagesData.count - 1;
+    [self.navigationController pushViewController:detailsVc animated:YES];
+}
+#pragma mark - 本地服务器
+#pragma mark - 搭建本地服务器 并且启动
+- (void)configLocalHttpServer{
+    if (_localHttpServer) {
+        [self startServer];
+        return;
+    }
+    _localHttpServer = [[HTTPServer alloc] init];
+    [_localHttpServer setType:@"_http.tcp"];
+    
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    NSLog(@"文件目录 -- %@",webPath);
+    
+    if (![fileManager fileExistsAtPath:webPath]){
+        NSLog(@"File path error!");
+    }else{
+        NSString *webLocalPath = webPath;
+        [_localHttpServer setDocumentRoot:webLocalPath];
+        NSLog(@"webLocalPath:%@",webLocalPath);
+        [self startServer];
+    }
+}
+- (void)startServer {
+    NSError *error;
+    if([_localHttpServer start:&error]){
+        NSLog(@"Started HTTP Server on port %hu", [_localHttpServer listeningPort]);
+        [BlueToothDataManager shareManager].localServicePort = [NSString stringWithFormat:@"%d",[_localHttpServer listeningPort]];
+    } else {
+        NSLog(@"Error starting HTTP Server: %@", error);
+    }
+}
+
+-(void)dealloc
+{
+    if (_localHttpServer) {
+        [_localHttpServer stop];
+        _localHttpServer = nil;
+    }
+}
 
 @end
