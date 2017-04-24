@@ -162,7 +162,7 @@
             self.time = 0;
             [self.timer setFireDate:[NSDate distantFuture]];
             self.tabBarController.tabBar.hidden = YES;
-            self.bindDeviceVC.hintStrFirst = INTERNATIONALSTRING(@"连接中");
+//            self.bindDeviceVC.hintStrFirst = INTERNATIONALSTRING(@"连接中");
             [self.navigationController pushViewController:self.bindDeviceVC animated:YES];
         }
     });

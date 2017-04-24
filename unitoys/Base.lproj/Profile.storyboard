@@ -500,16 +500,16 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="推荐安装微信5.0版本以上的用户使用" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aLI-9S-RSL">
-                                                    <rect key="frame" x="71" y="65" width="250" height="16"/>
+                                                    <rect key="frame" x="71" y="65" width="248" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J4T-QO-xeV">
-                                                    <rect key="frame" x="326" y="47.5" width="23" height="23"/>
+                                                    <rect key="frame" x="324" y="46.5" width="25" height="25"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="23" id="Ls6-Tj-fCe"/>
-                                                        <constraint firstAttribute="width" constant="23" id="MWj-Fh-V5V"/>
+                                                        <constraint firstAttribute="height" constant="25" id="Ls6-Tj-fCe"/>
+                                                        <constraint firstAttribute="width" constant="25" id="MWj-Fh-V5V"/>
                                                     </constraints>
                                                     <state key="normal" image="order_uncheck"/>
                                                     <connections>
@@ -557,16 +557,16 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="推荐有支付宝账户的用户使用" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u4Y-gI-6rt">
-                                                    <rect key="frame" x="71" y="46" width="250" height="16"/>
+                                                    <rect key="frame" x="71" y="46" width="248" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xwk-Py-wiW">
-                                                    <rect key="frame" x="326" y="28.5" width="23" height="23"/>
+                                                    <rect key="frame" x="324" y="27.5" width="25" height="25"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="23" id="c3R-NL-qxF"/>
-                                                        <constraint firstAttribute="height" constant="23" id="eQN-3r-74r"/>
+                                                        <constraint firstAttribute="width" constant="25" id="c3R-NL-qxF"/>
+                                                        <constraint firstAttribute="height" constant="25" id="eQN-3r-74r"/>
                                                     </constraints>
                                                     <state key="normal" image="order_checked"/>
                                                     <connections>
@@ -688,8 +688,8 @@
         <image name="btn_bj_b_nor" width="345" height="49"/>
         <image name="btn_bj_l_nor" width="345" height="49"/>
         <image name="order_alipay" width="18" height="19"/>
-        <image name="order_checked" width="18" height="19"/>
-        <image name="order_uncheck" width="18" height="19"/>
+        <image name="order_checked" width="12" height="8"/>
+        <image name="order_uncheck" width="22" height="22"/>
         <image name="order_weipay" width="18" height="19"/>
     </resources>
 </document>

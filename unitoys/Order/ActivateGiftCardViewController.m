@@ -35,6 +35,12 @@
 @property (nonatomic, assign) NSNumber *IsApn;
 //APN证书名称
 @property (nonatomic, copy)NSString *apnName;
+//出国后如何使用按钮
+@property (weak, nonatomic) IBOutlet UIButton *btnHowToUseAbord;
+//回国后恢复设置按钮
+@property (weak, nonatomic) IBOutlet UIButton *btnResetGoBack;
+
+
 @end
 
 @implementation ActivateGiftCardViewController
@@ -48,9 +54,10 @@
         self.title = INTERNATIONALSTRING(@"套餐详情");
     }
     
-    if (self.packageCategory != 2 && self.packageCategory != 3) {
-        [self setRightButton:INTERNATIONALSTRING(@"使用教程")];
-    }
+//    if (self.packageCategory != 2 && self.packageCategory != 3) {
+//        [self setRightButton:INTERNATIONALSTRING(@"使用教程")];
+//    }
+//    [self setRightButton:INTERNATIONALSTRING(@"取消订单")];
     
 //    self.packageCategory = 4;
     self.dicOrderDetail = [[NSDictionary alloc] init];
@@ -101,6 +108,9 @@
             self.packageName = responseObj[@"data"][@"list"][@"PackageName"];
             self.IsSupport4G = responseObj[@"data"][@"list"][@"PackageIsSupport4G"];
             self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
+            if (self.packageCategory != 2 && [responseObj[@"data"][@"list"][@"OrderStatus"] intValue] == 0 && ![self.navigationItem.rightBarButtonItem.title isEqualToString:@"取消订单"]) {
+                [self setRightButton:INTERNATIONALSTRING(@"取消订单")];
+            }
             
             if ([responseObj[@"data"][@"list"][@"PackageIsApn"] boolValue]) {
                 if ([self.apnName isEqualToString:@"3gnet"]) {
@@ -148,13 +158,16 @@
 
 - (void)rightButtonClick
 {
-    NSLog(@"使用教程");
-    self.isPaySuccess = NO;
-    AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
-    abroadVc.isSupport4G = [self.IsSupport4G boolValue];
-    abroadVc.isApn = [self.IsApn boolValue];
-    abroadVc.apnName = self.apnName;
-    [self .navigationController pushViewController:abroadVc animated:YES];
+    [self dj_alertAction:self alertTitle:nil actionTitle:@"继续" message:@"您将要取消此订单" alertAction:^{
+        [self cancelOrder];
+    }];
+//    NSLog(@"使用教程");
+//    self.isPaySuccess = NO;
+//    AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
+//    abroadVc.isSupport4G = [self.IsSupport4G boolValue];
+//    abroadVc.isApn = [self.IsApn boolValue];
+//    abroadVc.apnName = self.apnName;
+//    [self .navigationController pushViewController:abroadVc animated:YES];
 }
 
 #pragma mark - tableView代理方法
@@ -587,6 +600,17 @@
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
+
+#pragma mark 出国后如何使用
+- (IBAction)howToUseAbord:(UIButton *)sender {
+    HUDNormal(@"出国后如何使用")
+}
+
+#pragma mark 回国后恢复设置
+- (IBAction)resetGoBack:(UIButton *)sender {
+    HUDNormal(@"回国后恢复设置")
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

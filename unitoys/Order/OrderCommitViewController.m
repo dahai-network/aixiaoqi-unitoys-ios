@@ -69,6 +69,24 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 2) {
+        switch (indexPath.row) {
+            case 0:
+                [self switchPayment:self.btnAccountpay];
+                break;
+            case 1:
+                [self switchPayment:self.btnWeipay];
+                break;
+            case 2:
+                [self switchPayment:self.btnAlipay];
+                break;
+            default:
+                break;
+        }
+    }
+}
+
 - (void) loadAmmount {
     self.checkToken = YES;
     

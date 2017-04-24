@@ -240,6 +240,27 @@
     return 0.01;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1) {
+        switch (indexPath.row) {
+            case 0:
+//                [self.btnAlipay setImage:[UIImage imageNamed:@"order_uncheck"] forState:UIControlStateNormal];
+//                [self.btnWeipay setImage:[UIImage imageNamed:@"order_checked"] forState:UIControlStateNormal];
+//                self.currentSelectButton = self.btnWeipay;
+                [self switchPayment:self.btnWeipay];
+                break;
+            case 1:
+//                [self.btnWeipay setImage:[UIImage imageNamed:@"order_uncheck"] forState:UIControlStateNormal];
+//                [self.btnAlipay setImage:[UIImage imageNamed:@"order_checked"] forState:UIControlStateNormal];
+//                self.currentSelectButton = self.btnAlipay;
+                [self switchPayment:self.btnAlipay];
+                break;
+            default:
+                break;
+        }
+    }
+}
+
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ([alertView.message isEqualToString:INTERNATIONALSTRING(@"你当前订单已支付完成！")]) {

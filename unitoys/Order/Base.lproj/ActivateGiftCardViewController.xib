@@ -12,7 +12,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ActivateGiftCardViewController">
             <connections>
                 <outlet property="activateButton" destination="teI-Mm-2yb" id="08v-vT-WIS"/>
-                <outlet property="cancelButton" destination="YSo-Bg-YYW" id="oOO-iM-AT0"/>
+                <outlet property="btnHowToUseAbord" destination="YSo-Bg-YYW" id="eSg-9X-KqZ"/>
+                <outlet property="btnResetGoBack" destination="t1Z-BP-P66" id="JoK-Nh-w74"/>
                 <outlet property="footView" destination="RzL-tv-ncQ" id="ax2-u6-fvQ"/>
                 <outlet property="tableView" destination="IwR-Su-HcE" id="1Xv-rH-jcY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -41,7 +42,7 @@
             </constraints>
         </view>
         <view contentMode="scaleToFill" id="RzL-tv-ncQ">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="142"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="200"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="teI-Mm-2yb">
@@ -63,10 +64,10 @@
                         <action selector="avtivateAction:" destination="-1" eventType="touchUpInside" id="5fL-nY-Ybe"/>
                     </connections>
                 </button>
-                <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YSo-Bg-YYW">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YSo-Bg-YYW">
                     <rect key="frame" x="15" y="80" width="345" height="50"/>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                    <state key="normal" title="取消订单" backgroundImage="btn_bj_b_nor">
+                    <state key="normal" title="出国后如何使用" backgroundImage="btn_bj_b_nor">
                         <color key="titleColor" red="0.0" green="0.62745098039215685" blue="0.9137254901960784" alpha="1" colorSpace="calibratedRGB"/>
                     </state>
                     <userDefinedRuntimeAttributes>
@@ -76,7 +77,23 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                     <connections>
-                        <action selector="cancelActivateButtonAvtion:" destination="-1" eventType="touchUpInside" id="lqM-Ir-YQB"/>
+                        <action selector="howToUseAbord:" destination="-1" eventType="touchUpInside" id="Tju-qX-Xfh"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t1Z-BP-P66">
+                    <rect key="frame" x="15" y="140" width="345" height="50"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                    <state key="normal" title="回国后恢复设置" backgroundImage="btn_bj_b_nor">
+                        <color key="titleColor" red="0.0" green="0.62745098040000002" blue="0.91372549020000005" alpha="1" colorSpace="calibratedRGB"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="3"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="resetGoBack:" destination="-1" eventType="touchUpInside" id="eZ4-3a-8G2"/>
                     </connections>
                 </button>
             </subviews>
@@ -84,14 +101,18 @@
             <constraints>
                 <constraint firstItem="teI-Mm-2yb" firstAttribute="top" secondItem="RzL-tv-ncQ" secondAttribute="top" constant="20" id="AQb-4e-fcE"/>
                 <constraint firstItem="teI-Mm-2yb" firstAttribute="leading" secondItem="RzL-tv-ncQ" secondAttribute="leading" constant="15" id="Cfo-oF-bzT"/>
+                <constraint firstItem="t1Z-BP-P66" firstAttribute="width" secondItem="teI-Mm-2yb" secondAttribute="width" id="HDL-dl-aOz"/>
+                <constraint firstItem="t1Z-BP-P66" firstAttribute="leading" secondItem="teI-Mm-2yb" secondAttribute="leading" id="J2K-JX-KMJ"/>
                 <constraint firstItem="YSo-Bg-YYW" firstAttribute="top" secondItem="teI-Mm-2yb" secondAttribute="bottom" constant="10" id="NGd-ZX-nMA"/>
                 <constraint firstItem="YSo-Bg-YYW" firstAttribute="height" secondItem="teI-Mm-2yb" secondAttribute="height" id="g6O-5u-0xX"/>
                 <constraint firstItem="YSo-Bg-YYW" firstAttribute="leading" secondItem="teI-Mm-2yb" secondAttribute="leading" id="lhN-3q-RGF"/>
+                <constraint firstItem="t1Z-BP-P66" firstAttribute="height" secondItem="teI-Mm-2yb" secondAttribute="height" id="qal-Yw-AKc"/>
                 <constraint firstAttribute="trailing" secondItem="teI-Mm-2yb" secondAttribute="trailing" constant="15" id="yUh-Og-4QE"/>
+                <constraint firstItem="t1Z-BP-P66" firstAttribute="top" secondItem="YSo-Bg-YYW" secondAttribute="bottom" constant="10" id="yaL-yr-7ww"/>
                 <constraint firstItem="YSo-Bg-YYW" firstAttribute="trailing" secondItem="teI-Mm-2yb" secondAttribute="trailing" id="zb9-wk-wjd"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="493.5" y="-171"/>
+            <point key="canvasLocation" x="493.5" y="-142"/>
         </view>
     </objects>
     <resources>
