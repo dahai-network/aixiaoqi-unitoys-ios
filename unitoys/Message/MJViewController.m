@@ -747,19 +747,21 @@
     [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"删除多条短信成功");
-            NSMutableArray *indexPathsArray = [NSMutableArray array];
-            for (MJMessageFrame *messageFrame in Datas) {
-//                if ([weakSelf.messageFrames indexOfObject:messageFrame]) {
-//                    
-//                }
-                NSInteger row = [weakSelf.messageFrames indexOfObject:messageFrame];
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-                [indexPathsArray addObject:indexPath];
-            }
-            if (indexPathsArray.count) {
-                [weakSelf.messageFrames removeObjectsInArray:Datas];
-                [weakSelf.tableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
+//            NSMutableArray *indexPathsArray = [NSMutableArray array];
+//            for (MJMessageFrame *messageFrame in Datas) {
+//                NSInteger row = [weakSelf.messageFrames indexOfObject:messageFrame];
+//                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+//                [indexPathsArray addObject:indexPath];
+//            }
+//            if (indexPathsArray.count) {
+//                [weakSelf.messageFrames removeObjectsInArray:Datas];
+//                [weakSelf.tableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
+//            }
+            
+            [weakSelf.messageFrames removeObjectsInArray:Datas];
+            [weakSelf.tableView reloadData];
+            //自动滚动到底部
+            [self scrollTableViewToBottomWithAnimated:NO];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{

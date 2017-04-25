@@ -86,7 +86,8 @@
                                },
                            @{
                                @"TopTitle" : @"*",
-                               @"BottomTitle" : INTERNATIONALSTRING(@"全键盘"),
+                               @"BottomTitle" : @"",
+//                               @"BottomTitle" : INTERNATIONALSTRING(@"全键盘"),
                                },
                            @{
                                @"TopTitle" : @"0",
@@ -94,7 +95,8 @@
                                },
                            @{
                                @"TopTitle" : @"#",
-                               @"BottomTitle" : INTERNATIONALSTRING(@"粘贴"),
+                               @"BottomTitle" : @"",
+//                               @"BottomTitle" : INTERNATIONALSTRING(@"粘贴"),
                                },
                            ];
     }
@@ -150,26 +152,43 @@
     _margin = 1.0;
     
     self.buttonArray = [NSMutableArray arrayWithCapacity:_buttonCount];
+    UIColor *bgColor;
     if (_isTransparent) {
-        for (NSInteger i = 0; i < _buttonCount; i++) {
-            NSDictionary *dict = self.keyboardItems[i];
-            UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
-            callButton.isTransparent = YES;
-            callButton.backgroundColor = [UIColor clearColor];
-            [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-            [self.buttonArray addObject:callButton];
-            [self addSubview:callButton];
-        }
+        bgColor = [UIColor clearColor];
     }else{
-        for (NSInteger i = 0; i < _buttonCount; i++) {
-            NSDictionary *dict = self.keyboardItems[i];
-            UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
-            callButton.backgroundColor = [UIColor whiteColor];
-            [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-            [self.buttonArray addObject:callButton];
-            [self addSubview:callButton];
-        }
+        bgColor = [UIColor whiteColor];
     }
+    
+    for (NSInteger i = 0; i < _buttonCount; i++) {
+        NSDictionary *dict = self.keyboardItems[i];
+        UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
+        callButton.isTransparent = _isTransparent;
+        callButton.backgroundColor = bgColor;
+        [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+        [self.buttonArray addObject:callButton];
+        [self addSubview:callButton];
+    }
+
+//    if (_isTransparent) {
+//        for (NSInteger i = 0; i < _buttonCount; i++) {
+//            NSDictionary *dict = self.keyboardItems[i];
+//            UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
+//            callButton.isTransparent = YES;
+//            callButton.backgroundColor = [UIColor clearColor];
+//            [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+//            [self.buttonArray addObject:callButton];
+//            [self addSubview:callButton];
+//        }
+//    }else{
+//        for (NSInteger i = 0; i < _buttonCount; i++) {
+//            NSDictionary *dict = self.keyboardItems[i];
+//            UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
+//            callButton.backgroundColor = [UIColor whiteColor];
+//            [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+//            [self.buttonArray addObject:callButton];
+//            [self addSubview:callButton];
+//        }
+//    }
 }
 
 - (void)callButtonAction:(UCallPhoneButton *)btnSender

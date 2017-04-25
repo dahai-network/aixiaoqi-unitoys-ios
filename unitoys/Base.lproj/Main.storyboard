@@ -1804,7 +1804,7 @@
                                                         <constraint firstItem="phu-w2-dfD" firstAttribute="height" secondItem="O8n-hY-VBl" secondAttribute="height" id="zII-qu-T0h"/>
                                                     </constraints>
                                                 </view>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pic_tx_pre" translatesAutoresizingMaskIntoConstraints="NO" id="Hm4-GJ-srf">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Hm4-GJ-srf">
                                                     <rect key="frame" x="152" y="26" width="70" height="70"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="70" id="6d2-8Q-nZ3"/>
@@ -2607,7 +2607,6 @@
         <image name="phone_bar_nor" width="18" height="17"/>
         <image name="phone_bar_pre" width="18" height="17"/>
         <image name="pic_line" width="1" height="1"/>
-        <image name="pic_tx_pre" width="70" height="70"/>
         <image name="pro_purving" width="13" height="16"/>
         <image name="pro_setting" width="22" height="28"/>
         <image name="reg_checked" width="14" height="14"/>

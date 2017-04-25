@@ -693,6 +693,7 @@
 		3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddTouchAreaButton.m; sourceTree = "<group>"; };
 		3CE1174B1E618A27008D5976 /* MessageContactsInfoController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageContactsInfoController.h; sourceTree = "<group>"; };
 		3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageContactsInfoController.m; sourceTree = "<group>"; };
+		3CE430671EAF2029000A4F04 /* unitoys-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "unitoys-Prefix.pch"; sourceTree = "<group>"; };
 		3CE5CC861E7F63F100FCEA81 /* UNBlueToothTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNBlueToothTool.h; sourceTree = "<group>"; };
 		3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNBlueToothTool.m; sourceTree = "<group>"; };
 		3CEA93911E5C537B00205C29 /* UNCallKitCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCallKitCenter.h; sourceTree = "<group>"; };
@@ -2152,6 +2153,7 @@
 			children = (
 				3C48635F1E8CF111006FD87C /* number_location.zip */,
 				95F337151D853256000B5461 /* main.m */,
+				3CE430671EAF2029000A4F04 /* unitoys-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -2893,8 +2895,8 @@
 					"$(PROJECT_DIR)/unitoys/depands/Weipay",
 				);
 				GCC_INPUT_FILETYPE = automatic;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/unitoys/unitoys-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"<Multiple",
 					"values>",
@@ -2937,8 +2939,8 @@
 					"$(PROJECT_DIR)/unitoys/depands/Weipay",
 				);
 				GCC_INPUT_FILETYPE = automatic;
-				GCC_PRECOMPILE_PREFIX_HEADER = NO;
-				GCC_PREFIX_HEADER = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/unitoys/unitoys-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					"<Multiple",
 					"values>",

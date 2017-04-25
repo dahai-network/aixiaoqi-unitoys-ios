@@ -1707,6 +1707,20 @@ static UNBlueToothTool *instance = nil;
                 break;
             case 13:
                 NSLog(@"接收到SIM卡ICCID -- %@", contentStr);
+                if (contentStr) {
+                    //判断本地是否存在ICCID
+                    [UNPushKitMessageManager shareManager].iccidString = contentStr;
+                    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
+                    NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
+                    if (dict) {
+                        //创建tcp,建立连接
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
+                    }else{
+                        //创建udp,初始化操作
+                        [UNPushKitMessageManager shareManager].isNeedRegister = YES;
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
+                    }
+                }
                 break;
             case 14:
                 //设置闹钟成功
@@ -2032,10 +2046,13 @@ static UNBlueToothTool *instance = nil;
                         } else {
                             //                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
                             [BlueToothDataManager shareManager].isChangeSimCard = NO;
-                            [self updataToCard];
-                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                [self sendICCIDMessage];
-                            });
+                            
+                            //取消手动发送ICCID命令
+//                            [self updataToCard];
+//                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                                [self sendICCIDMessage];
+//                            });
+                            
 //减少发送指令间隔时间
 //                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //                                [self sendICCIDMessage];
@@ -2068,8 +2085,9 @@ static UNBlueToothTool *instance = nil;
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
                         } else {
                             //                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
-                            [self updataToCard];
-                            [self sendICCIDMessage];
+                            //取消手动发送ICCID命令
+//                            [self updataToCard];
+//                            [self sendICCIDMessage];
                         }
                     } else {
                         [self showHudNormalString:INTERNATIONALSTRING(@"电话卡运营商不属于三大运营商")];

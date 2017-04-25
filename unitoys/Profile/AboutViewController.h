@@ -8,7 +8,6 @@
 
 #import "BaseTableController.h"
 
-
 @interface AboutViewController : BaseTableController
 @property (weak, nonatomic) IBOutlet UIImageView *ivUserHead;
 @property (weak, nonatomic) IBOutlet UILabel *lblNickName;

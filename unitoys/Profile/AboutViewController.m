@@ -362,7 +362,8 @@
     
     
     
-    [self.ivUserHead sd_setImageWithURL:[NSURL URLWithString:imageUrl]];
+//    [self.ivUserHead sd_setImageWithURL:[NSURL URLWithString:imageUrl]];
+    [self.ivUserHead sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:[UIImage imageNamed:@"pic_tx_pre"]];
     
     
     [self.ivUserHead.layer setMasksToBounds:YES];

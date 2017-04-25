@@ -54,7 +54,7 @@
     UILabel *bottomLabel = [[UILabel alloc] init];
     _bottomLabel = bottomLabel;
     bottomLabel.text = self.bottomTitle;
-    bottomLabel.textColor = [UIColor blackColor];
+    bottomLabel.textColor = [UIColor darkGrayColor];
     bottomLabel.font = [UIFont systemFontOfSize:12];
     [bottomLabel sizeToFit];
     [self addSubview:bottomLabel];
@@ -81,10 +81,17 @@
             self.bottomLabel.textColor = [UIColor whiteColor];
         }
     }else{
+//        if (highlighted) {
+//            self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+//        }else{
+//            self.backgroundColor = [UIColor whiteColor];
+//        }
         if (highlighted) {
-            self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+            self.topLabel.textColor = UIColorFromRGB(0x00a0e9);
+            self.bottomLabel.textColor = UIColorFromRGB(0x00a0e9);
         }else{
-            self.backgroundColor = [UIColor whiteColor];
+            self.topLabel.textColor = [UIColor blackColor];
+            self.bottomLabel.textColor = [UIColor darkGrayColor];
         }
     }
 }
@@ -101,10 +108,15 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    self.topLabel.bottom = self.height * 0.5;
-    self.topLabel.centerX = self.width * 0.5;
-    self.bottomLabel.top = self.height * 0.5 + 2;
-    self.bottomLabel.centerX = self.topLabel.centerX;
+//    self.topLabel.bottom = self.height * 0.5;
+//    self.topLabel.centerX = self.width * 0.5;
+//    self.bottomLabel.top = self.height * 0.5 + 2;
+//    self.bottomLabel.centerX = self.topLabel.centerX;
+    
+    self.topLabel.centerY = self.height * 0.5;
+    self.topLabel.right = self.width * 0.5 - 5;
+    self.bottomLabel.bottom = self.topLabel.bottom - 3;
+    self.bottomLabel.left = self.width * 0.5;
 }
 
 @end

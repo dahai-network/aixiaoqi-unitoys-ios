@@ -23,6 +23,7 @@ PODS:
   - FMDB/standard (2.6.2)
   - iOSDFULibrary (2.1.6):
     - Zip (~> 0.6)
+  - Masonry (1.0.2)
   - MBProgressHUD (0.9.2)
   - MJExtension (3.0.13)
   - MJRefresh (3.1.12)
@@ -41,6 +42,7 @@ DEPENDENCIES:
   - CocoaAsyncSocket (~> 7.5.1)
   - FMDB (~> 2.5)
   - iOSDFULibrary (~> 2.1.6)
+  - Masonry
   - MBProgressHUD (~> 0.9.1)
   - MJExtension
   - MJRefresh
@@ -55,6 +57,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: e0a7e93b2ffa411592ff87e58524fbbc9b95b4fa
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   iOSDFULibrary: 1d597b90fed43a68aba886443a0045d900e622d9
+  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   MJExtension: 5932755f451458eefa24239358817f8d291240c7
   MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
@@ -64,6 +67,6 @@ SPEC CHECKSUMS:
   SSZipArchive: 63f8e11cfcc33e03e4cd666b4359ea8bd6facd0c
   Zip: 805fc2fa9d2f05bbb7762d982d7a42ccdcc51f42
 
-PODFILE CHECKSUM: ac2717a20bd3415718c1073f92a81c481629fe8e
+PODFILE CHECKSUM: a9629913e7e5e1bbaeb90b829bac21572fdb3585
 
 COCOAPODS: 1.2.0
