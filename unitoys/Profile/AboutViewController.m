@@ -49,12 +49,12 @@
     [self tipMessageStatuChange];
     
     //添加状态栏
-    self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 24)];
+    self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, STATUESVIEWHEIGHT)];
     self.statuesView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
     UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
-    leftImg.frame = CGRectMake(15, 2, 20, 20);
+    leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
-    self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, [UIScreen mainScreen].bounds.size.width-30-leftImg.frame.size.width, 24)];
+    self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
     self.statuesLabel.text = @"这个状态栏比较6";
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);

@@ -45,6 +45,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.height -= (64 + 49);
+//    self.tableView.height = self.parentViewController.view.height;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;

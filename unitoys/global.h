@@ -41,6 +41,11 @@
 #define X(x) (x/375.0)*[UIScreen mainScreen].bounds.size.width;
 #define Y(y) (y/667.0)*[UIScreen mainScreen].bounds.size.height;
 
+//状态栏高度
+#define STATUESVIEWHEIGHT 24
+//状态栏中图片高度
+#define STATUESVIEWIMAGEHEIGHT 20
+
 #define apiAlipayNotify  defaultHost@"/api/AliPay/NotifyAsync";
 
 #define kScreenWidthValue  [UIScreen mainScreen].bounds.size.width

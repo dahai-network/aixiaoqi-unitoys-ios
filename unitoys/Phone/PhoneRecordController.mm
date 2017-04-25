@@ -416,6 +416,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.height -= (64 + 49);
+//    self.tableView.height = self.view.height-49;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     [self.view addSubview:self.tableView];

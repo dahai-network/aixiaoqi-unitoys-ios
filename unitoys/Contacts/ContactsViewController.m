@@ -36,6 +36,9 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 @property (nonatomic,strong) UISearchBar *searchBar;//搜索框
 @property (nonatomic,strong) UISearchDisplayController *searchDisplayController;//搜索VC
 
+@property (nonatomic, strong)UIView *statuesView;
+@property (nonatomic, strong)UILabel *statuesLabel;
+
 @end
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
@@ -60,11 +63,25 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //添加状态栏
+    self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, STATUESVIEWHEIGHT)];
+    self.statuesView.backgroundColor = UIColorFromRGB(0xffbfbf);
+    UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
+    leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
+    [self.statuesView addSubview:leftImg];
+    self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
+    self.statuesLabel.text = @"这个状态栏比较6";
+    self.statuesLabel.font = [UIFont systemFontOfSize:14];
+    self.statuesLabel.textColor = UIColorFromRGB(0x999999);
+    [self.statuesView addSubview:self.statuesLabel];
+    [self.view addSubview:self.statuesView];
+    
     if (![AddressBookManager shareManager].isOpenedAddress && !self.bOnlySelectNumber) {
         self.navigationItem.leftBarButtonItem = nil;
         [AddressBookManager shareManager].isOpenedAddress = YES;
         [self.view addSubview:self.searchBar];
-        self.tableView.frame = CGRectMake(0, 44, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - 44);
+        self.tableView.frame = CGRectMake(0, self.statuesView.frame.size.height+self.searchBar.frame.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - self.statuesView.frame.size.height-self.searchBar.frame.size.height);
     }else{
         self.tableView.height -= 15;
     }
@@ -188,7 +205,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 }
 - (UISearchBar *)searchBar{
     if (!_searchBar) {
-        _searchBar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 44)];
+        _searchBar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, self.statuesView.frame.size.height, kScreenWidth, 44)];
         
         [_searchBar sizeToFit];
         [_searchBar setPlaceholder:INTERNATIONALSTRING(@"搜索")];
@@ -201,7 +218,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 }
 - (UITableView *)tableView{
     if (!_tableView) {
-        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0.0, 0.0, kScreenWidth, kScreenHeight-49.0) style:UITableViewStylePlain];
+        _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0.0, 0.0, kScreenWidth, kScreenHeight-49.0-self.statuesView.frame.size.height) style:UITableViewStylePlain];
         [_tableView setDelegate:self];
         [_tableView setDataSource:self];
         [_tableView setSectionIndexBackgroundColor:[UIColor clearColor]];
@@ -396,8 +413,8 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     searchBar.showsCancelButton = YES;
 }
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
-    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, 20);
-    _tableView.frame = CGRectOffset(_tableView.frame, 0, 20);
+    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, 20-self.statuesView.frame.size.height);
+    _tableView.frame = CGRectOffset(_tableView.frame, 0, 20-self.statuesView.frame.size.height);
 
     self.bFinishedEdit = NO;
     return YES;
@@ -405,16 +422,16 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 - (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar{
     
     if (!self.bFinishedEdit) {
-        _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -20);
-        _tableView.frame = CGRectOffset(_tableView.frame, 0, -20);
+        _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -20+self.statuesView.frame.size.height);
+        _tableView.frame = CGRectOffset(_tableView.frame, 0, -20+self.statuesView.frame.size.height);
     }
     
     return YES;
 }
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     //取消
-    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -20);
-    _tableView.frame = CGRectOffset(_tableView.frame, 0, -20);
+    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -20+self.statuesView.frame.size.height);
+    _tableView.frame = CGRectOffset(_tableView.frame, 0, -20+self.statuesView.frame.size.height);
     
     self.bFinishedEdit = YES;
     [searchBar resignFirstResponder];
