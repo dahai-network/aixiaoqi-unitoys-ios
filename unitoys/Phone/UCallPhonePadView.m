@@ -237,8 +237,8 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    CGFloat buttonW = (CGFloat)(self.width - (_colCount - 1) * _margin) / _colCount;
-    CGFloat buttonH = (CGFloat)(self.height - 2 - (_rowCount - 1) * _margin) / _rowCount;
+    CGFloat buttonW = (CGFloat)(self.un_width - (_colCount - 1) * _margin) / _colCount;
+    CGFloat buttonH = (CGFloat)(self.un_height - 2 - (_rowCount - 1) * _margin) / _rowCount;
     CGFloat buttonX;
     CGFloat buttonY;
     for (NSInteger i = 0; i < _buttonCount; i++) {

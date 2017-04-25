@@ -48,11 +48,11 @@
 - (void)setUpInitialize
 {
     [self.loginButton setBackgroundColor:UIColorFromRGB(0x00A0E9)];
-    self.loginButton.layer.cornerRadius = self.loginButton.height * 0.5;
+    self.loginButton.layer.cornerRadius = self.loginButton.un_height * 0.5;
     [self.loginButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.registerbtn setBackgroundColor:[UIColor whiteColor]];
     [self.registerbtn setTitleColor:UIColorFromRGB(0x00A0E9) forState:UIControlStateNormal];
-    self.registerbtn.layer.cornerRadius = self.registerbtn.height * 0.5;
+    self.registerbtn.layer.cornerRadius = self.registerbtn.un_height * 0.5;
     self.registerbtn.layer.borderWidth = 0.5;
     self.registerbtn.layer.borderColor = UIColorFromRGB(0x00A0E9).CGColor;
     

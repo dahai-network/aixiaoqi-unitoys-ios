@@ -56,27 +56,27 @@
 {
 //    self.alpha = 0;
     self.frame = self.bgWindow.bounds;
-    UIView *presentView = [[UIView alloc] initWithFrame:CGRectMake(leftMargin, 0, self.bgWindow.width - 2 * leftMargin, viewHeight)];
+    UIView *presentView = [[UIView alloc] initWithFrame:CGRectMake(leftMargin, 0, self.bgWindow.un_width - 2 * leftMargin, viewHeight)];
     presentView.backgroundColor = [UIColor whiteColor];
     presentView.layer.borderWidth = 1.0;
     presentView.layer.borderColor = UIColorFromRGB(0xd5d5d5).CGColor;
-    presentView.centerY = self.bgWindow.height * 0.5;
+    presentView.un_centerY = self.bgWindow.un_height * 0.5;
     [self addSubview:presentView];
     
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.text = self.title;
     titleLabel.font = [UIFont systemFontOfSize:17];
     [titleLabel sizeToFit];
-    titleLabel.top = 20;
-    titleLabel.centerX = presentView.width * 0.5;
+    titleLabel.un_top = 20;
+    titleLabel.un_centerX = presentView.un_width * 0.5;
     [presentView addSubview:titleLabel];
     
     AddTouchAreaButton *dismissButton = [[AddTouchAreaButton alloc] init];
     dismissButton.touchEdgeInset = UIEdgeInsetsMake(5, 5, 5, 5);
     [dismissButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
     [dismissButton sizeToFit];
-    dismissButton.top = 5;
-    dismissButton.right = presentView.width - 5;
+    dismissButton.un_top = 5;
+    dismissButton.un_right = presentView.un_width - 5;
     [dismissButton addTarget:self action:@selector(dismissWindow) forControlEvents:UIControlEventTouchUpInside];
     [presentView addSubview:dismissButton];
     
@@ -85,8 +85,8 @@
     [sureButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     sureButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [sureButton sizeToFit];
-    sureButton.bottom = presentView.height - 15;
-    sureButton.centerX = presentView.width * 0.5;
+    sureButton.un_bottom = presentView.un_height - 15;
+    sureButton.un_centerX = presentView.un_width * 0.5;
     [sureButton addTarget:self action:@selector(dismissWindow) forControlEvents:UIControlEventTouchUpInside];
     [presentView addSubview:sureButton];
     
@@ -95,10 +95,10 @@
     descLabel.numberOfLines = 0;
     descLabel.font = [UIFont systemFontOfSize:14];
     descLabel.textColor = [UIColor darkGrayColor];
-    descLabel.width = presentView.width - 40;
-    descLabel.top = titleLabel.bottom + 20;
-    descLabel.height = sureButton.top - 20 - descLabel.top;
-    descLabel.centerX = presentView.width * 0.5;
+    descLabel.un_width = presentView.un_width - 40;
+    descLabel.un_top = titleLabel.un_bottom + 20;
+    descLabel.un_height = sureButton.un_top - 20 - descLabel.un_top;
+    descLabel.un_centerX = presentView.un_width * 0.5;
     [presentView addSubview:descLabel];
     
     

@@ -34,8 +34,8 @@
     [deleteButtn setImage:[UIImage imageNamed:@"delete_msg_nor"] forState:UIControlStateNormal];
     [deleteButtn setImage:[UIImage imageNamed:@"delete_msg_pre"] forState:UIControlStateHighlighted];
     [deleteButtn addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
-    deleteButtn.width = self.height;
-    deleteButtn.height = self.height;
+    deleteButtn.un_width = self.un_height;
+    deleteButtn.un_height = self.un_height;
     [self addSubview:deleteButtn];
     
     UIButton *cancelButtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -43,8 +43,8 @@
     [cancelButtn setImage:[UIImage imageNamed:@"exit_msg_nor"] forState:UIControlStateNormal];
     [cancelButtn setImage:[UIImage imageNamed:@"exit_msg_pre"] forState:UIControlStateHighlighted];
     [cancelButtn addTarget:self action:@selector(cancelAction:) forControlEvents:UIControlEventTouchUpInside];
-    cancelButtn.width = self.height;
-    cancelButtn.height = self.height;
+    cancelButtn.un_width = self.un_height;
+    cancelButtn.un_height = self.un_height;
     [self addSubview:cancelButtn];
 }
 
@@ -65,11 +65,11 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    self.deleteButtn.centerY = self.height * 0.5;
-    self.deleteButtn.right = self.width * 0.5 - 20;
+    self.deleteButtn.un_centerY = self.un_height * 0.5;
+    self.deleteButtn.un_right = self.un_width * 0.5 - 20;
     
-    self.cancelButtn.centerY = self.height * 0.5;
-    self.cancelButtn.left = self.width * 0.5 + 20;
+    self.cancelButtn.un_centerY = self.un_height * 0.5;
+    self.cancelButtn.un_left = self.un_width * 0.5 + 20;
 }
 
 @end

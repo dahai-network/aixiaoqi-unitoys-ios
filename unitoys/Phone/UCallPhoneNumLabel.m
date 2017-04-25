@@ -38,8 +38,8 @@
     _deleteButton = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];
     _deleteButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
     [_deleteButton setImage:[UIImage imageNamed:@"icon_del_nor"] forState:UIControlStateNormal];
-    _deleteButton.width = 60;
-    _deleteButton.height = self.height;
+    _deleteButton.un_width = 60;
+    _deleteButton.un_height = self.un_height;
     [_deleteButton addTarget:self action:@selector(deleteAction:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:_deleteButton];
 }
@@ -75,10 +75,10 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    _deleteButton.right = self.width;
-    _deleteButton.centerY = self.height * 0.5;
+    _deleteButton.un_right = self.un_width;
+    _deleteButton.un_centerY = self.un_height * 0.5;
     
-    _phonelabel.frame = CGRectMake(0, 0, _deleteButton.left, self.height);
+    _phonelabel.frame = CGRectMake(0, 0, _deleteButton.un_left, self.un_height);
 }
 
 @end

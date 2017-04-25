@@ -44,50 +44,50 @@
     switch (self.imageInsetsType) {
         case UIButtonImageInsetsTypeLeft:
         {
-            if (CGRectGetMaxX(self.titleLabel.frame) - self.imageView.left < self.margin) {
-                self.titleLabel.left = CGRectGetMaxY(self.imageView.frame) + self.margin;
+            if (CGRectGetMaxX(self.titleLabel.frame) - self.imageView.un_left < self.margin) {
+                self.titleLabel.un_left = CGRectGetMaxY(self.imageView.frame) + self.margin;
             }
         }
             break;
         
         case UIButtonImageInsetsTypeRight:
         {
-            if (self.titleLabel.left > self.imageView.left) {
-                CGFloat imageX = self.imageView.left;
-                CGFloat titleW = self.titleLabel.width;
+            if (self.titleLabel.un_left > self.imageView.un_left) {
+                CGFloat imageX = self.imageView.un_left;
+                CGFloat titleW = self.titleLabel.un_width;
                 CGFloat margin;
                 if (self.margin != 0) {
                     margin = self.margin;
                 }else{
-                    margin = self.titleLabel.left - CGRectGetMaxX(self.imageView.frame);
+                    margin = self.titleLabel.un_left - CGRectGetMaxX(self.imageView.frame);
                 }
-                self.titleLabel.left = imageX;
-                self.imageView.left = imageX + titleW + margin;
+                self.titleLabel.un_left = imageX;
+                self.imageView.un_left = imageX + titleW + margin;
             }
         }
             break;
         case UIButtonImageInsetsTypeTop:
         {
-            if (CGRectGetMaxY(self.imageView.frame) > self.titleLabel.top) {
-                self.imageView.top = _imageTop;
+            if (CGRectGetMaxY(self.imageView.frame) > self.titleLabel.un_top) {
+                self.imageView.un_top = _imageTop;
                 CGFloat iamgeMaxY = CGRectGetMaxY(self.imageView.frame);
-                self.imageView.centerX = self.width * 0.5;
-                self.titleLabel.top = iamgeMaxY + self.margin;
+                self.imageView.un_centerX = self.un_width * 0.5;
+                self.titleLabel.un_top = iamgeMaxY + self.margin;
                 [self.titleLabel sizeToFit];
-                self.titleLabel.centerX = self.imageView.centerX;
+                self.titleLabel.un_centerX = self.imageView.un_centerX;
             }
         }
             break;
         case UIButtonImageInsetsTypeBottom:
         {
-            if (CGRectGetMaxY(self.titleLabel.frame) > self.imageView.top) {
+            if (CGRectGetMaxY(self.titleLabel.frame) > self.imageView.un_top) {
                 CGFloat titleY = 0;
-                CGFloat titleH = self.titleLabel.height;
+                CGFloat titleH = self.titleLabel.un_height;
                 
-                self.titleLabel.top = titleY;
-                self.titleLabel.centerX = self.width * 0.5;
-                self.imageView.top = titleH + self.margin;
-                self.imageView.centerX = self.width * 0.5;
+                self.titleLabel.un_top = titleY;
+                self.titleLabel.un_centerX = self.un_width * 0.5;
+                self.imageView.un_top = titleH + self.margin;
+                self.imageView.un_centerX = self.un_width * 0.5;
             }
         }
             break;

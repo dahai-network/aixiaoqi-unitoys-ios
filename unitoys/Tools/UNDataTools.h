@@ -41,4 +41,6 @@
 //是否有固件升级提示
 @property (nonatomic, assign) BOOL isHasFirmwareUpdateTip;
 
+@property (nonatomic, assign) CGFloat tipStatusHeight;
+
 @end

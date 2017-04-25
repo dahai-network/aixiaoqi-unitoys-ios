@@ -114,7 +114,7 @@
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
     if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
-        self.statuesView.height = 0;
+        self.statuesView.un_height = 0;
         [self.tableView reloadData];
     }
     
@@ -278,9 +278,9 @@
     NSLog(@"状态栏文字 --> %@", sender.object);
     self.statuesLabel.text = sender.object;
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
-        self.statuesView.height = 0;
+        self.statuesView.un_height = 0;
     } else {
-        self.statuesView.height = STATUESVIEWHEIGHT;
+        self.statuesView.un_height = STATUESVIEWHEIGHT;
     }
     [self.tableView reloadData];
 }

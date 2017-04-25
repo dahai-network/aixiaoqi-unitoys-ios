@@ -46,7 +46,7 @@
 - (UNEditMessageView *)bottomView
 {
     if (!_bottomView) {
-        _bottomView = [[UNEditMessageView alloc] initWithFrame:CGRectMake(0, self.view.height, kScreenWidthValue, self.bottomInputView.height)];
+        _bottomView = [[UNEditMessageView alloc] initWithFrame:CGRectMake(0, self.view.un_height, kScreenWidthValue, self.bottomInputView.un_height)];
         _bottomView.backgroundColor = [UIColor clearColor];
         kWeakSelf
         _bottomView.editMessageActionBlock = ^(NSInteger buttonTag) {
@@ -190,14 +190,14 @@
 {
     [self bottomView];
     [UIView animateWithDuration:0.3 animations:^{
-        self.bottomView.top = self.view.height - self.bottomView.height;
+        self.bottomView.un_top = self.view.un_height - self.bottomView.un_height;
     }];
 }
 
 - (void)hideEditView
 {
     [UIView animateWithDuration:0.3 animations:^{
-        self.bottomView.top = self.view.height;
+        self.bottomView.un_top = self.view.un_height;
     } completion:^(BOOL finished) {
         if (finished) {
             [_bottomView removeFromSuperview];

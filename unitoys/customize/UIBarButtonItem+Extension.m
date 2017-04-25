@@ -7,7 +7,8 @@
 //
 
 #import "UIBarButtonItem+Extension.h"
-#import "UIView+Extension.h"
+//#import "UIView+Extension.h"
+#import "UIView+Utils.h"
 
 @implementation UIBarButtonItem (Extension)
 /**
@@ -29,7 +30,7 @@
     [btn setImage:highImage forState:UIControlStateHighlighted];
     // 设置尺寸
     //btn.backgroundColor=[UIColor redColor];
-    btn.size = CGSizeMake(15, 26);
+    btn.un_size = CGSizeMake(15, 26);
     return [[UIBarButtonItem alloc] initWithCustomView:btn];
 }
 @end

@@ -78,7 +78,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [self.statuesView addSubview:self.statuesLabel];
     [self.view addSubview:self.statuesView];
     if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
-        self.statuesView.height = 0;
+        self.statuesView.un_height = 0;
     }
     
     if (![AddressBookManager shareManager].isOpenedAddress && !self.bOnlySelectNumber) {
@@ -87,7 +87,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
         [self.view addSubview:self.searchBar];
         self.tableView.frame = CGRectMake(0, self.statuesView.frame.size.height+self.searchBar.frame.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - self.statuesView.frame.size.height-self.searchBar.frame.size.height);
     }else{
-        self.tableView.height -= 15;
+        self.tableView.un_height -= 15;
     }
     
     // Do any additional setup after loading the view, typically from a nib.
@@ -142,19 +142,19 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     NSLog(@"状态栏文字 --> %@", sender.object);
     self.statuesLabel.text = sender.object;
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
-        if (self.statuesView.height == STATUESVIEWHEIGHT) {
+        if (self.statuesView.un_height == STATUESVIEWHEIGHT) {
             _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -STATUESVIEWHEIGHT);
             _tableView.frame = CGRectOffset(_tableView.frame, 0, -STATUESVIEWHEIGHT);
-            _tableView.height += STATUESVIEWHEIGHT;
+            _tableView.un_height += STATUESVIEWHEIGHT;
         }
-        self.statuesView.height = 0;
+        self.statuesView.un_height = 0;
     } else {
-        if (self.statuesView.height == 0) {
+        if (self.statuesView.un_height == 0) {
             _searchBar.frame = CGRectOffset(_searchBar.frame, 0, STATUESVIEWHEIGHT);
             _tableView.frame = CGRectOffset(_tableView.frame, 0, STATUESVIEWHEIGHT);
-            _tableView.height -= STATUESVIEWHEIGHT;
+            _tableView.un_height -= STATUESVIEWHEIGHT;
         }
-        self.statuesView.height = STATUESVIEWHEIGHT;
+        self.statuesView.un_height = STATUESVIEWHEIGHT;
     }
 }
 

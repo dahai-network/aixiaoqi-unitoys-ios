@@ -91,8 +91,8 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [_createMsgButton setImage:[UIImage imageNamed:@"edit_Msg_pre"] forState:UIControlStateSelected];
     [_createMsgButton addTarget:self action:@selector(createMsgAction:) forControlEvents:UIControlEventTouchUpInside];
     [_createMsgButton sizeToFit];
-    _createMsgButton.right = kScreenWidthValue - 10;
-    _createMsgButton.bottom = self.view.height - _createMsgButton.height - 49 - 24;
+    _createMsgButton.un_right = kScreenWidthValue - 10;
+    _createMsgButton.un_bottom = self.view.un_height - _createMsgButton.un_height - 49 - 24;
     
     [self.view addSubview:_createMsgButton];
 }

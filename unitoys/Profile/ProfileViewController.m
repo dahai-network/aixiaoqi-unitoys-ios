@@ -33,10 +33,10 @@
     
     
     UIView *valueView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    valueView.height -= 64;
+    valueView.un_height -= 64;
     valueView.backgroundColor = [UIColor colorWithRed:32/255 green:34/255 blue:42/255 alpha:0.2];
     
-    UIPickerView *pickerview = [[UIPickerView alloc] initWithFrame: CGRectMake(0,valueView.height-(216 + 35 + 1 + 5),self.view.bounds.size.width,216)];
+    UIPickerView *pickerview = [[UIPickerView alloc] initWithFrame: CGRectMake(0,valueView.un_height-(216 + 35 + 1 + 5),self.view.bounds.size.width,216)];
     [pickerview setBackgroundColor:[UIColor whiteColor]];
     [valueView addSubview:pickerview];
     self.pickerView = pickerview;
@@ -47,7 +47,7 @@
     [valueView addSubview:titleLabel];
     self.titleLabel = titleLabel;
     
-    UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,valueView.height - 35 - 1, self.view.bounds.size.width, 35)];
+    UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,valueView.un_height - 35 - 1, self.view.bounds.size.width, 35)];
     btnOK.hidden = NO;
     [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];

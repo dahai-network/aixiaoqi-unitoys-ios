@@ -113,10 +113,10 @@
 //    self.bottomLabel.top = self.height * 0.5 + 2;
 //    self.bottomLabel.centerX = self.topLabel.centerX;
     
-    self.topLabel.centerY = self.height * 0.5;
-    self.topLabel.right = self.width * 0.5 - 5;
-    self.bottomLabel.bottom = self.topLabel.bottom - 3;
-    self.bottomLabel.left = self.width * 0.5;
+    self.topLabel.un_centerY = self.un_height * 0.5;
+    self.topLabel.un_right = self.un_width * 0.5 - 5;
+    self.bottomLabel.un_bottom = self.topLabel.un_bottom - 3;
+    self.bottomLabel.un_left = self.un_width * 0.5;
 }
 
 @end

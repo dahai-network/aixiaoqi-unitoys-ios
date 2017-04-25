@@ -195,7 +195,6 @@
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
 		6E9A9613C7F0D7AB91676E3F /* Pods_unitoys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83EA514C2661E0596FD19FBF /* Pods_unitoys.framework */; };
 		7402B32E1E55967600DC73B9 /* UIBarButtonItem+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402B32D1E55967600DC73B9 /* UIBarButtonItem+Extension.m */; };
-		7402B3311E5597FF00DC73B9 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 7402B3301E5597FF00DC73B9 /* UIView+Extension.m */; };
 		740FD38F1E287F9E009413F1 /* euble_interface.c in Sources */ = {isa = PBXBuildFile; fileRef = 740FD3801E287F9E009413F1 /* euble_interface.c */; };
 		740FD3901E287F9E009413F1 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 740FD3821E287F9E009413F1 /* Makefile */; };
 		740FD3911E287F9E009413F1 /* Provider.c in Sources */ = {isa = PBXBuildFile; fileRef = 740FD3831E287F9E009413F1 /* Provider.c */; };
@@ -705,8 +704,6 @@
 		48EFF6461E37F27600874FC6 /* CallActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CallActionView.m; sourceTree = "<group>"; };
 		7402B32C1E55967600DC73B9 /* UIBarButtonItem+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+Extension.h"; sourceTree = "<group>"; };
 		7402B32D1E55967600DC73B9 /* UIBarButtonItem+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+Extension.m"; sourceTree = "<group>"; };
-		7402B32F1E5597FF00DC73B9 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
-		7402B3301E5597FF00DC73B9 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
 		740FD37F1E287F9E009413F1 /* eos_typedef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = eos_typedef.h; sourceTree = "<group>"; };
 		740FD3801E287F9E009413F1 /* euble_interface.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = euble_interface.c; sourceTree = "<group>"; };
 		740FD3811E287F9E009413F1 /* euble_interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = euble_interface.h; sourceTree = "<group>"; };
@@ -1456,8 +1453,6 @@
 				041BB4B61E5C1F05001C4841 /* TTRangeSlider.h */,
 				041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */,
 				041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */,
-				7402B32F1E5597FF00DC73B9 /* UIView+Extension.h */,
-				7402B3301E5597FF00DC73B9 /* UIView+Extension.m */,
 				7402B32C1E55967600DC73B9 /* UIBarButtonItem+Extension.h */,
 				7402B32D1E55967600DC73B9 /* UIBarButtonItem+Extension.m */,
 				046BF6FE1E27A544008C10C7 /* YBPopupMenu.h */,
@@ -2501,7 +2496,6 @@
 				95C575FC1DA77C1000F459DF /* MessageRecordCell.m in Sources */,
 				04F727A41E641CE4002EB54C /* DDRange.m in Sources */,
 				3C85E1BE1E9DBF28006459F9 /* CustomButtonInset.m in Sources */,
-				7402B3311E5597FF00DC73B9 /* UIView+Extension.m in Sources */,
 				952B2AFC1DC228F2006A7C69 /* MJMessageCell.m in Sources */,
 				04F727AC1E641CE4002EB54C /* HTTPAsyncFileResponse.m in Sources */,
 				3CE5CC881E7F63F100FCEA81 /* UNBlueToothTool.m in Sources */,

@@ -77,7 +77,7 @@
     NSString *fristStr = titlesArray[0];
     CGFloat fristStrW = [fristStr boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:18]} context:nil].size.width;
 
-    titleBottomView.bottom = self.frame.size.height;
+    titleBottomView.un_bottom = self.frame.size.height;
     
     CGPoint titleBottomCenter = titleBottomView.center;
     titleBottomCenter.x = (fristStrW + margin) * 0.5;

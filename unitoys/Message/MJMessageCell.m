@@ -184,8 +184,8 @@
                     self.failedbutton.hidden = YES;
                     self.failedbutton.enabled = NO;
                 }
-                self.indicatorView.centerY = self.containerView.centerY;
-                self.indicatorView.right = self.containerView.left - 5;
+                self.indicatorView.un_centerY = self.containerView.un_centerY;
+                self.indicatorView.un_right = self.containerView.un_left - 5;
                 self.indicatorView.hidden = NO;
                 [self.indicatorView startAnimating];
             }
@@ -196,8 +196,8 @@
                     self.indicatorView.hidden = YES;
                     [self.indicatorView stopAnimating];
                 }
-                self.failedbutton.centerY = self.containerView.centerY;
-                self.failedbutton.right = self.containerView.left - 5;
+                self.failedbutton.un_centerY = self.containerView.un_centerY;
+                self.failedbutton.un_right = self.containerView.un_left - 5;
                 self.failedbutton.hidden = NO;
                 self.failedbutton.enabled = YES;
             }

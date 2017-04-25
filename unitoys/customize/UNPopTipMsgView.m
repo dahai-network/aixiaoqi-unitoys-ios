@@ -130,13 +130,13 @@
     [super layoutSubviews];
     self.frame = CGRectMake(0, 0, kScreenWidthValue - margin * 2, kScreenWidthValue - margin * 2);
     self.center = CGPointMake(kScreenWidthValue * 0.5, kScreenHeightValue * 0.5 - self.topOffset);
-    _titleLabel.frame = CGRectMake(0, 0, self.width, TitleHeight);
-    _topLineView.frame = CGRectMake(subMargin, CGRectGetMaxY(_titleLabel.frame), self.width - subMargin * 2, 1);
-    _bottomView.frame = CGRectMake(0, self.height - bottomHeight, self.width, bottomHeight);
+    _titleLabel.frame = CGRectMake(0, 0, self.un_width, TitleHeight);
+    _topLineView.frame = CGRectMake(subMargin, CGRectGetMaxY(_titleLabel.frame), self.un_width - subMargin * 2, 1);
+    _bottomView.frame = CGRectMake(0, self.un_height - bottomHeight, self.un_width, bottomHeight);
 //    _bottomLineView.frame = CGRectMake(0, _bottomView.top - 1, _bottomView.width, 1);
-    _leftButton.frame = CGRectMake(0, 0, _bottomView.width * 0.5, _bottomView.height);
-    _rightButton.frame = CGRectMake(_bottomView.width * 0.5, 0, _bottomView.width * 0.5, _bottomView.height);
-    _detailLabel.frame = CGRectMake(subMargin, CGRectGetMaxY(_titleLabel.frame), self.width - subMargin * 2, self.height - _titleLabel.height - _bottomView.height);
+    _leftButton.frame = CGRectMake(0, 0, _bottomView.un_width * 0.5, _bottomView.un_height);
+    _rightButton.frame = CGRectMake(_bottomView.un_width * 0.5, 0, _bottomView.un_width * 0.5, _bottomView.un_height);
+    _detailLabel.frame = CGRectMake(subMargin, CGRectGetMaxY(_titleLabel.frame), self.un_width - subMargin * 2, self.un_height - _titleLabel.un_height - _bottomView.un_height);
 }
 
 @end

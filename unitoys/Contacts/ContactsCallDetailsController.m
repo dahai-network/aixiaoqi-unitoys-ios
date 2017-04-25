@@ -273,7 +273,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         [self.tableView registerNibWithNibId:callDetailsLookAllCellId];
     }
     
-    self.tableView.height -= 64;
+    self.tableView.un_height -= 64;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);

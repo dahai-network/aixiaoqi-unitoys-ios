@@ -7,6 +7,7 @@
 //
 
 #import "PageViewController.h"
+#import "UNDataTools.h"
 
 @interface PageViewController ()
 @property (nonatomic, strong)UIView *statuesView;
@@ -29,6 +30,7 @@
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
+    self.statuesView.clipsToBounds = YES;
     [self.view addSubview:self.statuesView];
     
     // Do any additional setup after loading the view.
@@ -50,11 +52,11 @@
         _pageViewController.delegate   = self;
         _pageViewController.dataSource = self;
     }
-//    _pageViewController.view.frame = CGRectMake(0, self.statuesView.frame.size.height, kScreenWidthValue, kScreenHeightValue-64-49-self.statuesView.frame.size.height);
-    
-    _pageViewController.view.top += self.statuesView.frame.size.height;
-    _pageViewController.view.height -= (self.statuesView.frame.size.height+49);
-    
+    _pageViewController.view.frame = CGRectMake(0, self.statuesView.frame.size.height, kScreenWidthValue, kScreenHeightValue-49-self.statuesView.frame.size.height);
+
+//    _pageViewController.view.un_top += self.statuesView.frame.size.height;
+//    _pageViewController.view.un_height -= (self.statuesView.frame.size.height+49);
+    [UNDataTools sharedInstance].tipStatusHeight = STATUESVIEWHEIGHT;
     [self addChildViewController:_pageViewController];
     [self.view addSubview:_pageViewController.view];
     

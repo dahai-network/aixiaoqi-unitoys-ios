@@ -9,10 +9,11 @@
 #import "HWNewfeatureViewController.h"
 //#import "LoginViewController.h"
 #import "UNLoginViewController.h"
-#import "UIView+Extension.h"
+//#import "UIView+Extension.h"
+#import "UIView+Utils.h"
 #import "navHomeViewController.h"
 #import "DJPageControl.h"
-#import <CommonCrypto/CommonDigest.h>s
+#import <CommonCrypto/CommonDigest.h>
 #import "JPUSHService.h"
 #define HWNewfeatureCount 4
 
@@ -37,14 +38,14 @@
     self.scrollView = scrollView;
     
     // 2.添加图片到scrollView中
-    CGFloat scrollW = scrollView.width;
-    CGFloat scrollH = scrollView.height;
+    CGFloat scrollW = scrollView.un_width;
+    CGFloat scrollH = scrollView.un_height;
     for (int i = 0; i<HWNewfeatureCount; i++) {
         UIImageView *imageView = [[UIImageView alloc] init];
-        imageView.width = scrollW;
-        imageView.height = scrollH;
-        imageView.y = 0;
-        imageView.x = i * scrollW;
+        imageView.un_width = scrollW;
+        imageView.un_height = scrollH;
+        imageView.un_top = 0;
+        imageView.un_left = i * scrollW;
         // 显示图片
         NSString *name = [NSString stringWithFormat:@"%d", i + 1];
         imageView.image = [UIImage imageNamed:name];
@@ -73,8 +74,8 @@
     pageControl.backgroundColor = [UIColor redColor];
     pageControl.currentPageIndicatorTintColor = [UIColor whiteColor];
     pageControl.pageIndicatorTintColor = [UIColor whiteColor];
-    pageControl.centerX = scrollW * 0.5;
-    pageControl.centerY = scrollH - 50;
+    pageControl.un_centerX = scrollW * 0.5;
+    pageControl.un_centerY = scrollH - 50;
     [self.view addSubview:pageControl];
     self.pageControl = pageControl;
     
@@ -115,7 +116,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    double page = scrollView.contentOffset.x / scrollView.width;
+    double page = scrollView.contentOffset.x / scrollView.un_width;
     // 四舍五入计算出页码
     self.pageControl.currentPage = (int)(page + 0.5);
 //    [self changeColor:self.pageControl];
@@ -195,9 +196,9 @@
     [startBtn setBackgroundImage:[UIImage imageNamed:@"button_start_unselected"] forState:UIControlStateNormal];
     [startBtn setBackgroundImage:[UIImage imageNamed:@"button_start_selected"] forState:UIControlStateHighlighted];
 //    startBtn.size = startBtn.currentBackgroundImage.size;
-    startBtn.size = CGSizeMake(157, 48);
-    startBtn.centerX = imageView.width * 0.5;
-    startBtn.centerY = imageView.height - 105;
+    startBtn.un_size = CGSizeMake(157, 48);
+    startBtn.un_centerX = imageView.un_width * 0.5;
+    startBtn.un_centerY = imageView.un_height - 105;
     [startBtn setTitle:@"" forState:UIControlStateNormal];
     [startBtn addTarget:self action:@selector(startClick) forControlEvents:UIControlEventTouchUpInside];
 //    startBtn.backgroundColor = [UIColor colorWithRed:0.000 green:1.000 blue:0.000 alpha:0.297];
@@ -205,7 +206,7 @@
     
     //加入倒计时
     self.seconds = 3;
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(imageView.width - 55, 10, 50, 30)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(imageView.un_width - 55, 10, 50, 30)];
     self.timeLabel.text = [NSString stringWithFormat:@"%d秒", self.seconds];
     self.timeLabel.textColor = [UIColor colorWithRed:1.000 green:0.384 blue:0.000 alpha:1.000];
 //    self.timeLabel.backgroundColor = [UIColor colorWithRed:1.000 green:0.296 blue:0.000 alpha:0.455];
