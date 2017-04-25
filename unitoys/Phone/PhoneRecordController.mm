@@ -130,14 +130,16 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //当前为搜索状态
             weakSelf.isSearchStatu = YES;
             weakSelf.phonePadView.hidden = NO;
-            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225 - 70;
+//            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225 - 70;
+            weakSelf.tableView.height = weakSelf.view.height - (100 - 49) - 225 - 70;
             //搜索电话并展示
             [weakSelf searchInfoWithString:btnText];
         }else{
             //当前不为搜索状态
             weakSelf.isSearchStatu = NO;
             weakSelf.isSearchStatu = NO;
-            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225;
+//            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225;
+            weakSelf.tableView.height = weakSelf.view.height - (100 - 49) - 225;
             [weakSelf.tableView reloadData];
         }
         
@@ -415,7 +417,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)initTableView
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-    self.tableView.height -= (64 + 49);
+    self.tableView.height -= (64 + 49 + 24);
 //    self.tableView.height = self.view.height-49;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -455,7 +457,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [_phonePadButton addTarget:self action:@selector(showPhonePadView:) forControlEvents:UIControlEventTouchUpInside];
     [_phonePadButton sizeToFit];
     _phonePadButton.right = kScreenWidthValue - 10;
-    _phonePadButton.bottom = self.view.height - _phonePadButton.height - 49;
+    _phonePadButton.bottom = self.view.height - _phonePadButton.height - 49 - 24;
     [self.view addSubview:_phonePadButton];
 }
 
@@ -553,22 +555,26 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         NSLog(@"关闭键盘");
         self.phonePadButton.hidden = NO;
 //        self.phonePadView.top = kScreenHeightValue - 64 - 49;
-        self.phonePadView.top = kScreenHeightValue - 64;
+//        self.phonePadView.top = kScreenHeightValue - 64;
+        self.phonePadView.top = self.view.height;
         self.callView.hidden = YES;
         self.isSearchStatu = NO;
         self.phonePadView.inputedPhoneNumber = nil;
         [self setTitleViewIsHidden:YES];
-        self.tableView.height = kScreenHeightValue - (64 + 49);
+//        self.tableView.height = kScreenHeightValue - (64 + 49);
+        self.tableView.height = self.view.height;
     }else{
         NSLog(@"打开键盘");
         self.phonePadButton.hidden = YES;
 //        self.phonePadView.top = kScreenHeightValue - 64 - 49 - 225;
-        self.phonePadView.top = kScreenHeightValue - 64 - 100 - 225;
+//        self.phonePadView.top = kScreenHeightValue - 64 - 100 - 225;
+        self.phonePadView.top = self.view.height - (100 - 49) - 225;
         [self showOperation];
         self.isSearchStatu = YES;
         [self setTitleViewIsHidden:NO];
 //        self.tableView.height = kScreenHeightValue - (64 + 49) - 225 - 70;
-        self.tableView.height = kScreenHeightValue - (64 + 100) - 225;
+//        self.tableView.height = kScreenHeightValue - (64 + 100) - 225;
+        self.tableView.height = self.phonePadView.top;
     }
 }
 

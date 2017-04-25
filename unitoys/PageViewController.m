@@ -18,7 +18,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     //添加状态栏
     self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, STATUESVIEWHEIGHT)];
     self.statuesView.backgroundColor = UIColorFromRGB(0xffbfbf);
@@ -51,30 +50,44 @@
         _pageViewController.delegate   = self;
         _pageViewController.dataSource = self;
     }
-    // 设置首先要显示的控制器
-    [_pageViewController setViewControllers:@[_viewControllers[0]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
 //    _pageViewController.view.frame = CGRectMake(0, self.statuesView.frame.size.height, kScreenWidthValue, kScreenHeightValue-64-49-self.statuesView.frame.size.height);
+    
     _pageViewController.view.top += self.statuesView.frame.size.height;
-    _pageViewController.view.height -= self.statuesView.frame.size.height+49;
+    _pageViewController.view.height -= (self.statuesView.frame.size.height+49);
+    
     [self addChildViewController:_pageViewController];
     [self.view addSubview:_pageViewController.view];
+    
+//    [self updateSubViewsFrame];
+    
+    // 设置首先要显示的控制器
+    [_pageViewController setViewControllers:@[_viewControllers[0]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
     [_pageViewController didMoveToParentViewController:self];
 }
 
+//- (void)updateSubViewsFrame
+//{
+//    NSLog(@"height--%.f,bounds--%@", kScreenHeightValue, NSStringFromCGRect(self.pageViewController.view.bounds));
+//    if (self.viewControllers) {
+//        for (UIViewController *vc in self.viewControllers) {
+//            vc.view.frame = self.pageViewController.view.bounds;
+//        }
+//    }
+//
+//}
+
 - (void)setupViewControllers
 {
-    if (!self.viewControllers) {
-        // 设置所有ViewControllers
-        UIViewController *v1    = [UIViewController new];
-        UIViewController *v2    = [UIViewController new];
-        UIViewController *v3    = [UIViewController new];
-        
-        v1.view.backgroundColor = [UIColor redColor];
-        v2.view.backgroundColor = [UIColor greenColor];
-        v3.view.backgroundColor = [UIColor blueColor];
-        
-        _viewControllers        = @[v1, v2, v3];
-    }
+//    if (!self.viewControllers) {
+//        // 设置所有ViewControllers
+//        UIViewController *v1    = [UIViewController new];
+//        UIViewController *v2    = [UIViewController new];
+//        
+//        v1.view.backgroundColor = [UIColor redColor];
+//        v2.view.backgroundColor = [UIColor greenColor];
+//        
+//        _viewControllers        = @[v1, v2];
+//    }
 }
 
 - (BOOL)isAllowScrollView

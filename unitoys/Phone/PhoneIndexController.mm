@@ -1,4 +1,4 @@
-//
+
 //  PhoneIndexController.m
 //  unitoys
 //
@@ -48,8 +48,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setupViewChildControllers];
+    [self setupViewControllers];
     [self setUpTitlesView];
+}
+
+- (void)setupViewControllers
+{
+    if (!self.viewControllers) {
+        [self setupViewChildControllers];
+    }
 }
 
 - (BOOL)initEngine
@@ -120,11 +127,11 @@
 {
     kWeakSelf
     PhoneRecordController *vc1  = [[PhoneRecordController alloc] init];
+    vc1.nav = self.navigationController;
     vc1.isHideTitleViewBlock = ^(BOOL isHidden) {
         weakSelf.titleView.hidden = isHidden;
     };
     MessageRecordController *vc2  = [[MessageRecordController alloc] init];
-    vc1.nav = self.navigationController;
     vc2.nav = self.navigationController;
     self.viewControllers = @[vc1, vc2];
 }

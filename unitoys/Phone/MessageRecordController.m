@@ -44,7 +44,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 {
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
-    self.tableView.height -= (64 + 49);
+//    self.tableView.height -= (64 + 49);
 //    self.tableView.height = self.parentViewController.view.height;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -55,6 +55,12 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     self.tableView.rowHeight = 90;
     [self.view addSubview:self.tableView];
     [self.tableView registerNibWithNibId:strMessageRecordCell];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    self.tableView.frame = self.view.bounds;
 }
 
 - (void)updateSMSContentAction
@@ -86,7 +92,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [_createMsgButton addTarget:self action:@selector(createMsgAction:) forControlEvents:UIControlEventTouchUpInside];
     [_createMsgButton sizeToFit];
     _createMsgButton.right = kScreenWidthValue - 10;
-    _createMsgButton.bottom = self.view.height - _createMsgButton.height - 49;
+    _createMsgButton.bottom = self.view.height - _createMsgButton.height - 49 - 24;
     
     [self.view addSubview:_createMsgButton];
 }

@@ -6,10 +6,17 @@
 //  Copyright © 2017年 sumars. All rights reserved.
 //
 
+
 #ifndef unitoys_Prefix_pch
 #define unitoys_Prefix_pch
 
-//#import "global.h"
-//#import "Masonry.h"
+#ifdef __OBJC__
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import "global.h"
+
+//#define MAS_SHORTHAND
+//#import "Masonry/Masonry/Masonry.h"
+#endif
 
 #endif /* unitoys_Prefix_pch */

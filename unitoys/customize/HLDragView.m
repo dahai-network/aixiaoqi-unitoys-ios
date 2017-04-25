@@ -54,7 +54,7 @@
     newCenter.x = MIN(self.superview.bounds.size.width - midX, newCenter.x);
     CGFloat midY = CGRectGetMidY(self.bounds);
     newCenter.y = MAX(midY, newCenter.y);
-    newCenter.y = MIN(self.superview.bounds.size.height - 49 - midY, newCenter.y);
+    newCenter.y = MIN(self.superview.bounds.size.height - midY, newCenter.y);
     
     self.center = newCenter;
     //只要位移过大,直接设置为已拖动(不使用center计算是为了防止拖动了而控件center没变)

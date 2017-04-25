@@ -2919,7 +2919,7 @@
 				PROVISIONING_PROFILE = "1fae48ed-5a5e-4942-851d-b7643cee2fa2";
 				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170419;
 				SWIFT_VERSION = 3.0;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush} $(PODS_ROOT)";
 			};
 			name = Debug;
 		};
@@ -2977,7 +2977,7 @@
 				PROVISIONING_PROFILE = "1fae48ed-5a5e-4942-851d-b7643cee2fa2";
 				PROVISIONING_PROFILE_SPECIFIER = testDevelopmentFileAt20170419;
 				SWIFT_VERSION = 3.0;
-				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush}";
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/{JPush} $(PODS_ROOT)";
 			};
 			name = Release;
 		};
