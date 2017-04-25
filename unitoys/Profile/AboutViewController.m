@@ -55,10 +55,14 @@
     leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
     self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
-    self.statuesLabel.text = @"这个状态栏比较6";
+    self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        self.statuesView.height = 0;
+        [self.tableView reloadData];
+    }
     
     //消除导航栏横线
     //自定义一个NaVIgationBar
@@ -77,6 +81,19 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkCannotUse:) name:@"netWorkNotToUse" object:nil];//网络状态改变
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkChangeStatuesAll:) name:@"changeStatueAll" object:nil];//状态改变
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipMessageStatuChange) name:@"TipMessageStatuChange" object:nil];
+    //处理状态栏文字及高度
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aboutViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
+}
+
+- (void)aboutViewChangeStatuesView:(NSNotification *)sender {
+    NSLog(@"状态栏文字 --> %@", sender.object);
+    self.statuesLabel.text = sender.object;
+    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        self.statuesView.height = 0;
+    } else {
+        self.statuesView.height = STATUESVIEWHEIGHT;
+    }
+    [self.tableView reloadData];
 }
 
 - (void)tipMessageStatuChange
@@ -532,5 +549,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"homeStatueChanged" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
 }
 @end

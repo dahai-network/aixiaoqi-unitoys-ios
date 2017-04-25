@@ -19,6 +19,7 @@
 
 #import "ContactsCallDetailsController.h"
 #import <ContactsUI/ContactsUI.h>
+#import "BlueToothDataManager.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
@@ -71,11 +72,14 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
     self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
-    self.statuesLabel.text = @"这个状态栏比较6";
+    self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
     [self.view addSubview:self.statuesView];
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        self.statuesView.height = 0;
+    }
     
     if (![AddressBookManager shareManager].isOpenedAddress && !self.bOnlySelectNumber) {
         self.navigationItem.leftBarButtonItem = nil;
@@ -130,6 +134,28 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     
     //添加通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAddressBook) name:@"addressBookChanged" object:@"addressBook"];
+    //处理状态栏文字及高度
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
+}
+
+- (void)contactsViewChangeStatuesView:(NSNotification *)sender {
+    NSLog(@"状态栏文字 --> %@", sender.object);
+    self.statuesLabel.text = sender.object;
+    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        if (self.statuesView.height == STATUESVIEWHEIGHT) {
+            _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -STATUESVIEWHEIGHT);
+            _tableView.frame = CGRectOffset(_tableView.frame, 0, -STATUESVIEWHEIGHT);
+            _tableView.height += STATUESVIEWHEIGHT;
+        }
+        self.statuesView.height = 0;
+    } else {
+        if (self.statuesView.height == 0) {
+            _searchBar.frame = CGRectOffset(_searchBar.frame, 0, STATUESVIEWHEIGHT);
+            _tableView.frame = CGRectOffset(_tableView.frame, 0, STATUESVIEWHEIGHT);
+            _tableView.height -= STATUESVIEWHEIGHT;
+        }
+        self.statuesView.height = STATUESVIEWHEIGHT;
+    }
 }
 
 - (void)refreshAddressBook {
@@ -495,6 +521,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBook"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
 }
 
 

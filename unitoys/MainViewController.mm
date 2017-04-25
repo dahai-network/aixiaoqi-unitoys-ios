@@ -88,7 +88,7 @@ typedef enum : NSUInteger {
        [phoneViewController initEngine];
     }
     
-    [self addProgressWindow];
+//    [self addProgressWindow];
     
     //注册接受者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectedSport) name:@"jumpToSport" object:@"jump"];
@@ -99,7 +99,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appIsKilled) name:@"appIsKilled" object:@"appIsKilled"];
     
     //是否隐藏上面进度条
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeShowProgressStatue:) name:@"isShowProgress" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeShowProgressStatue:) name:@"isShowProgress" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatuesAll:) name:@"changeStatueAll" object:nil];//状态改变
     
@@ -112,21 +112,22 @@ typedef enum : NSUInteger {
 //}
 
 - (void)changeStatuesAll:(NSNotification *)sender {
-    self.showLabelStr = sender.object;
-    self.titleLabel.text = self.showLabelStr;
-    if (![self.showLabelStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {
-        [self addProgressWindow];
-    } else {
-        if ([BlueToothDataManager shareManager].isConnected && self.isNetworkCanUse) {
-            self.registProgress = nil;
-        } else {
-            if (self.isMainView) {
-                [self addProgressWindow];
-            } else {
-                self.registProgress = nil;
-            }
-        }
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:sender.object];
+//    self.showLabelStr = sender.object;
+//    self.titleLabel.text = self.showLabelStr;
+//    if (![self.showLabelStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {
+//        [self addProgressWindow];
+//    } else {
+//        if ([BlueToothDataManager shareManager].isConnected && self.isNetworkCanUse) {
+//            self.registProgress = nil;
+//        } else {
+//            if (self.isMainView) {
+//                [self addProgressWindow];
+//            } else {
+//                self.registProgress = nil;
+//            }
+//        }
+//    }
 //    if (![BlueToothDataManager shareManager].isRegisted) {
 //        [self addProgressWindow];
 //    } else {
@@ -136,66 +137,70 @@ typedef enum : NSUInteger {
 
 - (void)networkNotUse:(NSNotification *)sender {
     if ([sender.object isEqualToString:@"0"]) {
-        self.isNetworkCanUse = NO;
-        self.showLabelStr = @"当前网络不可用";
-        self.titleLabel.text = self.showLabelStr;
-        if (self.isMainView) {
-            [self addProgressWindow];
-        } else {
-            self.registProgress = nil;
-        }
+//        self.isNetworkCanUse = NO;
+//        self.showLabelStr = @"当前网络不可用";
+        NSString *statuesLabelStr = @"当前网络不可用";
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:statuesLabelStr];
+//        self.titleLabel.text = self.showLabelStr;
+//        if (self.isMainView) {
+//            [self addProgressWindow];
+//        } else {
+//            self.registProgress = nil;
+//        }
     } else {
         //有网络
         NSLog(@"当前网络可用");
-        self.isNetworkCanUse = YES;
-        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {
-            [self addProgressWindow];
-        } else {
-            self.registProgress = nil;
-        }
+        NSString *statuesLabelStr = @"当前网络可用";
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:statuesLabelStr];
+//        self.isNetworkCanUse = YES;
+//        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {
+//            [self addProgressWindow];
+//        } else {
+//            self.registProgress = nil;
+//        }
      }
 }
 
-- (void)changeShowProgressStatue:(NSNotification *)sender {
-    NSString *str = sender.object;
-    if ([str isEqualToString:@"1"] || [str isEqualToString:@"2"]) {
-        self.currentViewType = str;
-        self.isMainView = YES;
-        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
-            [self addProgressWindow];
-        } else {
-            if (self.isNetworkCanUse) {
-                self.registProgress = nil;
-            } else {
-                [self addProgressWindow];
-            }
-        }
-    } else {
-        self.isMainView = NO;
-        self.registProgress = nil;
-    }
-}
-
-- (void)addProgressWindow {
-    if (!self.registProgress) {
-        self.registProgress = [[UIWindow alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, 24)];
-        self.registProgress.windowLevel = UIWindowLevelAlert+1;
-        UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
-        leftImg.frame = CGRectMake(15, 2, 20, 20);
-        [self.registProgress addSubview:leftImg];
-        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, [UIScreen mainScreen].bounds.size.width-30-leftImg.frame.size.width, 24)];
-        self.titleLabel.text = self.showLabelStr;
-        self.titleLabel.font = [UIFont systemFontOfSize:14];
-        self.titleLabel.textColor = UIColorFromRGB(0x999999);
-        [self.registProgress addSubview:self.titleLabel];
-        [self.registProgress makeKeyAndVisible];
-    }
-    if ([self.currentViewType isEqualToString:@"2"]) {
-        self.registProgress.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
-    } else {
-        self.registProgress.backgroundColor = UIColorFromRGB(0xffbfbf);
-    }
-}
+//- (void)changeShowProgressStatue:(NSNotification *)sender {
+//    NSString *str = sender.object;
+//    if ([str isEqualToString:@"1"] || [str isEqualToString:@"2"]) {
+//        self.currentViewType = str;
+//        self.isMainView = YES;
+//        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+//            [self addProgressWindow];
+//        } else {
+//            if (self.isNetworkCanUse) {
+//                self.registProgress = nil;
+//            } else {
+//                [self addProgressWindow];
+//            }
+//        }
+//    } else {
+//        self.isMainView = NO;
+//        self.registProgress = nil;
+//    }
+//}
+//
+//- (void)addProgressWindow {
+//    if (!self.registProgress) {
+//        self.registProgress = [[UIWindow alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, 24)];
+//        self.registProgress.windowLevel = UIWindowLevelAlert+1;
+//        UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
+//        leftImg.frame = CGRectMake(15, 2, 20, 20);
+//        [self.registProgress addSubview:leftImg];
+//        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, [UIScreen mainScreen].bounds.size.width-30-leftImg.frame.size.width, 24)];
+//        self.titleLabel.text = self.showLabelStr;
+//        self.titleLabel.font = [UIFont systemFontOfSize:14];
+//        self.titleLabel.textColor = UIColorFromRGB(0x999999);
+//        [self.registProgress addSubview:self.titleLabel];
+//        [self.registProgress makeKeyAndVisible];
+//    }
+//    if ([self.currentViewType isEqualToString:@"2"]) {
+//        self.registProgress.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
+//    } else {
+//        self.registProgress.backgroundColor = UIColorFromRGB(0xffbfbf);
+//    }
+//}
 
 #pragma mark app被杀死，注销电话
 - (void)appIsKilled {

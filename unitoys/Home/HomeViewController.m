@@ -109,10 +109,14 @@
     leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
     self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
-    self.statuesLabel.text = @"这个状态栏比较6";
+    self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        self.statuesView.height = 0;
+        [self.tableView reloadData];
+    }
     
     
     self.communicatePackageDataArr = [NSMutableArray array];
@@ -229,6 +233,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mallExtendMessage:) name:@"MallExtendMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipMessageStatuChange) name:@"TipMessageStatuChange" object:nil];
     
+    //处理状态栏文字及高度
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(homeViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
+    
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据
     
     [AddressBookManager shareManager].dataArr = [NSMutableArray array];
@@ -265,6 +272,17 @@
 //        NSDictionary *dict = @{@"Title" : @"新商品", @"Url" : @"www.baidu.com", @"ID" : @"123456789"};
 //        [self updateMallTipMessage:dict];
 //    });
+}
+
+- (void)homeViewChangeStatuesView:(NSNotification *)sender {
+    NSLog(@"状态栏文字 --> %@", sender.object);
+    self.statuesLabel.text = sender.object;
+    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        self.statuesView.height = 0;
+    } else {
+        self.statuesView.height = STATUESVIEWHEIGHT;
+    }
+    [self.tableView reloadData];
 }
 
 //商城红点
@@ -1930,6 +1948,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"refreshStatueToCard" object:@"refreshStatueToCard"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UpdateLBEStatuWithPushKit" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:CNContactStoreDidChangeNotification object:nil];
