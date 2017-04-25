@@ -810,7 +810,7 @@ static UNBlueToothTool *instance = nil;
     NSLog(@"跟外设失去连接");
     //    [BlueToothDataManager shareManager].isRegisted = NO;
     [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
-    [BlueToothDataManager shareManager].isBounded = NO;
+//    [BlueToothDataManager shareManager].isBounded = NO;
     [BlueToothDataManager shareManager].isConnected = NO;
     [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
     [BlueToothDataManager shareManager].deviceMacAddress = nil;

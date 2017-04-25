@@ -1804,7 +1804,7 @@
                                                         <constraint firstItem="phu-w2-dfD" firstAttribute="height" secondItem="O8n-hY-VBl" secondAttribute="height" id="zII-qu-T0h"/>
                                                     </constraints>
                                                 </view>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Hm4-GJ-srf">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_icon" translatesAutoresizingMaskIntoConstraints="NO" id="Hm4-GJ-srf">
                                                     <rect key="frame" x="152" y="26" width="70" height="70"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="70" id="6d2-8Q-nZ3"/>
@@ -2584,6 +2584,7 @@
         <image name="common_warnning" width="64" height="74"/>
         <image name="contacts_bar_nor" width="17" height="18"/>
         <image name="contacts_bar_pre" width="17" height="18"/>
+        <image name="default_icon" width="32" height="32"/>
         <image name="defriend_pre" width="31" height="31"/>
         <image name="home_guide_abord" width="375" height="106"/>
         <image name="home_package_blue" width="167" height="92"/>

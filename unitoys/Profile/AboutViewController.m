@@ -20,6 +20,7 @@
 
 #import "UNDataTools.h"
 #import "UITabBar+UNRedTip.h"
+#import "UNDatabaseTools.h"
 
 #define CELLHEIGHT 44
 
@@ -136,9 +137,13 @@
 }
 
 - (void)checkChangeStatuesAll:(NSNotification *)sender {
+    self.isOpened = NO;
+    [self.offButton setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.operatorImg.image = [UIImage imageNamed:@"icon_nor"];
         [self checkOpertaorTypeName];
+        self.isOpened = YES;
+        [self.offButton setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
     } else if ([sender.object isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
         self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
         [self checkOpertaorTypeName];
@@ -178,6 +183,64 @@
     }];
 }
 
+#pragma mark 调用解除绑定接口
+- (void)unBindDevice {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        HUDNoStop1(INTERNATIONALSTRING(@"正在解绑..."))
+        self.checkToken = YES;
+        [self getBasicHeader];
+        //        NSLog(@"表头：%@",self.headers);
+        [SSNetworkRequest getRequest:apiUnBind params:nil success:^(id responseObj) {
+            
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                NSLog(@"解除绑定结果：%@", responseObj);
+                
+                //将连接的信息存储到本地
+                NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+                NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+                if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+                    [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
+                }
+                [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                //删除存储的绑定信息
+                [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+                if ([BlueToothDataManager shareManager].isConnected) {
+                    [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+                }
+                
+                if ([[BlueToothDataManager shareManager].boundedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+                    HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))
+                }
+                //发送解除绑定成功通知
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
+                [BlueToothDataManager shareManager].isBounded = NO;
+                [BlueToothDataManager shareManager].isConnected = NO;
+                [BlueToothDataManager shareManager].isRegisted = NO;
+                [BlueToothDataManager shareManager].deviceMacAddress = nil;
+                [BlueToothDataManager shareManager].electricQuantity = nil;
+                [BlueToothDataManager shareManager].versionNumber = nil;
+                [BlueToothDataManager shareManager].stepNumber = nil;
+                [BlueToothDataManager shareManager].bleStatueForCard = 0;
+                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                [BlueToothDataManager shareManager].chargingState = 1;
+                [BlueToothDataManager shareManager].isNeedToCheckStatue = YES;
+                [self.tableView reloadData];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+                HUDNormal(responseObj[@"msg"])
+            }
+            NSLog(@"查询到的运动数据：%@",responseObj);
+        } failure:^(id dataObj, NSError *error) {
+            NSLog(@"啥都没：%@",[error description]);
+        } headers:self.headers];
+    });
+}
+
 
 - (void)amountDetail {
     //显示详情
@@ -200,26 +263,40 @@
 }
 
 - (void)checkBLEStatue {
-    if ([BlueToothDataManager shareManager].isConnected) {
+    if ([BlueToothDataManager shareManager].isBounded) {
         self.connectedDeviceView.hidden = NO;
-        if ([BlueToothDataManager shareManager].electricQuantity) {
-            self.electricNum.text = [NSString stringWithFormat:@"%@%%", [BlueToothDataManager shareManager].electricQuantity];
+        if ([BlueToothDataManager shareManager].isConnected) {
+            if ([BlueToothDataManager shareManager].electricQuantity) {
+                self.electricNum.text = [NSString stringWithFormat:@"%@%%", [BlueToothDataManager shareManager].electricQuantity];
+            } else {
+                self.electricNum.text = @"----";
+            }
+            if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+                self.deviceName.text = [NSString stringWithFormat:@"设备：手环"];
+            } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+                self.deviceName.text = [NSString stringWithFormat:@"设备：双待王"];
+            } else {
+                NSLog(@"这是连接的什么？");
+            }
+            if ([BlueToothDataManager shareManager].isRegisted) {
+                self.operatorImg.image = [UIImage imageNamed:@"icon_nor"];
+            } else {
+                self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
+            }
+            if ([BlueToothDataManager shareManager].isRegisted) {
+                self.isOpened = YES;
+                [self.offButton setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
+            } else {
+                self.isOpened = NO;
+                [self.offButton setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
+            }
+            
+            [self checkOpertaorTypeName];
         } else {
+            self.operatorName.text = @"----";
             self.electricNum.text = @"----";
+            self.deviceName.text = [NSString stringWithFormat:@"设备：---"];
         }
-        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-            self.deviceName.text = [NSString stringWithFormat:@"设备：手环"];
-        } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
-            self.deviceName.text = [NSString stringWithFormat:@"设备：双待王"];
-        } else {
-            NSLog(@"这是连接的什么？");
-        }
-        if ([BlueToothDataManager shareManager].isRegisted) {
-            self.operatorImg.image = [UIImage imageNamed:@"icon_nor"];
-        } else {
-            self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
-        }
-        [self checkOpertaorTypeName];
     } else {
         self.connectedDeviceView.hidden = YES;
     }

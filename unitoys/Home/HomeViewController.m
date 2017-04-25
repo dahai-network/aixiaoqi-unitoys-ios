@@ -152,7 +152,7 @@
             //发送复位请求
             [[UNBlueToothTool shareBlueToothTool] sendBLESystemResetCommand];
             [BlueToothDataManager shareManager].isReseted = YES;
-            [BlueToothDataManager shareManager].isBounded = NO;
+//            [BlueToothDataManager shareManager].isBounded = NO;
             //重新连接
             [self checkBindedDeviceFromNet];
         }];
@@ -1914,7 +1914,7 @@
             //发送复位请求
             [[UNBlueToothTool shareBlueToothTool] sendBLESystemResetCommand];
             [BlueToothDataManager shareManager].isReseted = YES;
-            [BlueToothDataManager shareManager].isBounded = NO;
+//            [BlueToothDataManager shareManager].isBounded = NO;
             //重新连接
             [[UNBlueToothTool shareBlueToothTool] checkBindedDeviceFromNet];
         }];
