@@ -56,6 +56,11 @@
         [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"]) {
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"offsetStatue"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        
         //删除存储的绑定信息
         [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
         if ([BlueToothDataManager shareManager].isConnected) {

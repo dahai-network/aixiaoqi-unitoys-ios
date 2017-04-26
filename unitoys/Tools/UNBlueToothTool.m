@@ -972,7 +972,11 @@ static UNBlueToothTool *instance = nil;
     [self checkNowTime];
     //请求基本信息
     if (self.boundedDeviceInfo[@"IMEI"]) {
-        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+        } else {
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
+        }
     }
 //    if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
 //        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
@@ -1135,6 +1139,7 @@ static UNBlueToothTool *instance = nil;
 
 - (void)cancelToBound {
     [BlueToothDataManager shareManager].isAccordBreak = YES;
+    [BlueToothDataManager shareManager].isBounded = NO;
     [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
     [self.mgr cancelPeripheralConnection:self.peripheral];
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
@@ -1164,7 +1169,11 @@ static UNBlueToothTool *instance = nil;
 - (void)initBLEStatue
 {
     if ([BlueToothDataManager shareManager].isConnected) {
-        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+        } else {
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
+        }
     } else {
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
     }
@@ -1655,21 +1664,29 @@ static UNBlueToothTool *instance = nil;
                                     [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                                 } else {
                                     //注册卡
-                                    [BlueToothDataManager shareManager].isNeedToCheckStatue = NO;
-                                    if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
-                                        
-                                        // ---取消延时查询套餐
-                                        //                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                        [BlueToothDataManager shareManager].isRegisted = NO;
-                                        [BlueToothDataManager shareManager].isBeingRegisting = YES;
-                                        //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
-                                        NSLog(@"判断用户是否存在指定套餐");
-                                        [self checkUserIsExistAppointPackage];
-                                        //                                });
-                                        
+                                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                                        [BlueToothDataManager shareManager].isNeedToCheckStatue = NO;
+                                        if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
+                                            
+                                            // ---取消延时查询套餐
+                                            //                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            [BlueToothDataManager shareManager].isRegisted = NO;
+                                            [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                                            //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
+                                            NSLog(@"判断用户是否存在指定套餐");
+                                            [self checkUserIsExistAppointPackage];
+                                            //                                });
+                                            
+                                        } else {
+                                            NSLog(@"注册卡---信号强");
+                                            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                        }
                                     } else {
-                                        NSLog(@"注册卡---信号强");
-                                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                        NSLog(@"不注册");
+                                        [self showHudNormalString:@"不注册"];
+                                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
+                                        [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                                        [BlueToothDataManager shareManager].isRegisted = NO;
                                     }
                                 }
                             } else if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"4"]) {
@@ -1702,6 +1719,7 @@ static UNBlueToothTool *instance = nil;
                     }
                 } else {
                     NSLog(@"这是旧版本的设备，需要强制空中升级");
+                    [self showHudNormalString:@"您的蓝牙需要进行固件升级"];
                     return;
                 }
                 break;
@@ -2303,6 +2321,12 @@ static UNBlueToothTool *instance = nil;
             }
             [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"]) {
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"offsetStatue"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+            
             //删除存储的绑定信息
             [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
             if ([BlueToothDataManager shareManager].isConnected) {

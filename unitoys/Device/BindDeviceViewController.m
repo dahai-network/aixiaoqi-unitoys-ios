@@ -68,6 +68,7 @@
         //开启动画
         [self startTimerAction];
     }
+    self.lblStatue.text = [BlueToothDataManager shareManager].statuesTitleString;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -402,6 +403,10 @@
                 [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
                 if ([BlueToothDataManager shareManager].isConnected) {
                     [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+                }
+                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"]) {
+                    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"offsetStatue"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
                 }
                 
                 if ([[BlueToothDataManager shareManager].boundedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {

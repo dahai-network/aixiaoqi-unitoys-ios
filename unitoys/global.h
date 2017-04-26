@@ -329,6 +329,8 @@
 //爱小器卡
 #define HOMESTATUETITLE_AIXIAOQICARD @"爱小器卡"
 #define HOMESTATUE_AIXIAOQICARD @"homeStatue_noSignal"
+//服务未开启
+#define HOMESTATUETITLE_NOTSERVICE @"服务未开启"
 
 
 #pragma mark 运营商类型

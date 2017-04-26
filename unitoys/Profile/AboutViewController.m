@@ -137,13 +137,13 @@
 }
 
 - (void)checkChangeStatuesAll:(NSNotification *)sender {
-    self.isOpened = NO;
-    [self.offButton setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
+//    self.isOpened = NO;
+//    [self.offButton setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.operatorImg.image = [UIImage imageNamed:@"icon_nor"];
         [self checkOpertaorTypeName];
-        self.isOpened = YES;
-        [self.offButton setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
+//        self.isOpened = YES;
+//        [self.offButton setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
     } else if ([sender.object isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
         self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
         [self checkOpertaorTypeName];
@@ -208,6 +208,10 @@
                 [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
                 if ([BlueToothDataManager shareManager].isConnected) {
                     [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+                }
+                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"]) {
+                    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"offsetStatue"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
                 }
                 
                 if ([[BlueToothDataManager shareManager].boundedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
@@ -283,7 +287,7 @@
             } else {
                 self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
             }
-            if ([BlueToothDataManager shareManager].isRegisted) {
+            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
                 self.isOpened = YES;
                 [self.offButton setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
             } else {
@@ -430,12 +434,28 @@
 
 #pragma mark 开关点击事件
 - (IBAction)offButtonAction:(UIButton *)sender {
-//    btn_kg_close
-    self.isOpened = !self.isOpened;
-    if (self.isOpened) {
-        [sender setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
+    if (![BlueToothDataManager shareManager].isBeingRegisting) {
+        self.isOpened = !self.isOpened;
+        if (self.isOpened) {
+            [sender setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
+            NSString *statueStr = @"on";
+            [[NSUserDefaults standardUserDefaults] setObject:statueStr forKey:@"offsetStatue"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
+        } else {
+            //添加注销注册的功能
+            [self dj_alertAction:self alertTitle:@"温馨提示" actionTitle:@"继续" message:@"关闭此功能后您将无法正常使用电话和短信等相关功能，是否继续？" alertAction:^{
+                [sender setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
+                NSString *statueStr = @"off";
+                [[NSUserDefaults standardUserDefaults] setObject:statueStr forKey:@"offsetStatue"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
+            }];
+        }
     } else {
-        [sender setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
+        HUDNormal(@"你不能在卡注册状态下更改此设置！")
     }
 }
 

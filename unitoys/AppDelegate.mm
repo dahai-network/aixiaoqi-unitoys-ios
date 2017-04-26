@@ -244,8 +244,19 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createTCPSocketToBLE:) name:@"CreateTCPSocketToBLE" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearTimeoutPushKitMessage) name:@"PushKitMessageDataTimeout" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendDataToCloseService) name:@"closeServiceNotifi" object:@"closeServiceNotifi"];
     
     return YES;
+}
+
+- (void)sendDataToCloseService {
+    //发送关闭服务的数据
+    NSString *sendStr = [NSString stringWithFormat:@"108a0d00%@00010003020100", self.communicateID];
+    NSLog(@"发送关闭服务的数据 -- %@", sendStr);
+    [self sendMsgWithMessage:sendStr];
+    // 关闭套接字
+//    [self.sendTcpSocket disconnect];
+//    self.sendTcpSocket = nil;
 }
 
 - (void)loadBasicConfig {
@@ -782,6 +793,11 @@
 // 如果对象关闭了 这里也会调用
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
     NSLog(@"tcp连接失败 %@", err);
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"off"]) {
+        [BlueToothDataManager shareManager].isTcpConnected = NO;
+        [BlueToothDataManager shareManager].isRegisted = NO;
+        return;
+    }
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
         return;
     }
@@ -2382,6 +2398,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CreateUDPSocketToBLE" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CreateTCPSocketToBLE" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PushKitMessageDataTimeout" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"closeServiceNotifi" object:@"closeServiceNotifi"];
 }
 
 @end
