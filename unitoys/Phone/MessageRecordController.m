@@ -61,6 +61,8 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 {
     [super viewDidLayoutSubviews];
     self.tableView.frame = self.view.bounds;
+    _createMsgButton.un_right = self.view.un_width - 10;
+    _createMsgButton.un_bottom = self.view.un_height;
 }
 
 - (void)updateSMSContentAction
@@ -86,13 +88,12 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         return;
     }
     _createMsgButton = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];
-//    _createMsgButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
     [_createMsgButton setImage:[UIImage imageNamed:@"edit_Msg_nor"] forState:UIControlStateNormal];
     [_createMsgButton setImage:[UIImage imageNamed:@"edit_Msg_pre"] forState:UIControlStateSelected];
     [_createMsgButton addTarget:self action:@selector(createMsgAction:) forControlEvents:UIControlEventTouchUpInside];
     [_createMsgButton sizeToFit];
-    _createMsgButton.un_right = kScreenWidthValue - 10;
-    _createMsgButton.un_bottom = self.view.un_height - _createMsgButton.un_height - 49 - 24;
+//    _createMsgButton.un_right = kScreenWidthValue - 10;
+//    _createMsgButton.un_bottom = self.view.un_height - _createMsgButton.un_height - 49 - 24;
     
     [self.view addSubview:_createMsgButton];
 }
@@ -132,7 +133,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
             //数据请求失败
             NSLog(@"请求短信数据失败");
         }
-        
     } failure:^(id dataObj, NSError *error) {
         [self.tableView.mj_header endRefreshing];
     } headers:self.headers];
@@ -153,13 +153,9 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [self getBasicHeader];
     
     [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
-
         NSLog(@"查询到的用户数据：%@",responseObj);
-        
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            
             NSArray *arrNewMessages = [responseObj objectForKey:@"data"];
-            
             if (arrNewMessages.count>0) {
                 self.page = self.page + 1;
                 _arrMessageRecord = [_arrMessageRecord arrayByAddingObjectsFromArray:arrNewMessages];
@@ -179,7 +175,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         }
         
     } failure:^(id dataObj, NSError *error) {
-        //        [self.tableView.mj_header endRefreshing];
         [self.tableView.mj_footer endRefreshing];
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
     } headers:self.headers];

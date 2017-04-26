@@ -116,7 +116,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     //解压联系人数据库
     [self unZipNumberPhoneDB];
     
-    
     if (!_arrPhoneRecord) {
         [self loadPhoneRecord];
     }
@@ -124,36 +123,46 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     kWeakSelf
     self.phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 64, kScreenWidthValue, 225)];
     [self.view addSubview:self.phonePadView];
-    
     self.phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum){
-        
         if (btnText.length>0) {
             //当前为搜索状态
             weakSelf.isSearchStatu = YES;
             weakSelf.phonePadView.hidden = NO;
-//            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225 - 70;
             weakSelf.tableView.un_height = weakSelf.view.un_height - (100 - 49) - 225 - 70;
             //搜索电话并展示
             [weakSelf searchInfoWithString:btnText];
         }else{
             //当前不为搜索状态
             weakSelf.isSearchStatu = NO;
-            weakSelf.isSearchStatu = NO;
-//            weakSelf.tableView.height = kScreenHeightValue - (64 + 100) - 225;
             weakSelf.tableView.un_height = weakSelf.view.un_height - (100 - 49) - 225;
             [weakSelf.tableView reloadData];
         }
-        
     };
     
-    //    [self initCallActionView];
-    
     [self showWindow];
-    
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarHeightChange) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
-    
-//    self.tabbarTop = self.tabBarController.tabBar.frame;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipStatuBarHeightChange:) name:@"TipStatuBarHeightChange" object:nil];
     NSLog(@"statusBarHeight--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
+}
+
+- (void)tipStatuBarHeightChange:(NSNotification *)noti
+{
+    if (self.phonePadButton.isHidden) {
+        self.phonePadView.un_top = [UNDataTools sharedInstance].pageViewHeight - (100 - 49) - 225;
+        if (self.phonePadView.inputedPhoneNumber && self.phonePadView.inputedPhoneNumber.length) {
+            self.tableView.un_height = self.phonePadView.un_top - 70;
+        }else{
+            self.tableView.un_height = self.phonePadView.un_top;
+        }
+    }else{
+        self.phonePadView.un_top = [UNDataTools sharedInstance].pageViewHeight;
+        self.tableView.un_height = [UNDataTools sharedInstance].pageViewHeight;
+    }
+    
+    if ([UNDataTools sharedInstance].tipStatusHeight) {
+        _phonePadButton.un_bottom -= STATUESVIEWHEIGHT;
+    }else{
+        _phonePadButton.un_bottom += STATUESVIEWHEIGHT;
+    }
 }
 
 
@@ -550,8 +559,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 
 - (void)switchNumberPad :(BOOL)hidden {
-//    [self.tableView setNeedsLayout];
-//    [self.tableView layoutIfNeeded];
     if (hidden) {
         NSLog(@"关闭键盘");
         self.phonePadButton.hidden = NO;

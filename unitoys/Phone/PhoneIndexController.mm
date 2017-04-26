@@ -12,11 +12,16 @@
 #import "PhoneRecordController.h"
 #import "MessageRecordController.h"
 #import "NewMessageViewController.h"
+#import "UNDataTools.h"
+#import "BlueToothDataManager.h"
 
 @interface PhoneIndexController ()
 
 @property (nonatomic, weak) HLTitlesView *titleView;
 
+
+@property (nonatomic, strong)UIView *statuesView;
+@property (nonatomic, strong)UILabel *statuesLabel;
 @end
 
 @implementation PhoneIndexController
@@ -47,9 +52,59 @@
 }
 
 - (void)viewDidLoad {
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        [UNDataTools sharedInstance].tipStatusHeight = 0;
+    }else{
+        [UNDataTools sharedInstance].tipStatusHeight = STATUESVIEWHEIGHT;
+    }
     [super viewDidLoad];
+    [self initTipStatuBar];
+    
     [self setupViewControllers];
     [self setUpTitlesView];
+}
+
+- (void)initTipStatuBar
+{
+    //添加状态栏
+    self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, STATUESVIEWHEIGHT)];
+    self.statuesView.backgroundColor = UIColorFromRGB(0xffbfbf);
+    UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
+    leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
+    [self.statuesView addSubview:leftImg];
+    self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
+    self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
+    self.statuesLabel.font = [UIFont systemFontOfSize:14];
+    self.statuesLabel.textColor = UIColorFromRGB(0x999999);
+    [self.statuesView addSubview:self.statuesLabel];
+    self.statuesView.clipsToBounds = YES;
+    [self.view addSubview:self.statuesView];
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        self.statuesView.un_height = 0;
+        [UNDataTools sharedInstance].tipStatusHeight = self.statuesView.un_height;
+    }
+    
+    self.pageViewController.view.frame = CGRectMake(0, self.statuesView.frame.size.height, kScreenWidthValue, kScreenHeightValue-49-self.statuesView.frame.size.height);
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statuBarHeightChange:) name:@"changeStatuesViewLable" object:nil];
+}
+
+- (void)statuBarHeightChange:(NSNotification *)noti
+{
+    NSLog(@"statuBarHeightChange----%@", noti.object);
+    self.statuesLabel.text = noti.object;
+    if ([noti.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+        self.statuesView.un_height = 0;
+    } else {
+        self.statuesView.un_height = STATUESVIEWHEIGHT;
+    }
+    if ([UNDataTools sharedInstance].tipStatusHeight != self.statuesView.un_height) {
+        self.pageViewController.view.un_top = self.statuesView.un_height;
+        self.pageViewController.view.un_height = self.view.un_height - self.statuesView.un_height - 49;
+        [UNDataTools sharedInstance].tipStatusHeight = self.statuesView.un_height;
+        [UNDataTools sharedInstance].pageViewHeight = self.pageViewController.view.un_height;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TipStatuBarHeightChange" object:nil];
+    }
 }
 
 - (void)setupViewControllers
@@ -147,5 +202,9 @@
     return NO;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

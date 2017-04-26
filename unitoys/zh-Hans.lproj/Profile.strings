@@ -14,8 +14,8 @@
 /* Class = "UILabel"; text = "修改头像"; ObjectID = "HJ0-eX-cWg"; */
 "HJ0-eX-cWg.text" = "修改头像";
 
-/* Class = "UILabel"; text = "年龄"; ObjectID = "I8B-YH-9fH"; */
-"I8B-YH-9fH.text" = "年龄";
+/* Class = "UILabel"; text = "出生日期"; ObjectID = "I8B-YH-9fH"; */
+"I8B-YH-9fH.text" = "出生日期";
 
 /* Class = "UILabel"; text = "支付宝"; ObjectID = "KC6-O3-uh2"; */
 "KC6-O3-uh2.text" = "支付宝";

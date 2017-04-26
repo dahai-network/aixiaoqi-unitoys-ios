@@ -42,5 +42,6 @@
 @property (nonatomic, assign) BOOL isHasFirmwareUpdateTip;
 
 @property (nonatomic, assign) CGFloat tipStatusHeight;
+@property (nonatomic, assign) CGFloat pageViewHeight;
 
 @end

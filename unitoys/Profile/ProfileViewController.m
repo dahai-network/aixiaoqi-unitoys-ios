@@ -585,7 +585,8 @@
             case 2:
                 self.pickerType = 2;
                 self.titleLabel.hidden = NO;
-                self.titleLabel.text = INTERNATIONALSTRING(@"年龄");
+//                self.titleLabel.text = INTERNATIONALSTRING(@"年龄");
+                self.titleLabel.text = INTERNATIONALSTRING(@"出生日期");
                 self.arrSource = self.arrAgeYear;
                 self.valueView.hidden = NO;
                 break;
