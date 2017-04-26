@@ -42,6 +42,7 @@
 #import "UITabBar+UNRedTip.h"
 #import "UNPresentTool.h"
 #import "UNPopTipMsgView.h"
+#import "AbordSaveViewController.h"
 
 //#import "AbroadMessageController.h"
 
@@ -575,7 +576,9 @@
 }
 
 - (IBAction)abordGuide:(UITapGestureRecognizer *)sender {
-    HUDNormal(@"海外节费引导")
+//    HUDNormal(@"海外节费引导")
+    AbordSaveViewController *abordSaveVC = [[AbordSaveViewController alloc] init];
+    [self.navigationController pushViewController:abordSaveVC animated:YES];
 }
 
 #pragma mark 刷新卡状态

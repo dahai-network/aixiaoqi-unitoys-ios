@@ -150,7 +150,7 @@ typedef enum : NSUInteger {
     } else {
         //有网络
         NSLog(@"当前网络可用");
-        NSString *statuesLabelStr = @"当前网络可用";
+        NSString *statuesLabelStr = @"注册中";
         [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:statuesLabelStr];
 //        self.isNetworkCanUse = YES;
 //        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {

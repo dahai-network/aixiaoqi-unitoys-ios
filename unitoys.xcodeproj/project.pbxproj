@@ -15,6 +15,8 @@
 		04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04127F661EA5F69100C18201 /* OrderListTableViewCell.xib */; };
 		041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */; };
 		0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0430A04F1E69623800FFE611 /* Default-568h@2x.png */; };
+		043638D61EB0A62F0064207E /* AbordSaveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D41EB0A62F0064207E /* AbordSaveViewController.m */; };
+		043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043638D51EB0A62F0064207E /* AbordSaveViewController.xib */; };
 		0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */; };
 		0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */; };
 		0436C3651E1F90460033A8F1 /* CommunicatePackageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C3631E1F90460033A8F1 /* CommunicatePackageTableViewCell.m */; };
@@ -354,6 +356,9 @@
 		041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRangeSlider.m; sourceTree = "<group>"; };
 		041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSliderDelegate.h; sourceTree = "<group>"; };
 		0430A04F1E69623800FFE611 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		043638D31EB0A62F0064207E /* AbordSaveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbordSaveViewController.h; sourceTree = "<group>"; };
+		043638D41EB0A62F0064207E /* AbordSaveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbordSaveViewController.m; sourceTree = "<group>"; };
+		043638D51EB0A62F0064207E /* AbordSaveViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AbordSaveViewController.xib; sourceTree = "<group>"; };
 		0436C35D1E1F86180033A8F1 /* CommunicatePackageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommunicatePackageViewController.h; sourceTree = "<group>"; };
 		0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunicatePackageViewController.m; sourceTree = "<group>"; };
 		0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunicatePackageViewController.xib; sourceTree = "<group>"; };
@@ -1777,6 +1782,9 @@
 				3CC3E0C71E64149600A62F8C /* Model */,
 				955CCC3E1D91758400BC8110 /* HomeViewController.h */,
 				955CCC3F1D91758400BC8110 /* HomeViewController.m */,
+				043638D31EB0A62F0064207E /* AbordSaveViewController.h */,
+				043638D41EB0A62F0064207E /* AbordSaveViewController.m */,
+				043638D51EB0A62F0064207E /* AbordSaveViewController.xib */,
 				04D5EED21E9B959D0015B8DA /* ProductCollectionViewCell.h */,
 				04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */,
 				740FD39D1E28B674009413F1 /* VSWManager.h */,
@@ -2277,6 +2285,7 @@
 				04440D141E779CF900206877 /* Device.storyboard in Resources */,
 				3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */,
 				952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */,
+				043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */,
 				3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */,
 				3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */,
 				04F727971E641CE4002EB54C /* About.txt in Resources */,
@@ -2490,6 +2499,7 @@
 				04F727AF1E641CE4002EB54C /* HTTPErrorResponse.m in Sources */,
 				04A9497D1E826875007611F7 /* WristbandSettingViewController.m in Sources */,
 				3C90355F1E9B53B700FF95C0 /* PageViewController.m in Sources */,
+				043638D61EB0A62F0064207E /* AbordSaveViewController.m in Sources */,
 				04553F351E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m in Sources */,
 				952AB0091DF8DA8900C5A927 /* PhoneOperationPad.m in Sources */,
 				04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */,
