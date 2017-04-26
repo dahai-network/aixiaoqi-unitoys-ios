@@ -26,6 +26,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.edtRechargeValue.delegate = self;
+    [self.edtRechargeValue setTextColor:UIColorFromRGB(0xffffff)];
+    [self.edtRechargeValue addTarget:self action:@selector(edtRechargeValueChange) forControlEvents:UIControlEventEditingChanged];
     self.tableView.delegate = self;
     // Do any additional setup after loading the view.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alipayComplete:) name:@"AlipayComplete" object:nil];
@@ -120,10 +122,29 @@
     return YES;
 }
 
+- (void)edtRechargeValueChange
+{
+    if (self.edtRechargeValue.text.length) {
+        [self.edtRechargeValue setBackgroundColor:UIColorFromRGB(0xf62a2a)];
+    }else{
+        self.edtRechargeValue.backgroundColor = UIColorFromRGB(0xeeeeee);
+    }
+}
+
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField
+{
+    if (!textField.text) {
+        self.edtRechargeValue.backgroundColor = UIColorFromRGB(0xeeeeee);
+    }
+}
+
 - (IBAction)changeValue:(id)sender {
     
     [self.edtRechargeValue resignFirstResponder];
     self.edtRechargeValue.text = @"";
+    self.edtRechargeValue.backgroundColor = UIColorFromRGB(0xeeeeee);
     
     for (UIButton *btn in self.arrValues) {
         if ([btn isEqual:sender]) {

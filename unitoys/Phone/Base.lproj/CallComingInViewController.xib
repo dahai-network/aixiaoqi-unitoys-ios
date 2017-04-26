@@ -112,7 +112,7 @@
                         <constraint firstItem="KzM-TR-jYA" firstAttribute="centerX" secondItem="0V5-A0-dGi" secondAttribute="centerX" id="zeU-CS-zYr"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i8a-8p-1hZ">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i8a-8p-1hZ">
                     <rect key="frame" x="0.0" y="385" width="375" height="105"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VW4-Wc-H0v">
@@ -132,7 +132,7 @@
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9xO-4Y-xus">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9xO-4Y-xus">
                             <rect key="frame" x="39" y="0.0" width="72" height="72"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="72" id="LPt-lC-6sR"/>
@@ -149,7 +149,7 @@
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="STM-p7-P0q">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="STM-p7-P0q">
                             <rect key="frame" x="264" y="0.0" width="72" height="72"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="72" id="bCi-Fl-DVG"/>

@@ -39,7 +39,7 @@
                                     </constraints>
                                 </imageView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="phoneName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="emd-Hl-N9k">
-                                    <rect key="frame" x="71" y="29.5" width="283" height="21"/>
+                                    <rect key="frame" x="17" y="29.5" width="337" height="21"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="21" id="2YE-pU-why"/>
                                     </constraints>
@@ -61,8 +61,8 @@
                                 <constraint firstItem="QVT-MD-ahv" firstAttribute="top" secondItem="zvI-La-rbK" secondAttribute="top" id="2Je-fY-y4k"/>
                                 <constraint firstItem="I5R-Kk-ccd" firstAttribute="leading" secondItem="zvI-La-rbK" secondAttribute="leading" constant="15" id="5wl-54-aOk"/>
                                 <constraint firstAttribute="bottom" secondItem="I5R-Kk-ccd" secondAttribute="bottom" id="KYg-ke-dUH"/>
-                                <constraint firstItem="emd-Hl-N9k" firstAttribute="leading" secondItem="Pca-cx-2Do" secondAttribute="trailing" constant="14" id="MwC-lg-k5s"/>
                                 <constraint firstAttribute="trailing" secondItem="emd-Hl-N9k" secondAttribute="trailing" constant="21" id="Nbp-CS-GB6"/>
+                                <constraint firstItem="emd-Hl-N9k" firstAttribute="leading" secondItem="zvI-La-rbK" secondAttribute="leading" constant="17" id="Pbx-lj-1gc"/>
                                 <constraint firstItem="emd-Hl-N9k" firstAttribute="centerY" secondItem="zvI-La-rbK" secondAttribute="centerY" constant="5" id="RPi-hu-vKY"/>
                                 <constraint firstAttribute="trailing" secondItem="QVT-MD-ahv" secondAttribute="trailing" id="Up1-bl-wqg"/>
                                 <constraint firstItem="Pca-cx-2Do" firstAttribute="centerY" secondItem="zvI-La-rbK" secondAttribute="centerY" constant="5" id="dR9-Sj-evx"/>

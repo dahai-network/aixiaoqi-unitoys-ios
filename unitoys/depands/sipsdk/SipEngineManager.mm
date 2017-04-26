@@ -272,10 +272,11 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
 
 - (void)stopScheNotiTimer
 {
-    if (self.repeatScheNotiTimer) {
+    if (_repeatScheNotiTimer) {
         [_repeatScheNotiTimer invalidate];
         _repeatScheNotiTimer = nil;
     }
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
 }
 
 - (void)doScheduleNotification:(NSTimer *)timer

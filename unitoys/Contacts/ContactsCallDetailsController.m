@@ -186,10 +186,15 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             NSLog(@"9.0以后的系统，通讯录数据格式不正确");
             nickName = phoneNumber;
         }
+        phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
         self.nickName = nickName;
         self.phoneNumber = phoneNumber;
         self.contactModel.contactId = contact.identifier;
+        if (_contactsInfoUpdateBlock) {
+            _contactsInfoUpdateBlock(nickName, phoneNumber);
+        }
         [self reloadTableView];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ContactsInfoChange" object:nil];
     }
     if (viewController.view.tag == 200) {
         [viewController dismissViewControllerAnimated:YES completion:nil];

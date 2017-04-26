@@ -230,7 +230,17 @@
         contactsDetailViewController.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];;
         [self.navigationController pushViewController:contactsDetailViewController animated:YES];
     }else{
+        kWeakSelf
         ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+        callDetailsVc.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
+            if ([phoneNumber isEqualToString:self.toTelephone]) {
+                if (![weakSelf.title isEqualToString:nickName]) {
+                    weakSelf.title = nickName;
+                }
+            }else{
+                weakSelf.title = self.toTelephone;
+            }
+        };
         callDetailsVc.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         callDetailsVc.nickName = self.title;
         callDetailsVc.phoneNumber = self.toTelephone;

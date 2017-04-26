@@ -70,8 +70,7 @@
 #pragma mark 接听按钮点击事件
 - (IBAction)answerButtonAction:(UIButton *)sender {
     self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
-    self.muteOffButton.hidden = NO;
-    self.handfreeOffButton.hidden = NO;
+    self.containerView.hidden = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Answer"];
     //开始计时
     self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];

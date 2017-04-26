@@ -232,12 +232,10 @@ void SipEventObserver::OnCallEnded(){
     
     [SipEngineManager getSipEngine]->SetCallCap(CALL_CAP_AUDIO);
     
-    if ([UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
-		// cancel local notif if needed
-        [[SipEngineManager instance] stopScheNotiTimer];
-        NSLog(@"取消全部通知");
-		[[UIApplication sharedApplication] cancelAllLocalNotifications];
-	}
+    // cancel local notif if needed
+    [[SipEngineManager instance] stopScheNotiTimer];
+    NSLog(@"取消全部通知");
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
 }
 
 

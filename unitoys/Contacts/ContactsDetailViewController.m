@@ -236,9 +236,13 @@
         [self.navigationController popToViewController:self.delegate animated:YES];
     }else{
         [tableView deselectRowAtIndexPath:indexPath animated:NO];
+        NSString *phone = [self.arrNumbers objectAtIndex:indexPath.row];
         ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
-        callDetailsVc.nickName = self.contactMan;
-        callDetailsVc.phoneNumber = [self.arrNumbers objectAtIndex:indexPath.row];
+        callDetailsVc.nickName = [self checkLinkNameWithPhoneStr:phone];
+        callDetailsVc.phoneNumber = phone;
+        callDetailsVc.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
+            
+        };
         [self.navigationController pushViewController:callDetailsVc animated:YES];
     }
 }

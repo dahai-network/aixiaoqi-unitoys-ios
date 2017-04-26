@@ -36,7 +36,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSMSContentAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessage) name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsInfoChange) name:@"ContactsInfoChange" object:nil];
     [self createButton];
 }
 
@@ -55,6 +55,11 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     self.tableView.rowHeight = 90;
     [self.view addSubview:self.tableView];
     [self.tableView registerNibWithNibId:strMessageRecordCell];
+}
+
+- (void)contactsInfoChange
+{
+    [self.tableView reloadData];
 }
 
 - (void)viewDidLayoutSubviews
