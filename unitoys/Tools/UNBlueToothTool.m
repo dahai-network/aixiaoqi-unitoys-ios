@@ -134,7 +134,10 @@ static UNBlueToothTool *instance = nil;
     self.macAddressDict = [NSMutableDictionary new];
     self.RSSIDict = [NSMutableDictionary new];
     
+    [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
     self.simtype = [self checkSimType];
+    NSLog(@"卡类型--%@", self.simtype);
+    
     [BlueToothDataManager shareManager].isNeedToResert = YES;
     [BlueToothDataManager shareManager].currentStep = @"0";
     
@@ -981,7 +984,9 @@ static UNBlueToothTool *instance = nil;
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
             [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
             //请求卡类型和ICCID
-            [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+            if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+            }
         } else {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
         }
@@ -1067,8 +1072,6 @@ static UNBlueToothTool *instance = nil;
         [UNPushKitMessageManager shareManager].isQuickLoad = NO;
         
         [self sendLBEConnectData];
-        //请求卡类型和ICCID
-        [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
         
         if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
             //连接的是手环
@@ -1448,15 +1451,19 @@ static UNBlueToothTool *instance = nil;
                                         if (self.authenticationModel.isAddSendData) {
                                             if ([currentSendStr isEqualToString:@"a0c0000003"] || [currentSendStr isEqualToString:@"a0c000000c"]) {
                                                 //最后一条额外数据
+                                                NSLog(@"====1111111====");
+                                                NSLog(@"最后一条额外数据");
                                                 [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:2];
                                                 NSString *sendTcpStr = [self getStringToTcp];
                                                 [self sendTcpString:sendTcpStr];
                                                 NSLog(@"sendTcpStr====%@", sendTcpStr);
                                             }else if([currentSendStr isEqualToString:self.authenticationModel.simData]){
+                                                NSLog(@"====2222222====");
                                                 [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
                                                 self.currentSendIndex += 1;
                                                 [self sendDataToLBEWithIndex:self.currentSendIndex];
                                             }else{
+                                                NSLog(@"====3333333====");
                                                 self.currentSendIndex += 1;
                                                 [self sendDataToLBEWithIndex:self.currentSendIndex];
                                             }
@@ -1508,6 +1515,7 @@ static UNBlueToothTool *instance = nil;
                         [BlueToothDataManager shareManager].isActivityCard = YES;
                         [BlueToothDataManager shareManager].bleStatueForCard = 1;
                         [BlueToothDataManager shareManager].operatorType = @"2";
+                        [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].operatorType forKey:@"operatorType"];
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_AIXIAOQICARD];
                         [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                     } else {
@@ -1639,6 +1647,7 @@ static UNBlueToothTool *instance = nil;
                         {
                             NSLog(@"卡状态改变 -- 无卡");
                             [BlueToothDataManager shareManager].operatorType = @"5";
+                            [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].operatorType forKey:@"operatorType"];
                             [UNPushKitMessageManager shareManager].isNeedRegister = NO;
                             [BlueToothDataManager shareManager].isHaveCard = NO;
                             [BlueToothDataManager shareManager].isBeingRegisting = NO;
@@ -1674,6 +1683,7 @@ static UNBlueToothTool *instance = nil;
                                     break;
                             }
                             [BlueToothDataManager shareManager].operatorType = [NSString stringWithFormat:@"%d", cardType];
+                            [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].operatorType forKey:@"operatorType"];
                             self.simtype = [self checkSimType];
                             if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"1"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"2"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"3"]) {
                                 //有电话卡
@@ -1882,6 +1892,10 @@ static UNBlueToothTool *instance = nil;
     if (!string) {
         return;
     }
+    if (self.needSendDatas.count) {
+        [self.needSendDatas removeAllObjects];
+        self.currentSendIndex = 0;
+    }
     [BlueToothDataManager shareManager].bleStatueForCard = 2;
     
     UNSimCardAuthenticationModel *model = [UNGetSimData getModelWithAuthenticationString:string];
@@ -1918,8 +1932,8 @@ static UNBlueToothTool *instance = nil;
             [self.needSendDatas addObject:@"a0c000000c"];
         }
     }
-    
-    self.currentSendIndex = 0;
+    NSLog(@"model===%@", model);
+    NSLog(@"needSendDatas===%@",self.needSendDatas);
     [self sendDataToLBEWithIndex:self.currentSendIndex];
 }
 
@@ -1928,6 +1942,7 @@ static UNBlueToothTool *instance = nil;
     if (self.needSendDatas.count > index) {
         [self sendNewMessageToBLEWithPushKit:self.needSendDatas[index]];
     }else{
+        NSLog(@"needSendDatas=====%@", self.needSendDatas);
         NSLog(@"发送蓝牙数据错误====");
     }
 }

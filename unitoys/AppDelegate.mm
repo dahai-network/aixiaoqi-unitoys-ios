@@ -100,7 +100,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -2081,10 +2081,10 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             if ([messageType isEqualToString:@"10"]) {
                 NSLog(@"鉴权数据PushKit消息");
                 //在pushkit里初始化蓝牙
-                [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
-                
                 [self checkCurrentPushKitMessage:serviceTimeData];
 
+                [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+                
             }else if ([messageType isEqualToString:@"06"]){
                 //创建网络电话服务
                 [[UNSipEngineInitialize sharedInstance] initEngine];

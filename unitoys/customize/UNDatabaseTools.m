@@ -11,10 +11,11 @@
 @interface UNDatabaseTools()
 
 @property (nonatomic, copy) NSString *filePath;
-@property (nonatomic, strong) FMDatabase *database;
+//@property (nonatomic, strong) FMDatabase *database;
 
 @end
 
+static FMDatabaseQueue *_database =nil;
 @implementation UNDatabaseTools
 
 + (instancetype)sharedFMDBTools
@@ -27,10 +28,11 @@
     return databaseTool;
 }
 
-- (FMDatabase *)database
+- (FMDatabaseQueue *)database
 {
     if (!_database) {
-        _database = [FMDatabase databaseWithPath:[self filePath]];
+//        _database = [FMDatabase databaseWithPath:[self filePath]];
+        _database = [FMDatabaseQueue databaseQueueWithPath:[self filePath]];
     }
     return _database;
 }
@@ -59,192 +61,200 @@
 - (BOOL)insertDataWithAPIName:(NSString *)apiName dictData:(NSDictionary *)response
 {
     NSString *jsonString = [self dictionaryToJson:response];
-    BOOL isSuccess = YES;
-        //打开数据库
-        if ([self.database open]) {
-            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
-            FMResultSet *rs = [self.database executeQuery:existsSql];
-            if ([rs next]) {
-                NSInteger count = [rs intForColumn:@"countNum"];
-                if (count == 0) {
-                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (datas Text)", apiName];
-                    [self.database executeUpdate:sqlString];
-                }
-                NSString *selectStr = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
-                rs = [self.database executeQuery:selectStr];
+    __block BOOL isSuccess = YES;
+        [self.database inDatabase:^(FMDatabase *db) {
+            //打开数据库
+            if ([db open]) {
+                NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+                FMResultSet *rs = [db executeQuery:existsSql];
                 if ([rs next]) {
-                    NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET datas='%@'", apiName, jsonString];
-                    BOOL isSuccess = [self.database executeUpdate:sqlString];
-                    if (!isSuccess) {
-                        NSLog(@"更新数据库文件失败");
-                        isSuccess = NO;
+                    NSInteger count = [rs intForColumn:@"countNum"];
+                    if (count == 0) {
+                        NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (datas Text)", apiName];
+                        [db executeUpdate:sqlString];
                     }
-                }else{
-                    NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(datas) VALUES ('%@');", apiName, jsonString];
-                    BOOL isSuccess = [self.database executeUpdate:insertStr];
-                    if (!isSuccess) {
-                        NSLog(@"插入数据库文件失败");
-                        isSuccess = NO;
+                    NSString *selectStr = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
+                    rs = [db executeQuery:selectStr];
+                    if ([rs next]) {
+                        NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET datas='%@'", apiName, jsonString];
+                        BOOL isSuccess = [db executeUpdate:sqlString];
+                        if (!isSuccess) {
+                            NSLog(@"更新数据库文件失败");
+                            isSuccess = NO;
+                        }
+                    }else{
+                        NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(datas) VALUES ('%@');", apiName, jsonString];
+                        BOOL isSuccess = [db executeUpdate:insertStr];
+                        if (!isSuccess) {
+                            NSLog(@"插入数据库文件失败");
+                            isSuccess = NO;
+                        }
                     }
+                    [rs close];
                 }
-                [rs close];
+                [db close];
+            }else{
+                isSuccess = NO;
             }
-            [self.database close];
-        }else{
-            isSuccess = NO;
-        }
+        }];
     return isSuccess;
 }
 
 - (BOOL)deleteTableWithAPIName:(NSString *)apiName {
-    BOOL isSuccess = YES;
-    //打开数据库
-    if ([self.database open]) {
-        NSString *sqlString = [NSString stringWithFormat:@"DROP TABLE IF EXISTS %@", apiName];
-        BOOL isSuccess = [self.database executeUpdate:sqlString];
-        if (!isSuccess) {
-            NSLog(@"删除数据库文件失败");
+    __block BOOL isSuccess = YES;
+    
+    [self.database inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *sqlString = [NSString stringWithFormat:@"DROP TABLE IF EXISTS %@", apiName];
+            BOOL isSuccess = [db executeUpdate:sqlString];
+            if (!isSuccess) {
+                NSLog(@"删除数据库文件失败");
+                isSuccess = NO;
+            }
+            [db close];
+        }else{
             isSuccess = NO;
         }
-//        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
-//        FMResultSet *rs = [self.database executeQuery:existsSql];
-//        if ([rs next]) {
-//            NSInteger count = [rs intForColumn:@"countNum"];
-//            if (count == 0) {
-//                NSLog(@"没有数据");
-//            } else {
-//                NSString *sqlString = [NSString stringWithFormat:@"DROP TABLE IF EXISTS %@", apiName];
-//                BOOL isSuccess = [self.database executeUpdate:sqlString];
-//                if (!isSuccess) {
-//                    NSLog(@"删除数据库文件失败");
-//                    isSuccess = NO;
-//                }
-//            }
-//            [rs close];
-//        }
-        [self.database close];
-    }else{
-        isSuccess = NO;
-    }
+    }];
+    
+
     return isSuccess;
 }
 
 - (NSDictionary *)getResponseWithAPIName:(NSString *)apiName
 {
     //打开数据库
-    NSDictionary *dict;
-    if ([self.database open]) {
-        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
-        FMResultSet *rs = [self.database executeQuery:existsSql];
-        if ([rs next]) {
-            NSInteger count = [rs intForColumn:@"countNum"];
-            
-            if (count == 1) {
-                NSString *sqlString = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
-//                rs = [self.database executeQuery:sqlString];
-                FMResultSet *nextRs = [self.database executeQuery:sqlString];
-                if ([nextRs next]) {
-                    //如果能打开说明已存在,获取数据
-                    NSString *jsonStr = [nextRs stringForColumn:@"datas"];
-                    if (jsonStr) {
-                        dict = [self jsonToDictionary:jsonStr];
+    __block NSDictionary *dict;
+    [self.database inDatabase:^(FMDatabase *db) {
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                
+                if (count == 1) {
+                    NSString *sqlString = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
+                    //                rs = [self.database executeQuery:sqlString];
+                    FMResultSet *nextRs = [db executeQuery:sqlString];
+                    if ([nextRs next]) {
+                        //如果能打开说明已存在,获取数据
+                        NSString *jsonStr = [nextRs stringForColumn:@"datas"];
+                        if (jsonStr) {
+                            dict = [self jsonToDictionary:jsonStr];
+                        }
+                        [nextRs close];
+                    }else{
+                        dict = nil;
                     }
-                    [nextRs close];
-                }else{
-                    dict = nil;
                 }
+                [rs close];
             }
-            [rs close];
+            [db close];
         }
-        [self.database close];
-    }
+
+    }];
+    
     return dict;
 }
+
+
+//[self.database inDatabase:^(FMDatabase *db) {
+//    //打开数据库
+//}];
 
 //插入一条数据
 - (BOOL)insertDataWithAPIName:(NSString *)apiName stringData:(NSString *)string
 {
-    BOOL isSuccess = NO;
-    //打开数据库
-    if ([self.database open]) {
-        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
-        FMResultSet *rs = [self.database executeQuery:existsSql];
-        if ([rs next]) {
-            NSInteger count = [rs intForColumn:@"countNum"];
-            if (count == 0) {
-//                NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (datas Text)", apiName];
-                NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id integer PRIMARY KEY AUTOINCREMENT, data text NOT NULL)", apiName];
-                BOOL result = [self.database executeUpdate:sqlString];
-                if (result) {
-                    NSLog(@"成功创表");
-                } else {
-                    NSLog(@"创表失败");
+    __block BOOL isSuccess = NO;
+    
+    [self.database inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                if (count == 0) {
+                    //                NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (datas Text)", apiName];
+                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id integer PRIMARY KEY AUTOINCREMENT, data text NOT NULL)", apiName];
+                    BOOL result = [db executeUpdate:sqlString];
+                    if (result) {
+                        NSLog(@"成功创表");
+                    } else {
+                        NSLog(@"创表失败");
+                    }
                 }
-            }
-            
-            NSString *selectData = [NSString stringWithFormat:@"select * from %@ where data='%@'", apiName,string];
-            rs = [self.database executeQuery:selectData];
-            if (![rs next] || !rs) {
-                NSLog(@"数据不存在,插入数据");
-                //插入数据
-                NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(data) VALUES ('%@');", apiName, string];
-                BOOL isSuccessInsert = [self.database executeUpdate:insertStr];
-                if (!isSuccessInsert) {
-                    NSLog(@"插入数据库文件失败");
+                
+                NSString *selectData = [NSString stringWithFormat:@"select * from %@ where data='%@'", apiName,string];
+                rs = [db executeQuery:selectData];
+                if (![rs next] || !rs) {
+                    NSLog(@"数据不存在,插入数据");
+                    //插入数据
+                    NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(data) VALUES ('%@');", apiName, string];
+                    BOOL isSuccessInsert = [db executeUpdate:insertStr];
+                    if (!isSuccessInsert) {
+                        NSLog(@"插入数据库文件失败");
+                    }
+                    isSuccess = isSuccessInsert;
                 }
-                isSuccess = isSuccessInsert;
+                [rs close];
             }
-            [rs close];
+            [db close];
+        }else{
+            isSuccess = NO;
         }
-        [self.database close];
-    }else{
-        isSuccess = NO;
-    }
+
+    }];
     return isSuccess;
 }
 
 - (BOOL)deleteDataWithAPIName:(NSString *)apiName stringData:(NSString *)string
 {
-    BOOL isSuccess = NO;
-    //打开数据库
-    if ([self.database open]) {
-        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
-        FMResultSet *rs = [self.database executeQuery:existsSql];
-        if ([rs next]) {
-            NSInteger count = [rs intForColumn:@"countNum"];
-            if (count == 0) {
-                NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id integer PRIMARY KEY AUTOINCREMENT, data text NOT NULL)", apiName];
-                BOOL result = [self.database executeUpdate:sqlString];
-                if (result) {
-                    NSLog(@"成功创表");
-                } else {
-                    NSLog(@"创表失败");
+    __block BOOL isSuccess = NO;
+    
+    [self.database inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                if (count == 0) {
+                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id integer PRIMARY KEY AUTOINCREMENT, data text NOT NULL)", apiName];
+                    BOOL result = [db executeUpdate:sqlString];
+                    if (result) {
+                        NSLog(@"成功创表");
+                    } else {
+                        NSLog(@"创表失败");
+                    }
                 }
+                
+                NSString *selectData = [NSString stringWithFormat:@"delete from %@ where data='%@'", apiName,string];
+                BOOL isSuccessDel = [db executeUpdate:selectData];
+                if (!isSuccessDel) {
+                    NSLog(@"删除数据库文件失败");
+                }
+                isSuccess = isSuccessDel;
+                
+                //            if ([rs next]) {
+                //                NSLog(@"数据存在,删除数据");
+                //                //插入数据
+                //                NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(data) VALUES ('%@');", apiName, string];
+                //                BOOL isSuccessInsert = [self.database executeUpdate:insertStr];
+                //                if (!isSuccessInsert) {
+                //                    NSLog(@"插入数据库文件失败");
+                //                }
+                //                isSuccess = isSuccessInsert;
+                //            }
+                [rs close];
             }
-            
-            NSString *selectData = [NSString stringWithFormat:@"delete from %@ where data='%@'", apiName,string];
-            BOOL isSuccessDel = [self.database executeUpdate:selectData];
-            if (!isSuccessDel) {
-                NSLog(@"删除数据库文件失败");
-            }
-            isSuccess = isSuccessDel;
-            
-//            if ([rs next]) {
-//                NSLog(@"数据存在,删除数据");
-//                //插入数据
-//                NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(data) VALUES ('%@');", apiName, string];
-//                BOOL isSuccessInsert = [self.database executeUpdate:insertStr];
-//                if (!isSuccessInsert) {
-//                    NSLog(@"插入数据库文件失败");
-//                }
-//                isSuccess = isSuccessInsert;
-//            }
-            [rs close];
+            [db close];
+        }else{
+            isSuccess = NO;
         }
-        [self.database close];
-    }else{
-        isSuccess = NO;
-    }
+
+    }];
     return isSuccess;
 }
 
@@ -267,27 +277,32 @@
 - (NSArray *)getArrayResponseWithAPIName:(NSString *)apiName
 {
     //打开数据库
-    NSMutableArray *arrayDatas = [NSMutableArray array];
-    if ([self.database open]) {
-        NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
-        FMResultSet *rs = [self.database executeQuery:existsSql];
-        if ([rs next]) {
-            NSInteger count = [rs intForColumn:@"countNum"];
-            if (count == 1) {
-                NSString *sqlString = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
-                FMResultSet *nextRs = [self.database executeQuery:sqlString];
-                while ([nextRs next]) {
-                    NSString *dataStr = [nextRs stringForColumn:@"data"];
-                    if (dataStr) {
-                        [arrayDatas addObject:dataStr];
+    __block NSMutableArray *arrayDatas = [NSMutableArray array];
+    
+    [self.database inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                if (count == 1) {
+                    NSString *sqlString = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
+                    FMResultSet *nextRs = [db executeQuery:sqlString];
+                    while ([nextRs next]) {
+                        NSString *dataStr = [nextRs stringForColumn:@"data"];
+                        if (dataStr) {
+                            [arrayDatas addObject:dataStr];
+                        }
                     }
+                    [nextRs close];
                 }
-                [nextRs close];
+                [rs close];
             }
-            [rs close];
+            [db close];
         }
-        [self.database close];
-    }
+    }];
+
     return arrayDatas;
 }
 
