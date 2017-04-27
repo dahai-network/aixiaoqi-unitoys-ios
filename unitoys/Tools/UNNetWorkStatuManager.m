@@ -35,11 +35,10 @@ static UNNetWorkStatuManager *manager = nil;
         return;
     }
     self.isInitInstance = YES;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityStatuChange:) name:kReachabilityChangedNotification object:nil];
     Reachability *reach = [Reachability reachabilityWithHostname:@"www.baidu.com"];
     [reach startNotifier];
     self.currentStatu = [reach currentReachabilityStatus];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityStatuChange:) name:kReachabilityChangedNotification object:nil];
 }
 
 - (void)reachabilityStatuChange:(NSNotification *)noti
@@ -49,10 +48,13 @@ static UNNetWorkStatuManager *manager = nil;
     }
     Reachability *reach = noti.object;
     NetworkStatus netStatu = [reach currentReachabilityStatus];
-    self.currentStatu = netStatu;
-    if (_netWorkStatuChangeBlock) {
-        _netWorkStatuChangeBlock(netStatu);
+    if (self.currentStatu != netStatu) {
+        self.currentStatu = netStatu;
+        if (_netWorkStatuChangeBlock) {
+            _netWorkStatuChangeBlock(netStatu);
+        }
     }
+
 }
 
 @end

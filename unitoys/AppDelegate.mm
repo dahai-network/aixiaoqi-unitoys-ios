@@ -107,6 +107,19 @@
     [BlueToothDataManager shareManager].isOpened = YES;
     
     [[UNNetWorkStatuManager shareManager] initNetWorkStatuManager];
+    
+//    if ([UNNetWorkStatuManager shareManager].currentStatu != NotReachable) {
+//        [BlueToothDataManager shareManager].statuesTitleString = @"当前网络可用";
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"1"];
+//        });
+//    }else{
+//        NSLog(@"无网络");
+//        [BlueToothDataManager shareManager].statuesTitleString = @"当前网络不可用";
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"0"];
+//        });
+//    }
     [UNNetWorkStatuManager shareManager].netWorkStatuChangeBlock = ^(NetworkStatus currentStatu){
         if (currentStatu != NotReachable) {
             NSLog(@"有网络");
@@ -2067,11 +2080,14 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             
             if ([messageType isEqualToString:@"10"]) {
                 NSLog(@"鉴权数据PushKit消息");
-                [self checkCurrentPushKitMessage:serviceTimeData];
                 //在pushkit里初始化蓝牙
                 [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
                 
+                [self checkCurrentPushKitMessage:serviceTimeData];
+
             }else if ([messageType isEqualToString:@"06"]){
+                //创建网络电话服务
+                [[UNSipEngineInitialize sharedInstance] initEngine];
                 NSLog(@"唤醒网络电话PushKit消息");
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNetCall;
                 [UNPushKitMessageManager shareManager].simDataDict = nil;
@@ -2079,19 +2095,17 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
                 }
                 [UNCreatLocalNoti createLocalNotiMessageString:@"pushKit消息唤醒网络电话"];
-                //创建网络电话服务
-                [[UNSipEngineInitialize sharedInstance] initEngine];
             }else if ([messageType isEqualToString:@"05"]){
                 NSLog(@"心跳包PushKit消息");
-                [self checkCurrentPushKitMessage:serviceTimeData];
                 [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+                [self checkCurrentPushKitMessage:serviceTimeData];
             }else if ([messageType isEqualToString:@"0f"]){
                 NSLog(@"SIM卡断开连接PushKit消息");
-                [self checkCurrentPushKitMessage:serviceTimeData];
                 //在pushkit里初始化蓝牙
                 [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
                 //创建网络电话服务
                 [[UNSipEngineInitialize sharedInstance] initEngine];
+                [self checkCurrentPushKitMessage:serviceTimeData];
             }else{
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
                 NSLog(@"未知PushKit消息---%@", dict);
@@ -2147,6 +2161,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 host = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerIp"];
                 port = [[[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerPort"] intValue];
             }
+            NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
             NSError *error;
             [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:&error];
             if (error) {

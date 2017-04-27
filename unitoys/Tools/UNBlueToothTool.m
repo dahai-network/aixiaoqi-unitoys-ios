@@ -39,6 +39,7 @@ typedef enum : NSUInteger {
     BLECardData,//卡数据
     BLEAixiaoqiCardData,//爱小器国外卡数据
     BLEJUSTBOXCANCONNECT,//仅钥匙扣能连
+    BLECardTypeAndICCID,
 } APPSENDTOBLE;
 
 @interface UNBlueToothTool()
@@ -178,6 +179,7 @@ static UNBlueToothTool *instance = nil;
 #pragma mark 对卡断电
 - (void)downElectToCard {
     if ([BlueToothDataManager shareManager].isConnected) {
+        NSLog(@"对卡断电");
         [self phoneCardToOutageNew];
     }else{
         NSLog(@"蓝牙未连接");
@@ -334,6 +336,10 @@ static UNBlueToothTool *instance = nil;
         case BLEJUSTBOXCANCONNECT:
             //仅钥匙扣能连
             typeStr = @"1400";
+            break;
+        case BLECardTypeAndICCID:
+            //仅钥匙扣能连
+            typeStr = @"1600";
             break;
         default:
             break;
@@ -1006,7 +1012,7 @@ static UNBlueToothTool *instance = nil;
         [UNPushKitMessageManager shareManager].isQuickLoad = YES;
         //对卡上电
         NSLog(@"对卡上电03");
-        [self phoneCardToUpeLectrify:@"03"];
+        [self updataToCard];
         
         if ([UNPushKitMessageManager shareManager].simDataDict[@"time"]) {
             NSString *timeString = [UNPushKitMessageManager shareManager].simDataDict[@"time"];
@@ -1057,6 +1063,8 @@ static UNBlueToothTool *instance = nil;
         [UNPushKitMessageManager shareManager].isQuickLoad = NO;
         
         [self sendLBEConnectData];
+        //请求卡类型和ICCID
+        [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
         
         if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
             //连接的是手环
@@ -1066,6 +1074,7 @@ static UNBlueToothTool *instance = nil;
         } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
             //连接的是钥匙扣
             if (!self.boundedDeviceInfo[@"IMEI"]) {
+                
                 //发送绑定请求
                 [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
                 [self startBoundTimer];
@@ -1429,6 +1438,7 @@ static UNBlueToothTool *instance = nil;
                                 }else{
                                     if (self.needSendDatas.count > self.currentSendIndex) {
                                         NSString *currentSendStr = self.needSendDatas[self.currentSendIndex];
+                                        NSLog(@"currentSendStr-%@",currentSendStr);
                                         if (self.authenticationModel.isAddSendData) {
                                             if ([currentSendStr isEqualToString:@"a0c0000003"] || [currentSendStr isEqualToString:@"a0c000000c"]) {
                                                 //最后一条额外数据
@@ -1483,6 +1493,7 @@ static UNBlueToothTool *instance = nil;
                         [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0b000000a"];
                     } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"]) {
                         //对卡断电
+                        NSLog(@"对卡断电");
                         [self phoneCardToOutageNew];
                         //是大王卡
                         NSLog(@"是大王卡");
@@ -1495,6 +1506,7 @@ static UNBlueToothTool *instance = nil;
                         [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                     } else {
                         //对卡断电
+                        NSLog(@"对卡断电");
                         [self phoneCardToOutageNew];
                         NSLog(@"不是大王卡");
                         [BlueToothDataManager shareManager].cardType = @"2";
@@ -1544,6 +1556,7 @@ static UNBlueToothTool *instance = nil;
                             [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0b000000a"];
                         } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"] || [[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0345"]) {
                             //对卡断电
+                            NSLog(@"对卡断电");
                             [self phoneCardToOutageNew];
                             self.bigKingCardNumber = [totalString substringWithRange:NSMakeRange(4, 16)];
                             
@@ -1556,6 +1569,7 @@ static UNBlueToothTool *instance = nil;
                         } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9000"]) {
                             if (!self.isNewCard) {
                                 //对卡断电
+                                NSLog(@"对卡断电");
                                 [self phoneCardToOutageNew];
                                 [self activitySuccess];
                             } else {
@@ -1579,11 +1593,13 @@ static UNBlueToothTool *instance = nil;
                         } else if ([[totalString substringFromIndex:totalString.length - 10] isEqualToString:@"6500649000"]) {
                             //激活成功
                             //对卡断电
+                            NSLog(@"对卡断电");
                             [self phoneCardToOutageNew];
                             [self activitySuccess];
                             self.isNewCard = NO;
                         } else {
                             //对卡断电
+                            NSLog(@"对卡断电");
                             [self phoneCardToOutageNew];
                             NSLog(@"返回数据有问题");
                             [self hideHud];
@@ -1626,6 +1642,9 @@ static UNBlueToothTool *instance = nil;
                             break;
                         case 1:
                             NSLog(@"卡状态改变 -- 有卡");
+                            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                                return;
+                            }
                             
                             int cardType = [self convertRangeStringToIntWithString:contentStr rangeLoc:2 rangeLen:2];
                             switch (cardType) {
@@ -1725,20 +1744,23 @@ static UNBlueToothTool *instance = nil;
                 break;
             case 13:
                 NSLog(@"接收到SIM卡ICCID -- %@", contentStr);
-                if (contentStr) {
-                    //判断本地是否存在ICCID
-                    [UNPushKitMessageManager shareManager].iccidString = contentStr;
-                    NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
-                    NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
-                    if (dict) {
-                        //创建tcp,建立连接
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
-                    }else{
-                        //创建udp,初始化操作
-                        [UNPushKitMessageManager shareManager].isNeedRegister = YES;
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
+                if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate || [UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect) {
+                    if (contentStr) {
+                        //判断本地是否存在ICCID
+                        [UNPushKitMessageManager shareManager].iccidString = contentStr;
+                        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
+                        NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
+                        if (dict) {
+                            //创建tcp,建立连接
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
+                        }else{
+                            //创建udp,初始化操作
+                            [UNPushKitMessageManager shareManager].isNeedRegister = YES;
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
+                        }
                     }
                 }
+
                 break;
             case 14:
                 //设置闹钟成功
