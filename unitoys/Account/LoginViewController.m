@@ -170,6 +170,7 @@
 
 - (void)getBlackListsFromServer
 {
+    
     kWeakSelf
     //从服务器获取黑名单
     self.checkToken = YES;

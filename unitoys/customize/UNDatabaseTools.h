@@ -33,6 +33,8 @@
 - (void)insertBlackListWithPhoneLists:(NSArray *)lists;
 //删除黑名单数据
 - (BOOL)deleteBlackListWithPhoneString:(NSString *)string;
+//清空黑名单数据
+- (BOOL)deleteAllBlackLists;
 //获取黑名单数据
 - (NSArray *)getBlackLists;
 

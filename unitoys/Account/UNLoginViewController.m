@@ -431,6 +431,9 @@
 
 - (void)getBlackListsFromServer
 {
+    if (![[UNDatabaseTools sharedFMDBTools] deleteAllBlackLists]) {
+        NSLog(@"清空黑名单失败");
+    }
     kWeakSelf
     //从服务器获取黑名单
     self.checkToken = YES;

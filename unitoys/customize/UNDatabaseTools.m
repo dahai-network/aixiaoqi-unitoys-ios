@@ -229,24 +229,17 @@ static FMDatabaseQueue *_database =nil;
                         NSLog(@"创表失败");
                     }
                 }
-                
-                NSString *selectData = [NSString stringWithFormat:@"delete from %@ where data='%@'", apiName,string];
+                NSString *selectData;
+                if (string) {
+                    selectData = [NSString stringWithFormat:@"delete from %@ where data='%@'", apiName,string];
+                }else{
+                    selectData = [NSString stringWithFormat:@"delete from %@",apiName];
+                }
                 BOOL isSuccessDel = [db executeUpdate:selectData];
                 if (!isSuccessDel) {
                     NSLog(@"删除数据库文件失败");
                 }
                 isSuccess = isSuccessDel;
-                
-                //            if ([rs next]) {
-                //                NSLog(@"数据存在,删除数据");
-                //                //插入数据
-                //                NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(data) VALUES ('%@');", apiName, string];
-                //                BOOL isSuccessInsert = [self.database executeUpdate:insertStr];
-                //                if (!isSuccessInsert) {
-                //                    NSLog(@"插入数据库文件失败");
-                //                }
-                //                isSuccess = isSuccessInsert;
-                //            }
                 [rs close];
             }
             [db close];
@@ -302,12 +295,8 @@ static FMDatabaseQueue *_database =nil;
             [db close];
         }
     }];
-
     return arrayDatas;
 }
-
-
-
 
 //插入黑名单数据
 - (BOOL)insertBlackListWithPhoneString:(NSString *)string
@@ -321,6 +310,13 @@ static FMDatabaseQueue *_database =nil;
 {
     NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
     return [self deleteDataWithAPIName:apiName stringData:string];
+}
+
+//清空黑名单数据
+- (BOOL)deleteAllBlackLists
+{
+    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
+    return [self deleteDataWithAPIName:apiName stringData:nil];
 }
 
 //获取黑名单数据
