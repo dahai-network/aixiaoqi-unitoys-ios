@@ -43,6 +43,7 @@
 #import "UNPresentTool.h"
 #import "UNPopTipMsgView.h"
 #import "AbordSaveViewController.h"
+#import "StatuesViewDetailViewController.h"
 
 //#import "AbroadMessageController.h"
 
@@ -106,6 +107,9 @@
     //添加状态栏
     self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, STATUESVIEWHEIGHT)];
     self.statuesView.backgroundColor = UIColorFromRGB(0xffbfbf);
+    //添加手势
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToShowDetail)];
+    [self.statuesView addGestureRecognizer:tap];
     UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
     leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
@@ -273,6 +277,12 @@
 //        NSDictionary *dict = @{@"Title" : @"新商品", @"Url" : @"www.baidu.com", @"ID" : @"123456789"};
 //        [self updateMallTipMessage:dict];
 //    });
+}
+
+#pragma mark 手势点击事件
+- (void)jumpToShowDetail {
+    StatuesViewDetailViewController *statuesViewDetailVC = [[StatuesViewDetailViewController alloc] init];
+    [self.navigationController pushViewController:statuesViewDetailVC animated:YES];
 }
 
 - (void)homeViewChangeStatuesView:(NSNotification *)sender {

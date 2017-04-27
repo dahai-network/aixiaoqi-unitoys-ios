@@ -1002,7 +1002,7 @@ static UNBlueToothTool *instance = nil;
 
 - (void)checkSystemInfo {
     //请求基本信息
-//    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
     //请求卡类型和ICCID
     [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
 }

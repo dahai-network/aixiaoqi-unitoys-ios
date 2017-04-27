@@ -17,6 +17,8 @@
 		0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0430A04F1E69623800FFE611 /* Default-568h@2x.png */; };
 		043638D61EB0A62F0064207E /* AbordSaveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D41EB0A62F0064207E /* AbordSaveViewController.m */; };
 		043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043638D51EB0A62F0064207E /* AbordSaveViewController.xib */; };
+		043638DB1EB1A4AF0064207E /* StatuesViewDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D91EB1A4AF0064207E /* StatuesViewDetailViewController.m */; };
+		043638DC1EB1A4AF0064207E /* StatuesViewDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043638DA1EB1A4AF0064207E /* StatuesViewDetailViewController.xib */; };
 		0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */; };
 		0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */; };
 		0436C3651E1F90460033A8F1 /* CommunicatePackageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0436C3631E1F90460033A8F1 /* CommunicatePackageTableViewCell.m */; };
@@ -359,6 +361,9 @@
 		043638D31EB0A62F0064207E /* AbordSaveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbordSaveViewController.h; sourceTree = "<group>"; };
 		043638D41EB0A62F0064207E /* AbordSaveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbordSaveViewController.m; sourceTree = "<group>"; };
 		043638D51EB0A62F0064207E /* AbordSaveViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AbordSaveViewController.xib; sourceTree = "<group>"; };
+		043638D81EB1A4AF0064207E /* StatuesViewDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatuesViewDetailViewController.h; sourceTree = "<group>"; };
+		043638D91EB1A4AF0064207E /* StatuesViewDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatuesViewDetailViewController.m; sourceTree = "<group>"; };
+		043638DA1EB1A4AF0064207E /* StatuesViewDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StatuesViewDetailViewController.xib; sourceTree = "<group>"; };
 		0436C35D1E1F86180033A8F1 /* CommunicatePackageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommunicatePackageViewController.h; sourceTree = "<group>"; };
 		0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommunicatePackageViewController.m; sourceTree = "<group>"; };
 		0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunicatePackageViewController.xib; sourceTree = "<group>"; };
@@ -1782,6 +1787,9 @@
 				3CC3E0C71E64149600A62F8C /* Model */,
 				955CCC3E1D91758400BC8110 /* HomeViewController.h */,
 				955CCC3F1D91758400BC8110 /* HomeViewController.m */,
+				043638D81EB1A4AF0064207E /* StatuesViewDetailViewController.h */,
+				043638D91EB1A4AF0064207E /* StatuesViewDetailViewController.m */,
+				043638DA1EB1A4AF0064207E /* StatuesViewDetailViewController.xib */,
 				043638D31EB0A62F0064207E /* AbordSaveViewController.h */,
 				043638D41EB0A62F0064207E /* AbordSaveViewController.m */,
 				043638D51EB0A62F0064207E /* AbordSaveViewController.xib */,
@@ -2252,6 +2260,7 @@
 				955CCC311D90075D00BC8110 /* https.cer in Resources */,
 				04440D0D1E779B5D00206877 /* Phone.storyboard in Resources */,
 				04F727B51E641CE4002EB54C /* Debug.xcconfig in Resources */,
+				043638DC1EB1A4AF0064207E /* StatuesViewDetailViewController.xib in Resources */,
 				0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */,
 				04F727DB1E642BED002EB54C /* CertificateFiles in Resources */,
 				04440CEE1E77887000206877 /* InfoPlist.strings in Resources */,
@@ -2461,6 +2470,7 @@
 				3CC3E0A71E63C22F00A62F8C /* CustomOrderCell.m in Sources */,
 				95E918601DDC91DD005DABC0 /* BeforeBackPageViewController.m in Sources */,
 				04F727A51E641CE4002EB54C /* HTTPAuthenticationRequest.m in Sources */,
+				043638DB1EB1A4AF0064207E /* StatuesViewDetailViewController.m in Sources */,
 				04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */,
 				043965CD1E07ED8100B67989 /* AddressBookManager.m in Sources */,
 				3CC3E0A31E63BE2500A62F8C /* AbroadMessageController.m in Sources */,

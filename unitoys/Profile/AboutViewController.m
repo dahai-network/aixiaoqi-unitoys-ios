@@ -21,6 +21,7 @@
 #import "UNDataTools.h"
 #import "UITabBar+UNRedTip.h"
 #import "UNDatabaseTools.h"
+#import "StatuesViewDetailViewController.h"
 
 #define CELLHEIGHT 44
 
@@ -52,6 +53,9 @@
     //添加状态栏
     self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, STATUESVIEWHEIGHT)];
     self.statuesView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
+    //添加手势
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToShowDetail)];
+    [self.statuesView addGestureRecognizer:tap];
     UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
     leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
@@ -84,6 +88,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipMessageStatuChange) name:@"TipMessageStatuChange" object:nil];
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aboutViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
+}
+
+#pragma mark 手势点击事件
+- (void)jumpToShowDetail {
+    StatuesViewDetailViewController *statuesViewDetailVC = [[StatuesViewDetailViewController alloc] init];
+    [self.navigationController pushViewController:statuesViewDetailVC animated:YES];
 }
 
 - (void)aboutViewChangeStatuesView:(NSNotification *)sender {
@@ -174,13 +184,46 @@
 
 #pragma mark 解绑按钮点击事件
 - (IBAction)unboundAction:(CutomButton *)sender {
-    [self dj_alertAction:self alertTitle:nil actionTitle:@"继续" message:@"您将要与蓝牙设备解除绑定？" alertAction:^{
-        if ([BlueToothDataManager shareManager].isConnected) {
-            [[UNBlueToothTool shareBlueToothTool] buttonToUnboundAction];
-        } else {
-           HUDNormal(@"蓝牙已断开")
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self dj_alertAction:self alertTitle:nil actionTitle:@"继续" message:@"您将要与蓝牙设备解除绑定？" alertAction:^{
+            if ([BlueToothDataManager shareManager].isConnected) {
+                [[UNBlueToothTool shareBlueToothTool] buttonToUnboundAction];
+            } else {
+                [self checkHasBindDevice];
+            }
+        }];
+    } else {
+        [self checkHasBindDevice];
+    }
+}
+
+#pragma mark 查询是否有绑定设备
+- (void)checkHasBindDevice {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    //    NSLog(@"表头：%@",self.headers);
+    NSDictionary *info = [[NSDictionary alloc] init];
+    [SSNetworkRequest getRequest:apiDeviceBracelet params:info success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"绑定的设备 -- %@", responseObj);
+            if (![responseObj[@"msg"] isEqualToString:@"empty"]) {
+                [self dj_alertAction:self alertTitle:nil actionTitle:@"继续" message:@"没有连接绑定的设备，是否要解除已绑定的设备？" alertAction:^{
+                    [self unBindDevice];
+                }];
+            } else {
+                HUDNormal(INTERNATIONALSTRING(@"该账号没有绑定设备"))
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==0){
+            //数据请求失败
+            NSLog(@"没有设备");
+            HUDNormal(INTERNATIONALSTRING(@"请求失败"))
         }
-    }];
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
 }
 
 #pragma mark 调用解除绑定接口
@@ -287,19 +330,20 @@
             } else {
                 self.operatorImg.image = [UIImage imageNamed:@"icon_dis"];
             }
-            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
-                self.isOpened = YES;
-                [self.offButton setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
-            } else {
-                self.isOpened = NO;
-                [self.offButton setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
-            }
             
             [self checkOpertaorTypeName];
         } else {
             self.operatorName.text = @"----";
             self.electricNum.text = @"----";
             self.deviceName.text = [NSString stringWithFormat:@"设备：---"];
+        }
+        
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            self.isOpened = YES;
+            [self.offButton setImage:[UIImage imageNamed:@"btn_kg_open"] forState:UIControlStateNormal];
+        } else {
+            self.isOpened = NO;
+            [self.offButton setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
         }
     } else {
         self.connectedDeviceView.hidden = YES;
@@ -441,7 +485,9 @@
             NSString *statueStr = @"on";
             [[NSUserDefaults standardUserDefaults] setObject:statueStr forKey:@"offsetStatue"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
+            if ([BlueToothDataManager shareManager].isConnected) {
+                [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
+            }
         } else {
             //添加注销注册的功能
             [self dj_alertAction:self alertTitle:@"温馨提示" actionTitle:@"继续" message:@"关闭此功能后您将无法正常使用电话和短信等相关功能，是否继续？" alertAction:^{
@@ -449,7 +495,9 @@
                 NSString *statueStr = @"off";
                 [[NSUserDefaults standardUserDefaults] setObject:statueStr forKey:@"offsetStatue"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+                if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+                }
                 [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
             }];

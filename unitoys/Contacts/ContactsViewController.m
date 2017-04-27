@@ -20,6 +20,7 @@
 #import "ContactsCallDetailsController.h"
 #import <ContactsUI/ContactsUI.h>
 #import "BlueToothDataManager.h"
+#import "StatuesViewDetailViewController.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
@@ -68,6 +69,9 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     //添加状态栏
     self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, STATUESVIEWHEIGHT)];
     self.statuesView.backgroundColor = UIColorFromRGB(0xffbfbf);
+    //添加手势
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToShowDetail)];
+    [self.statuesView addGestureRecognizer:tap];
     UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
     leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
@@ -136,6 +140,12 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAddressBook) name:@"addressBookChanged" object:@"addressBook"];
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
+}
+
+#pragma mark 手势点击事件
+- (void)jumpToShowDetail {
+    StatuesViewDetailViewController *statuesViewDetailVC = [[StatuesViewDetailViewController alloc] init];
+    [self.navigationController pushViewController:statuesViewDetailVC animated:YES];
 }
 
 - (void)contactsViewChangeStatuesView:(NSNotification *)sender {
