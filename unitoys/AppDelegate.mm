@@ -807,6 +807,7 @@
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
     NSLog(@"tcp连接失败 %@", err);
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"off"]) {
+        NSLog(@"关闭开关，断开tcp");
         [BlueToothDataManager shareManager].isTcpConnected = NO;
         [BlueToothDataManager shareManager].isRegisted = NO;
         return;
@@ -865,10 +866,12 @@
                     }
                 }else{
                     NSLog(@"不重连");
+                    [BlueToothDataManager shareManager].isTcpConnected = NO;
                 }
             }
         }else{
             NSLog(@"正常断开");
+            [BlueToothDataManager shareManager].isTcpConnected = NO;
         }
     }
     

@@ -133,8 +133,9 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].bleStatueForCard = 0;
     self.macAddressDict = [NSMutableDictionary new];
     self.RSSIDict = [NSMutableDictionary new];
-    
-    [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
+    if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+        [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
+    }
     self.simtype = [self checkSimType];
     NSLog(@"卡类型--%@", self.simtype);
     
@@ -980,9 +981,9 @@ static UNBlueToothTool *instance = nil;
     //同步时间
     [self checkNowTime];
     //请求基本信息
+    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
     if (self.boundedDeviceInfo[@"IMEI"]) {
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
-            [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
             //请求卡类型和ICCID
             if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                 [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
@@ -1002,7 +1003,7 @@ static UNBlueToothTool *instance = nil;
 
 - (void)checkSystemInfo {
     //请求基本信息
-    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+//    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
     //请求卡类型和ICCID
     [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
 }
@@ -1147,6 +1148,7 @@ static UNBlueToothTool *instance = nil;
             //                        [self sendDataToUnBoundDevice];
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
             [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
+            [BlueToothDataManager shareManager].isBounded = NO;
             [self.boundTimer setFireDate:[NSDate distantFuture]];
         }
     }
@@ -1329,7 +1331,7 @@ static UNBlueToothTool *instance = nil;
                 [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"01"];
 //                [self hideHud];
 //                [self showHudNormalString:INTERNATIONALSTRING(@"绑定成功")];
-                [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+//                [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
                 //请求卡类型和ICCID
                 [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
                 [self bindBoundDevice];
@@ -1690,41 +1692,6 @@ static UNBlueToothTool *instance = nil;
                                 //有电话卡
                                 [BlueToothDataManager shareManager].isHaveCard = YES;
                                 [BlueToothDataManager shareManager].cardType = @"2";
-                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
-                                //判断是否有指定套餐，并创建连接
-                                [BlueToothDataManager shareManager].bleStatueForCard = 2;
-                                [BlueToothDataManager shareManager].isCanSendAuthData = YES;
-                                if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue && ![BlueToothDataManager shareManager].isNeedToCheckStatue) {
-                                    //查询tcp连接状态
-                                    [self checkRegistStatue];
-                                    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
-                                } else {
-                                    //注册卡
-                                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
-                                        [BlueToothDataManager shareManager].isNeedToCheckStatue = NO;
-                                        if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
-                                            
-                                            // ---取消延时查询套餐
-                                            //                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                            [BlueToothDataManager shareManager].isRegisted = NO;
-                                            [BlueToothDataManager shareManager].isBeingRegisting = YES;
-                                            //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
-                                            NSLog(@"判断用户是否存在指定套餐");
-                                            [self checkUserIsExistAppointPackage];
-                                            //                                });
-                                            
-                                        } else {
-                                            NSLog(@"注册卡---信号强");
-                                            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-                                        }
-                                    } else {
-                                        NSLog(@"不注册");
-                                        [self showHudNormalString:@"不注册"];
-                                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
-                                        [BlueToothDataManager shareManager].isBeingRegisting = NO;
-                                        [BlueToothDataManager shareManager].isRegisted = NO;
-                                    }
-                                }
                             } else if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"4"]) {
                                 //爱小器卡
                                 [BlueToothDataManager shareManager].isHaveCard = YES;
@@ -1765,15 +1732,41 @@ static UNBlueToothTool *instance = nil;
                     if (contentStr) {
                         //判断本地是否存在ICCID
                         [UNPushKitMessageManager shareManager].iccidString = contentStr;
-                        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
-                        NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
-                        if (dict) {
-                            //创建tcp,建立连接
-                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
-                        }else{
-                            //创建udp,初始化操作
-                            [UNPushKitMessageManager shareManager].isNeedRegister = YES;
-                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
+                        
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+                        //判断是否有指定套餐，并创建连接
+                        [BlueToothDataManager shareManager].bleStatueForCard = 2;
+                        [BlueToothDataManager shareManager].isCanSendAuthData = YES;
+                        if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue && ![BlueToothDataManager shareManager].isNeedToCheckStatue) {
+                            //查询tcp连接状态
+                            [self checkRegistStatue];
+                            [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
+                        } else {
+                            //注册卡
+                            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                                [BlueToothDataManager shareManager].isNeedToCheckStatue = NO;
+                                if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
+                                    
+                                    // ---取消延时查询套餐
+                                    //                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                    [BlueToothDataManager shareManager].isRegisted = NO;
+                                    [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                                    //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
+                                    NSLog(@"判断用户是否存在指定套餐");
+                                    [self checkUserIsExistAppointPackage];
+                                    //                                });
+                                    
+                                } else {
+                                    NSLog(@"注册卡---信号强");
+                                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                }
+                            } else {
+                                NSLog(@"不注册");
+                                [self showHudNormalString:@"不注册"];
+                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
+                                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                                [BlueToothDataManager shareManager].isRegisted = NO;
+                            }
                         }
                     }
                 }
@@ -2105,9 +2098,21 @@ static UNBlueToothTool *instance = nil;
                     if ([self.simtype isEqualToString:@"1"] || [self.simtype isEqualToString:@"2"]) {
                         if ([BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isChangeSimCard) {
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
+                            NSLog(@"又走重新连接tcp的地方了");
                         } else {
                             //                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
                             [BlueToothDataManager shareManager].isChangeSimCard = NO;
+                            
+                            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
+                            NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
+                            if (dict) {
+                                //创建tcp,建立连接
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
+                            }else{
+                                //创建udp,初始化操作
+                                [UNPushKitMessageManager shareManager].isNeedRegister = YES;
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
+                            }
                             
                             //取消手动发送ICCID命令
 //                            [self updataToCard];
