@@ -39,7 +39,7 @@ typedef enum : NSUInteger {
     BLECardData,//卡数据
     BLEAixiaoqiCardData,//爱小器国外卡数据
     BLEJUSTBOXCANCONNECT,//仅钥匙扣能连
-    BLECardTypeAndICCID,
+    BLECardTypeAndICCID,//获取卡类型和ICCID
 } APPSENDTOBLE;
 
 @interface UNBlueToothTool()
@@ -338,7 +338,7 @@ static UNBlueToothTool *instance = nil;
             typeStr = @"1400";
             break;
         case BLECardTypeAndICCID:
-            //仅钥匙扣能连
+            //卡类型和iccid
             typeStr = @"1600";
             break;
         default:
@@ -980,6 +980,8 @@ static UNBlueToothTool *instance = nil;
     if (self.boundedDeviceInfo[@"IMEI"]) {
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
             [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+            //请求卡类型和ICCID
+            [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
         } else {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
         }
@@ -995,7 +997,9 @@ static UNBlueToothTool *instance = nil;
 
 - (void)checkSystemInfo {
     //请求基本信息
-    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+//    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+    //请求卡类型和ICCID
+    [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
 }
 
 - (void)sendLBEMessageWithPushKit
@@ -1322,6 +1326,8 @@ static UNBlueToothTool *instance = nil;
 //                [self hideHud];
 //                [self showHudNormalString:INTERNATIONALSTRING(@"绑定成功")];
                 [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+                //请求卡类型和ICCID
+                [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
                 [self bindBoundDevice];
                 //对卡上电
 //                [self phoneCardToUpeLectrify:@"01"];
