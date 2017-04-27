@@ -100,7 +100,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -973,7 +973,19 @@
             [sock readDataWithTimeout:-1 tag:201];
             NSString *ip = [sock connectedHost];
             uint16_t port = [sock connectedPort];
+            //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             NSLog(@"201接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+            NSString *tempStr = [NSString stringWithFormat:@"%@", data];
+            if ([tempStr containsString:@"<"]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
+            }
+            if ([tempStr containsString:@">"]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@">" withString:@""];
+            }
+            if ([tempStr containsString:@" "]) {
+                tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+            }
+            [self checkManyPacketString:tempStr];
         }else{
             [sock readDataWithTimeout:-1 tag:tag];
             NSString *ip = [sock connectedHost];
@@ -2330,6 +2342,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                         //                            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
                         [BlueToothDataManager shareManager].isBeingRegisting = YES;
                         self.communicateID = @"00000000";
+                        [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送重连信息--%@", self.tcpPacketStr]];
                         //发送数据
                         [self sendMsgWithMessage:self.tcpPacketStr];
                         

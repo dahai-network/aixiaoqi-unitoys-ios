@@ -104,7 +104,6 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             contactVc.view.tag = 100;
             contactVc.contactStore = contactStore;
             contactVc.allowsEditing = YES;
-//            contactVc.allowsActions = YES;
             contactVc.allowsActions = NO;
             contactVc.delegate = self;
             if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0) {

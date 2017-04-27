@@ -13,11 +13,15 @@
 #import "VSWManager.h"
 #import <CommonCrypto/CommonDigest.h>
 
+#import "UNPushKitMessageManager.h"
+
 
 @interface UNSipEngineInitialize()<SipEngineUICallDelegate,SipEngineUIRegistrationDelegate>
 
 @property (strong,nonatomic) NSMutableDictionary *headers;
 @property (nonatomic, assign) BOOL checkToken;
+
+@property (nonatomic, assign) BOOL isFristRegister;
 @end
 
 @implementation UNSipEngineInitialize
@@ -72,15 +76,23 @@
 }
 
 - (void)initEngine {
-    [[SipEngineManager instance] Init];
-    [[SipEngineManager instance] LoadConfig];
-    if ([SipEngineManager instance].callDelegate == nil) {
-        [[SipEngineManager instance] setCallDelegate:self];
+    return;
+    NSLog(@"UNSipEngineInitialize---initEngine");
+    if (kSystemVersionValue < 9.0) {
+        if (!self.isFristRegister) {
+            [[SipEngineManager instance] Init];
+            [[SipEngineManager instance] LoadConfig];
+            
+            if ([SipEngineManager instance].callDelegate == nil) {
+                [[SipEngineManager instance] setCallDelegate:self];
+            }
+            if ([SipEngineManager instance].registrationDelegate == nil) {
+                [[SipEngineManager instance] setRegistrationDelegate:self];
+            }
+            [self doRegister];
+            self.isFristRegister = YES;
+        }
     }
-    if ([SipEngineManager instance].registrationDelegate == nil) {
-        [[SipEngineManager instance] setRegistrationDelegate:self];
-    }
-    [self doRegister];
 }
 
 
@@ -96,7 +108,7 @@
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            NSLog(@"获取软电话注册配置--=有数据：%@",responseObj);
+            NSLog(@"获取软电话注册配置1--=有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
@@ -140,7 +152,7 @@
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            NSLog(@"获取软电话注册配置--=有数据：%@",responseObj);
+            NSLog(@"获取软电话注册配置2--=有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];

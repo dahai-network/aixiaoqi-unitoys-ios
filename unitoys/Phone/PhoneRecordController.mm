@@ -167,6 +167,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 
 - (BOOL)initEngine {
+    NSLog(@"PhoneRecordController---initEngine");
     [[SipEngineManager instance] Init];
     [[SipEngineManager instance] LoadConfig];
     

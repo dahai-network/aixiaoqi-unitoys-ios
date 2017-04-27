@@ -1029,7 +1029,8 @@ static UNBlueToothTool *instance = nil;
             NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
             NSTimeInterval timeValue = [dataDate timeIntervalSinceNow];
             NSLog(@"时间差为---%f", timeValue);
-            if (timeValue > 15.0) {
+            if (timeValue > 150.0) {
+                //15s
                 NSLog(@"时间太久,丢弃当前数据");
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"PushKitMessageDataTimeout" object:nil];
             }else{
