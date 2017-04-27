@@ -123,8 +123,10 @@
 
 - (void)testVcAction
 {
+#if DEBUG
     UNTestViewController *vc = [[UNTestViewController alloc] init];
     [self.navigationController pushViewController:vc animated:YES];
+#endif
 }
 
 - (void)tapAction {
@@ -137,8 +139,6 @@
 - (void)setValue :(NSNotification *)notification {
 
     self.checkToken = YES;
-    //    ;
-    //
     NSString *str = notification.object;
     NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithObjectsAndKeys:str,@"NickName", nil];
     NSLog(@"%@", params);

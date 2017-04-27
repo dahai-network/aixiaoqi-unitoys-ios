@@ -24,7 +24,7 @@
 
 - (NSMutableArray *)blackLists
 {
-    if (!_blackLists) {
+    if (!_blackLists || !_blackLists.count) {
         _blackLists = [NSMutableArray arrayWithArray:[[UNDatabaseTools sharedFMDBTools] getBlackLists]];
     }
     return _blackLists;

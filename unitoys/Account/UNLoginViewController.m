@@ -15,6 +15,7 @@
 #import <sys/utsname.h>
 #import "CutomButton.h"
 #import "AgreementViewController.h"
+#import "UNDataTools.h"
 
 @interface UNLoginViewController ()<UITextFieldDelegate>
 // 时间计数
@@ -437,6 +438,7 @@
     [SSNetworkRequest getRequest:apiBlackListGet params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [weakSelf addBlackLists:responseObj[@"data"]];
+            [UNDataTools sharedInstance].blackLists = nil;
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{

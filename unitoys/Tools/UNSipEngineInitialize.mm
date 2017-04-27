@@ -96,7 +96,7 @@
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-//            NSLog(@"有数据：%@",responseObj);
+            NSLog(@"获取软电话注册配置--=有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
@@ -140,7 +140,7 @@
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-//            NSLog(@"有数据：%@",responseObj);
+            NSLog(@"获取软电话注册配置--=有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
@@ -175,9 +175,6 @@
             }else{
                 //数据请求失败
             }
-            
-            
-            
         } failure:^(id dataObj, NSError *error) {
             NSLog(@"有异常：%@",[error description]);
         } headers:self.headers];
@@ -219,6 +216,7 @@
 }
 
 -(void) OnCallMediaStreamsConnected:(MediaTransMode)mode{
+    NSLog(@"新呼叫");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 

@@ -494,6 +494,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else if ([[responseObj objectForKey:@"status"] intValue]==9946){
                 NSLog(@"不在黑名单内");
+                [weakSelf deleteBlickList:weakSelf.phoneNumber];
             }else{
             }
             NSLog(@"查询到的消息数据：%@",responseObj);
@@ -514,6 +515,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else if ([[responseObj objectForKey:@"status"] intValue]==9946){
                 NSLog(@"已经在黑名单内");
+                [weakSelf addBlackList:weakSelf.phoneNumber];
             }else{
             }
             NSLog(@"查询到的消息数据：%@",responseObj);
