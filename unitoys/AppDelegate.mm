@@ -431,6 +431,7 @@
                     NSLog(@"tcp pushkit数据---%@",[UNPushKitMessageManager shareManager].tcpStringWithPushKit);
                     if ([UNPushKitMessageManager shareManager].tcpStringWithPushKit) {
                         self.communicateID = @"00000000";
+#warning 此状态可能会对tcp状态判断有影响，需注意
 //                        [BlueToothDataManager shareManager].isTcpConnected = YES;
                         // 等待数据来啊
                         [self.sendTcpSocket readDataWithTimeout:-1 tag:201];
@@ -449,7 +450,7 @@
                     //发送数据
                     if (self.tcpPacketStr) {
                         self.communicateID = @"00000000";
-//                        [BlueToothDataManager shareManager].isTcpConnected = YES;
+                        [BlueToothDataManager shareManager].isTcpConnected = YES;
                         // 等待数据来啊
                         [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
                         NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);

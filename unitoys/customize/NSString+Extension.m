@@ -7,6 +7,7 @@
 //
 
 #import "NSString+Extension.h"
+#import "3des.h"
 
 @implementation NSString (Extension)
 - (CGSize)sizeWithFont:(UIFont *)font maxSize:(CGSize)maxSize
@@ -45,4 +46,21 @@
     return unicodeString; 
     
 }
+
+//十六进制
++(NSString *)doEncryptBuffer:(unsigned char *)buffer {
+    unsigned char keys[16] = {0x7a,0x3b,0x59,0x64,0xca,0x8e,0x9d,0xf2,0x7a,0x3b,0x59,0x64,0xca,0x8e,0x9d,0xf2};
+    //    unsigned char keys[16] = {0x7a,0x3b,0x59,0x64,0xca,0x8e,0x9d,0xf2,0x7a,0x3b,0x59,0x64,0xca,0x8e,0x9d,0xf2};
+//    unsigned char buffer[8] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
+    tdes_encrypt_for_ecb(buffer,sizeof(buffer),keys);
+    
+    NSData *datas = [NSData dataWithBytes:buffer length:8];
+    NSUInteger          len = [datas length];
+    char *              chars = (char *)[datas bytes];
+    NSMutableString *   hexString = [[NSMutableString alloc] init];
+    for(NSUInteger i = 0; i < len; i++ )
+        [hexString appendString:[NSString stringWithFormat:@"%0.2hhx", chars[i]]];
+    return hexString;
+}
+
 @end

@@ -16,6 +16,7 @@
 #import "UNBLEDataManager.h"
 #import "UNGetSimData.h"
 #import "UNPushKitMessageManager.h"
+#import "NSString+Extension.h"
 
 //app发送给蓝牙
 typedef enum : NSUInteger {
@@ -998,7 +999,30 @@ static UNBlueToothTool *instance = nil;
     //请求电量
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
     //仅钥匙扣能连接
-    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+    [BlueToothDataManager shareManager].isSame = NO;
+    NSString *appdenStr;
+    for (int i = 0; i < 8; i++) {
+        int a = arc4random() % 255;
+        NSString *randomNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%d", a]];
+        if (!appdenStr.length) {
+            appdenStr = randomNumStr;
+        } else {
+            appdenStr = [appdenStr stringByAppendingString:randomNumStr];
+        }
+    }
+    NSString *encryptStr = [NSString doEncryptBuffer:[self convenStrToCharWithString:appdenStr]];
+//    NSString *encryptStr = [NSString DES3StringFromText:@"0102030405060708"];
+//    NSString *hexStr = [NSString stringFromHexString:@"322966766D962BCE"];
+//    NSLog(@"转换之后的文字 -- %@", hexStr);
+    NSLog(@"加密之后的文字 -- %@", encryptStr);
+    [BlueToothDataManager shareManager].checkStr = encryptStr;
+    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:appdenStr];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (![BlueToothDataManager shareManager].isSame) {
+            [self closeConnecting];
+        }
+    });
+//    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
 }
 
 - (void)checkSystemInfo {
@@ -1775,11 +1799,33 @@ static UNBlueToothTool *instance = nil;
             case 14:
                 //设置闹钟成功
                 break;
+            case 20:
+                //接收到app返回的加密数据
+                NSLog(@"接收到app返回的加密数据 -- %@", contentStr);
+                if (![contentStr isEqualToString:[BlueToothDataManager shareManager].checkStr]) {
+                    [BlueToothDataManager shareManager].isSame = NO;
+                    [self closeConnecting];
+                } else {
+                    [BlueToothDataManager shareManager].isSame = YES;
+                }
+                break;
             default:
                 NSLog(@"不能识别的类别");
                 break;
         }
     }
+}
+
+- (void)closeConnecting {
+//    if ([BlueToothDataManager shareManager].isBounded) {
+//        [self u];
+//    }
+    [BlueToothDataManager shareManager].isAccordBreak = YES;
+//    [BlueToothDataManager shareManager].isBounded = NO;
+//    [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
+    [self.mgr cancelPeripheralConnection:self.peripheral];
+//    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+//    [self.boundTimer setFireDate:[NSDate distantFuture]];
 }
 
 #pragma mark 查询订单卡数据
@@ -2898,6 +2944,34 @@ static UNBlueToothTool *instance = nil;
     int result = strtoul([subString UTF8String], 0, 16);
     //    NSLog(@"返回的结果为：%d", result);
     return result;
+}
+
+#pragma mark 将十六进制的数据包转换成byte数组
+- (unsigned char *)convenStrToCharWithString:(NSString *)hexString {
+    
+    int len = (int)[hexString length] /2;// Target length
+    
+    unsigned char *buf =malloc(len);
+    
+    unsigned char *whole_byte = buf;
+    
+    char byte_chars[3] = {'\0','\0','\0'};
+    
+    int i;
+    
+    for (i=0; i < [hexString length] /2; i++) {
+        
+        byte_chars[0] = [hexString characterAtIndex:i*2];
+        
+        byte_chars[1] = [hexString characterAtIndex:i*2+1];
+        
+        *whole_byte = strtol(byte_chars, NULL, 16);
+        
+        whole_byte++;
+        
+    }
+    
+    return buf;
 }
 
 #pragma mark 将十六进制的数据包转换成byte数组
