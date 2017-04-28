@@ -61,11 +61,11 @@ typedef NS_ENUM(NSUInteger, LoginVCStatuType) {
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *forgetBottomMargin;
 //默认41
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *registerBottomMargin;
-//默认-45
+//默认-65
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *middleCenterY;
-//默认60
+//默认40
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *iconBottomMargin;
 //默认15
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tipBottomMargin;
+//@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tipBottomMargin;
 
 @end

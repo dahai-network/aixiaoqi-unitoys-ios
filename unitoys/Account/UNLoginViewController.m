@@ -38,8 +38,7 @@
         self.forgetBottomMargin.constant = Y(25);
         self.registerBottomMargin.constant = Y(30);
         self.middleCenterY.constant = Y(-35);
-        self.iconBottomMargin.constant = Y(50);
-        self.tipBottomMargin.constant = Y(10);
+        self.iconBottomMargin.constant = Y(20);
     }
     [self setUpInitialize];
     
@@ -58,7 +57,7 @@
     self.registerbtn.layer.borderColor = UIColorFromRGB(0x00A0E9).CGColor;
     
     self.reCaptchaField.placeholder = @"请输入你的验证码";
-    self.middleViewHeight.constant = 144;
+    self.middleViewHeight.constant = 172;
     
     self.currentStatuType = LoginVCStatuTypeLogin;
     
@@ -210,7 +209,7 @@
     
     POPBasicAnimation *registerAnima = [POPBasicAnimation animationWithPropertyNamed:kPOPLayoutConstraintConstant];
     registerAnima.duration = 0.7;
-    registerAnima.toValue = @(216);
+    registerAnima.toValue = @(258);
     [self.middleViewHeight pop_addAnimation:registerAnima forKey:@"registerAnima"];
 }
 
@@ -227,7 +226,7 @@
     //约束动画
     POPBasicAnimation *loginAnima = [POPBasicAnimation animationWithPropertyNamed:kPOPLayoutConstraintConstant];
     loginAnima.duration = 0.7;
-    loginAnima.toValue = @(144);
+    loginAnima.toValue = @(172);
     [self.middleViewHeight pop_addAnimation:loginAnima forKey:@"loginAnima"];
 }
 
@@ -616,7 +615,7 @@
         }else{
             [self updateTipLabelShow:self.pwdTipLabel];
             self.currentLabel.text = @"登录密码";
-            offsetY = - 72;
+            offsetY = - 80;
         }
     }else if (self.currentStatuType == LoginVCStatuTypeRegister){
         if (textField == self.accountField) {
@@ -624,11 +623,11 @@
             self.currentLabel.text = @"注册账号";
         }else if (textField == self.reCaptchaField){
             [self updateTipLabelShow:self.reCaptchaTipLabel];
-            offsetY = - 72;
+            offsetY = - 80;
         }else{
             [self updateTipLabelShow:self.pwdTipLabel];
             self.currentLabel.text = @"注册密码";
-            offsetY = - 72;
+            offsetY = - 80;
         }
     }else{
         if (textField == self.accountField) {
@@ -636,11 +635,11 @@
             self.currentLabel.text = @"登录账号";
         }else if (textField == self.reCaptchaField){
             [self updateTipLabelShow:self.reCaptchaTipLabel];
-            offsetY = - 72;
+            offsetY = - 80;
         }else{
             [self updateTipLabelShow:self.pwdTipLabel];
             self.currentLabel.text = @"登录密码";
-            offsetY = - 72;
+            offsetY = - 80;
         }
     }
     if (offsetY) {
