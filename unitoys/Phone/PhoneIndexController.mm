@@ -112,7 +112,8 @@
         self.pageViewController.view.un_top = self.statuesView.un_height;
         self.pageViewController.view.un_height = self.view.un_height - self.statuesView.un_height - 49;
         [UNDataTools sharedInstance].tipStatusHeight = self.statuesView.un_height;
-        [UNDataTools sharedInstance].pageViewHeight = self.pageViewController.view.un_height;
+//        [UNDataTools sharedInstance].pageViewHeight = self.pageViewController.view.un_height;
+        [UNDataTools sharedInstance].pageViewHeight = kScreenHeightValue - 64 - self.statuesView.un_height - 49;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"TipStatuBarHeightChange" object:nil];
     }
 }

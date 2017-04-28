@@ -29,17 +29,20 @@
     [self.contentView addSubview:self.headImageView];
     //姓名
     [self.contentView addSubview:self.nameLabel];
+    _lineView = [[UIView alloc] init];
+    _lineView.backgroundColor = UIColorFromRGB(0xe5e5e5);
+    [self addSubview:_lineView];
 }
 - (UIImageView *)headImageView{
     if (!_headImageView) {
-        _headImageView=[[UIImageView alloc]initWithFrame:CGRectMake(10.0, 10.0, 40.0, 40.0)];
+        _headImageView=[[UIImageView alloc]initWithFrame:CGRectMake(20.0, 10.0, 40.0, 40.0)];
         [_headImageView setContentMode:UIViewContentModeScaleAspectFill];
     }
     return _headImageView;
 }
 - (UILabel *)nameLabel{
     if (!_nameLabel) {
-        _nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_headImageView.frame) + 5, 10.0, kScreenWidth-60.0, 40.0)];
+        _nameLabel=[[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_headImageView.frame) + 10, 10.0, kScreenWidth-60.0, 40.0)];
         _nameLabel.textColor = UIColorFromRGB(0x313131);
         [_nameLabel setFont:[UIFont systemFontOfSize:16.0]];
     }
@@ -55,6 +58,12 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    _lineView.frame = CGRectMake(15, self.bounds.size.height - 0.5, self.bounds.size.width - 15 - 15, 0.5);
 }
 
 @end

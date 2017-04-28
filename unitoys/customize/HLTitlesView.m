@@ -55,9 +55,10 @@
     CGFloat titlesViewW = 0;
     for (int i = 0; i < titlesArray.count; i++) {
         NSString *currentStr = titlesArray[i];
-        CGFloat titleW = [currentStr boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:18]} context:nil].size.width;
+        CGFloat titleW = [currentStr boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:17]} context:nil].size.width;
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        button.titleLabel.font = [UIFont boldSystemFontOfSize:17];
         [button setTitle:currentStr forState:UIControlStateNormal];
 //        [button setTitleColor:[UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1] forState:UIControlStateNormal];
 //        [button setTitleColor:UIColorFromHex_hl(0x42a5f5) forState:UIControlStateSelected];
@@ -75,7 +76,7 @@
     self.frame = CGRectMake(0, 0, titlesViewW, 45);
     
     NSString *fristStr = titlesArray[0];
-    CGFloat fristStrW = [fristStr boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:18]} context:nil].size.width;
+    CGFloat fristStrW = [fristStr boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:17]} context:nil].size.width;
 
     titleBottomView.un_bottom = self.frame.size.height;
     

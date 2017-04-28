@@ -124,7 +124,7 @@
     if (self.isTransparent) {
         self.backgroundColor = [UIColor clearColor];
     }else{
-        self.backgroundColor = UIColorFromRGB(0xd2d2d2);
+        self.backgroundColor = UIColorFromRGB(0xe5e5e5);
     }
     
     

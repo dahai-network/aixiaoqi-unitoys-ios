@@ -12,6 +12,7 @@
 #import "UNDatabaseTools.h"
 #import "BlueToothDataManager.h"
 #import "UNBlueToothTool.h"
+#import "AddressBookManager.h"
 
 @implementation SettingViewController
 
@@ -67,7 +68,7 @@
             [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
         }
         [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
-        
+        [AddressBookManager shareManager].isOpenedAddress = NO;
         //注销极光推送
         [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
             

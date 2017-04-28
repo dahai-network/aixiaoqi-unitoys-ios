@@ -39,6 +39,7 @@
             <objects>
                 <navigationController title="商城" id="DbG-xP-2CW" customClass="navHomeViewController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="商城" image="mall_bar_nor" selectedImage="mall_bar_pre" id="iJW-Ui-4cG"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="pyx-IF-q4Q">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1122,6 +1123,7 @@
             <objects>
                 <navigationController id="1J6-ul-Vng" customClass="navHomeViewController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="通讯录" image="contacts_bar_nor" selectedImage="contacts_bar_pre" id="KAi-Bz-db3"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Q7F-Dp-G5r">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1139,6 +1141,7 @@
             <objects>
                 <navigationController id="jZT-8j-xkN" customClass="navHomeViewController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="电话" image="phone_bar_nor" selectedImage="phone_bar_pre" id="z8a-mc-f7E"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="GyN-vx-ZWb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1156,6 +1159,7 @@
             <objects>
                 <navigationController title="我" id="Asa-PC-QhR" customClass="navHomeViewController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="我的" image="my_center_nor" selectedImage="my_center_pre" id="zL2-et-yt6"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="y7e-2R-JgY">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1173,6 +1177,7 @@
             <objects>
                 <navigationController id="Td9-VK-ecT" customClass="navHomeViewController" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="运动" image="nav_sport" selectedImage="nav_sportSelected" id="g9T-ek-z28"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Sk4-oz-Ki2">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>

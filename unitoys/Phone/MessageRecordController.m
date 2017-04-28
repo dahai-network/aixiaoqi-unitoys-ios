@@ -19,6 +19,8 @@
 @property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic, strong) AddTouchAreaButton *createMsgButton;
+
+@property (nonatomic, strong) UILabel *noDataLabel;
 @end
 
 static NSString *strMessageRecordCell = @"MessageRecordCell";
@@ -27,6 +29,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initTableView];
+    [self initNoDataLabel];
     [self initRefresh];
     
     self.page = 1;
@@ -56,6 +59,24 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [self.view addSubview:self.tableView];
     [self.tableView registerNibWithNibId:strMessageRecordCell];
 }
+
+- (void)initNoDataLabel
+{
+    if (!_noDataLabel) {
+        _noDataLabel = [[UILabel alloc] init];
+        _noDataLabel.text = [NSString stringWithFormat:@"暂无通话记录\n您还没有打过电话"];
+        _noDataLabel.font = [UIFont systemFontOfSize:16];
+        _noDataLabel.textColor = UIColorFromRGB(0xcccccc);
+        _noDataLabel.numberOfLines = 2;
+        _noDataLabel.textAlignment = NSTextAlignmentCenter;
+        [_noDataLabel sizeToFit];
+        _noDataLabel.un_centerX = kScreenWidthValue * 0.5;
+        _noDataLabel.un_centerY = (kScreenHeightValue - 64 - 49) * 0.5;
+        [self.view addSubview:_noDataLabel];
+        _noDataLabel.hidden = YES;
+    }
+}
+
 
 - (void)contactsInfoChange
 {
@@ -200,6 +221,11 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.arrMessageRecord.count == 0) {
+        _noDataLabel.hidden = NO;
+    }else{
+        _noDataLabel.hidden = YES;
+    }
     return self.arrMessageRecord.count;
 }
 

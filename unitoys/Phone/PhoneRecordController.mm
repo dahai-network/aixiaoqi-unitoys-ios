@@ -61,6 +61,8 @@
 
 @property (nonatomic, copy) NSString *currentCallPhone;
 
+@property (nonatomic, strong) UILabel *noDataLabel;
+
 @end
 
 static NSString *searchContactsCellID = @"SearchContactsCell";
@@ -113,6 +115,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initTableView];
+    [self initNoDataLabel];
     //解压联系人数据库
     [self unZipNumberPhoneDB];
     
@@ -144,6 +147,23 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSLog(@"statusBarHeight--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
 }
 
+- (void)initNoDataLabel
+{
+    if (!_noDataLabel) {
+        _noDataLabel = [[UILabel alloc] init];
+        _noDataLabel.text = [NSString stringWithFormat:@"暂无通话记录\n您还没有打过电话"];
+        _noDataLabel.font = [UIFont systemFontOfSize:16];
+        _noDataLabel.textColor = UIColorFromRGB(0xcccccc);
+        _noDataLabel.numberOfLines = 2;
+        _noDataLabel.textAlignment = NSTextAlignmentCenter;
+        [_noDataLabel sizeToFit];
+        _noDataLabel.un_centerX = kScreenWidthValue * 0.5;
+        _noDataLabel.un_centerY = (kScreenHeightValue - 64 - 49) * 0.5;
+        [self.view addSubview:_noDataLabel];
+        _noDataLabel.hidden = YES;
+    }
+}
+
 - (void)tipStatuBarHeightChange:(NSNotification *)noti
 {
     if (self.phonePadButton.isHidden) {
@@ -162,6 +182,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         _phonePadButton.un_bottom -= STATUESVIEWHEIGHT;
     }else{
         _phonePadButton.un_bottom += STATUESVIEWHEIGHT;
+    }
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    if (self.phonePadView.un_top == self.view.un_height - (100 - 49)) {
+        self.phonePadView.un_top = self.view.un_height;
     }
 }
 
@@ -1642,9 +1670,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+     _noDataLabel.hidden = YES;
     if (self.isSearchStatu && self.phonePadView.inputedPhoneNumber && self.phonePadView.inputedPhoneNumber.length) {
         return self.searchLists.count;
     }else{
+        if (self.arrPhoneRecord.count == 0) {
+             _noDataLabel.hidden = NO;
+        }
         return self.arrPhoneRecord.count;
     }
     

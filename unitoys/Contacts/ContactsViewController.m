@@ -63,6 +63,16 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 //    
 //}
 
+
+//- (BOOL)isShowLeftButton
+//{
+//    if (self.bOnlySelectNumber) {
+//        return YES;
+//    }else{
+//        return NO;
+//    }
+//}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -183,7 +193,10 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 //    [btn setImage:[UIImage imageNamed:@"alarm_add"] forState:UIControlStateNormal];
 //    [btn addTarget:self action:@selector(addContactsAction:) forControlEvents:UIControlEventTouchUpInside];
 //    [self.navigationItem setRightBarButtonItem:[[UIBarButtonItem alloc]initWithCustomView:btn]];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_addressee_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(addContactsAction:)];
+    
+    if (!self.bOnlySelectNumber) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add_addressee_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(addContactsAction:)];
+    }
 }
 
 - (void)addContactsAction:(UIButton *)button
@@ -229,8 +242,6 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [viewController.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
-
-
 #pragma mark - setUpView
 - (void)setUpView{
     UIImageView *imageView=[[UIImageView alloc]initWithFrame:CGRectMake(0.0, kScreenHeight-49.0, kScreenWidth, 49.0)];
@@ -249,6 +260,15 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
         [_searchBar.layer setBorderColor:[UIColor colorWithRed:229.0/255 green:229.0/255 blue:229.0/255 alpha:1].CGColor];
         [_searchBar setDelegate:self];
         [_searchBar setKeyboardType:UIKeyboardTypeDefault];
+        [_searchBar setBackgroundColor:UIColorFromRGB(0xf5f5f5)];
+        for (UIView *subview in _searchBar.subviews.firstObject.subviews)
+        {
+            if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")])
+            {
+                [subview removeFromSuperview];
+                break;
+            }
+        }
     }
     return _searchBar;
 }
@@ -257,12 +277,14 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
         _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0.0, 0.0, kScreenWidth, kScreenHeight-49.0-self.statuesView.frame.size.height) style:UITableViewStylePlain];
         [_tableView setDelegate:self];
         [_tableView setDataSource:self];
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         [_tableView setSectionIndexBackgroundColor:[UIColor clearColor]];
         [_tableView setSectionIndexColor:[UIColor darkGrayColor]];
         [_tableView setBackgroundColor:[UIColor colorWithRed:240.0/255 green:240.0/255 blue:240.0/255 alpha:1]];
 //        _tableView.tableHeaderView=self.searchBar;
         //cell无数据时，不显示间隔线
-        UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
+//        UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
+        UIView *v = [[UIView alloc] init];
         [_tableView setTableFooterView:v];
     }
     return _tableView;
@@ -294,8 +316,8 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     if (!label) {
         label = [[UILabel alloc] init];
         [label setFont:[UIFont systemFontOfSize:14.5f]];
-        [label setTextColor:[UIColor grayColor]];
-        [label setBackgroundColor:[UIColor colorWithRed:240.0/255 green:240.0/255 blue:240.0/255 alpha:1]];
+        [label setTextColor:UIColorFromRGB(0x999999)];
+        [label setBackgroundColor:UIColorFromRGB(0xf5f5f5)];
     }
     [label setText:[NSString stringWithFormat:@"  %@",_sectionArr[section+1]]];
     return label;
@@ -332,20 +354,28 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
         ContactModel *model = _searchResultArr[indexPath.row];
         [cell.headImageView setImage:[UIImage imageWithData:model.thumbnailImageData]];
         [cell.nameLabel setText:model.name];
+        if (indexPath.row == _searchResultArr.count - 1) {
+            cell.lineView.hidden = YES;
+        }else{
+            cell.lineView.hidden = NO;
+        }
     }else{
         ContactModel *model=_rowArr[indexPath.section][indexPath.row];
         
 //        [cell.headImageView setImage:[UIImage imageNamed:model.portrait]];
         [cell.headImageView setImage:[UIImage imageWithData:model.thumbnailImageData]];
         [cell.nameLabel setText:model.name];
+        
+        if (indexPath.row == [_rowArr[indexPath.section] count] - 1) {
+            cell.lineView.hidden = YES;
+        }else{
+            cell.lineView.hidden = NO;
+        }
     }
-    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    
     if (tableView==_searchDisplayController.searchResultsTableView){
             ContactModel *contact = _searchResultArr[indexPath.row];
         if ([contact.phoneNumber containsString:@","]) {

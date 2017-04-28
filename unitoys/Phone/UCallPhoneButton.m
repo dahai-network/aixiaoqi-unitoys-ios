@@ -47,7 +47,7 @@
     _topLabel = topLabel;
     topLabel.text = self.topTitle;
     topLabel.textColor = [UIColor blackColor];
-    topLabel.font = [UIFont systemFontOfSize:22];
+    topLabel.font = [UIFont systemFontOfSize:23];
     [topLabel sizeToFit];
     [self addSubview:topLabel];
     
@@ -55,7 +55,7 @@
     _bottomLabel = bottomLabel;
     bottomLabel.text = self.bottomTitle;
     bottomLabel.textColor = [UIColor darkGrayColor];
-    bottomLabel.font = [UIFont systemFontOfSize:12];
+    bottomLabel.font = [UIFont systemFontOfSize:14];
     [bottomLabel sizeToFit];
     [self addSubview:bottomLabel];
 }
@@ -114,7 +114,7 @@
 //    self.bottomLabel.centerX = self.topLabel.centerX;
     
     self.topLabel.un_centerY = self.un_height * 0.5;
-    self.topLabel.un_right = self.un_width * 0.5 - 5;
+    self.topLabel.un_right = self.un_width * 0.5 - 10;
     self.bottomLabel.un_bottom = self.topLabel.un_bottom - 3;
     self.bottomLabel.un_left = self.un_width * 0.5;
 }
