@@ -854,6 +854,9 @@ static UNBlueToothTool *instance = nil;
             }
         });
     }
+    if (![BlueToothDataManager shareManager].isSame) {
+        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
+    }
 }
 
 

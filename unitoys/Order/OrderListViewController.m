@@ -37,8 +37,8 @@
     }else{
         self.title = @"我的套餐";
         //右边按钮
-        UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mypackge_add"] style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
-        self.navigationItem.rightBarButtonItem = right;
+//        UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mypackge_add"] style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
+//        self.navigationItem.rightBarButtonItem = right;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkOrderListForNotAct) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];//激活成功
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkOrderListForNotAct) name:@"BuyConfrim" object:nil];//取消
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkOrderListForNotAct) name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];//绑定礼包卡成功

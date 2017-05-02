@@ -88,6 +88,7 @@
 @property (nonatomic, weak) UNPopTipMsgView *popView;
 @property (nonatomic, strong)UIView *statuesView;
 @property (nonatomic, strong)UILabel *statuesLabel;
+@property (nonatomic, strong)UIWindow *firstWindow;
 @end
 
 @implementation HomeViewController
@@ -100,6 +101,21 @@
 }
 
 - (void)viewDidLoad {
+    if (!self.firstWindow) {
+        self.firstWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.firstWindow.windowLevel = UIWindowLevelStatusBar+1;
+        self.firstWindow.backgroundColor = [UIColor whiteColor];
+    }
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.firstWindow.frame];
+    imgView.image = [UIImage imageNamed:@"AppLaunch"];
+    [self.firstWindow addSubview:imgView];
+    [self.firstWindow makeKeyAndVisible];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.firstWindow.hidden = YES;
+        self.firstWindow = nil;
+        [self.firstWindow makeKeyAndVisible];
+    });
+    
     [super viewDidLoad];
     
     [self checkPackageResidue];
@@ -1723,10 +1739,17 @@
             break;
         case 5:
         {
-            //后边按实际的热门套餐数量
             NSInteger sizeWidth=[UIScreen mainScreen].bounds.size.width/2.00-18.00;
             NSInteger sizeHeight = sizeWidth*189.00/170.00;
-            return sizeHeight*2+6+15;
+            int lineNumber = (int)self.productInfoArr.count/2;
+            int numa = self.productInfoArr.count%2;
+            NSLog(@"jisuan - %d - %d", lineNumber, numa);
+            if (numa == 0) {
+                return sizeHeight*lineNumber+6*(lineNumber-1)+15;
+            } else {
+                return sizeHeight*(lineNumber+1)+6*lineNumber+15;
+            }
+//            return sizeHeight*2+6+15;
         }
             break;
         default:

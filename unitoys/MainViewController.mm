@@ -104,9 +104,18 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatuesAll:) name:@"changeStatueAll" object:nil];//状态改变
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkNotUse:) name:@"netWorkNotToUse" object:nil];//网络状态不可用
+    self.selectedViewController = self.childViewControllers[0];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.selectedViewController = self.childViewControllers[1];
+    });
 }
 
 //- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//    self.selectedViewController = self.childViewControllers[1];
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        self.selectedViewController = self.childViewControllers[1];
+//    });
 //    self.navigationController.navigationBar.translucent = NO;
 //}
 
