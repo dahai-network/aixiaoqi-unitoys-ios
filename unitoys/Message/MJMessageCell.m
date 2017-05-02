@@ -227,7 +227,8 @@
             self.failedbutton.enabled = NO;
             self.failedbutton.hidden = YES;
         }
-        [self.bgImageView setImage:[UIImage resizableImage1:@"msg_receive_new"]];
+//        [self.bgImageView setImage:[UIImage resizableImage1:@"msg_receive_new"]];
+        [self.bgImageView setImage:[UIImage resizableImage:@"pic_sms_a"]];
         [self.contentLabel setTextColor:UIColorFromRGB(0x333333)];
     }
     

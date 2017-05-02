@@ -1746,8 +1746,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 //                    }
             }else{
                 [cell.ivStatus setImage:[UIImage imageNamed:@"to_phone"]];
-                
-                
                 NSString *phoneNum = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
                 cell.nickName = phoneNum;
                 cell.phoneNumber = [dicPhoneRecord objectForKey:@"destnumber"];

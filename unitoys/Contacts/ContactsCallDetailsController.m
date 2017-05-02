@@ -486,6 +486,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.phoneNumber,@"BlackNum", nil];
         [self getBasicHeader];
         kWeakSelf
+        HUDNoStop1(@"正在解除屏蔽")
         [SSNetworkRequest postRequest:apiBlackListDelete params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [weakSelf deleteBlickList:weakSelf.phoneNumber];
@@ -507,6 +508,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.phoneNumber,@"BlackNum", nil];
         [self getBasicHeader];
         kWeakSelf
+        HUDNoStop1(@"正在屏蔽")
         [SSNetworkRequest postRequest:apiBlackListAdd params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [weakSelf addBlackList:weakSelf.phoneNumber];

@@ -100,10 +100,10 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     if (![AddressBookManager shareManager].isOpenedAddress && !self.bOnlySelectNumber) {
         self.navigationItem.leftBarButtonItem = nil;
         [AddressBookManager shareManager].isOpenedAddress = YES;
-        [self.view addSubview:self.searchBar];
-        self.tableView.frame = CGRectMake(0, self.statuesView.frame.size.height+self.searchBar.frame.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - self.statuesView.frame.size.height-self.searchBar.frame.size.height);
-//        self.tableView.frame = CGRectMake(0, self.statuesView.frame.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - self.statuesView.frame.size.height);
-//        self.tableView.tableHeaderView = self.searchBar;
+//        [self.view addSubview:self.searchBar];
+//        self.tableView.frame = CGRectMake(0, self.statuesView.frame.size.height+self.searchBar.frame.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - self.statuesView.frame.size.height-self.searchBar.frame.size.height);
+        self.tableView.frame = CGRectMake(0, self.statuesView.frame.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - self.statuesView.frame.size.height);
+        self.tableView.tableHeaderView = self.searchBar;
     }else{
         self.tableView.un_height -= 15;
     }
@@ -260,7 +260,8 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 }
 - (UISearchBar *)searchBar{
     if (!_searchBar) {
-        _searchBar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, self.statuesView.frame.size.height, kScreenWidth, 44)];
+//        _searchBar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, self.statuesView.frame.size.height, kScreenWidth, 44)];
+        _searchBar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 44)];
         [_searchBar sizeToFit];
         [_searchBar setPlaceholder:INTERNATIONALSTRING(@"搜索")];
         [_searchBar.layer setBorderWidth:0.5];
@@ -488,27 +489,27 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     searchBar.showsCancelButton = YES;
 }
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
-    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, 20-self.statuesView.frame.size.height);
-    _tableView.frame = CGRectOffset(_tableView.frame, 0, 20-self.statuesView.frame.size.height);
-
-    self.bFinishedEdit = NO;
+//    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, 20-self.statuesView.frame.size.height);
+//    _tableView.frame = CGRectOffset(_tableView.frame, 0, 20-self.statuesView.frame.size.height);
+//
+//    self.bFinishedEdit = NO;
     return YES;
 }
 - (BOOL)searchBarShouldEndEditing:(UISearchBar *)searchBar{
     
-    if (!self.bFinishedEdit) {
-        _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -20+self.statuesView.frame.size.height);
-        _tableView.frame = CGRectOffset(_tableView.frame, 0, -20+self.statuesView.frame.size.height);
-    }
+//    if (!self.bFinishedEdit) {
+//        _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -20+self.statuesView.frame.size.height);
+//        _tableView.frame = CGRectOffset(_tableView.frame, 0, -20+self.statuesView.frame.size.height);
+//    }
     
     return YES;
 }
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     //取消
-    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -20+self.statuesView.frame.size.height);
-    _tableView.frame = CGRectOffset(_tableView.frame, 0, -20+self.statuesView.frame.size.height);
-    
-    self.bFinishedEdit = YES;
+//    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -20+self.statuesView.frame.size.height);
+//    _tableView.frame = CGRectOffset(_tableView.frame, 0, -20+self.statuesView.frame.size.height);
+//    
+//    self.bFinishedEdit = YES;
     [searchBar resignFirstResponder];
     searchBar.showsCancelButton = NO;
 }
