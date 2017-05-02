@@ -175,7 +175,9 @@
     self.contentLabel.text = message.text;
     
     if (message.type == MJMessageTypeMe) {
-        [self.bgImageView setImage:[UIImage resizableImage:@"msg_send_new"]];
+//        self.bgImageView.tintColor = DefultColor;
+//        [self.bgImageView setImage:[UIImage resizableImage:@"msg_send_new"]];
+        [self.bgImageView setImage:[UIImage resizableImage:@"pic_sms"]];
         [self.contentLabel setTextColor:[UIColor whiteColor]];
         switch (message.Status) {
             case MJMessageStatuProcessing:

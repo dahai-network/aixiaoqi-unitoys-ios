@@ -21,6 +21,7 @@
 #import <ContactsUI/ContactsUI.h>
 #import "BlueToothDataManager.h"
 #import "StatuesViewDetailViewController.h"
+#import "UIImage+Extension.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
@@ -93,6 +94,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [self.view addSubview:self.statuesView];
     if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.statuesView.un_height = 0;
+        self.statuesView.hidden = YES;
     }
     
     if (![AddressBookManager shareManager].isOpenedAddress && !self.bOnlySelectNumber) {
@@ -100,6 +102,8 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
         [AddressBookManager shareManager].isOpenedAddress = YES;
         [self.view addSubview:self.searchBar];
         self.tableView.frame = CGRectMake(0, self.statuesView.frame.size.height+self.searchBar.frame.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - self.statuesView.frame.size.height-self.searchBar.frame.size.height);
+//        self.tableView.frame = CGRectMake(0, self.statuesView.frame.size.height, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64 - 49 - self.statuesView.frame.size.height);
+//        self.tableView.tableHeaderView = self.searchBar;
     }else{
         self.tableView.un_height -= 15;
     }
@@ -168,6 +172,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
             _tableView.un_height += STATUESVIEWHEIGHT;
         }
         self.statuesView.un_height = 0;
+        self.statuesView.hidden = YES;
     } else {
         if (self.statuesView.un_height == 0) {
             _searchBar.frame = CGRectOffset(_searchBar.frame, 0, STATUESVIEWHEIGHT);
@@ -175,6 +180,9 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
             _tableView.un_height -= STATUESVIEWHEIGHT;
         }
         self.statuesView.un_height = STATUESVIEWHEIGHT;
+        if (self.statuesView.isHidden) {
+            self.statuesView.hidden = NO;
+        }
     }
 }
 
@@ -253,22 +261,23 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 - (UISearchBar *)searchBar{
     if (!_searchBar) {
         _searchBar=[[UISearchBar alloc]initWithFrame:CGRectMake(0, self.statuesView.frame.size.height, kScreenWidth, 44)];
-        
         [_searchBar sizeToFit];
         [_searchBar setPlaceholder:INTERNATIONALSTRING(@"搜索")];
         [_searchBar.layer setBorderWidth:0.5];
         [_searchBar.layer setBorderColor:[UIColor colorWithRed:229.0/255 green:229.0/255 blue:229.0/255 alpha:1].CGColor];
         [_searchBar setDelegate:self];
         [_searchBar setKeyboardType:UIKeyboardTypeDefault];
-        [_searchBar setBackgroundColor:UIColorFromRGB(0xf5f5f5)];
-        for (UIView *subview in _searchBar.subviews.firstObject.subviews)
-        {
-            if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")])
-            {
-                [subview removeFromSuperview];
-                break;
-            }
-        }
+//        [_searchBar setBarTintColor:UIColorFromRGB(0xf5f5f5)];
+//        [_searchBar setBackgroundColor:UIColorFromRGB(0xf5f5f5)];
+        [_searchBar setBackgroundImage:[UIImage createImageWithColor:UIColorFromRGB(0xf5f5f5)]];
+//        for (UIView *subview in _searchBar.subviews.firstObject.subviews)
+//        {
+//            if ([subview isKindOfClass:NSClassFromString(@"UISearchBarBackground")])
+//            {
+//                [subview removeFromSuperview];
+//                break;
+//            }
+//        }
     }
     return _searchBar;
 }

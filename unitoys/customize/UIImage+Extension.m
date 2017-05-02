@@ -17,7 +17,7 @@
 + (UIImage *)resizableImage:(NSString *)name
 {
     UIImage *normal = [UIImage imageNamed:name];
-    
+    return [self resizableWithImage:normal];
 //    CGFloat top = 21; // 顶端盖高度
 //    CGFloat bottom = 21 ; // 底端盖高度
 //    CGFloat left = 20; // 左端盖宽度
@@ -26,17 +26,32 @@
     
 //    CGFloat top = 16.8; // 顶端盖高度
 //    CGFloat bottom = 16.8 ; // 底端盖高度
-    CGFloat top = normal.size.height * 0.5; // 顶端盖高度
-    CGFloat bottom = normal.size.height * 0.5 ; // 底端盖高度
-    CGFloat left = normal.size.width * 0.5; // 左端盖宽度
-    CGFloat right = normal.size.width * 0.5; // 右端盖宽度
+//    CGFloat top = normal.size.height * 0.5; // 顶端盖高度
+//    CGFloat bottom = normal.size.height * 0.5 ; // 底端盖高度
+//    CGFloat left = normal.size.width * 0.5; // 左端盖宽度
+//    CGFloat right = normal.size.width * 0.5; // 右端盖宽度
+//    UIEdgeInsets insets = UIEdgeInsetsMake(top, left, bottom, right);
+//    // 指定为拉伸模式，伸缩后重新赋值
+//    //    image = [image resizableImageWithCapInsets:insets resizingMode:UIImageResizingModeStretch];
+//    
+//    //    CGFloat w = normal.size.width * 0.5;
+//    //    CGFloat h = normal.size.height * 0.5;
+//    return [normal resizableImageWithCapInsets:insets resizingMode:UIImageResizingModeStretch];
+}
+
++ (UIImage *)resizableWithImage:(UIImage *)image
+{
+    CGFloat top = image.size.height * 0.5; // 顶端盖高度
+    CGFloat bottom = image.size.height * 0.5 ; // 底端盖高度
+    CGFloat left = image.size.width * 0.5; // 左端盖宽度
+    CGFloat right = image.size.width * 0.5; // 右端盖宽度
     UIEdgeInsets insets = UIEdgeInsetsMake(top, left, bottom, right);
     // 指定为拉伸模式，伸缩后重新赋值
     //    image = [image resizableImageWithCapInsets:insets resizingMode:UIImageResizingModeStretch];
     
     //    CGFloat w = normal.size.width * 0.5;
     //    CGFloat h = normal.size.height * 0.5;
-    return [normal resizableImageWithCapInsets:insets resizingMode:UIImageResizingModeStretch];
+    return [image resizableImageWithCapInsets:insets resizingMode:UIImageResizingModeStretch];
 }
 
 + (UIImage *)resizableImage1:(NSString *)name
@@ -131,6 +146,35 @@
     
     // 返回新的改变大小后的图片
     return scaledImage;
+}
+
+- (UIImage *)imageWithTintColor:(UIColor *)tintColor
+{
+    //We want to keep alpha, set opaque to NO; Use 0.0f for scale to use the scale factor of the device’s main screen.
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, 0.0f);
+    [tintColor setFill];
+    CGRect bounds = CGRectMake(0, 0, self.size.width, self.size.height);
+    UIRectFill(bounds);
+    
+    //Draw the tinted image in context
+    [self drawInRect:bounds blendMode:kCGBlendModeDestinationIn alpha:1.0f];
+    
+    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return tintedImage;
+}
+
+
++ (UIImage *)createImageWithColor:(UIColor *)color
+{
+    CGRect rect = CGRectMake(0.0f,0.0f,1.0f,1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context =UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *myImage =UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return myImage;
 }
 
 @end

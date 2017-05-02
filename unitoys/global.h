@@ -37,6 +37,11 @@
 #define RGB(r, g, b)    [UIColor colorWithRed:((r) / 255.0) green:((g) / 255.0) blue:((b) / 255.0) alpha:1.0] 
 #define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define DefultColor [UIColor colorWithRed:(0 / 255.0) green:(160 / 255.0) blue:(233 / 255.0) alpha:1.0]
+//背景
+#define DefualtBackgroundColor [UIColor colorWithRed:(245 / 255.0) green:(245 / 255.0) blue:(245 / 255.0) alpha:1.0]
+//分隔线
+#define DefualtSeparatorColor [UIColor colorWithRed:(229 / 255.0) green:(229 / 255.0) blue:(229 / 255.0) alpha:1.0]
+
 
 #define X(x) (x/375.0)*[UIScreen mainScreen].bounds.size.width;
 #define Y(y) (y/667.0)*[UIScreen mainScreen].bounds.size.height;

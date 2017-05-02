@@ -71,7 +71,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         _noDataLabel.textAlignment = NSTextAlignmentCenter;
         [_noDataLabel sizeToFit];
         _noDataLabel.un_centerX = kScreenWidthValue * 0.5;
-        _noDataLabel.un_centerY = (kScreenHeightValue - 64 - 49) * 0.5;
+        _noDataLabel.un_centerY = (kScreenHeightValue - 64 - 49 - 50) * 0.5;
         [self.view addSubview:_noDataLabel];
         _noDataLabel.hidden = YES;
     }
@@ -223,8 +223,10 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.arrMessageRecord.count == 0) {
         _noDataLabel.hidden = NO;
+        self.tableView.backgroundColor = [UIColor whiteColor];
     }else{
         _noDataLabel.hidden = YES;
+        self.tableView.backgroundColor = DefualtBackgroundColor;
     }
     return self.arrMessageRecord.count;
 }

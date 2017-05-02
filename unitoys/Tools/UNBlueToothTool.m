@@ -17,6 +17,7 @@
 #import "UNGetSimData.h"
 #import "UNPushKitMessageManager.h"
 #import "NSString+Extension.h"
+#import "UNDataTools.h"
 
 //app发送给蓝牙
 typedef enum : NSUInteger {
@@ -1148,9 +1149,7 @@ static UNBlueToothTool *instance = nil;
         if (![BlueToothDataManager shareManager].isLbeConnecting) {
             [self checkBindedDeviceFromNet];
         }
-        
     }
-
 }
 
 - (void)startBoundTimer {
@@ -1319,6 +1318,7 @@ static UNBlueToothTool *instance = nil;
                         NSLog(@"系统基本信息 -- 状态有问题");
                     }
                 }
+                [self otaDownload];
                 break;
             case 2:
                 //电量
@@ -3087,6 +3087,48 @@ static UNBlueToothTool *instance = nil;
         self.paySuccessBlock();
     }
 }
+
+#pragma mark 调用空中升级接口
+- (void)otaDownload {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    //    NSLog(@"表头：%@",self.headers);
+    NSString *versionStr;
+    NSString *typeStr;
+    if ([BlueToothDataManager shareManager].versionNumber) {
+        versionStr= [BlueToothDataManager shareManager].versionNumber;
+    } else {
+        versionStr = @"1.0.0";
+    }
+    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        typeStr = @"0";
+    } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+        typeStr = @"1";
+    } else {
+        typeStr = @"0";
+        NSLog(@"连接的类型有问题");
+    }
+    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:versionStr, @"Version", typeStr, @"DeviceType", nil];
+    [SSNetworkRequest getRequest:apiDeviceBraceletOTA params:info success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"空中升级的请求结果 -- %@", responseObj);
+            if (responseObj[@"data"][@"Descr"]) {
+//                NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
+                [UNDataTools sharedInstance].isHasFirmwareUpdateTip = YES;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==0){
+            //数据请求失败
+            NSLog(@"请求失败");
+        }
+    } failure:^(id dataObj, NSError *error) {
+        //
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
 
 - (void)dealloc
 {

@@ -8,6 +8,7 @@
 
 #import "SearchContactsCell.h"
 #import "ContactModel.h"
+#import "global.h"
 
 
 
@@ -28,10 +29,10 @@
         self.iconImageView.image = [UIImage imageWithData:model.thumbnailImageData];
         if (model.name) {
             self.nameLabel.text = model.name;
-            NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:model.phoneNumber attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13], NSForegroundColorAttributeName : [UIColor lightGrayColor]}];
+            NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:model.phoneNumber attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13], NSForegroundColorAttributeName : UIColorFromRGB(0x999999)}];
             NSRange range = [model.phoneNumber rangeOfString:hightText];
             if (range.length) {
-                [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+                [attriStr setAttributes:@{NSForegroundColorAttributeName : DefultColor} range:range];
             }
             self.phoneLabel.attributedText = attriStr;
         }else{

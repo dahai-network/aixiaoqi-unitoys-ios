@@ -158,7 +158,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         _noDataLabel.textAlignment = NSTextAlignmentCenter;
         [_noDataLabel sizeToFit];
         _noDataLabel.un_centerX = kScreenWidthValue * 0.5;
-        _noDataLabel.un_centerY = (kScreenHeightValue - 64 - 49) * 0.5;
+        _noDataLabel.un_centerY = (kScreenHeightValue - 64 - 49 - STATUESVIEWHEIGHT - 50) * 0.5;
         [self.view addSubview:_noDataLabel];
         _noDataLabel.hidden = YES;
     }
@@ -1675,7 +1675,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         return self.searchLists.count;
     }else{
         if (self.arrPhoneRecord.count == 0) {
-             _noDataLabel.hidden = NO;
+            _noDataLabel.hidden = NO;
+            self.tableView.backgroundColor = [UIColor whiteColor];
+        }else{
+            _noDataLabel.hidden = YES;
+            self.tableView.backgroundColor = DefualtBackgroundColor;
         }
         return self.arrPhoneRecord.count;
     }
@@ -1715,7 +1719,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             
             cell.lblCallTime.text = [self compareCurrentTimeString:[dicPhoneRecord objectForKey:@"calltime"]];
             //                cell.lblPhoneType.text = [dicPhoneRecord objectForKey:@"type"];
-            [cell.lblPhoneNumber setTextColor:[UIColor blackColor]];
+            [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
             cell.currentIndex = indexPath.row;
             NSMutableString *bottomStr = [NSMutableString string];
             if ([[dicPhoneRecord objectForKey:@"calltype"] isEqualToString:@"来电"]) {
@@ -1729,10 +1733,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     [bottomStr appendString:@"  "];
                     cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"hostnumber"]];
                 }else{
-                    NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:phoneNum attributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+                    NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:phoneNum attributes:@{NSForegroundColorAttributeName : UIColorFromRGB(0x333333)}];
                     NSRange range = [phoneNum rangeOfString:self.phonePadView.inputedPhoneNumber];
                     if (range.length) {
-                        [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+                        [attriStr setAttributes:@{NSForegroundColorAttributeName : DefultColor} range:range];
                     }
                     cell.lblPhoneNumber.attributedText = attriStr;
                 }
@@ -1753,25 +1757,24 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     [bottomStr appendString:@"  "];
                     cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
                 }else{
-                    NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:phoneNum attributes:@{NSForegroundColorAttributeName : [UIColor blackColor]}];
+                    NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:phoneNum attributes:@{NSForegroundColorAttributeName : UIColorFromRGB(0x333333)}];
                     NSRange range = [phoneNum rangeOfString:self.phonePadView.inputedPhoneNumber];
                     if (range.length) {
-                        [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+                        [attriStr setAttributes:@{NSForegroundColorAttributeName : DefultColor} range:range];
                     }
                     cell.lblPhoneNumber.attributedText = attriStr;
                 }
             }
             
             [bottomStr appendString:[dicPhoneRecord objectForKey:@"location"]];
-            NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:bottomStr attributes:@{NSForegroundColorAttributeName : [UIColor lightGrayColor]}];
+            NSMutableAttributedString *attriStr = [[NSMutableAttributedString alloc] initWithString:bottomStr attributes:@{NSForegroundColorAttributeName : UIColorFromRGB(0x999999)}];
             NSRange range = [bottomStr rangeOfString:self.phonePadView.inputedPhoneNumber];
             if (range.length) {
-                [attriStr setAttributes:@{NSForegroundColorAttributeName : [UIColor blueColor]} range:range];
+                [attriStr setAttributes:@{NSForegroundColorAttributeName : DefultColor} range:range];
             }
             cell.lblPhoneType.attributedText = attriStr;
             
             return cell;
-            
         }
     }else{
         PhoneRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"PhoneRecordCell"];
@@ -1802,7 +1805,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         //            NSDictionary *dicPhoneRecord = [self.arrPhoneRecord objectAtIndex:indexPath.row];
         cell.lblCallTime.text = [self compareCurrentTimeString:[dicPhoneRecord objectForKey:@"calltime"]];
 //        cell.lblPhoneType.text = [dicPhoneRecord objectForKey:@"type"];
-        [cell.lblPhoneNumber setTextColor:[UIColor blackColor]];
+        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
         cell.currentIndex = indexPath.row;
         NSMutableString *bottomStr = [NSMutableString string];
         
@@ -1827,7 +1830,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             if ([[dicPhoneRecord objectForKey:@"status"] intValue] == 0){  //如果未接听则显示红色
                 [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
             }else{
-                [cell.lblPhoneNumber setTextColor:[UIColor blackColor]];
+                [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
             }
         }else{
             [cell.ivStatus setImage:[UIImage imageNamed:@"to_phone"]];

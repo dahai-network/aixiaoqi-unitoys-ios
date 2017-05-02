@@ -11,10 +11,14 @@
 @interface UIImage(Extension)
 
 + (UIImage *)resizableImage:(NSString *)name;
++ (UIImage *)resizableWithImage:(UIImage *)image;
 + (UIImage *)resizableImage1:(NSString *)name;
 
 
 //+ (UIImage *)clipImage:(UIImage *)image toRect:(CGSize)size;
 //+ (UIImage *)imageFromImage:(UIImage *)image inRect:(CGRect)rect;
-+(UIImage*)image:(UIImage *)image scaleToSize:(CGSize)size;
++ (UIImage*)image:(UIImage *)image scaleToSize:(CGSize)size;
+
+- (UIImage *)imageWithTintColor:(UIColor *)tintColor;
++ (UIImage *)createImageWithColor:(UIColor *)color;
 @end
