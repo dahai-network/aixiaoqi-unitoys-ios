@@ -610,14 +610,12 @@
 - (IBAction)howToUseAbord:(UIButton *)sender {
     [self initExplainDetailsData:YES];
     self.isPaySuccess = NO;
-    HUDNormal(@"出国后如何使用")
 }
 
 #pragma mark 回国后恢复设置
 - (IBAction)resetGoBack:(UIButton *)sender {
     [self initExplainDetailsData:NO];
     self.isPaySuccess = NO;
-    HUDNormal(@"回国后恢复设置")
 }
 
 

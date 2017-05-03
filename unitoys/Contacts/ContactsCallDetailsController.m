@@ -25,6 +25,8 @@
 #import "ContactModel.h"
 #import <ContactsUI/ContactsUI.h>
 
+//#import "MBProgressHUD+UNTip.h"
+
 @interface ContactsCallDetailsController ()<UITableViewDelegate, UITableViewDataSource, CallDetailsActionCellDelegate, ABPersonViewControllerDelegate,CNContactViewControllerDelegate,ABNewPersonViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
@@ -499,7 +501,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             }
             NSLog(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
-            HUDNormalTop(INTERNATIONALSTRING(@"解除屏蔽失败"))
+            HUDNormal(INTERNATIONALSTRING(@"解除屏蔽失败"))
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }else{
@@ -521,7 +523,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             }
             NSLog(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
-            HUDNormalTop(INTERNATIONALSTRING(@"屏蔽失败"))
+            HUDNormal(INTERNATIONALSTRING(@"屏蔽失败"))
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }
@@ -548,7 +550,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             
         } headers:self.headers];
     }else{
-        HUDNormalTop(INTERNATIONALSTRING(@"解除屏蔽成功"))
+        HUDNormal(INTERNATIONALSTRING(@"解除屏蔽成功"))
         if ([[UNDataTools sharedInstance].blackLists containsObject:phone]) {
             [[UNDataTools sharedInstance].blackLists removeObject:phone];
         }
@@ -576,7 +578,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             
         } headers:self.headers];
     }else{
-        HUDNormalTop(INTERNATIONALSTRING(@"屏蔽成功"))
+        HUDNormal(INTERNATIONALSTRING(@"屏蔽成功"))
         if (![[UNDataTools sharedInstance].blackLists containsObject:phone]) {
             [[UNDataTools sharedInstance].blackLists addObject:phone];
         }

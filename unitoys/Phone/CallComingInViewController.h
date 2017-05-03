@@ -32,4 +32,6 @@
 - (void)setUpMuteButtonStatu:(BOOL)isMute;
 - (void)setUpSpeakerButtonStatus:(BOOL)isSpeaker;
 - (void)endCallPhone;
+
+- (void)showCenterView;
 @end

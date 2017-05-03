@@ -477,16 +477,16 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 #pragma mark searchBar delegate
 //searchBar开始编辑时改变取消按钮的文字
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
-    NSArray *subViews;
-    subViews = [(searchBar.subviews[0]) subviews];
-    for (id view in subViews) {
-        if ([view isKindOfClass:[UIButton class]]) {
-            UIButton* cancelbutton = (UIButton* )view;
-            [cancelbutton setTitle:INTERNATIONALSTRING(@"取消") forState:UIControlStateNormal];
-            break;
-        }
-    }
-    searchBar.showsCancelButton = YES;
+//    NSArray *subViews;
+//    subViews = [(searchBar.subviews[0]) subviews];
+//    for (id view in subViews) {
+//        if ([view isKindOfClass:[UIButton class]]) {
+//            UIButton* cancelbutton = (UIButton* )view;
+//            [cancelbutton setTitle:INTERNATIONALSTRING(@"取消") forState:UIControlStateNormal];
+//            break;
+//        }
+//    }
+//    searchBar.showsCancelButton = YES;
 }
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar{
 //    _searchBar.frame = CGRectOffset(_searchBar.frame, 0, 20-self.statuesView.frame.size.height);

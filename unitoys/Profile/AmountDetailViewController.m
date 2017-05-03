@@ -79,12 +79,19 @@
     
     cell.lblPayTips.text = [dicAmountDetail objectForKey:@"Descr"];
     cell.lblCreateDate.text =  [self formatTime: [self convertDate:[[dicAmountDetail objectForKey:@"CreateDate"] stringValue]]];
+//    if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==1) {
+//        cell.lblAmount.text = [NSString stringWithFormat:@"+￥%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+//        [cell.lblAmount setTextColor:[UIColor greenColor]];
+//    } else {
+//        cell.lblAmount.text = [NSString stringWithFormat:@"-￥%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+//        [cell.lblAmount setTextColor:[UIColor blackColor]];
+//    }
     if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==1) {
-        cell.lblAmount.text = [NSString stringWithFormat:@"+￥%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
-        [cell.lblAmount setTextColor:[UIColor greenColor]];
+        cell.lblAmount.text = [NSString stringWithFormat:@"+%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+//        [cell.lblAmount setTextColor:[UIColor greenColor]];
     } else {
-        cell.lblAmount.text = [NSString stringWithFormat:@"-￥%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
-        [cell.lblAmount setTextColor:[UIColor blackColor]];
+        cell.lblAmount.text = [NSString stringWithFormat:@"-%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+//        [cell.lblAmount setTextColor:[UIColor blackColor]];
     }
     return cell;
     

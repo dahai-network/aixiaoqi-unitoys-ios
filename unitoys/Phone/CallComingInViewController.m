@@ -57,14 +57,27 @@
     sender.enabled = YES;
 }
 
-#pragma mark 拒绝按钮动画
+#pragma mark 刷新界面
 - (void)refuseViewAnimations {
     self.connectView.hidden = YES;
+    self.containerView.hidden = NO;
     [UIView animateWithDuration:0.5 delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
         CGPoint center = self.refuseView.center;
         center.x = [UIScreen mainScreen].bounds.size.width/2;
         self.refuseView.center = center;
     } completion:nil];
+}
+
+- (void)showCenterView
+{
+    self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
+    self.containerView.hidden = NO;
+    //开始计时
+    self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self refuseViewAnimations];
+        self.isNeedToRefresh = YES;
+    });
 }
 
 #pragma mark 接听按钮点击事件
@@ -233,8 +246,6 @@
 - (void)getCallingMessage :(NSNotification *)notification {
     if (notification.object) {
         self.lbTime.text = notification.object;
-
-        
         if ([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"呼叫接通")]) {
             
         }else if ([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"正在通话")]) {

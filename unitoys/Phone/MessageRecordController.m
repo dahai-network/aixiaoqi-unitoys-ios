@@ -64,7 +64,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 {
     if (!_noDataLabel) {
         _noDataLabel = [[UILabel alloc] init];
-        _noDataLabel.text = [NSString stringWithFormat:@"暂无通话记录\n您还没有打过电话"];
+        _noDataLabel.text = [NSString stringWithFormat:@"暂无短信记录\n您还没有发过短信"];
         _noDataLabel.font = [UIFont systemFontOfSize:16];
         _noDataLabel.textColor = UIColorFromRGB(0xcccccc);
         _noDataLabel.numberOfLines = 2;
@@ -166,12 +166,10 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
 //短信加载更多数据
 - (void)loadMoreMessage {
-    
     if (self.tableView.mj_header.isRefreshing) {
         [self.tableView.mj_footer endRefreshing];
         return;
     }
-    
     self.checkToken = YES;
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber", nil];

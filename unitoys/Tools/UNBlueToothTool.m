@@ -991,6 +991,7 @@ static UNBlueToothTool *instance = nil;
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
             //请求卡类型和ICCID
             if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                NSLog(@"获取卡类型");
                 [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
             }
         } else {
@@ -1820,6 +1821,7 @@ static UNBlueToothTool *instance = nil;
 }
 
 - (void)closeConnecting {
+    NSLog(@"关闭连接--closeConnecting");
 //    if ([BlueToothDataManager shareManager].isBounded) {
 //        [self u];
 //    }

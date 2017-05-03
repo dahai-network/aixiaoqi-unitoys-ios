@@ -15,6 +15,7 @@
 
 + (void)show:(NSString *)text icon:(NSString *)icon view:(UIView *)view
 {
+//    [self hideHUD];
     if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
     hud.labelText = text;

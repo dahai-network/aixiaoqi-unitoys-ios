@@ -234,6 +234,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     }
                     weakSelf.callCominginVC.isPresentInCallKit = YES;
                     [weakSelf.nav presentViewController:weakSelf.callCominginVC animated:NO completion:^{
+                        [weakSelf.callCominginVC showCenterView];
                     }];
                     
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
