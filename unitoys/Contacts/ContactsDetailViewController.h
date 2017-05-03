@@ -37,6 +37,9 @@ typedef void(^ContactsDetailUpdateBlock)(NSString *nickName, NSString *phoneNumb
 
 @property (nonatomic, copy) ContactsDetailUpdateBlock contactsInfoUpdateBlock;
 
+//是否从短信界面弹出
+@property (nonatomic, assign) BOOL isMessagePush;
+
 @end
 
 @protocol PhoneNumberSelectDelegate <NSObject>  //号码选择协议

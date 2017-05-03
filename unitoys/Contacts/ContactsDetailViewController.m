@@ -36,7 +36,9 @@
 
 - (void)setUpNav
 {
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_info_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(editContactInfo)];
+    if (!self.isMessagePush) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_info_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(editContactInfo)];
+    }
 }
 
 - (void)reloadTableView
@@ -297,6 +299,7 @@
         callDetailsVc.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
             
         };
+        callDetailsVc.isMessagePush = self.isMessagePush;
         [self.navigationController pushViewController:callDetailsVc animated:YES];
     }
 }

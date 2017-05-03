@@ -236,6 +236,7 @@
             self.titleName = weakSelf.title;
         };
 //        contactsDetailViewController.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
+        contactsDetailViewController.isMessagePush = YES;
         [self.navigationController pushViewController:contactsDetailViewController animated:YES];
     }else{
         kWeakSelf
@@ -259,6 +260,7 @@
         callDetailsVc.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         callDetailsVc.nickName = self.title;
         callDetailsVc.phoneNumber = self.toTelephone;
+        callDetailsVc.isMessagePush = YES;
         [self.navigationController pushViewController:callDetailsVc animated:YES];
     }
 }

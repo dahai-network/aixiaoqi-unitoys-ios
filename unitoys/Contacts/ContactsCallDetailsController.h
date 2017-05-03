@@ -19,4 +19,7 @@ typedef void(^ContactsInfoUpdateBlock)(NSString *nickName, NSString *phoneNumber
 @property (nonatomic, copy) NSString *nickName;
 @property (nonatomic, copy) NSString *phoneNumber;
 
+//是否从短信界面弹出
+@property (nonatomic, assign) BOOL isMessagePush;
+
 @end

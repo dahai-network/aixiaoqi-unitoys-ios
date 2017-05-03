@@ -77,7 +77,9 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)setUpNav
 {
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_info_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(editContactInfo)];
+    if (!self.isMessagePush) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"edit_info_nor"] style:UIBarButtonItemStyleDone target:self action:@selector(editContactInfo)];
+    }
 }
 
 - (void)editContactInfo
@@ -108,19 +110,6 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         if (self.contactModel && self.contactModel.contactId) {
             CNContactStore *contactStore = [[CNContactStore alloc] init];
             CNContact *contact = [contactStore unifiedContactWithIdentifier:self.contactModel.contactId keysToFetch:@[[CNContactViewController descriptorForRequiredKeys]] error:nil];
-//            CNContactViewController *contactVc = [CNContactViewController viewControllerForContact:contact];
-//            contactVc.view.tag = 100;
-//            contactVc.contactStore = contactStore;
-//            contactVc.allowsEditing = YES;
-//            contactVc.allowsActions = NO;
-//            contactVc.delegate = self;
-//            if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0) {
-//                //修改导航栏颜色
-//                self.navigationController.navigationBar.tintColor = DefultColor;
-//                self.navigationController.navigationBar.translucent = YES;
-//                self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-//            }
-//            [self.navigationController pushViewController:contactVc animated:YES];
             CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:contact];
             contactVc.view.tag = 100;
             contactVc.contactStore = contactStore;
@@ -205,7 +194,6 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         }
         [self reloadTableView];
     }
-
     [newPersonView dismissViewControllerAnimated:YES completion:nil];
     NSLog(@"newPersonView--%@---person---%@", newPersonView, person);
 }
