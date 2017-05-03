@@ -99,26 +99,30 @@
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return self.arrPackageData.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.arrPackageData.count;
+    return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 10;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return CGFLOAT_MIN;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PackageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PackageCell"];
     
-    NSDictionary *dicPackage = [self.arrPackageData objectAtIndex:indexPath.row];
+    NSDictionary *dicPackage = [self.arrPackageData objectAtIndex:indexPath.section];
 //    cell.ivPic.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicPackage objectForKey:@"Pic"]]]];
-    
-    cell.lblOrder.text = [NSString stringWithFormat:@"%ld",indexPath.row+1];
+    [cell.imgOrder sd_setImageWithURL:[NSURL URLWithString:[dicPackage objectForKey:@"Pic"]]];
     cell.lblFlow.text = [dicPackage objectForKey:@"Flow"];
     cell.lblPackageName.text = [dicPackage objectForKey:@"PackageName"];
     cell.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicPackage objectForKey:@"Price"] floatValue]];
-    
-    cell.lblOrder.layer.cornerRadius = 22.5;
-    cell.lblOrder.layer.masksToBounds = YES;
 //    cell.Operators.text = [dicPackage objectForKey:@"Operators"];
     
     return cell;
@@ -126,7 +130,7 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *dicPackage = [self.arrPackageData objectAtIndex:indexPath.row];
+    NSDictionary *dicPackage = [self.arrPackageData objectAtIndex:indexPath.section];
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
     PackageDetailViewController *packageDetailViewController = [mainStory instantiateViewControllerWithIdentifier:@"packageDetailViewController"];
     if (packageDetailViewController) {

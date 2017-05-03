@@ -10,10 +10,10 @@
 
 @interface PackageCell : UITableViewCell
 
-@property (weak, nonatomic) IBOutlet UILabel *lblOrder;
 @property (weak, nonatomic) IBOutlet UILabel *lblPackageName;
 @property (weak, nonatomic) IBOutlet UILabel *lblFlow;
 @property (weak, nonatomic) IBOutlet UILabel *lblPrice;
+@property (weak, nonatomic) IBOutlet UIImageView *imgOrder;
 
 
 @end

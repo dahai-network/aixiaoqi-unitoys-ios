@@ -147,8 +147,8 @@ typedef enum : NSUInteger {
     if ([sender.object isEqualToString:@"0"]) {
 //        self.isNetworkCanUse = NO;
 //        self.showLabelStr = @"当前网络不可用";
-        NSString *statuesLabelStr = @"当前网络不可用";
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:statuesLabelStr];
+//        NSString *statuesLabelStr = @"当前网络不可用";
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:HOMESTATUETITLE_NETWORKCANNOTUSE];
 //        self.titleLabel.text = self.showLabelStr;
 //        if (self.isMainView) {
 //            [self addProgressWindow];
@@ -158,8 +158,8 @@ typedef enum : NSUInteger {
     } else {
         //有网络
         NSLog(@"当前网络可用");
-        NSString *statuesLabelStr = @"注册中";
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:statuesLabelStr];
+//        NSString *statuesLabelStr = @"注册中";
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:HOMESTATUETITLE_REGISTING];
 //        self.isNetworkCanUse = YES;
 //        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {
 //            [self addProgressWindow];

@@ -1743,13 +1743,12 @@
             NSInteger sizeHeight = sizeWidth*189.00/170.00;
             int lineNumber = (int)self.productInfoArr.count/2;
             int numa = self.productInfoArr.count%2;
-            NSLog(@"jisuan - %d - %d", lineNumber, numa);
+//            NSLog(@"jisuan - %d - %d", lineNumber, numa);
             if (numa == 0) {
                 return sizeHeight*lineNumber+6*(lineNumber-1)+15;
             } else {
                 return sizeHeight*(lineNumber+1)+6*lineNumber+15;
             }
-//            return sizeHeight*2+6+15;
         }
             break;
         default:

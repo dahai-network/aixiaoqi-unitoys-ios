@@ -535,7 +535,13 @@
     if (indexPath.section == 0) {
         if ([BlueToothDataManager shareManager].isConnected) {
             if (![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
-                if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
+//                if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
+//                    [self startAnimation];
+//                    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
+//                }
+                 
+                if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
                     [self startAnimation];
                     [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];

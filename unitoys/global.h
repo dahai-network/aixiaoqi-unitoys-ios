@@ -336,6 +336,8 @@
 #define HOMESTATUE_AIXIAOQICARD @"homeStatue_noSignal"
 //服务未开启
 #define HOMESTATUETITLE_NOTSERVICE @"服务未开启"
+//当前网络不可用
+#define HOMESTATUETITLE_NETWORKCANNOTUSE @"当前网络不可用"
 
 
 #pragma mark 运营商类型

@@ -1606,8 +1606,7 @@ static UNBlueToothTool *instance = nil;
                             self.bigKingCardNumber = [totalString substringWithRange:NSMakeRange(4, 16)];
                             
                             NSString *checkTypeStr = [totalString substringFromIndex:totalString.length-4];
-#warning 此处为判断爱小器卡是新版还是旧版用，正常情况应判断最后四位是否大于等于301
-                            if ([checkTypeStr isEqualToString:@"0004"]) {
+                            if ([self convertRangeStringToIntWithString:checkTypeStr rangeLoc:0 rangeLen:4] > 300) {
                                 self.isNewCard = YES;
                             }
                             [self checkQueueOrderData];

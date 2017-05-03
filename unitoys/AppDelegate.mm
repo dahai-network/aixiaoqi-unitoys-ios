@@ -100,7 +100,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -123,7 +123,7 @@
     [UNNetWorkStatuManager shareManager].netWorkStatuChangeBlock = ^(NetworkStatus currentStatu){
         if (currentStatu != NotReachable) {
             NSLog(@"有网络");
-            [BlueToothDataManager shareManager].statuesTitleString = @"注册中";
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_REGISTING;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"1"];
             });
@@ -136,7 +136,7 @@
 //            }
         } else {
             NSLog(@"无网络");
-            [BlueToothDataManager shareManager].statuesTitleString = @"当前网络不可用";
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NETWORKCANNOTUSE;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"0"];
             });
