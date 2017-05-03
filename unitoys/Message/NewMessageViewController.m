@@ -207,7 +207,18 @@
         detailVc.toPhoneStr = self.toTelephone;
         [self.navigationController pushViewController:detailVc animated:YES];
     }else{
+        kWeakSelf
         ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
+        callDetailsVc.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
+            if (nickName) {
+                weakSelf.title = nickName;
+            }else{
+                weakSelf.title = phoneNumber;
+            }
+            //号码不可更改
+//            weakSelf.toTelephone = phoneNumber;
+        };
+        callDetailsVc.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         callDetailsVc.nickName = self.title;
         callDetailsVc.phoneNumber = self.toTelephone;
         [self.navigationController pushViewController:callDetailsVc animated:YES];
@@ -258,7 +269,7 @@
             }
         }
     }];
-    
+    [self updateMessageList];
 }
 
 - (void)loadMessages{
@@ -647,7 +658,6 @@
          NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
          
          [self getBasicHeader];
-//         NSLog(@"表演头：%@",self.headers);
          [SSNetworkRequest postRequest:apiSMSSend params:info success:^(id responseObj) {
              NSLog(@"查询到的用户数据：%@",responseObj);
              
@@ -1036,9 +1046,18 @@
     [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"删除单条短信成功");
-            [weakSelf.messageFrames removeObjectAtIndex:index];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-            [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//            [weakSelf.messageFrames removeObjectAtIndex:index];
+//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+//            [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            if ((weakSelf.messageFrames.count == index + 1) || weakSelf.messageFrames.count == 1) {
+                //刷新外部界面
+                [weakSelf updateMessageList];
+            }
+            NSLog(@"删除单条短信成功");
+            if (weakSelf.messageFrames.count > index) {
+                [weakSelf.messageFrames removeObjectAtIndex:index];
+            }
+            [weakSelf.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -1058,19 +1077,27 @@
     [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"删除多条短信成功");
-            NSMutableArray *indexPathsArray = [NSMutableArray array];
-            for (MJMessageFrame *messageFrame in Datas) {
-                //                if ([weakSelf.messageFrames indexOfObject:messageFrame]) {
-                //
-                //                }
-                NSInteger row = [weakSelf.messageFrames indexOfObject:messageFrame];
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-                [indexPathsArray addObject:indexPath];
-            }
-            if (indexPathsArray.count) {
-                [weakSelf.messageFrames removeObjectsInArray:Datas];
-                [weakSelf.tableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
-            }
+//            NSMutableArray *indexPathsArray = [NSMutableArray array];
+//            for (MJMessageFrame *messageFrame in Datas) {
+//                //刷新外部界面
+//                [weakSelf updateMessageList];
+//                
+//                NSInteger row = [weakSelf.messageFrames indexOfObject:messageFrame];
+//                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+//                [indexPathsArray addObject:indexPath];
+//            }
+//            if (indexPathsArray.count) {
+//                [weakSelf.messageFrames removeObjectsInArray:Datas];
+//                [weakSelf.tableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
+//            }
+            //刷新外部界面
+            [weakSelf updateMessageList];
+            
+            [weakSelf.messageFrames removeObjectsInArray:Datas];
+            [weakSelf.tableView reloadData];
+            //自动滚动到底部
+            [self scrollTableViewToBottomWithAnimated:NO];
+            
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -1082,5 +1109,8 @@
     } headers:self.headers];
 }
 
-
+- (void)updateMessageList
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMessageRecordLists" object:nil];
+}
 @end

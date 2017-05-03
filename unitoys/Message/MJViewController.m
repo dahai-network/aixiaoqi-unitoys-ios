@@ -223,23 +223,38 @@
         if (!contactsDetailViewController) {
             return;
         }
+        kWeakSelf
         contactsDetailViewController.contactMan = self.titleName;
         contactsDetailViewController.phoneNumbers = self.toTelephone;
-//        contactsDetailViewController.contactHead = model.thumbnailImageData;
-//        [contactsDetailViewController.ivContactMan  setImage:[UIImage imageWithData:model.thumbnailImageData]];
-        contactsDetailViewController.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];;
+        //不更新
+        contactsDetailViewController.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
+            if (nickName) {
+                weakSelf.title = nickName;
+            }else{
+                weakSelf.title = phoneNumber;
+            }
+            self.titleName = weakSelf.title;
+        };
+//        contactsDetailViewController.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         [self.navigationController pushViewController:contactsDetailViewController animated:YES];
     }else{
         kWeakSelf
         ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
         callDetailsVc.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
-            if ([phoneNumber isEqualToString:self.toTelephone]) {
-                if (![weakSelf.title isEqualToString:nickName]) {
-                    weakSelf.title = nickName;
-                }
+//            if ([phoneNumber isEqualToString:self.toTelephone]) {
+//                if (![weakSelf.title isEqualToString:nickName]) {
+//                    weakSelf.title = nickName;
+//                }
+//            }else{
+//                weakSelf.title = self.toTelephone;
+//            }
+            if (nickName) {
+                weakSelf.title = nickName;
             }else{
-                weakSelf.title = self.toTelephone;
+                weakSelf.title = phoneNumber;
             }
+            //号码不可更改
+//            weakSelf.toTelephone = phoneNumber;
         };
         callDetailsVc.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         callDetailsVc.nickName = self.title;
@@ -292,7 +307,7 @@
             }
         }
     }];
-    
+    [self updateMessageList];
 }
 
 - (void)loadMessages{
@@ -630,6 +645,7 @@
                 
                 [self loadMessages];
                 self.btnSend.enabled = YES;
+                [self updateMessageList];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
                 
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -734,10 +750,17 @@
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            if ((weakSelf.messageFrames.count == index + 1) || weakSelf.messageFrames.count == 1) {
+                //刷新外部界面
+                [weakSelf updateMessageList];
+            }
             NSLog(@"删除单条短信成功");
-            [weakSelf.messageFrames removeObjectAtIndex:index];
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-            [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            if (weakSelf.messageFrames.count > index) {
+                [weakSelf.messageFrames removeObjectAtIndex:index];
+            }
+//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+//            [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [weakSelf.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -768,6 +791,9 @@
 //                [weakSelf.tableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
 //            }
             
+            //刷新外部界面
+            [weakSelf updateMessageList];
+            
             [weakSelf.messageFrames removeObjectsInArray:Datas];
             [weakSelf.tableView reloadData];
             //自动滚动到底部
@@ -781,6 +807,11 @@
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"删除单条短信异常：%@",[error description]);
     } headers:self.headers];
+}
+
+- (void)updateMessageList
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMessageRecordLists" object:nil];
 }
 
 @end

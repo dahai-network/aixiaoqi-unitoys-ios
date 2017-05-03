@@ -40,6 +40,9 @@
 @property (nonatomic, assign) NSInteger currentRecordPage;
 
 @property (nonatomic, assign) BOOL isInBlackLists;
+
+//黑名单按钮是否可点击
+@property (nonatomic, assign) BOOL isBlickAction;
 @end
 
 static NSString *callDetailsNameCellId = @"CallDetailsNameCell";
@@ -54,16 +57,12 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0){
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-        self.navigationController.navigationBar.translucent = NO;
-    }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"详情";
+    _isBlickAction = YES;
     
     if (!self.contactModel) {
         self.contactModel = [self checkContactModelWithPhoneStr:self.phoneNumber];
@@ -85,16 +84,23 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 {
     if ([[UIDevice currentDevice] systemVersion].floatValue < 9.0) {
         if (self.contactModel && self.contactModel.recordRefId) {
-            ABPersonViewController *personVc = [[ABPersonViewController alloc] init];
             ABAddressBookRef addressBook = ABAddressBookCreate();
             ABRecordRef recordRef = ABAddressBookGetPersonWithRecordID(addressBook, self.contactModel.recordRefId);
+//            ABPersonViewController *personVc = [[ABPersonViewController alloc] init];
+//            personVc.displayedPerson = recordRef;
+//            CFRelease(recordRef);
+//            personVc.allowsActions = NO;
+//            personVc.allowsEditing = YES;
+//            personVc.personViewDelegate = self;
+            ABNewPersonViewController *personVc = [[ABNewPersonViewController alloc] init];
+            personVc.newPersonViewDelegate = self;
             personVc.displayedPerson = recordRef;
             CFRelease(recordRef);
-            personVc.allowsActions = NO;
-            personVc.allowsEditing = YES;
-            personVc.personViewDelegate = self;
-            [self.navigationController pushViewController:personVc animated:YES];
-            self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+            personVc.navigationItem.title=@"简介";
+            personVc.view.tag = 10;
+            
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:personVc];
+            [self presentViewController:nav animated:YES completion:nil];
         }else{
             [self addContactsAction];
         }
@@ -102,19 +108,28 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         if (self.contactModel && self.contactModel.contactId) {
             CNContactStore *contactStore = [[CNContactStore alloc] init];
             CNContact *contact = [contactStore unifiedContactWithIdentifier:self.contactModel.contactId keysToFetch:@[[CNContactViewController descriptorForRequiredKeys]] error:nil];
-            CNContactViewController *contactVc = [CNContactViewController viewControllerForContact:contact];
+//            CNContactViewController *contactVc = [CNContactViewController viewControllerForContact:contact];
+//            contactVc.view.tag = 100;
+//            contactVc.contactStore = contactStore;
+//            contactVc.allowsEditing = YES;
+//            contactVc.allowsActions = NO;
+//            contactVc.delegate = self;
+//            if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0) {
+//                //修改导航栏颜色
+//                self.navigationController.navigationBar.tintColor = DefultColor;
+//                self.navigationController.navigationBar.translucent = YES;
+//                self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+//            }
+//            [self.navigationController pushViewController:contactVc animated:YES];
+            CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:contact];
             contactVc.view.tag = 100;
             contactVc.contactStore = contactStore;
             contactVc.allowsEditing = YES;
-            contactVc.allowsActions = NO;
+            contactVc.allowsActions = YES;
             contactVc.delegate = self;
-            if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0) {
-                //修改导航栏颜色
-                self.navigationController.navigationBar.tintColor = DefultColor;
-                self.navigationController.navigationBar.translucent = YES;
-                self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-            }
-            [self.navigationController pushViewController:contactVc animated:YES];
+            contactVc.navigationItem.title=@"简介";
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactVc];
+            [self presentViewController:nav animated:YES completion:nil];
         }else{
             CNMutableContact *contact = [[CNMutableContact alloc] init];
             contact.phoneNumbers = @[[CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberMobile value:[CNPhoneNumber phoneNumberWithStringValue:self.phoneNumber]]];
@@ -134,16 +149,13 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
     NSLog(@"添加联系人");
     CFErrorRef error = NULL;
     ABRecordRef person = ABPersonCreate ();
-    // Add phone number
     ABMutableMultiValueRef multiValue = ABMultiValueCreateMutable(kABStringPropertyType);
-    //mainTitle.text是你要添加的手机号
-    ABMultiValueAddValueAndLabel(multiValue, (__bridge CFTypeRef)(self.phoneNumber), kABPersonPhoneMobileLabel,
-                                 NULL);
+    ABMultiValueAddValueAndLabel(multiValue, (__bridge CFTypeRef)(self.phoneNumber), kABPersonPhoneMobileLabel, NULL);
     ABRecordSetValue(person, kABPersonPhoneProperty, multiValue, &error);
-    
     ABNewPersonViewController *newPersonVc = [[ABNewPersonViewController alloc] init];
     newPersonVc.displayedPerson = person;
     newPersonVc.newPersonViewDelegate = self;
+    newPersonVc.view.tag = 20;
     CFRelease(person);
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:newPersonVc];
     [self presentViewController:nav animated:YES completion:nil];
@@ -154,13 +166,54 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 {
     if (person) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
+        NSString *name;
+        NSString *phone;
+        NSString *firstName = (__bridge NSString *)ABRecordCopyValue(person, kABPersonFirstNameProperty);
+        NSString *lastName = (__bridge NSString *)ABRecordCopyValue(person, kABPersonLastNameProperty);
+        ABMutableMultiValueRef phoneNumRef = ABRecordCopyValue(person, kABPersonPhoneProperty);
+        NSArray *arrNumber = ((__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phoneNumRef));
+        NSString *phoneNumber = arrNumber.firstObject;
+        
+        if (firstName && lastName) {
+            if ((phoneNumber)&&([lastName stringByAppendingString:firstName])) {
+                name = [lastName stringByAppendingString:firstName];
+                phone = phoneNumber;
+            }
+        } else if (firstName && !lastName) {
+            if (phoneNumber) {
+                name = firstName;
+                phone = phoneNumber;
+            }
+        } else if (!firstName && lastName) {
+            if (phoneNumber) {
+                name = lastName;
+                phone = phoneNumber;
+            }
+        } else {
+            NSLog(@"9.0以前的系统，通讯录数据格式不正确");
+            if (phoneNumber) {
+                name = phoneNumber;
+                phone = phoneNumber;
+            } else {
+                NSLog(@"通讯录没有号码");
+            }
+        }
+        self.nickName = name;
+        self.phoneNumber = phone;
+        if (_contactsInfoUpdateBlock) {
+            _contactsInfoUpdateBlock(name, phone);
+        }
+        [self reloadTableView];
     }
+
     [newPersonView dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"newPersonView--%@---person---%@", newPersonView, person);
 }
 
 #pragma mark - ABPersonViewControllerDelegate
 - (BOOL)personViewController:(ABPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier
 {
+    NSLog(@"person:%@--property:%d---identifier:%d", person, property, identifier);
     return YES;
 }
 
@@ -197,9 +250,8 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         [self reloadTableView];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ContactsInfoChange" object:nil];
     }
-    if (viewController.view.tag == 200) {
-        [viewController dismissViewControllerAnimated:YES completion:nil];
-    }
+    
+    [viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 //获取通话记录
@@ -482,6 +534,10 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)defriend
 {
+    if (!_isBlickAction) {
+        return;
+    }
+    _isBlickAction = NO;
     if (_isInBlackLists) {
         NSLog(@"解除屏蔽");
         self.checkToken = YES;
@@ -490,6 +546,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         kWeakSelf
         HUDNoStop1(@"正在解除屏蔽")
         [SSNetworkRequest postRequest:apiBlackListDelete params:params success:^(id responseObj) {
+            weakSelf.isBlickAction = YES;
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [weakSelf deleteBlickList:weakSelf.phoneNumber];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -498,9 +555,11 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                 NSLog(@"不在黑名单内");
                 [weakSelf deleteBlickList:weakSelf.phoneNumber];
             }else{
+                HUDNormal(INTERNATIONALSTRING(@"解除屏蔽失败"))
             }
             NSLog(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
+            weakSelf.isBlickAction = YES;
             HUDNormal(INTERNATIONALSTRING(@"解除屏蔽失败"))
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
@@ -512,6 +571,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         kWeakSelf
         HUDNoStop1(@"正在屏蔽")
         [SSNetworkRequest postRequest:apiBlackListAdd params:params success:^(id responseObj) {
+            weakSelf.isBlickAction = YES;
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [weakSelf addBlackList:weakSelf.phoneNumber];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -520,9 +580,11 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                 NSLog(@"已经在黑名单内");
                 [weakSelf addBlackList:weakSelf.phoneNumber];
             }else{
+                HUDNormal(INTERNATIONALSTRING(@"屏蔽失败"))
             }
             NSLog(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
+            weakSelf.isBlickAction = YES;
             HUDNormal(INTERNATIONALSTRING(@"屏蔽失败"))
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];

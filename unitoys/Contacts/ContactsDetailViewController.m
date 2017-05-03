@@ -22,15 +22,6 @@
 
 @implementation ContactsDetailViewController
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0){
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-        self.navigationController.navigationBar.translucent = NO;
-    }
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];    
@@ -60,15 +51,16 @@
 {
     if ([[UIDevice currentDevice] systemVersion].floatValue < 9.0) {
         if (self.contactModel && self.contactModel.recordRefId) {
-            ABPersonViewController *personVc = [[ABPersonViewController alloc] init];
             ABAddressBookRef addressBook = ABAddressBookCreate();
             ABRecordRef recordRef = ABAddressBookGetPersonWithRecordID(addressBook, self.contactModel.recordRefId);
+            ABNewPersonViewController *personVc = [[ABNewPersonViewController alloc] init];
+            personVc.newPersonViewDelegate = self;
             personVc.displayedPerson = recordRef;
-            personVc.allowsActions = YES;
-            personVc.allowsEditing = YES;
-            personVc.personViewDelegate = self;
             CFRelease(recordRef);
-            [self.navigationController pushViewController:personVc animated:YES];
+            personVc.navigationItem.title=@"简介";
+            personVc.view.tag = 10;
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:personVc];
+            [self presentViewController:nav animated:YES completion:nil];
         }else{
             [self addContactsAction];
         }
@@ -76,27 +68,35 @@
         if (self.contactModel && self.contactModel.contactId) {
             CNContactStore *contactStore = [[CNContactStore alloc] init];
             CNContact *contact = [contactStore unifiedContactWithIdentifier:self.contactModel.contactId keysToFetch:@[[CNContactViewController descriptorForRequiredKeys]] error:nil];
-            CNContactViewController *contactVc = [CNContactViewController viewControllerForContact:contact];
+            CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:contact];
             contactVc.view.tag = 100;
             contactVc.contactStore = contactStore;
             contactVc.allowsEditing = YES;
             contactVc.allowsActions = YES;
             contactVc.delegate = self;
-            if ([[UIDevice currentDevice] systemVersion].floatValue >= 10.0) {
-                //修改导航栏颜色
-                self.navigationController.navigationBar.tintColor = DefultColor;
-                self.navigationController.navigationBar.translucent = YES;
-                self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-            }
-            [self.navigationController pushViewController:contactVc animated:YES];
-           
+            contactVc.navigationItem.title=@"简介";
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactVc];
+            [self presentViewController:nav animated:YES completion:nil];
         }else{
 //            CNMutableContact *contact = [[CNMutableContact alloc] init];
 //            contact.phoneNumbers = @[[CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberiPhone value:[CNPhoneNumber phoneNumberWithStringValue:self.phoneNumber]]];
-            CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:nil];
+//            CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:nil];
+//            contactVc.view.tag = 200;
+//            contactVc.allowsEditing = YES;
+//            contactVc.allowsActions = YES;
+//            contactVc.delegate = self;
+//            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactVc];
+//            [self presentViewController:nav animated:YES completion:nil];
+            CNMutableContact *contact = [[CNMutableContact alloc] init];
+            NSMutableArray *phoneArray = [NSMutableArray array];
+            for (NSString *phoneNum in self.arrNumbers) {
+                [phoneArray addObject:[CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberMobile value:[CNPhoneNumber phoneNumberWithStringValue:phoneNum]]];
+            }
+            contact.phoneNumbers = phoneArray;
+            CNContactViewController *contactVc = [CNContactViewController viewControllerForNewContact:contact];
             contactVc.view.tag = 200;
             contactVc.allowsEditing = YES;
-            contactVc.allowsActions = YES;
+            contactVc.allowsActions = NO;
             contactVc.delegate = self;
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:contactVc];
             [self presentViewController:nav animated:YES completion:nil];
@@ -105,22 +105,83 @@
     
 }
 
+//- (void)addContactsAction
+//{
+//    NSLog(@"添加联系人");
+//    ABNewPersonViewController *newPersonVc = [[ABNewPersonViewController alloc] init];
+//    newPersonVc.newPersonViewDelegate = self;
+//    newPersonVc.view.tag = 20;
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:newPersonVc];
+//    [self presentViewController:nav animated:YES completion:nil];
+//}
+
 - (void)addContactsAction
 {
     NSLog(@"添加联系人");
+    CFErrorRef error = NULL;
+    ABRecordRef person = ABPersonCreate ();
+    ABMutableMultiValueRef multiValue = ABMultiValueCreateMutable(kABStringPropertyType);
+    for (NSString *phoneNum in self.arrNumbers) {
+        ABMultiValueAddValueAndLabel(multiValue, (__bridge CFTypeRef)(phoneNum), kABPersonPhoneMobileLabel, NULL);
+    }
+    ABRecordSetValue(person, kABPersonPhoneProperty, multiValue, &error);
     ABNewPersonViewController *newPersonVc = [[ABNewPersonViewController alloc] init];
+    newPersonVc.displayedPerson = person;
     newPersonVc.newPersonViewDelegate = self;
+    newPersonVc.view.tag = 20;
+    CFRelease(person);
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:newPersonVc];
     [self presentViewController:nav animated:YES completion:nil];
 }
+
 
 #pragma mark - ABNewPersonViewControllerDelegate
 - (void)newPersonViewController:(ABNewPersonViewController *)newPersonView didCompleteWithNewPerson:(nullable ABRecordRef)person
 {
     if (person) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
+        
+        NSString *name;
+        NSString *phone;
+        NSString *firstName = (__bridge NSString *)ABRecordCopyValue(person, kABPersonFirstNameProperty);
+        NSString *lastName = (__bridge NSString *)ABRecordCopyValue(person, kABPersonLastNameProperty);
+        ABMutableMultiValueRef phoneNumRef = ABRecordCopyValue(person, kABPersonPhoneProperty);
+        NSArray *arrNumber = ((__bridge NSArray *)ABMultiValueCopyArrayOfAllValues(phoneNumRef));
+        NSString *phoneNumber = arrNumber.firstObject;
+        
+        if (firstName && lastName) {
+            if ((phoneNumber)&&([lastName stringByAppendingString:firstName])) {
+                name = [lastName stringByAppendingString:firstName];
+                phone = phoneNumber;
+            }
+        } else if (firstName && !lastName) {
+            if (phoneNumber) {
+                name = firstName;
+                phone = phoneNumber;
+            }
+        } else if (!firstName && lastName) {
+            if (phoneNumber) {
+                name = lastName;
+                phone = phoneNumber;
+            }
+        } else {
+            NSLog(@"9.0以前的系统，通讯录数据格式不正确");
+            if (phoneNumber) {
+                name = phoneNumber;
+                phone = phoneNumber;
+            } else {
+                NSLog(@"通讯录没有号码");
+            }
+        }
+        self.contactMan = name;
+//        self.phoneNumbers = phone;
+        if (_contactsInfoUpdateBlock) {
+            _contactsInfoUpdateBlock(name, phone);
+        }
+        [self reloadTableView];
     }
-    [newPersonView dismissViewControllerAnimated:YES completion:^{}];
+
+    [newPersonView dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -174,11 +235,13 @@
         self.contactHead = thumbnailImageData;
         [self.ivContactMan setImage:[UIImage imageWithData:thumbnailImageData]];
         self.contactModel.contactId = contact.identifier;
+        if (_contactsInfoUpdateBlock) {
+            _contactsInfoUpdateBlock(nickName, phoneNumber);
+        }
         [self reloadTableView];
     }
-    if (viewController.view.tag == 200) {
-        [viewController dismissViewControllerAnimated:YES completion:nil];
-    }
+    
+    [viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -186,15 +249,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 #pragma mark - UITableViewDataSource
 
@@ -211,7 +265,7 @@
     ContactPhoneCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ContactPhoneCell"];
 //    NSString *phoneText = [NSString stringWithFormat:@"%@%@", INTERNATIONALSTRING(@"电话"), indexPath]
 //    cell.textLabel.text =
-    cell.lblPhoneLabel.text = [NSString stringWithFormat:@"%@%ld", INTERNATIONALSTRING(@"电话"), indexPath.row + 1];
+    cell.lblPhoneLabel.text = [NSString stringWithFormat:@"%@%zd", INTERNATIONALSTRING(@"电话"), indexPath.row + 1];
     cell.lblPhoneNumber.text = [self.arrNumbers objectAtIndex:indexPath.row];
     
 //    cell.btnCall.tag = indexPath.row;
@@ -249,13 +303,9 @@
 
 - (IBAction)rewriteMessage:(id)sender {
     NSString *number = [self.arrNumbers objectAtIndex:[(UIButton *)sender tag]];
-    
     if (number) {
-        
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-        
         if (storyboard) {
-            
             MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
             if (MJViewController) {
                 MJViewController.title = [self checkLinkNameWithPhoneStr:[self formatPhoneNum:number]];

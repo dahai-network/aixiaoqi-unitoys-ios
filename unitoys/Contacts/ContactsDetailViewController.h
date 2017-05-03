@@ -10,6 +10,7 @@
 //#import "CallActionView.h"
 @class ContactModel;
 
+typedef void(^ContactsDetailUpdateBlock)(NSString *nickName, NSString *phoneNumber);
 @interface ContactsDetailViewController : BaseTableController
 
 @property (nonatomic, strong) ContactModel *contactModel;
@@ -33,6 +34,8 @@
 //- (IBAction)callPhoneNumber:(id)sender;
 //
 //- (IBAction)deleteContact:(id)sender;
+
+@property (nonatomic, copy) ContactsDetailUpdateBlock contactsInfoUpdateBlock;
 
 @end
 

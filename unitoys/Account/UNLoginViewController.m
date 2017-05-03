@@ -16,6 +16,7 @@
 #import "CutomButton.h"
 #import "AgreementViewController.h"
 #import "UNDataTools.h"
+#import "UNPushKitMessageManager.h"
 
 @interface UNLoginViewController ()<UITextFieldDelegate>
 // 时间计数
@@ -388,7 +389,7 @@
                 [userDefaults setObject:self.accountField.text forKey:@"KEY_USER_NAME"];
                 [userDefaults setObject:self.passWordField.text forKey:@"KEY_PASS_WORD"];
                 [userDefaults synchronize];
-                
+                [UNPushKitMessageManager shareManager].iccidString = nil;
                 //从服务器获取黑名单列表
                 [weakSelf getBlackListsFromServer];
                 

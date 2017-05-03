@@ -40,7 +40,17 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSMSContentAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessage) name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsInfoChange) name:@"ContactsInfoChange" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange) name:@"addressBookChanged" object:@"addressBookChanged"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessgeList) name:@"UpdateMessageRecordLists" object:nil];
     [self createButton];
+}
+
+- (void)updateMessgeList
+{
+    self.page = 1;
+    [self.tableView.mj_footer resetNoMoreData];
+    [self loadMessage];
 }
 
 - (void)initTableView
@@ -58,6 +68,11 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     self.tableView.rowHeight = 90;
     [self.view addSubview:self.tableView];
     [self.tableView registerNibWithNibId:strMessageRecordCell];
+}
+
+- (void)addressBookDidChange
+{
+    [self.tableView reloadData];
 }
 
 - (void)initNoDataLabel
@@ -144,14 +159,12 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         NSLog(@"查询到的用户数据：%@",responseObj);
         [self.tableView.mj_header endRefreshing];
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            
             _arrMessageRecord = [responseObj objectForKey:@"data"];
             if (_arrMessageRecord.count>=20) {
                 self.tableView.mj_footer.hidden = NO;
             }else{
                 self.tableView.mj_footer.hidden = YES;
             }
-            
             [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -241,9 +254,17 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
     }
 //    NSString *textStr = [NSString stringWithFormat:@"%@", [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]]];
+    
     NSString *textStr = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dicMessageRecord[@"SMSTime"]];
     cell.lblMessageDate.text = textStr;
     cell.lblContent.text = [dicMessageRecord objectForKey:@"SMSContent"];
+    
+    if (![dicMessageRecord[@"IsRead"] boolValue]) {
+        [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
+    }else{
+        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+    }
+    
     return cell;
 }
 
@@ -252,8 +273,15 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 //}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     //消息记录，显示消息
     NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
+    
+    if (![dicMessageRecord[@"IsRead"] boolValue]) {
+        MessageRecordCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+    }
+    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     if (storyboard) {
         //            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
@@ -328,6 +356,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceiveNewSMSContentUpdate" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBookChanged"];
 }
 
 - (void)didReceiveMemoryWarning {
