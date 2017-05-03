@@ -36,7 +36,7 @@
 @property (nonatomic, assign) BOOL isTcpConnected;//tcp是否连接成功
 @property (nonatomic, assign) BOOL isActivityCard;//是否点击激活大王卡操作
 @property (nonatomic, assign) BOOL isHaveCard;//判断是否有卡
-@property (nonatomic, copy) NSString *cardType;//卡类型，激活的时候用，1：爱小器卡，2：电话卡
+@property (nonatomic, copy) NSString *cardType;//卡类型，激活的时候用，0：无卡，1：爱小器卡，2：电话卡
 @property (nonatomic, assign) BOOL isBeingRegisting;//是否正在注册
 @property (nonatomic, copy) NSString *stepNumber;//记录注册的步数多少
 @property (nonatomic, assign) BOOL isShowHud;//激活大王卡的时候是否显示hud

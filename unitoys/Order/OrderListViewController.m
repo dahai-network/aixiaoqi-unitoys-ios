@@ -24,6 +24,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *activitedButton;//已激活
 @property (weak, nonatomic) IBOutlet UIButton *notActivitedButton;//未激活
 @property (weak, nonatomic) IBOutlet UIButton *isEndButton;//已结束
+@property (strong, nonatomic) IBOutlet UIView *footView;
+@property (weak, nonatomic) IBOutlet UILabel *noDataLabel;
 
 @end
 
@@ -44,7 +46,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkOrderListForNotAct) name:@"boundGiftCardSuccess" object:@"boundGiftCardSuccess"];//绑定礼包卡成功
     }
     
-    self.tableView.tableFooterView = [UIView new];
+    self.tableView.tableFooterView = self.footView;
     self.tableView.rowHeight = 60;
     [self checkOrderListWithOrderStatus:@"0"];
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
@@ -155,19 +157,25 @@
             
             self.arrOrderData = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
             if (!self.arrOrderData.count) {
+                self.noDataLabel.hidden = NO;
                 switch ([statue intValue]) {
                     case 0:
-                        HUDNormal(@"没有未激活的套餐")
+//                        HUDNormal(@"没有未激活的套餐")
+                        self.noDataLabel.text = @"没有未激活的套餐";
                         break;
                     case 1:
-                        HUDNormal(@"没有已激活的套餐")
+//                        HUDNormal(@"没有已激活的套餐")
+                        self.noDataLabel.text = @"没有已激活的套餐";
                         break;
                     case 2:
-                        HUDNormal(@"没有已过期的套餐")
+//                        HUDNormal(@"没有已过期的套餐")
+                        self.noDataLabel.text = @"没有已过期的套餐";
                         break;
                     default:
                         break;
                 }
+            } else {
+                self.noDataLabel.hidden = YES;
             }
             
             [self.tableView reloadData];

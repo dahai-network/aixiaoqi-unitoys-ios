@@ -13,7 +13,9 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrderListViewController">
             <connections>
                 <outlet property="activitedButton" destination="aeN-zo-84P" id="Yt2-y9-eZ3"/>
+                <outlet property="footView" destination="adS-P6-KS4" id="4ot-HA-78X"/>
                 <outlet property="isEndButton" destination="YTk-Y6-GCk" id="HkE-dP-6fe"/>
+                <outlet property="noDataLabel" destination="39G-VC-Rwg" id="I5o-sm-p4f"/>
                 <outlet property="notActivitedButton" destination="C0M-AQ-wph" id="MyO-if-7pu"/>
                 <outlet property="sectionView" destination="xwq-3G-yS9" id="JhB-P6-Af2"/>
                 <outlet property="tableView" destination="gqw-ac-ehZ" id="iRh-KJ-owt"/>
@@ -97,6 +99,26 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="-643.5" y="-272"/>
+        </view>
+        <view contentMode="scaleToFill" id="adS-P6-KS4">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="77"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="39G-VC-Rwg">
+                    <rect key="frame" x="15" y="15" width="345" height="0.0"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.68235294117647061" green="0.68235294117647061" blue="0.68235294117647061" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="39G-VC-Rwg" firstAttribute="top" secondItem="adS-P6-KS4" secondAttribute="top" constant="15" id="JK7-uY-PiD"/>
+                <constraint firstItem="39G-VC-Rwg" firstAttribute="leading" secondItem="adS-P6-KS4" secondAttribute="leading" constant="15" id="XGa-Iv-JgQ"/>
+                <constraint firstAttribute="trailing" secondItem="39G-VC-Rwg" secondAttribute="trailing" constant="15" id="x5I-Ly-k7l"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-507" y="80"/>
         </view>
     </objects>
 </document>
