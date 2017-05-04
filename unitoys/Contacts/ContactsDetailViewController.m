@@ -30,7 +30,6 @@
     self.tableView.delegate = self;
     self.tableView.backgroundColor = UIColorFromRGB(0xf5f5f5);
     self.tableView.tableFooterView = [[UIView alloc] init];
-//    [self.tableView reloadData];
     [self reloadTableView];
 }
 
@@ -107,16 +106,6 @@
     
 }
 
-//- (void)addContactsAction
-//{
-//    NSLog(@"添加联系人");
-//    ABNewPersonViewController *newPersonVc = [[ABNewPersonViewController alloc] init];
-//    newPersonVc.newPersonViewDelegate = self;
-//    newPersonVc.view.tag = 20;
-//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:newPersonVc];
-//    [self presentViewController:nav animated:YES completion:nil];
-//}
-
 - (void)addContactsAction
 {
     NSLog(@"添加联系人");
@@ -176,7 +165,7 @@
             }
         }
         self.contactMan = name;
-//        self.phoneNumbers = phone;
+        self.phoneNumbers = phone;
         if (_contactsInfoUpdateBlock) {
             _contactsInfoUpdateBlock(name, phone);
         }

@@ -29,6 +29,7 @@
     UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:INTERNATIONALSTRING(@"确定要退出登录吗？") preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:nil];
     UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [UNBlueToothTool shareBlueToothTool].isKill = YES;
         //点击事件
         self.checkToken = YES;
         
@@ -64,10 +65,14 @@
         
         //删除存储的绑定信息
         [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+        
         if ([BlueToothDataManager shareManager].isConnected) {
             [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
         }
-        [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
+//        [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
+//        [UNBlueToothTool shareBlueToothTool] = nil;
+//        [[UNBlueToothTool shareBlueToothTool] clearInstance];
+        
         [AddressBookManager shareManager].isOpenedAddress = NO;
         //注销极光推送
         [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
@@ -80,6 +85,7 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"appIsKilled" object:@"appIsKilled"];
+        [[UNBlueToothTool shareBlueToothTool] clearInstance];
     }];
     [alertVC addAction:cancelAction];
     [alertVC addAction:certailAction];

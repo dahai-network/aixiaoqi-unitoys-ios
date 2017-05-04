@@ -75,6 +75,7 @@ typedef enum : NSUInteger {
 @end
 
 static UNBlueToothTool *instance = nil;
+static dispatch_once_t onceToken;
 @implementation UNBlueToothTool
 
 - (void)setPushKitStatu:(BOOL)isPushKit
@@ -117,19 +118,31 @@ static UNBlueToothTool *instance = nil;
 
 + (UNBlueToothTool *)shareBlueToothTool
 {
-    static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [[UNBlueToothTool alloc] init];
     });
     return instance;
 }
 
+- (void)clearInstance
+{
+    self.isKill = YES;
+    [self.mgr stopScan];
+    self.mgr = nil;
+    self.peripheral = nil;
+    self.peripherals = nil;
+    self.strongestRssiPeripheral = nil;
+     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    instance = nil;
+    onceToken=0l;
+}
 
 - (void)initBlueTooth
 {
-    if (self.isInitInstance) {
+    if (self.isInitInstance || self.isKill) {
         return;
     }
+    self.isKill = NO;
     NSLog(@"初始化蓝牙");
     self.isInitInstance = YES;
     self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
@@ -147,12 +160,12 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].currentStep = @"0";
     
     [self initObserverAction];
-    
     [self checkBindedDeviceFromNet];
 }
 
 - (void)initObserverAction
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downElectToCard) name:@"downElectic" object:@"downElectic"];//对卡断电
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];//接收PushKit消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据
@@ -837,6 +850,11 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].boundedDeviceName = [BlueToothDataManager shareManager].connectedDeviceName;
     [BlueToothDataManager shareManager].connectedDeviceName = nil;
     [BlueToothDataManager shareManager].chargingState = 1;
+    
+    if (self.isKill) {
+        return;
+    }
+    
     if ([self.connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
     } else if ([self.connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
@@ -3156,9 +3174,11 @@ static UNBlueToothTool *instance = nil;
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"downElectic" object:@"downElectic"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceivePushKitMessage" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AnalysisAuthData" object:nil];
+    NSLog(@"UNBlueToothTool---dealloc");
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"downElectic" object:@"downElectic"];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceivePushKitMessage" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AnalysisAuthData" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

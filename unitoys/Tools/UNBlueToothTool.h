@@ -68,6 +68,9 @@ typedef void(^PaySuccessBlock)();
 //是否使能通知的数据数组
 @property (nonatomic, strong) NSMutableArray *dataArr;
 
+//是否已销毁
+@property (nonatomic, assign) BOOL isKill;
+
 + (instancetype)shareBlueToothTool;
 - (void)initBlueTooth;
 
@@ -117,4 +120,5 @@ typedef void(^PaySuccessBlock)();
 //取消绑定
 - (void)cancelToBound;
 
+- (void)clearInstance;
 @end

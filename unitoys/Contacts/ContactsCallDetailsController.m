@@ -54,16 +54,10 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 @implementation ContactsCallDetailsController
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"详情";
     _isBlickAction = YES;
-    
     if (!self.contactModel) {
         self.contactModel = [self checkContactModelWithPhoneStr:self.phoneNumber];
     }

@@ -180,7 +180,7 @@
         for (MJMessageFrame *messageFrame in self.selectRemoveData) {
             [smsArray addObject:messageFrame.message.SMSID];
         }
-        [self deleteMessageSWithDatas:[self.selectRemoveData copy] SMSIds:[smsArray copy]];
+        [self deleteMessageSWithDatas:self.selectRemoveData SMSIds:[smsArray copy]];
         
         [self cancelEdit];
     }
@@ -298,7 +298,7 @@
     NSString *smsId = [extras valueForKey:@"SMSID"];
     __block MJMessageStatu statu = (MJMessageStatu)[[extras valueForKey:@"Status"] integerValue];
     kWeakSelf
-    [_messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(MJMessageFrame *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
+    [self.messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(MJMessageFrame *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([messageFrame.message.SMSID isEqualToString:smsId]) {
             if (statu != messageFrame.message.Status) {
                 NSLog(@"短信状态改变");
@@ -733,9 +733,9 @@
 
 - (void)deleteText:(id)sender
 {
-    NSLog(@"当前删除短信%@", self.messageFrames[_currentIndex]);
     if (_currentIndex < self.messageFrames.count) {
         MJMessageFrame *messageFrame = self.messageFrames[_currentIndex];
+        NSLog(@"当前删除短信%@", messageFrame);
         [self deleteMessageWithSMSId:messageFrame.message.SMSID Index:_currentIndex];
     }
 }
@@ -760,8 +760,6 @@
             if (weakSelf.messageFrames.count > index) {
                 [weakSelf.messageFrames removeObjectAtIndex:index];
             }
-//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-//            [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
             [weakSelf.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -774,7 +772,7 @@
     } headers:self.headers];
 }
 
-- (void)deleteMessageSWithDatas:(NSArray *)Datas SMSIds:(NSArray *)smsIds
+- (void)deleteMessageSWithDatas:(NSMutableArray *)Datas SMSIds:(NSArray *)smsIds
 {
     kWeakSelf
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: smsIds ,@"Ids",nil];
@@ -782,21 +780,22 @@
     [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"删除多条短信成功");
-//            NSMutableArray *indexPathsArray = [NSMutableArray array];
-//            for (MJMessageFrame *messageFrame in Datas) {
-//                NSInteger row = [weakSelf.messageFrames indexOfObject:messageFrame];
-//                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-//                [indexPathsArray addObject:indexPath];
-//            }
-//            if (indexPathsArray.count) {
-//                [weakSelf.messageFrames removeObjectsInArray:Datas];
-//                [weakSelf.tableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
-//            }
             
             //刷新外部界面
             [weakSelf updateMessageList];
             
+            //防止数据不同步
+            NSMutableArray *tempArray = [NSMutableArray array];
+            for (MJMessageFrame *messageFrame in Datas) {
+                if (![weakSelf.messageFrames containsObject:messageFrame]) {
+                    [tempArray addObject:messageFrame];
+                }
+            }
+            if (tempArray.count) {
+                [Datas removeObjectsInArray:tempArray];
+            }
             [weakSelf.messageFrames removeObjectsInArray:Datas];
+            
             [weakSelf.tableView reloadData];
             //自动滚动到底部
             [self scrollTableViewToBottomWithAnimated:NO];
