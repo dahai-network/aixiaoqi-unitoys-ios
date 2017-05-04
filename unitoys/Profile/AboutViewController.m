@@ -390,7 +390,7 @@
     [self getBasicHeader];
     [SSNetworkRequest getRequest:apiGetUserOrderUsageRemaining params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            if ([responseObj[@"data"][@"Used"][@"TotalNum"] isEqualToString:@"0"]) {
+            if ([responseObj[@"data"][@"Unactivated"][@"TotalNum"] isEqualToString:@"0"]) {
                 self.havePackageView.hidden = YES;
                 NSLog(@"没有已激活的套餐");
             } else {

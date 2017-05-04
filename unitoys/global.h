@@ -225,6 +225,9 @@
 //使用签名，查询手环设备是否被其他用户绑定
 #define apiIsBind defaultHost@"api/DeviceBracelet/IsBind"
 
+//使用签名，更新手环设备连接信息
+#define apiUpdateConnectInfo defaultHost@"api/DeviceBracelet/UpdateConnectInfo"
+
 //使用签名，空中升级
 #define apiDeviceBraceletOTA defaultHost@"api/DeviceBracelet/OTA"
 

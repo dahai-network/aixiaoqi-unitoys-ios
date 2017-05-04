@@ -1328,6 +1328,7 @@ static dispatch_once_t onceToken;
                 NSLog(@"当前电量为：%d%%", electricQuantity);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantity];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
+                [self refreshBLEInfo];
                 //是否有卡
                 if (contentStr.length >= 8) {
                     NSString *isHaveCardStr = [contentStr substringWithRange:NSMakeRange(6, 2)];
@@ -2369,7 +2370,15 @@ static dispatch_once_t onceToken;
     if ([BlueToothDataManager shareManager].deviceMacAddress&&![[BlueToothDataManager shareManager].deviceMacAddress isEqualToString:@"(null):(null):(null):(null):(null):(null)"]) {
         if (![BlueToothDataManager shareManager].isConnectedPairedDevice) {
             self.checkToken = YES;
-            NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", [BlueToothDataManager shareManager].versionNumber, @"Version", nil];
+            NSDictionary *info;
+            if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+                info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", @"1", @"DeviceType", nil];
+            } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+                info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", @"0", @"DeviceType", nil];
+            } else {
+                NSLog(@"设备类型有问题");
+                info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", @"1", @"DeviceType", nil];
+            }
             
             [self getBasicHeader];
 //            NSLog(@"表演头：%@",self.headers);
@@ -2426,6 +2435,36 @@ static dispatch_once_t onceToken;
     } else {
         NSLog(@"绑定蓝牙接口出问题 -- %s:%d", __func__, __LINE__);
     }
+}
+
+#pragma mark 更新蓝牙连接信息
+- (void)refreshBLEInfo {
+    self.checkToken = YES;
+    NSDictionary *info;
+    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+        info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].versionNumber,@"Version", [BlueToothDataManager shareManager].electricQuantity, @"Power", @"1", @"DeviceType", nil];
+    } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].versionNumber,@"Version", [BlueToothDataManager shareManager].electricQuantity, @"Power", @"0", @"DeviceType", nil];
+    } else {
+        NSLog(@"设备类型有问题");
+        info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].versionNumber,@"Version", [BlueToothDataManager shareManager].electricQuantity, @"Power", @"1", @"DeviceType", nil];
+    }
+    
+    [self getBasicHeader];
+    //            NSLog(@"表演头：%@",self.headers);
+    [SSNetworkRequest postRequest:apiUpdateConnectInfo params:info success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"更新结果：%@", responseObj);
+            
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            NSLog(@"请求失败：%@", responseObj[@"msg"]);
+        }
+    } failure:^(id dataObj, NSError *error) {
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
 }
 
 #pragma mark 解绑
