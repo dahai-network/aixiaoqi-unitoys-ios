@@ -338,6 +338,8 @@
 #define HOMESTATUETITLE_NOTSERVICE @"服务未开启"
 //当前网络不可用
 #define HOMESTATUETITLE_NETWORKCANNOTUSE @"当前网络不可用"
+//读卡失败
+#define HOMESTATUETITLE_READCARDFAIL @"读取卡失败"
 
 
 #pragma mark 运营商类型

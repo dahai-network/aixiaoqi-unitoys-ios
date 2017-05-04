@@ -246,10 +246,12 @@ typedef enum : NSUInteger {
     
     //删除存储的绑定信息
     [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+    [UNBlueToothTool shareBlueToothTool].isKill = YES;
     if ([BlueToothDataManager shareManager].isConnected) {
         [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
     }
-    [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
+//    [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
+    [[UNBlueToothTool shareBlueToothTool] clearInstance];
     
     UIApplication *application = [UIApplication sharedApplication];
     if ([application.keyWindow.rootViewController isKindOfClass:[UNLoginViewController class]]) {

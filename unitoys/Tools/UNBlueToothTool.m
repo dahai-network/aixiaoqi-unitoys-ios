@@ -836,7 +836,7 @@ static dispatch_once_t onceToken;
     [BlueToothDataManager shareManager].isLbeConnecting = NO;
     NSLog(@"跟外设失去连接");
     //    [BlueToothDataManager shareManager].isRegisted = NO;
-    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
 //    [BlueToothDataManager shareManager].isBounded = NO;
     [BlueToothDataManager shareManager].isConnected = NO;
     [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
@@ -1774,15 +1774,12 @@ static dispatch_once_t onceToken;
                                 [BlueToothDataManager shareManager].isHaveCard = NO;
                                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
                                 [BlueToothDataManager shareManager].isChangeSimCard = YES;
-                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
+                                if (cardType == 0) {
+                                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_READCARDFAIL];
+                                } else {
+                                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
+                                }
                             }
-                            
-                            //更新蓝牙状态
-                            //                        [self refreshBLEStatue];
-                            //判断卡类型
-                            //                        [BlueToothDataManager shareManager].bleStatueForCard = 0;
-                            //                        [self phoneCardToUpeLectrify:@"03"];
-                            //                        [self checkCardType];
                             break;
                         default:
                             NSLog(@"卡状态改变 -- 状态有问题");
@@ -2186,7 +2183,7 @@ static dispatch_once_t onceToken;
                 [BlueToothDataManager shareManager].isHavePackage = YES;
                 dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
                 dispatch_async(global, ^{
-                    if ([self.simtype isEqualToString:@"1"] || [self.simtype isEqualToString:@"2"]) {
+                    if ([[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
                         if ([BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isChangeSimCard) {
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
                             NSLog(@"又走重新连接tcp的地方了");
@@ -2238,7 +2235,7 @@ static dispatch_once_t onceToken;
             if ([responseObj[@"data"][@"Used"] intValue]/*0：不存在，1：存在*/) {
                 dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
                 dispatch_async(global, ^{
-                    if ([self.simtype isEqualToString:@"1"] || [self.simtype isEqualToString:@"2"]) {
+                    if ([[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
                         if ([BlueToothDataManager shareManager].isTcpConnected) {
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
                         } else {

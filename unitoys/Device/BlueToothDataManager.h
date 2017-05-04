@@ -32,7 +32,7 @@
 @property (nonatomic, assign) BOOL isRegisted;//是否已注册
 @property (nonatomic, assign) BOOL isNeedToResert;//是否需要重置
 @property (nonatomic, assign) BOOL isAccordBreak;//是否主动断开
-@property (nonatomic, copy) NSString *operatorType;//运营商类型，0：上电失败 1：移动 2：联通 3：电信 4：爱小器卡
+@property (nonatomic, copy) NSString *operatorType;//运营商类型，0：上电失败 1：移动 2：联通 3：电信 4：爱小器卡 5：无卡
 @property (nonatomic, assign) BOOL isTcpConnected;//tcp是否连接成功
 @property (nonatomic, assign) BOOL isActivityCard;//是否点击激活大王卡操作
 @property (nonatomic, assign) BOOL isHaveCard;//判断是否有卡
