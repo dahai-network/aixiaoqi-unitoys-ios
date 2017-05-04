@@ -19,6 +19,8 @@
 #import "NSString+Extension.h"
 #import "UNDataTools.h"
 
+#import "UNCreatLocalNoti.h"
+
 //app发送给蓝牙
 typedef enum : NSUInteger {
     BLESystemReset,//系统复位
@@ -175,7 +177,24 @@ static dispatch_once_t onceToken;
 {
     NSLog(@"接收到PushKit消息---receivePushKitMessage");
     if ([BlueToothDataManager shareManager].isConnected) {
-        [self sendInitMessageToBLE];
+        
+        if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+            NSLog(@"发送pushkit消息到蓝牙");
+            if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect) {
+                NSLog(@"SIM断开连接消息类型");
+                [self sendLBEMessageSIMDisConnect];
+            }else{
+                if ([UNPushKitMessageManager shareManager].simDataDict) {
+                    [self sendLBEMessageWithPushKit];
+                }else{
+//                    [self sendLBEConnectData];
+                    NSLog(@"必须有simDataDict");
+                }
+            }
+        }else{
+            NSLog(@"数据错误,必须为PushKit模式");
+        }
+        
     }else{
         if (![BlueToothDataManager shareManager].isLbeConnecting) {
             NSLog(@"蓝牙未连接,重连设备");
@@ -540,6 +559,8 @@ static dispatch_once_t onceToken;
                 } else {
                     //                HUDNormal(INTERNATIONALSTRING(@"连接蓝牙设备才能正常使用"))
                     [self showHudNormalString:INTERNATIONALSTRING(@"连接蓝牙设备才能正常使用")];
+                    
+//                    [UNCreatLocalNoti ]
                 }
             }
             [BlueToothDataManager shareManager].isOpened = NO;
@@ -1066,7 +1087,7 @@ static dispatch_once_t onceToken;
         //    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"1"];
         //    [BlueToothDataManager shareManager].stepNumber = @"1";
         
-        [self sendLBEConnectData];
+//        [self sendLBEConnectData];
         
         [UNPushKitMessageManager shareManager].isQuickLoad = YES;
         //对卡上电
@@ -1102,17 +1123,25 @@ static dispatch_once_t onceToken;
 {
     if ([BlueToothDataManager shareManager].isConnected) {
         NSLog(@"解析鉴权数据");
-        if ([BlueToothDataManager shareManager].isCanSendAuthData) {
+//        if ([BlueToothDataManager shareManager].isCanSendAuthData) {
             [UNPushKitMessageManager shareManager].isQuickLoad = NO;
             [self updataToCard];
             [self sendDataToVSW:string];
-        }
+//        }
     }else{
         NSLog(@"不解析鉴权数据");
         if (![BlueToothDataManager shareManager].isLbeConnecting) {
             self.normalAuthSimString = string;
             [self checkBindedDeviceFromNet];
         }
+    }
+}
+
+- (void)sendLBEMessageSIMDisConnect
+{
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [UNPushKitMessageManager shareManager].isQuickLoad = NO;
+        [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
     }
 }
 
@@ -1794,7 +1823,10 @@ static dispatch_once_t onceToken;
                 break;
             case 13:
                 NSLog(@"接收到SIM卡ICCID -- %@", contentStr);
-                if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate || [UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect) {
+                if (contentStr) {
+                    [[NSUserDefaults standardUserDefaults] setObject:contentStr forKey:@"SIMICCIDString"];
+                }
+                if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                     if (contentStr && [[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
                         //判断本地是否存在ICCID
                         [UNPushKitMessageManager shareManager].iccidString = contentStr;
@@ -1833,6 +1865,18 @@ static dispatch_once_t onceToken;
                                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
                                 [BlueToothDataManager shareManager].isRegisted = NO;
                             }
+                        }
+                    }
+                }else{
+                    if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect) {
+                        //判断本地是否存在ICCID
+                        [UNPushKitMessageManager shareManager].iccidString = contentStr;
+                        
+                        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
+                        NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
+                        if (dict) {
+                            //创建tcp,建立连接
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
                         }
                     }
                 }
@@ -1977,8 +2021,8 @@ static dispatch_once_t onceToken;
     }
     if (self.needSendDatas.count) {
         [self.needSendDatas removeAllObjects];
-        self.currentSendIndex = 0;
     }
+    self.currentSendIndex = 0;
     [BlueToothDataManager shareManager].bleStatueForCard = 2;
     
     UNSimCardAuthenticationModel *model = [UNGetSimData getModelWithAuthenticationString:string];
@@ -2007,12 +2051,21 @@ static dispatch_once_t onceToken;
     }
     [self.needSendDatas addObject:model.simData];
     if (model.isAddSendData) {
+        if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+            if ([self.simtype isEqualToString:@"0"]) {
+                [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
+                self.simtype = [self checkSimType];
+            }
+        }
+        
         if ([self.simtype isEqualToString:@"2"]) {
             //电信
             [self.needSendDatas addObject:@"a0c0000003"];
         }else if ([self.simtype isEqualToString:@"1"]){
             //移动联通
             [self.needSendDatas addObject:@"a0c000000c"];
+        }else{
+            return;
         }
     }
     NSLog(@"model===%@", model);
@@ -2075,6 +2128,13 @@ static dispatch_once_t onceToken;
     //最后发送的命令
     NSString *lastStr = @"0000000000";
     if (self.authenticationModel.isAddSendData) {
+        if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+            if ([self.simtype isEqualToString:@"0"]) {
+                [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
+                self.simtype = [self checkSimType];
+            }
+        }
+        
         if ([self.simtype isEqualToString:@"2"]) {
             //电信
             lastStr = @"a0c0000003";

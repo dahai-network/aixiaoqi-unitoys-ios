@@ -43,4 +43,37 @@
     }
 }
 
+//蓝牙关闭通知
++ (void)createLBECloseNoti
+{
+    NSString *timeStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"LBEClose"];
+    
+}
+//蓝牙断开连接通知
++ (void)createLBEDisConnectNoti
+{
+
+}
+//网络断开或较差通知
++ (void)createNETDisConnectNoti
+{
+    
+}
+
++ (void)creatErrorNoti:(NSString *)errorString
+{
+    NSDictionary *infoDic = [NSDictionary dictionaryWithObject:errorString forKey:@"DisConnect"];
+    UILocalNotification *backgroudMsg = [[UILocalNotification alloc] init];
+    if (backgroudMsg) {
+        backgroudMsg.timeZone = [NSTimeZone defaultTimeZone];
+        backgroudMsg.alertBody = errorString;
+//        backgroudMsg.alertAction = dict[@"phone"];
+        backgroudMsg.repeatInterval = 0;
+        backgroudMsg.applicationIconBadgeNumber = 0;
+        //标记通知信息
+        backgroudMsg.userInfo = infoDic;
+        [[UIApplication sharedApplication] scheduleLocalNotification:backgroudMsg];
+    }
+}
+
 @end

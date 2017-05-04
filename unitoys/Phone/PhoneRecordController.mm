@@ -1673,6 +1673,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
      _noDataLabel.hidden = YES;
     if (self.isSearchStatu && self.phonePadView.inputedPhoneNumber && self.phonePadView.inputedPhoneNumber.length) {
+        self.tableView.backgroundColor = DefualtBackgroundColor;
         return self.searchLists.count;
     }else{
         if (self.arrPhoneRecord.count == 0) {

@@ -14,4 +14,11 @@
 
 + (void)createLocalNotiMessageString:(NSString *)string;
 
+//蓝牙关闭通知
++ (void)createLBECloseNoti;
+//蓝牙断开连接通知
++ (void)createLBEDisConnectNoti;
+//网络断开或较差通知
++ (void)createNETDisConnectNoti;
+
 @end
