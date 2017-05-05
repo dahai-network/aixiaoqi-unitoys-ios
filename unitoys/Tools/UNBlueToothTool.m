@@ -1666,8 +1666,8 @@ static dispatch_once_t onceToken;
                                 [self phoneCardToOutageNew];
                                 self.bigKingCardNumber = [totalString substringWithRange:NSMakeRange(4, 16)];
                                 
-                                NSString *checkTypeStr = [self.bigKingCardNumber substringFromIndex:self.bigKingCardNumber.length-4];
-                                if ([self convertRangeStringToIntWithString:checkTypeStr rangeLoc:0 rangeLen:4] > 300) {
+                                NSString *checkTypeStr = [self.bigKingCardNumber substringFromIndex:self.bigKingCardNumber.length-8];
+                                if ([checkTypeStr intValue] > 300) {
                                     NSLog(@"是新版爱小器卡");
                                     self.isNewCard = YES;
                                 } else {
