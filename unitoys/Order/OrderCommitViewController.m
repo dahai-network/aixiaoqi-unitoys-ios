@@ -35,7 +35,8 @@
     if (self.dicPackage) {
         NSLog(@"套餐数据:%@",self.dicPackage);
         [self.ivPackagePic setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[self.dicPackage objectForKey:@"LogoPic"]]]]];
-        self.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[self.dicPackage objectForKey:@"Price"] floatValue]];
+//        self.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[self.dicPackage objectForKey:@"Price"] floatValue]];
+        [self.lblPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f",[[self.dicPackage objectForKey:@"Price"] floatValue]]];
 //        self.lblExpireDays.text = [NSString stringWithFormat:@"有效期：%@",[self.dicPackage objectForKey:@"ExpireDays"]];
         self.lblPackageName.text = [self.dicPackage objectForKey:@"PackageName"];
         
@@ -218,7 +219,8 @@
         
         
         self.lblFactPayment.text = [NSString stringWithFormat:@"￥%.2f",self.totalFee];
-        self.lblOrderFee.text = [NSString stringWithFormat:@"￥%.2f",self.totalFee];
+//        self.lblOrderFee.text = [NSString stringWithFormat:@"￥%.2f",self.totalFee];
+        [self.lblOrderFee changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f",self.totalFee]];
         
         if (self.ammountValue>self.totalFee){
             if (self.btnAccountpay.enabled == NO) {

@@ -48,7 +48,7 @@
 "aLI-9S-RSL.text" = "推荐安装微信5.0版本以上的用户使用";
 
 /* Class = "UILabel"; text = "支付方式"; ObjectID = "adD-Wl-34H"; */
-"adD-Wl-34H.text" = "支付方式";
+"adD-Wl-34H.text" = "选择支付方式";
 
 /* Class = "UILabel"; text = "微信"; ObjectID = "cnu-VW-UVp"; */
 "cnu-VW-UVp.text" = "微信";

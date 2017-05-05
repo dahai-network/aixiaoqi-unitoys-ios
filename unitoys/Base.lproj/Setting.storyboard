@@ -31,6 +31,9 @@
                                     <state key="normal" title="退出登录" backgroundImage="btn_bj_l_nor">
                                         <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </state>
+                                    <connections>
+                                        <action selector="logout:" destination="fUR-bd-mDi" eventType="touchUpInside" id="hwE-sB-1bA"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <constraints>

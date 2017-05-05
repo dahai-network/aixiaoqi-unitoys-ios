@@ -102,7 +102,8 @@
         setImage(self.firstCell.imgCommunicatePhoto, self.communicateDetailInfo[@"LogoPic"])
         self.firstCell.lblCommunicateName.text = self.communicateDetailInfo[@"PackageName"];
         self.firstCell.lblValidity.text = [NSString stringWithFormat:@"有效期：%@天", self.communicateDetailInfo[@"ExpireDays"]];
-        self.firstCell.lblCommunicatePrice.text = [NSString stringWithFormat:@"￥%@", self.communicateDetailInfo[@"Price"]];
+//        self.firstCell.lblCommunicatePrice.text = [NSString stringWithFormat:@"￥%@", self.communicateDetailInfo[@"Price"]];
+        [self.firstCell.lblCommunicatePrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%@", self.communicateDetailInfo[@"Price"]]];
         return self.firstCell;
     } else if (indexPath.row == 1) {
         static NSString *identifier=@"ContentTableViewCell";

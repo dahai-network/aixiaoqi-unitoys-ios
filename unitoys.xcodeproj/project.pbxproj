@@ -14,6 +14,7 @@
 		04127F671EA5F69100C18201 /* OrderListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04127F651EA5F69100C18201 /* OrderListTableViewCell.m */; };
 		04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04127F661EA5F69100C18201 /* OrderListTableViewCell.xib */; };
 		041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */; };
+		04226B2E1EBC8D8B004B8365 /* UILabel+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04226B2D1EBC8D8B004B8365 /* UILabel+Extension.m */; };
 		0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0430A04F1E69623800FFE611 /* Default-568h@2x.png */; };
 		043638D61EB0A62F0064207E /* AbordSaveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D41EB0A62F0064207E /* AbordSaveViewController.m */; };
 		043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043638D51EB0A62F0064207E /* AbordSaveViewController.xib */; };
@@ -358,6 +359,8 @@
 		041BB4B61E5C1F05001C4841 /* TTRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSlider.h; sourceTree = "<group>"; };
 		041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTRangeSlider.m; sourceTree = "<group>"; };
 		041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSliderDelegate.h; sourceTree = "<group>"; };
+		04226B2C1EBC8D8B004B8365 /* UILabel+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+Extension.h"; sourceTree = "<group>"; };
+		04226B2D1EBC8D8B004B8365 /* UILabel+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+Extension.m"; sourceTree = "<group>"; };
 		0430A04F1E69623800FFE611 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		043638D31EB0A62F0064207E /* AbordSaveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbordSaveViewController.h; sourceTree = "<group>"; };
 		043638D41EB0A62F0064207E /* AbordSaveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbordSaveViewController.m; sourceTree = "<group>"; };
@@ -1504,6 +1507,8 @@
 				952B2AF71DC22773006A7C69 /* NSString+Extension.m */,
 				048ACFFF1E0A576800421F67 /* NSString+Addition.h */,
 				048AD0001E0A576800421F67 /* NSString+Addition.m */,
+				04226B2C1EBC8D8B004B8365 /* UILabel+Extension.h */,
+				04226B2D1EBC8D8B004B8365 /* UILabel+Extension.m */,
 				95E918671DDCAB9C005DABC0 /* RoundLable.h */,
 				95E918681DDCAB9C005DABC0 /* RoundLable.m */,
 				95D0004D1E0ACBB600283ADC /* NotifyTextField.h */,
@@ -2606,6 +2611,7 @@
 				95CD33EE1D9CE4F300EE5DD3 /* DataVerifier.m in Sources */,
 				958159501DCCC31D004474FF /* SetValueViewController.m in Sources */,
 				3C4A07791E9CC56400A6DDA9 /* ContactsCallDetailsController.m in Sources */,
+				04226B2E1EBC8D8B004B8365 /* UILabel+Extension.m in Sources */,
 				954A87E61D9A151500570843 /* OrderCommitViewController.m in Sources */,
 				955CCC401D91758400BC8110 /* HomeViewController.m in Sources */,
 				954A87CD1D98BBA700570843 /* JSONModel.m in Sources */,

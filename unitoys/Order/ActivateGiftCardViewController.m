@@ -128,7 +128,8 @@
             }
             
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
-            self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
+//            self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
+            [self.firstCell.lblOrderPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]]];
             [self.tableView reloadData];
             self.cancelButton.enabled = YES;
             self.activateButton.enabled = YES;
@@ -151,7 +152,8 @@
             self.IsApn = responseObj[@"data"][@"list"][@"PackageIsApn"];
             
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
-            self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
+//            self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
+            [self.firstCell.lblOrderPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]]];
             self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
             [self.tableView reloadData];
         }else{

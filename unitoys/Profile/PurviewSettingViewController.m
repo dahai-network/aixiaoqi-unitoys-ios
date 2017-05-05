@@ -21,6 +21,7 @@
 @interface PurviewSettingViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *dataArr;
+@property (strong, nonatomic) IBOutlet UIView *headView;
 
 @end
 
@@ -47,6 +48,7 @@
     self.dataArr = [NSMutableArray arrayWithObjects:dict1, dict2, dict3, dict4, dict5, dict6, dict7, dict8, nil];
     self.title = INTERNATIONALSTRING(@"权限设置");
     self.tableView.tableFooterView = [UIView new];
+    self.tableView.tableHeaderView = self.headView;
     
     //定位权限
     [self checkLocationPurving];

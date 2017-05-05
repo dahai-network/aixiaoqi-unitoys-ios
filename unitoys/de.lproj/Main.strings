@@ -123,7 +123,7 @@
 "TCy-Xb-7Us.text" = "Expiry：--day";
 
 /* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "Tl9-4J-PAS"; */
-"Tl9-4J-PAS.normalTitle" = "More V";
+"Tl9-4J-PAS.normalTitle" = "More";
 
 /* Class = "UILabel"; text = "0"; ObjectID = "TnU-Qc-YbS"; */
 "TnU-Qc-YbS.text" = "0";
@@ -153,7 +153,7 @@
 "byG-lF-DHz.text" = "0";
 
 /* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "cAW-Zz-6aP"; */
-"cAW-Zz-6aP.normalTitle" = "More V";
+"cAW-Zz-6aP.normalTitle" = "More";
 
 /* Class = "UILabel"; text = "设置"; ObjectID = "cQM-8y-MA7"; */
 //"cQM-8y-MA7.text" = "Settings";
@@ -228,7 +228,7 @@
 "rhx-hb-oRA.text" = "Consumed/kcal";
 
 /* Class = "UILabel"; text = "更多>"; ObjectID = "s0D-2Z-1VP"; */
-"s0D-2Z-1VP.text" = "More V";
+"s0D-2Z-1VP.text" = "More";
 
 /* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "t4s-zm-RsX"; */
 "t4s-zm-RsX.normalTitle" = "Stateless";

@@ -123,7 +123,7 @@
 "TCy-Xb-7Us.text" = "有效期：--天";
 
 /* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "Tl9-4J-PAS"; */
-"Tl9-4J-PAS.normalTitle" = "更多V";
+"Tl9-4J-PAS.normalTitle" = "更多";
 
 /* Class = "UILabel"; text = "0"; ObjectID = "TnU-Qc-YbS"; */
 "TnU-Qc-YbS.text" = "0";
@@ -153,7 +153,7 @@
 "byG-lF-DHz.text" = "0";
 
 /* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "cAW-Zz-6aP"; */
-"cAW-Zz-6aP.normalTitle" = "更多V";
+"cAW-Zz-6aP.normalTitle" = "更多";
 
 /* Class = "UILabel"; text = "设置"; ObjectID = "cQM-8y-MA7"; */
 "cQM-8y-MA7.text" = "权限管理";
@@ -228,7 +228,7 @@
 "rhx-hb-oRA.text" = "消耗/千卡";
 
 /* Class = "UILabel"; text = "更多>"; ObjectID = "s0D-2Z-1VP"; */
-"s0D-2Z-1VP.text" = "更多V";
+"s0D-2Z-1VP.text" = "更多";
 
 /* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "t4s-zm-RsX"; */
 "t4s-zm-RsX.normalTitle" = "无状态";

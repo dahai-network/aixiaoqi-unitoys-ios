@@ -122,7 +122,8 @@
     [cell.imgOrder sd_setImageWithURL:[NSURL URLWithString:[dicPackage objectForKey:@"Pic"]]];
     cell.lblFlow.text = [dicPackage objectForKey:@"Flow"];
     cell.lblPackageName.text = [dicPackage objectForKey:@"PackageName"];
-    cell.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicPackage objectForKey:@"Price"] floatValue]];
+    [cell.lblPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f",[[dicPackage objectForKey:@"Price"] floatValue]]];
+//    cell.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicPackage objectForKey:@"Price"] floatValue]];
 //    cell.Operators.text = [dicPackage objectForKey:@"Operators"];
     
     return cell;

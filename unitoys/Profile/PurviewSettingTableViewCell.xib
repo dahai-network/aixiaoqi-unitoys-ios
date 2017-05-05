@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="后台应用刷新权限" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mkH-19-KAO">
@@ -29,21 +30,40 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mSk-i4-gmU">
-                        <rect key="frame" x="165" y="11" width="140" height="21"/>
+                        <rect key="frame" x="165" y="11" width="127" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="Wav-iv-jAD"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
+                        <color key="textColor" red="0.83921568627450982" green="0.83921568627450982" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="right_arrow_nor" translatesAutoresizingMaskIntoConstraints="NO" id="Fa0-oL-0lJ">
+                        <rect key="frame" x="297" y="14.5" width="8" height="14"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="Fa0-oL-0lJ" secondAttribute="height" multiplier="18:30" id="44e-CQ-f7E"/>
+                            <constraint firstAttribute="width" constant="8" id="Nzf-lR-CTe"/>
+                        </constraints>
+                    </imageView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nVi-nj-Iew">
+                        <rect key="frame" x="15" y="42.5" width="290" height="1"/>
+                        <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="2G3-J8-qxH"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstItem="mkH-19-KAO" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="6aT-Mh-eVd"/>
                     <constraint firstItem="mSk-i4-gmU" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="GeZ-K9-V2p"/>
                     <constraint firstItem="mkH-19-KAO" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="H1S-Q5-58G"/>
                     <constraint firstItem="mSk-i4-gmU" firstAttribute="leading" secondItem="mkH-19-KAO" secondAttribute="trailing" constant="10" id="NAt-Ln-PmY"/>
-                    <constraint firstAttribute="trailing" secondItem="mSk-i4-gmU" secondAttribute="trailing" constant="15" id="xqO-6n-B1z"/>
+                    <constraint firstAttribute="trailing" secondItem="Fa0-oL-0lJ" secondAttribute="trailing" constant="15" id="Usw-8Q-pk3"/>
+                    <constraint firstAttribute="bottom" secondItem="nVi-nj-Iew" secondAttribute="bottom" id="WDg-HC-gBy"/>
+                    <constraint firstItem="nVi-nj-Iew" firstAttribute="trailing" secondItem="Fa0-oL-0lJ" secondAttribute="trailing" id="X3U-aS-f54"/>
+                    <constraint firstItem="Fa0-oL-0lJ" firstAttribute="leading" secondItem="mSk-i4-gmU" secondAttribute="trailing" constant="5" id="b3e-jL-Yrh"/>
+                    <constraint firstItem="Fa0-oL-0lJ" firstAttribute="centerY" secondItem="mkH-19-KAO" secondAttribute="centerY" id="dIU-d2-qD9"/>
+                    <constraint firstItem="nVi-nj-Iew" firstAttribute="leading" secondItem="mkH-19-KAO" secondAttribute="leading" id="gaL-Ac-owO"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
@@ -52,4 +72,7 @@
             </connections>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="right_arrow_nor" width="9" height="15"/>
+    </resources>
 </document>

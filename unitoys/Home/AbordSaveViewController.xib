@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12118"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,16 +22,18 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xWf-wx-9tW" customClass="SDCycleScrollView">
-                    <rect key="frame" x="30" y="30" width="315" height="607"/>
+                    <rect key="frame" x="30" y="75" width="315" height="517.5"/>
                     <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="xWf-wx-9tW" secondAttribute="height" multiplier="684:1123" id="YGt-ML-mo2"/>
+                    </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="xWf-wx-9tW" secondAttribute="trailing" constant="30" id="0zA-2A-uMi"/>
-                <constraint firstAttribute="bottom" secondItem="xWf-wx-9tW" secondAttribute="bottom" constant="30" id="U5e-56-PoX"/>
+                <constraint firstItem="xWf-wx-9tW" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="NqQ-8V-E5U"/>
                 <constraint firstItem="xWf-wx-9tW" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="30" id="baw-Px-zze"/>
-                <constraint firstItem="xWf-wx-9tW" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="30" id="nLv-BD-A55"/>
             </constraints>
         </view>
     </objects>
