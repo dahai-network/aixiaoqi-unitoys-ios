@@ -1666,9 +1666,12 @@ static dispatch_once_t onceToken;
                                 [self phoneCardToOutageNew];
                                 self.bigKingCardNumber = [totalString substringWithRange:NSMakeRange(4, 16)];
                                 
-                                NSString *checkTypeStr = [totalString substringFromIndex:totalString.length-4];
+                                NSString *checkTypeStr = [self.bigKingCardNumber substringFromIndex:self.bigKingCardNumber.length-4];
                                 if ([self convertRangeStringToIntWithString:checkTypeStr rangeLoc:0 rangeLen:4] > 300) {
+                                    NSLog(@"是新版爱小器卡");
                                     self.isNewCard = YES;
+                                } else {
+                                    NSLog(@"是旧版爱小器卡");
                                 }
                                 [self checkQueueOrderData];
                             } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9000"]) {
@@ -1683,6 +1686,14 @@ static dispatch_once_t onceToken;
                                         self.lastDataStr = @"a0c2000009d30782020181900101";
                                     } else {
                                         NSLog(@"激活卡有问题");
+                                        [self phoneCardToOutageNew];
+                                        NSLog(@"返回数据有问题");
+                                        [self hideHud];
+                                        [self showHudNormalString:INTERNATIONALSTRING(@"激活失败")];
+                                        [BlueToothDataManager shareManager].isShowHud = NO;
+                                        self.isNewCard = NO;
+                                        
+                                        [self paySuccess];
                                     }
                                 }
                             } else if ([[totalString substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"91"]) {

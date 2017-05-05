@@ -156,7 +156,7 @@
 "cAW-Zz-6aP.normalTitle" = "更多V";
 
 /* Class = "UILabel"; text = "设置"; ObjectID = "cQM-8y-MA7"; */
-"cQM-8y-MA7.text" = "权限";
+"cQM-8y-MA7.text" = "权限管理";
 
 /* Class = "UIBarButtonItem"; title = "Item"; ObjectID = "dYk-7g-8dR"; */
 "dYk-7g-8dR.title" = "Item";
