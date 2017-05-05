@@ -74,14 +74,14 @@
 
     NSLog(@"时间差为---%f", timeValue);
     //判断时间限制
-    if (timeValue > 600) {
+//    if (timeValue > 600) {
         //存储新的时间数据
         NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
         NSString *timeString = [NSString stringWithFormat:@"%f", time];
         [[NSUserDefaults standardUserDefaults] setObject:timeString forKey:typeString];
         //发送通知
         [self creatErrorNoti:noteString];
-    }
+//    }
 }
 
 + (void)creatErrorNoti:(NSString *)errorString

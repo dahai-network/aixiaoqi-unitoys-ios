@@ -2633,12 +2633,19 @@ static dispatch_once_t onceToken;
     [SSNetworkRequest getRequest:apiGetRegStatus params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"手环注册状态 -- %@", responseObj[@"data"][@"RegStatus"]);
-            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetRegStatus" dictData:responseObj];
+//            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetRegStatus" dictData:responseObj];
             
             if ([responseObj[@"data"][@"RegStatus"] intValue] == 1) {
-                //注册成功
-                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-                [BlueToothDataManager shareManager].isRegisted = YES;
+                if ([BlueToothDataManager shareManager].isTcpConnected) {
+                    //注册成功
+                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                    [BlueToothDataManager shareManager].isRegisted = YES;
+                }else{
+                    //未注册成功
+                    [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                    [BlueToothDataManager shareManager].isRegisted = NO;
+                    [self checkUserIsExistAppointPackage];
+                }
             } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
                 //未注册成功
                 [BlueToothDataManager shareManager].isBeingRegisting = YES;
@@ -2656,29 +2663,29 @@ static dispatch_once_t onceToken;
     } failure:^(id dataObj, NSError *error) {
         [self showHudNormalString:INTERNATIONALSTRING(@"网络貌似有问题")];
         
-        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetRegStatus"];
-        if (responseObj) {
-            if ([responseObj[@"data"][@"RegStatus"] intValue] == 1) {
-                //注册成功
-                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-            } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
-                //未注册成功
-                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
-                //注册卡
-                if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
-                    
-                    [self checkUserIsExistAppointPackage];
-                } else {
-                    if ([BlueToothDataManager shareManager].isRegisted) {
-                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-                    }else{
-                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
-                    }
-                }
-            } else {
-                NSLog(@"注册状态有问题");
-            }
-        }
+//        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetRegStatus"];
+//        if (responseObj) {
+//            if ([responseObj[@"data"][@"RegStatus"] intValue] == 1) {
+//                //注册成功
+//                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+//            } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
+//                //未注册成功
+//                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
+//                //注册卡
+//                if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
+//                    
+//                    [self checkUserIsExistAppointPackage];
+//                } else {
+//                    if ([BlueToothDataManager shareManager].isRegisted) {
+//                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+//                    }else{
+//                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+//                    }
+//                }
+//            } else {
+//                NSLog(@"注册状态有问题");
+//            }
+//        }
         
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
