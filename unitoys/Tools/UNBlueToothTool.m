@@ -559,11 +559,18 @@ static dispatch_once_t onceToken;
                 } else {
                     //                HUDNormal(INTERNATIONALSTRING(@"连接蓝牙设备才能正常使用"))
                     [self showHudNormalString:INTERNATIONALSTRING(@"连接蓝牙设备才能正常使用")];
-                    
-//                    [UNCreatLocalNoti ]
                 }
             }
             [BlueToothDataManager shareManager].isOpened = NO;
+            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    if (self.mgr.state == CBManagerStatePoweredOff) {
+                        [UNCreatLocalNoti createLBECloseNoti];
+                    }
+                });
+                
+                return;
+            }
             break;
         case CBManagerStatePoweredOn:
         {
@@ -660,6 +667,13 @@ static dispatch_once_t onceToken;
                             if (self.peripheral) {
                                 NSLog(@"存在连接过的外围设备");
                                 [self.mgr connectPeripheral:self.peripheral options:nil];
+                                if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                            if (![BlueToothDataManager shareManager].isConnected) {
+                                                [UNCreatLocalNoti createLBEDisConnectNoti];
+                                            }
+                                    });
+                                }
                             } else {
                                 NSLog(@"不存在连接过的外围设备");
                                 [self.mgr scanForPeripheralsWithServices:nil options:nil];

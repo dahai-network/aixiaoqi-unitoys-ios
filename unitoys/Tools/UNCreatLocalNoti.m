@@ -46,18 +46,42 @@
 //蓝牙关闭通知
 + (void)createLBECloseNoti
 {
-    NSString *timeStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"LBEClose"];
-    
+    [self createNotiWithNoteString:@"蓝牙未开,将可能无法接收到电话和短信" NotiTypeString:@"LBECloseTime"];
 }
 //蓝牙断开连接通知
 + (void)createLBEDisConnectNoti
 {
-
+    [self createNotiWithNoteString:@"无法搜索到蓝牙,将可能无法接收到电话和短信" NotiTypeString:@"LBEDisConnectTime"];
 }
 //网络断开或较差通知
 + (void)createNETDisConnectNoti
 {
-    
+    [self createNotiWithNoteString:@"网络不稳定,将可能无法接收到电话和短信" NotiTypeString:@"NETDisConnectTime"];
+}
+
++ (void)createNotiWithNoteString:(NSString *)noteString NotiTypeString:(NSString *)typeString
+{
+    NSLog(@"noteString--%@,typeString--%@", noteString, typeString);
+    NSString *timeStr = [[NSUserDefaults standardUserDefaults] objectForKey:typeString];
+    NSTimeInterval timeValue = 0.0;
+    if (timeStr != nil) {
+        CGFloat dataTime = [timeStr doubleValue];
+        NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
+        timeValue = [dataDate timeIntervalSinceNow];
+    }else{
+        timeValue = 400;
+    }
+
+    NSLog(@"时间差为---%f", timeValue);
+    //判断时间限制
+    if (timeValue > 600) {
+        //存储新的时间数据
+        NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
+        NSString *timeString = [NSString stringWithFormat:@"%f", time];
+        [[NSUserDefaults standardUserDefaults] setObject:timeString forKey:typeString];
+        //发送通知
+        [self creatErrorNoti:noteString];
+    }
 }
 
 + (void)creatErrorNoti:(NSString *)errorString

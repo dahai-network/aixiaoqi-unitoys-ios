@@ -811,9 +811,14 @@
         [BlueToothDataManager shareManager].isRegisted = NO;
         return;
     }
-    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+//    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+//        return;
+//    }
+    if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+        [UNCreatLocalNoti createNETDisConnectNoti];
         return;
     }
+    
     [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
     if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
         self.sendTcpSocket.userData = SocketCloseByNet;
