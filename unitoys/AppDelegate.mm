@@ -100,7 +100,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -127,13 +127,14 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"1"];
             });
-//            if (self.sendTcpSocket && ![BlueToothDataManager shareManager].isTcpConnected && [self.sendTcpSocket.userData isEqualToString:SocketCloseByNet]) {
+            if (self.tcpPacketStr) {
+                NSLog(@"注册Tcp");
                 [self closeTCP];
                 if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeNone) {
                     [UNPushKitMessageManager shareManager].isSendTcpString = NO;
                 }
                 [self creatAsocketTcp];
-//            }
+            }
         } else {
             NSLog(@"无网络");
             [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NETWORKCANNOTUSE;
@@ -142,6 +143,18 @@
             });
         }
     };
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
+            NSLog(@"主程序无网络");
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NETWORKCANNOTUSE;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"0"];
+        }else{
+            NSLog(@"主程序有网络");
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_REGISTING;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"1"];
+        }
+    });
     
     if (kSystemVersionValue >= 10.0) {
         [[UNCallKitCenter sharedInstance] configurationCallProvider];
@@ -724,7 +737,7 @@
     }
     
     [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
-    [BlueToothDataManager shareManager].isTcpConnected = YES;
+//    [BlueToothDataManager shareManager].isTcpConnected = YES;
     if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypePingPacket) {
         if ([UNPushKitMessageManager shareManager].receivePushKitDataFormServices) {
             [BlueToothDataManager shareManager].isTcpConnected = YES;

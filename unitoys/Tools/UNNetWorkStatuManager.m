@@ -38,7 +38,10 @@ static UNNetWorkStatuManager *manager = nil;
     Reachability *reach = [Reachability reachabilityWithHostname:@"www.baidu.com"];
     [reach startNotifier];
     self.currentStatu = [reach currentReachabilityStatus];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityStatuChange:) name:kReachabilityChangedNotification object:nil];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityStatuChange:) name:kReachabilityChangedNotification object:nil];
+        self.currentStatu = [reach currentReachabilityStatus];
+    });
 }
 
 - (void)reachabilityStatuChange:(NSNotification *)noti

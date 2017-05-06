@@ -563,13 +563,11 @@ static dispatch_once_t onceToken;
             }
             [BlueToothDataManager shareManager].isOpened = NO;
             if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     if (self.mgr.state == CBManagerStatePoweredOff) {
                         [UNCreatLocalNoti createLBECloseNoti];
                     }
                 });
-                
-                return;
             }
             break;
         case CBManagerStatePoweredOn:
@@ -1198,7 +1196,7 @@ static dispatch_once_t onceToken;
 //                [self phoneCardToUpeLectrify:@"01"];
             }
         } else {
-            NSLog(@"已绑定过之后上电");
+//            NSLog(@"已绑定过之后上电");
             //对卡上电
 //            [self phoneCardToUpeLectrify:@"01"];
         }
@@ -1880,8 +1878,13 @@ static dispatch_once_t onceToken;
                                     //                                });
                                     
                                 } else {
-                                    NSLog(@"注册卡---信号强");
-                                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                    if ([BlueToothDataManager shareManager].isTcpConnected) {
+                                        NSLog(@"注册卡---信号强");
+                                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                    }else{
+                                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
+                                    }
+                                    
                                 }
                             } else {
                                 NSLog(@"不注册");
@@ -2437,7 +2440,6 @@ static dispatch_once_t onceToken;
             } else {
                 NSLog(@"无法识别的判断");
             }
-            
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{

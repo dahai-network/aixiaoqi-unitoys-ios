@@ -1591,8 +1591,10 @@
             }
         }failure:^(id dataObj, NSError *error) {
             NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetProductList"];
-            self.productInfoArr = responseObj[@"data"];
-            [self.hotCollectionView reloadData];
+            if (responseObj) {
+                self.productInfoArr = responseObj[@"data"];
+                [self.hotCollectionView reloadData];
+            }
             NSLog(@"数据错误：%@",[error description]);
             
         } headers:nil];
