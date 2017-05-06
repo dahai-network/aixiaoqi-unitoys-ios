@@ -1778,7 +1778,7 @@
                                                                 <constraint firstAttribute="height" constant="21" id="Bse-bv-CI9"/>
                                                                 <constraint firstAttribute="width" relation="lessThanOrEqual" constant="230" id="HNZ-gw-P8l"/>
                                                             </constraints>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                                                             <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -1963,7 +1963,7 @@
                                                         <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EeW-fH-pWD">
                                                             <rect key="frame" x="126" y="48.5" width="93" height="22"/>
                                                             <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="-10" maxY="0.0"/>
-                                                            <state key="normal" title="激活套餐" image="icon_jh">
+                                                            <state key="normal" title="购买套餐" image="icon_jh">
                                                                 <color key="titleColor" red="0.59999999999999998" green="0.59999999999999998" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
                                                             </state>
                                                         </button>
@@ -1993,8 +1993,13 @@
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(有套餐可激活)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yR0-DF-GYN">
-                                                            <rect key="frame" x="102" y="14" width="69" height="12"/>
+                                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yR0-DF-GYN">
+                                                            <rect key="frame" x="102" y="15" width="10" height="10"/>
+                                                            <color key="backgroundColor" red="0.96470588235294119" green="0.16470588235294117" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="10" id="3Oe-R7-ujT"/>
+                                                                <constraint firstAttribute="width" secondItem="yR0-DF-GYN" secondAttribute="height" multiplier="1:1" id="AaA-fT-8Bo"/>
+                                                            </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
@@ -2274,8 +2279,13 @@
                                                                 <constraint firstItem="OPN-Np-A7g" firstAttribute="leading" secondItem="9l2-VY-kAR" secondAttribute="leading" id="oaB-23-D1z"/>
                                                             </constraints>
                                                         </view>
-                                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(有新版本)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X7P-BP-Gxg">
-                                                            <rect key="frame" x="78.5" y="14" width="48.5" height="12"/>
+                                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X7P-BP-Gxg">
+                                                            <rect key="frame" x="78.5" y="15" width="10" height="10"/>
+                                                            <color key="backgroundColor" red="0.96470588235294119" green="0.16470588235294117" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="10" id="9qY-NA-pt1"/>
+                                                                <constraint firstAttribute="width" secondItem="X7P-BP-Gxg" secondAttribute="height" multiplier="1:1" id="PFK-8w-Vvh"/>
+                                                            </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>

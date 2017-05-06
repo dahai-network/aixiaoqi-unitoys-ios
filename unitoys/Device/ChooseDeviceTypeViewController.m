@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong)IsBoundingViewController *isBoundingVC;
 @property (nonatomic, strong)ChooseDeviceTypeTableViewCell *cell;
+@property (strong, nonatomic) IBOutlet UIView *headView;
 
 @end
 
@@ -23,6 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = INTERNATIONALSTRING(@"选择绑定设备");
+    self.tableView.tableHeaderView = self.headView;
     self.tableView.tableFooterView = [UIView new];
     // Do any additional setup after loading the view from its nib.
 }
@@ -33,7 +35,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
-    return 195;
+    return 185;
 }
 
 //0流量/1通话/2大王卡/3双卡双待

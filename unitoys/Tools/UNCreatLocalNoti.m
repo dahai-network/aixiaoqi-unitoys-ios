@@ -14,7 +14,7 @@
 + (void)createLocalNotiMessage:(NSDictionary *)dict
 {
 #if DEBUG
-    [self creatLocalNoti:dict];
+//    [self creatLocalNoti:dict];
 #endif
 }
 
@@ -22,7 +22,7 @@
 {
 #if DEBUG
     NSLog(@"Noti---%@", string);
-    [self creatLocalNoti:@{@"name" : string, @"phone" : @"123456789"}];
+//    [self creatLocalNoti:@{@"name" : string, @"phone" : @"123456789"}];
 #endif
 }
 

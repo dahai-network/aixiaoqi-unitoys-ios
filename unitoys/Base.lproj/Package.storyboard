@@ -291,7 +291,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qzg-SS-VZ4">
-                                                    <rect key="frame" x="8" y="58" width="359" height="35"/>
+                                                    <rect key="frame" x="15" y="65" width="345" height="28"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -307,9 +307,9 @@
                                                             </constraints>
                                                         </view>
                                                         <button opaque="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hHz-vb-uH9">
-                                                            <rect key="frame" x="15" y="9" width="70" height="32"/>
+                                                            <rect key="frame" x="15" y="9" width="62" height="32"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="70" id="MUt-GA-pow"/>
+                                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="90" id="MUt-GA-pow"/>
                                                                 <constraint firstAttribute="height" constant="32" id="gka-SI-nGy"/>
                                                             </constraints>
                                                             <state key="normal" title="套餐详情">
@@ -320,14 +320,14 @@
                                                             </connections>
                                                         </button>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XjF-sq-8YI">
-                                                            <rect key="frame" x="15" y="48.5" width="70" height="1"/>
+                                                            <rect key="frame" x="15" y="48.5" width="62" height="1"/>
                                                             <color key="backgroundColor" red="0.0" green="0.62745098039215685" blue="0.9137254901960784" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="1" id="hn4-gC-wk7"/>
                                                             </constraints>
                                                         </view>
                                                         <button opaque="NO" tag="102" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y1Y-Nm-eqC">
-                                                            <rect key="frame" x="95" y="9" width="70" height="32"/>
+                                                            <rect key="frame" x="87" y="9" width="62" height="32"/>
                                                             <state key="normal" title="产品特色">
                                                                 <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             </state>
@@ -336,11 +336,11 @@
                                                             </connections>
                                                         </button>
                                                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3hM-Ox-L6I">
-                                                            <rect key="frame" x="95" y="48.5" width="70" height="1"/>
+                                                            <rect key="frame" x="87" y="48.5" width="62" height="1"/>
                                                             <color key="backgroundColor" red="0.0" green="0.62745098040000002" blue="0.91372549020000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         </view>
                                                         <button opaque="NO" tag="103" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BbD-UD-IQ5">
-                                                            <rect key="frame" x="175" y="9" width="70" height="32"/>
+                                                            <rect key="frame" x="159" y="9" width="62" height="32"/>
                                                             <state key="normal" title="支付条款">
                                                                 <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             </state>
@@ -349,7 +349,7 @@
                                                             </connections>
                                                         </button>
                                                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sdo-Ht-0c1">
-                                                            <rect key="frame" x="175" y="48.5" width="70" height="1"/>
+                                                            <rect key="frame" x="159" y="48.5" width="62" height="1"/>
                                                             <color key="backgroundColor" red="0.0" green="0.62745098040000002" blue="0.91372549020000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         </view>
                                                     </subviews>
@@ -384,12 +384,12 @@
                                                 </view>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="qzg-SS-VZ4" firstAttribute="trailing" secondItem="8Yd-bh-0wa" secondAttribute="trailingMargin" id="9nq-Bk-wf9"/>
+                                                <constraint firstAttribute="trailing" secondItem="qzg-SS-VZ4" secondAttribute="trailing" constant="15" id="GOF-QN-EXg"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="qzg-SS-VZ4" secondAttribute="bottom" constant="2" id="Q9I-mB-GR6"/>
                                                 <constraint firstAttribute="trailing" secondItem="XN6-bB-ZJG" secondAttribute="trailing" id="RQU-3Q-WUq"/>
                                                 <constraint firstItem="XN6-bB-ZJG" firstAttribute="leading" secondItem="8Yd-bh-0wa" secondAttribute="leading" id="Yic-24-DAD"/>
-                                                <constraint firstItem="qzg-SS-VZ4" firstAttribute="leading" secondItem="8Yd-bh-0wa" secondAttribute="leadingMargin" id="dTq-bB-JWW"/>
-                                                <constraint firstItem="qzg-SS-VZ4" firstAttribute="top" secondItem="XN6-bB-ZJG" secondAttribute="bottom" constant="8" id="iRS-Fq-Zoy"/>
+                                                <constraint firstItem="qzg-SS-VZ4" firstAttribute="leading" secondItem="hHz-vb-uH9" secondAttribute="leading" id="Z95-ic-EZs"/>
+                                                <constraint firstItem="qzg-SS-VZ4" firstAttribute="top" secondItem="XN6-bB-ZJG" secondAttribute="bottom" constant="15" id="iRS-Fq-Zoy"/>
                                                 <constraint firstItem="XN6-bB-ZJG" firstAttribute="top" secondItem="8Yd-bh-0wa" secondAttribute="top" id="xue-gm-Etf"/>
                                             </constraints>
                                         </tableViewCellContentView>

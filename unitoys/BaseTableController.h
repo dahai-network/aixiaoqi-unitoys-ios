@@ -114,4 +114,5 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 - (NSString *)checkLinkNameWithPhoneStrMergeGroupName:(NSString *)phoneStr;
 
 - (BOOL)isWXAppInstalled;//判断是否安装指定版本的微信
+- (void)setRedLabel:(UILabel *)label;
 @end

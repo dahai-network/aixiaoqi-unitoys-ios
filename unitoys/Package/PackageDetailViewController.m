@@ -78,10 +78,8 @@
             self.lblPackageName.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"PackageName"];
             self.ivPic.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Pic"]]]];
             self.dicPackage = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
-            self.lblFeatures.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Features"];
-            self.lblDetails.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Details"];
-            self.paymentOfTerms.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"paymentOfTerms"];
-            self.howToUse.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"UseDescr"];
+            
+            self.lblFeatures.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Details"];
             
             [self.tableView reloadData];
         
@@ -165,8 +163,9 @@
             self.thirdButtonView.hidden = YES;
             break;
     }
-    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:1 inSection:0];
-    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+//    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:1 inSection:0];
+//    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView reloadData];
 }
 
 - (IBAction)buyPackage:(id)sender {

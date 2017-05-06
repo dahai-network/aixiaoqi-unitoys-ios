@@ -47,6 +47,8 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.leftBarButtonItem = nil;
+    [self setRedLabel:self.haspackageTipMsgLabel];
+    [self setRedLabel:self.hasNewVersionLabel];
     
     [self tipMessageStatuChange];
     

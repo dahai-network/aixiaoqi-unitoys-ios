@@ -562,6 +562,13 @@ withDateFormat:(NSString *)format
     return YES;
 }
 
+- (void)setRedLabel:(UILabel *)label {
+    label.layer.masksToBounds = YES;
+    label.layer.cornerRadius = label.un_width/2;
+    label.layer.borderColor = [UIColor whiteColor].CGColor;
+    label.layer.borderWidth = 1.5;
+}
+
 - (void)viewDidAppear:(BOOL)animated {
 //    NSLog(@"界面出现 -- HomeViewController -- %d", [self isKindOfClass:NSClassFromString(@"HomeViewController")]);
 //    NSLog(@"界面出现 -- AboutViewController -- %d", [self isKindOfClass:NSClassFromString(@"AboutViewController")]);

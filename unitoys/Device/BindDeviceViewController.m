@@ -21,12 +21,15 @@
 @property (weak, nonatomic) IBOutlet UIImageView *disconnectedImageView;
 @property (nonatomic, assign) BOOL isNeedToPushNextVC;
 
+
 @end
 
 @implementation BindDeviceViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setRedLabel:self.versionLabel];
+    [self checkIsHaveNewVersion];
     
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addElectricQue) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
@@ -451,6 +454,47 @@
     });
 }
 
+- (void)checkIsHaveNewVersion {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    //    NSLog(@"表头：%@",self.headers);
+    NSString *versionStr;
+    NSString *typeStr;
+    if ([BlueToothDataManager shareManager].versionNumber) {
+        versionStr= [BlueToothDataManager shareManager].versionNumber;
+    } else {
+        versionStr = @"1.0.0";
+    }
+    if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+        typeStr = @"0";
+    } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+        typeStr = @"1";
+    } else {
+        typeStr = @"0";
+        NSLog(@"连接的类型有问题");
+    }
+    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:versionStr, @"Version", typeStr, @"DeviceType", nil];
+    [SSNetworkRequest getRequest:apiDeviceBraceletOTA params:info success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"空中升级的请求结果 -- %@", responseObj);
+            if (responseObj[@"data"][@"Descr"]) {
+                self.versionLabel.hidden = NO;
+            } else {
+                self.versionLabel.hidden = YES;
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==0){
+            //数据请求失败
+            NSLog(@"请求失败");
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+        //
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
 #pragma mark 调用空中升级接口
 - (void)otaDownload {
     self.isBeingNet = YES;
@@ -532,7 +576,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
+    if (indexPath.section == 0 && indexPath.row == 0) {
         if ([BlueToothDataManager shareManager].isConnected) {
             if (![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
 //                if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {

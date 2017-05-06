@@ -18,6 +18,7 @@
 @property (nonatomic, copy) NSString *hintStrFirst;//提示文字前半段文字
 @property (nonatomic, assign) BOOL isBeingNet;//是否正在进行网络请求
 @property (weak, nonatomic) IBOutlet UILabel *deviceName;//设备名称
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 
 
 @end
