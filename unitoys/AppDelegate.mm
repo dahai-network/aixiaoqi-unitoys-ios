@@ -100,7 +100,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -993,6 +993,8 @@
     }else{
         NSLog(@"PushKit状态不回数据");
         NSLog(@"PushKit状态接收到服务器返回的数据%@", data);
+        
+        //正常情况不走此处,(PushKit状态走此处说明后台出错)
         if (tag == 200) {
             [sock readDataWithTimeout:-1 tag:200];
             

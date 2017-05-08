@@ -364,7 +364,6 @@
 //    if (extras) {
 //        [self initPopView:extras];
 //    }
-    
     [self loadProductInfo];
 }
 
@@ -1624,9 +1623,6 @@
             }else{
                 //数据请求失败
             }
-            
-            
-            
         }failure:^(id dataObj, NSError *error) {
             
             NSLog(@"数据错误：%@",[error description]);

@@ -1911,7 +1911,6 @@ static dispatch_once_t onceToken;
                         }
                     }
                 }
-
                 break;
             case 14:
                 //设置闹钟成功
@@ -2146,16 +2145,13 @@ static dispatch_once_t onceToken;
     if (longStr) {
         lastData = longStr;
     }
-    
     //卡类型
     NSString *simtTypeStr;
     if ([UNPushKitMessageManager shareManager].isHasSimType && [UNPushKitMessageManager shareManager].simTypeData) {
         simtTypeStr = [UNPushKitMessageManager shareManager].simTypeData;
     }
-    
     //卡类型返回的数据(短数据,只有a088时才有)
     NSString *simTypeGetData = shortStr;
-    
     //最后发送的命令
     NSString *lastStr = @"0000000000";
     if (self.authenticationModel.isAddSendData) {
@@ -2165,7 +2161,6 @@ static dispatch_once_t onceToken;
                 self.simtype = [self checkSimType];
             }
         }
-        
         if ([self.simtype isEqualToString:@"2"]) {
             //电信
             lastStr = @"a0c0000003";
@@ -2293,7 +2288,6 @@ static dispatch_once_t onceToken;
                                 [UNPushKitMessageManager shareManager].isNeedRegister = YES;
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
                             }
-                            
                             //取消手动发送ICCID命令
 //                            [self updataToCard];
 //                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

@@ -15,7 +15,6 @@
 		04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04127F661EA5F69100C18201 /* OrderListTableViewCell.xib */; };
 		041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */; };
 		04226B2E1EBC8D8B004B8365 /* UILabel+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04226B2D1EBC8D8B004B8365 /* UILabel+Extension.m */; };
-		0430A0501E69623800FFE611 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0430A04F1E69623800FFE611 /* Default-568h@2x.png */; };
 		043638D61EB0A62F0064207E /* AbordSaveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D41EB0A62F0064207E /* AbordSaveViewController.m */; };
 		043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043638D51EB0A62F0064207E /* AbordSaveViewController.xib */; };
 		043638DB1EB1A4AF0064207E /* StatuesViewDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D91EB1A4AF0064207E /* StatuesViewDetailViewController.m */; };
@@ -125,6 +124,7 @@
 		3C20C20E1E6CF3CC008078BB /* UNSipEngineInitialize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C20C1E6CF3CC008078BB /* UNSipEngineInitialize.mm */; };
 		3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */; };
 		3C20C2131E6D00F1008078BB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C20C2121E6D00F1008078BB /* PushKit.framework */; };
+		3C27E1BF1EC06E7A00D48F12 /* UNPresentHomeTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */; };
 		3C4863601E8CF111006FD87C /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C48635F1E8CF111006FD87C /* number_location.zip */; };
 		3C4A07761E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */; };
 		3C4A07791E9CC56400A6DDA9 /* ContactsCallDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07781E9CC56400A6DDA9 /* ContactsCallDetailsController.m */; };
@@ -362,7 +362,6 @@
 		041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSliderDelegate.h; sourceTree = "<group>"; };
 		04226B2C1EBC8D8B004B8365 /* UILabel+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+Extension.h"; sourceTree = "<group>"; };
 		04226B2D1EBC8D8B004B8365 /* UILabel+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+Extension.m"; sourceTree = "<group>"; };
-		0430A04F1E69623800FFE611 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		043638D31EB0A62F0064207E /* AbordSaveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbordSaveViewController.h; sourceTree = "<group>"; };
 		043638D41EB0A62F0064207E /* AbordSaveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbordSaveViewController.m; sourceTree = "<group>"; };
 		043638D51EB0A62F0064207E /* AbordSaveViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AbordSaveViewController.xib; sourceTree = "<group>"; };
@@ -586,6 +585,8 @@
 		3C20C20F1E6CF3E5008078BB /* UNCreatLocalNoti.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCreatLocalNoti.h; sourceTree = "<group>"; };
 		3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCreatLocalNoti.m; sourceTree = "<group>"; };
 		3C20C2121E6D00F1008078BB /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
+		3C27E1BD1EC06E7A00D48F12 /* UNPresentHomeTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPresentHomeTipView.h; sourceTree = "<group>"; };
+		3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPresentHomeTipView.m; sourceTree = "<group>"; };
 		3C48635F1E8CF111006FD87C /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
 		3C4A07741E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhoneNumLabel.h; sourceTree = "<group>"; };
 		3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCallPhoneNumLabel.m; sourceTree = "<group>"; };
@@ -1545,6 +1546,8 @@
 				3C99A8A31EA9E4DC00C96BE7 /* UNTestViewController.m */,
 				3C74D51C1EAD94EC009FE12D /* UNCustomTabBar.h */,
 				3C74D51D1EAD94EC009FE12D /* UNCustomTabBar.m */,
+				3C27E1BD1EC06E7A00D48F12 /* UNPresentHomeTipView.h */,
+				3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -2552,6 +2555,7 @@
 				04F727A61E641CE4002EB54C /* HTTPConnection.m in Sources */,
 				95E918561DDC7AA8005DABC0 /* BindDeviceViewController.m in Sources */,
 				3C4A07951E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m in Sources */,
+				3C27E1BF1EC06E7A00D48F12 /* UNPresentHomeTipView.m in Sources */,
 				3C8096651E8A423D00942B0C /* Reachability.m in Sources */,
 				95CD33F31D9CE4F300EE5DD3 /* RSADataVerifier.m in Sources */,
 				95334A621D8A83DD002C1CFB /* BaseTableController.m in Sources */,
