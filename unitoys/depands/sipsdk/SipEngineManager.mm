@@ -253,7 +253,7 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
 
 - (void)repeatScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content
 {
-    NSInteger typeValue;
+    NSInteger typeValue = 0;
     if (type == kNotifyAudioCall) {
         typeValue = 0;
     }else if (type == kNotifyVideoCall){
@@ -261,6 +261,9 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
     }else if (type == kNotifyTextMessage){
         typeValue = 2;
     }
+    
+    [self stopScheNotiTimer];
+    
     _repeatScheCount = 0;
     _repeatScheNotiTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(doScheduleNotification:) userInfo:@{@"from" : from, @"type" : [NSNumber numberWithInteger:typeValue], @"content" : content ? content : @""} repeats:YES];
     [_repeatScheNotiTimer fire];
