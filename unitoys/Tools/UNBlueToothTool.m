@@ -437,15 +437,17 @@ static dispatch_once_t onceToken;
 #pragma mark 发送指令
 - (void)sendConnectingInstructWithData:(NSData *)data {
     if ([BlueToothDataManager shareManager].isConnected) {
-        self.peripheral.delegate = self;
-        if((self.characteristic.properties & CBCharacteristicWriteWithoutResponse) != 0) {
-            [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithoutResponse];
-        } else if ((self.characteristic.properties & CBCharacteristicPropertyWrite) != 0) {
-            [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithResponse];
-        } else {
-            NSLog(@"No write property on TX characteristic, %ld.",(unsigned long)self.characteristic.properties);
+        if (![BlueToothDataManager shareManager].isBeingOTA) {
+            self.peripheral.delegate = self;
+            if((self.characteristic.properties & CBCharacteristicWriteWithoutResponse) != 0) {
+                [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithoutResponse];
+            } else if ((self.characteristic.properties & CBCharacteristicPropertyWrite) != 0) {
+                [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithResponse];
+            } else {
+                NSLog(@"No write property on TX characteristic, %ld.",(unsigned long)self.characteristic.properties);
+            }
+            NSLog(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
         }
-        NSLog(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
     } else {
         //        NSString *dataStr = [NSString stringWithFormat:@"%@", data];
         //        if (![dataStr isEqualToString:@"<88800310 0002>"]) {
@@ -1345,12 +1347,14 @@ static dispatch_once_t onceToken;
                 NSLog(@"接收到的有效data -- %@", contentStr);
             }
         } else {
-//            if (self.dataPackegType == ) {
-//                
-//            }
-            if (str.length > 6) {
-                contentStr = [str substringFromIndex:6];
-                NSLog(@"接收到的有效data -- %@", contentStr);
+            if (self.dataPackegType == 9 || self.dataPackegType == 10) {
+                if (str.length > 6) {
+                    contentStr = [str substringFromIndex:6];
+                    NSLog(@"接收到的有效data -- %@", contentStr);
+                }
+            } else {
+                NSLog(@"接收到的数据不应该为多包%@",str);
+                return;
             }
         }
         switch (self.dataPackegType) {
@@ -2278,15 +2282,17 @@ static dispatch_once_t onceToken;
                             //                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
                             [BlueToothDataManager shareManager].isChangeSimCard = NO;
                             
-                            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
                             NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
-                            if (dict) {
-                                //创建tcp,建立连接
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
-                            }else{
-                                //创建udp,初始化操作
-                                [UNPushKitMessageManager shareManager].isNeedRegister = YES;
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
+                            if ([UNPushKitMessageManager shareManager].iccidString) {
+                                NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
+                                if (dict) {
+                                    //创建tcp,建立连接
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
+                                }else{
+                                    //创建udp,初始化操作
+                                    [UNPushKitMessageManager shareManager].isNeedRegister = YES;
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
+                                }
                             }
                             //取消手动发送ICCID命令
 //                            [self updataToCard];

@@ -165,7 +165,7 @@
 }
 
 - (void)countAndShowPercentage:(NSString *)senderStr {
-    if ([[BlueToothDataManager shareManager].operatorType intValue] == 1) {
+    if ([[BlueToothDataManager shareManager].operatorType intValue] == 1 || [[BlueToothDataManager shareManager].operatorType intValue] == 2) {
         if ([senderStr intValue] < 160) {
             float count = (float)[senderStr intValue]/160;
             NSString *countStr = [NSString stringWithFormat:@"%.2f", count];
@@ -184,7 +184,7 @@
             self.lblStatue.text = [NSString stringWithFormat:@"%@99%%", INTERNATIONALSTRING(@"注册中")];
         }
     }
-    if ([[BlueToothDataManager shareManager].operatorType intValue] == 2) {
+    if ([[BlueToothDataManager shareManager].operatorType intValue] == 3) {
         if ([senderStr intValue] < 340) {
             float count = (float)[senderStr intValue]/340;
             NSString *countStr = [NSString stringWithFormat:@"%.2f", count];

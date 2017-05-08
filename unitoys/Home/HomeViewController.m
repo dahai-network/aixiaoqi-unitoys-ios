@@ -782,7 +782,6 @@
 - (void)oatUpdataAction:(NSNotification *)sender {
     if ([BlueToothDataManager shareManager].isConnected) {
         if (sender && ![sender.object isEqualToString:@"<null>"]) {
-            [BlueToothDataManager shareManager].isBeingOTA = YES;
             //将连接的信息存储到本地
             NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
             NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
@@ -792,6 +791,7 @@
             [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [[UNBlueToothTool shareBlueToothTool] oatUpdateCommand];
+            [BlueToothDataManager shareManager].isBeingOTA = YES;
             [self showProgress];
             NSURL *downloadURL = [NSURL URLWithString:sender.object];
             [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:downloadURL] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {

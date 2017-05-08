@@ -76,6 +76,7 @@
 @property (nonatomic, copy)NSString *communicateID;
 @property (nonatomic, strong)NSTimer *timer;
 @property (nonatomic, assign)int sec;
+@property (nonatomic, assign) int lessStep;
 
 @end
 
@@ -105,6 +106,7 @@
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
     [BlueToothDataManager shareManager].isOpened = YES;
+    self.lessStep = 0;
     
     [[UNNetWorkStatuManager shareManager] initNetWorkStatuManager];
     
@@ -973,6 +975,15 @@
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
         NSLog(@"非PushKit状态");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (![BlueToothDataManager shareManager].isRegisted) {
+                self.lessStep++;
+                int stepStr = self.lessStep*20;
+                NSLog(@"计算计算百分比 %d", stepStr);
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:[NSString stringWithFormat:@"%d", stepStr]];
+                [BlueToothDataManager shareManager].stepNumber = [NSString stringWithFormat:@"%d", stepStr];
+            }
+        });
         [sock readDataWithTimeout:-1 tag:tag];
         NSString *ip = [sock connectedHost];
         uint16_t port = [sock connectedPort];
@@ -1163,6 +1174,7 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
             [BlueToothDataManager shareManager].stepNumber = @"0";
+            self.lessStep = 0;
             [BlueToothDataManager shareManager].isRegisted = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
             if ([UNPushKitMessageManager shareManager].isSysCallKitPhone && [UNPushKitMessageManager shareManager].callKitHandleString) {
@@ -1170,10 +1182,14 @@
                 [self callPhoneFromCallKitWithHandleString:[[UNPushKitMessageManager shareManager].callKitHandleString copy]];
             }
         });
+        if (![_udpSocket isClosed]) {
+            [_udpSocket close];
+        }
     }else if ([classStr isEqualToString:@"0f"]) {
         NSLog(@"sim卡断开连接");
         [BlueToothDataManager shareManager].isBeingRegisting = NO;
         [BlueToothDataManager shareManager].stepNumber = @"0";
+        self.lessStep = 0;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [BlueToothDataManager shareManager].isRegisted = NO;
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOSIGNAL];
@@ -1759,6 +1775,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             [BlueToothDataManager shareManager].bleStatueForCard = 0;
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
             [BlueToothDataManager shareManager].stepNumber = @"0";
+            self.lessStep = 0;
             [BlueToothDataManager shareManager].isRegisted = NO;
             self.tcpPacketStr = nil;
             //在pushkit里初始化蓝牙
@@ -2150,6 +2167,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     NSLog(@"注册过,重新发送注册信息");
                     [BlueToothDataManager shareManager].isBeingRegisting = NO;
                     [BlueToothDataManager shareManager].stepNumber = @"0";
+                    self.lessStep = 0;
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [BlueToothDataManager shareManager].isRegisted = NO;
                         if (!self.sendTcpSocket.isConnected) {
@@ -2267,6 +2285,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             NSString *host = [VSWManager shareManager].vswIp;
             uint16_t port = [VSWManager shareManager].vswPort;
             NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
+            self.lessStep = 0;
             if (!host || !port) {
                 host = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerIp"];
                 port = [[[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerPort"] intValue];
@@ -2283,6 +2302,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         NSString *host = [VSWManager shareManager].vswIp;
         uint16_t port = [VSWManager shareManager].vswPort;
         NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
+        self.lessStep = 0;
         if (!host || !port) {
             host = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerIp"];
             port = [[[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerPort"] intValue];
@@ -2446,6 +2466,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 NSLog(@"注册过,重新发送注册信息");
                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
                 [BlueToothDataManager shareManager].stepNumber = @"0";
+                self.lessStep = 0;
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [BlueToothDataManager shareManager].isRegisted = NO;
                     if (!self.sendTcpSocket.isConnected) {
