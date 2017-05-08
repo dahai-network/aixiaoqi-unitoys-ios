@@ -149,6 +149,7 @@ void SipEventObserver::startRing() {
 
 void SipEventObserver::stopRing()
 {
+    NSLog(@"stopRing");
     [ringPlayer stop];
     //关闭屏幕常亮
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
@@ -233,6 +234,7 @@ void SipEventObserver::OnCallEnded(){
     [SipEngineManager getSipEngine]->SetCallCap(CALL_CAP_AUDIO);
     
     // cancel local notif if needed
+    NSLog(@"挂断电话");
     [[SipEngineManager instance] stopScheNotiTimer];
     NSLog(@"取消全部通知");
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
@@ -245,17 +247,14 @@ void SipEventObserver::OnCallFailed(CallErrorCode status){
     
 	NSString *msg = [NSString stringWithFormat:NSLocalizedString(@"Call failed，Error code %d",@""),status];
 	NSLog(@"%@",msg);
-	
+	NSLog(@"通话失败");
 	if (sip_engine_manager_) {
 		if(sip_engine_manager_.callDelegate != nil)
 			[sip_engine_manager_.callDelegate OnCallFailed:status];
 	}
 
-    if ([UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
-        if (_repeatTimer) {
-            [_repeatTimer invalidate];
-            _repeatTimer = nil;
-        }
+    if ([UIApplication sharedApplication].applicationState ==  UIApplicationStateBackground) {
+        [[SipEngineManager instance] stopScheNotiTimer];
 		// cancel local notif if needed
 		[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	}

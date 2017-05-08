@@ -261,17 +261,16 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
     }else if (type == kNotifyTextMessage){
         typeValue = 2;
     }
-    
+    _repeatScheCount = 0;
     _repeatScheNotiTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(doScheduleNotification:) userInfo:@{@"from" : from, @"type" : [NSNumber numberWithInteger:typeValue], @"content" : content ? content : @""} repeats:YES];
     [_repeatScheNotiTimer fire];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(60 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self stopScheNotiTimer];
-    });
 }
 
 - (void)stopScheNotiTimer
 {
+    NSLog(@"关闭定时器");
+    _repeatScheCount = 0;
     if (_repeatScheNotiTimer) {
         [_repeatScheNotiTimer invalidate];
         _repeatScheNotiTimer = nil;
@@ -281,8 +280,14 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
 
 - (void)doScheduleNotification:(NSTimer *)timer
 {
-    NSDictionary *userInfo = timer.userInfo;
-    [self doScheduleNotification:userInfo[@"from"] types:[userInfo[@"type"] integerValue] content:userInfo[@"content"]];
+    _repeatScheCount++;
+    if (_repeatScheCount > 6) {
+        _repeatScheCount = 0;
+        [self stopScheNotiTimer];
+    }else{
+        NSDictionary *userInfo = timer.userInfo;
+        [self doScheduleNotification:userInfo[@"from"] types:[userInfo[@"type"] integerValue] content:userInfo[@"content"]];
+    }
 }
 
 -(void)doScheduleNotification:(NSString*)from types:(NSInteger)type content:(NSString*)content

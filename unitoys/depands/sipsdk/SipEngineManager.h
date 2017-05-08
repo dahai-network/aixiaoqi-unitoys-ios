@@ -106,6 +106,7 @@ typedef enum ScheduleNotificationType{
 
 
 @property (nonatomic, strong) NSTimer *repeatScheNotiTimer;
+@property (nonatomic, assign) NSInteger repeatScheCount;
 
 - (void)repeatScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content;
 - (void)stopScheNotiTimer;

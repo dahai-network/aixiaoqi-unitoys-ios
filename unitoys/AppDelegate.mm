@@ -100,7 +100,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -951,7 +951,11 @@
             [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
             [BlueToothDataManager shareManager].isTcpConnected = NO;
             if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                [self reConnectTcp];
+                if (self.sendTcpSocket) {
+                    [self reConnectTcp];
+                }else{
+                    [self creatAsocketTcp];
+                }
             }
         }else{
             if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
@@ -2271,6 +2275,21 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             if (error) {
                 NSLog(@"socket连接出错----%@", error);
             }
+        }
+    }else if (self.sendTcpSocket.isConnected){
+        [UNPushKitMessageManager shareManager].isTcpConnecting = YES;
+        NSString *host = [VSWManager shareManager].vswIp;
+        uint16_t port = [VSWManager shareManager].vswPort;
+        NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
+        if (!host || !port) {
+            host = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerIp"];
+            port = [[[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerPort"] intValue];
+        }
+        NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
+        NSError *error;
+        [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:&error];
+        if (error) {
+            NSLog(@"socket连接出错----%@", error);
         }
     }
 }

@@ -1345,6 +1345,9 @@ static dispatch_once_t onceToken;
                 NSLog(@"接收到的有效data -- %@", contentStr);
             }
         } else {
+//            if (self.dataPackegType == ) {
+//                
+//            }
             if (str.length > 6) {
                 contentStr = [str substringFromIndex:6];
                 NSLog(@"接收到的有效data -- %@", contentStr);
@@ -1770,11 +1773,6 @@ static dispatch_once_t onceToken;
                         {
                             NSLog(@"卡状态改变 -- 无卡");
                             [BlueToothDataManager shareManager].operatorType = @"5";
-                            [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].operatorType forKey:@"operatorType"];
-                            [UNPushKitMessageManager shareManager].isNeedRegister = NO;
-                            [BlueToothDataManager shareManager].isHaveCard = NO;
-                            [BlueToothDataManager shareManager].isBeingRegisting = NO;
-                            [BlueToothDataManager shareManager].isChangeSimCard = YES;
                             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
                         }
                             break;
