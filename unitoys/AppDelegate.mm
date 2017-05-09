@@ -101,7 +101,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -1578,6 +1578,29 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     if (loginVc) {
         self.window.rootViewController = loginVc;
     }
+    //token已过期，删除本地绑定的信息
+    //将连接的信息存储到本地
+    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+    NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+    if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+        [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"]) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"offsetStatue"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    //删除存储的绑定信息
+    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+    [UNBlueToothTool shareBlueToothTool].isKill = YES;
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+    }
+    //    [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
+    [[UNBlueToothTool shareBlueToothTool] clearInstance];
 }
 
 #pragma mark 注册及初始化极光推送
