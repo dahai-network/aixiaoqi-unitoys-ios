@@ -41,6 +41,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 
 @property (nonatomic, strong)UIView *statuesView;
 @property (nonatomic, strong)UILabel *statuesLabel;
+@property (nonatomic, strong)UIView *registProgressView;
 
 @end
 
@@ -83,9 +84,28 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     //添加手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToShowDetail)];
     [self.statuesView addGestureRecognizer:tap];
+    //添加百分比
+    if ([[BlueToothDataManager shareManager].stepNumber intValue] != 0) {
+        int longStr = [[BlueToothDataManager shareManager].stepNumber intValue];
+        CGFloat progressWidth;
+        if ([[BlueToothDataManager shareManager].operatorType intValue] == 1 || [[BlueToothDataManager shareManager].operatorType intValue] == 2) {
+            progressWidth = kScreenWidthValue *(longStr/160.00);
+        } else if ([[BlueToothDataManager shareManager].operatorType intValue] == 3) {
+            progressWidth = kScreenWidthValue *(longStr/340.00);
+        } else {
+            progressWidth = 0;
+        }
+        self.registProgressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, progressWidth, STATUESVIEWHEIGHT)];
+    } else {
+        self.registProgressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, STATUESVIEWHEIGHT)];
+    }
+    self.registProgressView.backgroundColor = UIColorFromRGB(0xffa0a0);
+    [self.statuesView addSubview:self.registProgressView];
+    //添加图片
     UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
     leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
+    //添加label
     self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
     self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
@@ -94,6 +114,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [self.view addSubview:self.statuesView];
     if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.statuesView.un_height = 0;
+        self.registProgressView.un_width = 0;
         self.statuesView.hidden = YES;
     }
     
@@ -154,6 +175,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshAddressBook) name:@"addressBookChanged" object:@"addressBook"];
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
 }
 
 #pragma mark 手势点击事件
@@ -172,6 +194,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
             _tableView.un_height += STATUESVIEWHEIGHT;
         }
         self.statuesView.un_height = 0;
+        self.registProgressView.un_width = 0;
         self.statuesView.hidden = YES;
     } else {
         if (self.statuesView.un_height == 0) {
@@ -183,6 +206,36 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
         if (self.statuesView.isHidden) {
             self.statuesView.hidden = NO;
         }
+    }
+}
+
+- (void)showRegistProgress:(NSNotification *)sender {
+    NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
+    NSLog(@"接收到传过来的通知 -- %@", senderStr);
+    if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
+        [self countAndShowRegistPercentage:senderStr];
+    } else {
+        NSLog(@"注册成功的时候处理");
+    }
+}
+
+- (void)countAndShowRegistPercentage:(NSString *)senderStr {
+    if ([[BlueToothDataManager shareManager].operatorType intValue] == 1 || [[BlueToothDataManager shareManager].operatorType intValue] == 2) {
+        if ([senderStr intValue] < 160) {
+            float count = (float)[senderStr intValue]/160;
+            self.registProgressView.un_width = kScreenWidthValue * count;
+        } else {
+            self.registProgressView.un_width = kScreenWidthValue * 0.99;
+        }
+    } else if ([[BlueToothDataManager shareManager].operatorType intValue] == 3) {
+        if ([senderStr intValue] < 340) {
+            float count = (float)[senderStr intValue]/340;
+            self.registProgressView.un_width = kScreenWidthValue * count;
+        } else {
+            self.registProgressView.un_width = kScreenWidthValue * 0.99;
+        }
+    } else {
+        self.registProgressView.un_width = 0;
     }
 }
 
@@ -572,6 +625,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBook"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
 }
 
 

@@ -39,6 +39,7 @@
 @property (nonatomic, assign) BOOL isOpened;//开关是否打开
 @property (nonatomic, strong)UIView *statuesView;
 @property (nonatomic, strong)UILabel *statuesLabel;
+@property (nonatomic, strong)UIView *registProgressView;
 
 @end
 
@@ -58,9 +59,28 @@
     //添加手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToShowDetail)];
     [self.statuesView addGestureRecognizer:tap];
+    //添加百分比
+    if ([[BlueToothDataManager shareManager].stepNumber intValue] != 0) {
+        int longStr = [[BlueToothDataManager shareManager].stepNumber intValue];
+        CGFloat progressWidth;
+        if ([[BlueToothDataManager shareManager].operatorType intValue] == 1 || [[BlueToothDataManager shareManager].operatorType intValue] == 2) {
+            progressWidth = kScreenWidthValue *(longStr/160.00);
+        } else if ([[BlueToothDataManager shareManager].operatorType intValue] == 3) {
+            progressWidth = kScreenWidthValue *(longStr/340.00);
+        } else {
+            progressWidth = 0;
+        }
+        self.registProgressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, progressWidth, STATUESVIEWHEIGHT)];
+    } else {
+        self.registProgressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, STATUESVIEWHEIGHT)];
+    }
+    self.registProgressView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
+    [self.statuesView addSubview:self.registProgressView];
+    //添加图片
     UIImageView *leftImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icon_bc"]];
     leftImg.frame = CGRectMake(15, (STATUESVIEWHEIGHT-STATUESVIEWIMAGEHEIGHT)/2, STATUESVIEWIMAGEHEIGHT, STATUESVIEWIMAGEHEIGHT);
     [self.statuesView addSubview:leftImg];
+    //添加label
     self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
     self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
@@ -68,6 +88,7 @@
     [self.statuesView addSubview:self.statuesLabel];
     if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.statuesView.un_height = 0;
+        self.registProgressView.un_width = 0;
         [self.tableView reloadData];
     }
     
@@ -90,6 +111,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipMessageStatuChange) name:@"TipMessageStatuChange" object:nil];
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aboutViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
 }
 
 #pragma mark 手势点击事件
@@ -103,10 +125,41 @@
     self.statuesLabel.text = sender.object;
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.statuesView.un_height = 0;
+        self.registProgressView.un_width = 0;
     } else {
         self.statuesView.un_height = STATUESVIEWHEIGHT;
     }
     [self.tableView reloadData];
+}
+
+- (void)showRegistProgress:(NSNotification *)sender {
+    NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
+    NSLog(@"接收到传过来的通知 -- %@", senderStr);
+    if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
+        [self countAndShowRegistPercentage:senderStr];
+    } else {
+        NSLog(@"注册成功的时候处理");
+    }
+}
+
+- (void)countAndShowRegistPercentage:(NSString *)senderStr {
+    if ([[BlueToothDataManager shareManager].operatorType intValue] == 1 || [[BlueToothDataManager shareManager].operatorType intValue] == 2) {
+        if ([senderStr intValue] < 160) {
+            float count = (float)[senderStr intValue]/160;
+            self.registProgressView.un_width = kScreenWidthValue * count;
+        } else {
+            self.registProgressView.un_width = kScreenWidthValue * 0.99;
+        }
+    } else if ([[BlueToothDataManager shareManager].operatorType intValue] == 3) {
+        if ([senderStr intValue] < 340) {
+            float count = (float)[senderStr intValue]/340;
+            self.registProgressView.un_width = kScreenWidthValue * count;
+        } else {
+            self.registProgressView.un_width = kScreenWidthValue * 0.99;
+        }
+    } else {
+        self.registProgressView.un_width = 0;
+    }
 }
 
 - (void)tipMessageStatuChange
@@ -697,5 +750,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
 }
 @end

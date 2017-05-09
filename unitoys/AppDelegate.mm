@@ -980,8 +980,14 @@
                 self.lessStep++;
                 int stepStr = self.lessStep*20;
                 NSLog(@"计算计算百分比 %d", stepStr);
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:[NSString stringWithFormat:@"%d", stepStr]];
-                [BlueToothDataManager shareManager].stepNumber = [NSString stringWithFormat:@"%d", stepStr];
+                if (![BlueToothDataManager shareManager].isFirstRegist) {
+                    //本地存储了的，不重新注册
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:[NSString stringWithFormat:@"%d", stepStr]];
+                    [BlueToothDataManager shareManager].stepNumber = [NSString stringWithFormat:@"%d", stepStr];
+                }else{
+                    //第一次注册这张卡
+                    NSLog(@"第一次注册这张卡，不发送通知");
+                }
             }
         });
         [sock readDataWithTimeout:-1 tag:tag];

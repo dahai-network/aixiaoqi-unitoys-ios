@@ -2287,9 +2287,11 @@ static dispatch_once_t onceToken;
                                 NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
                                 if (dict) {
                                     //创建tcp,建立连接
+                                    [BlueToothDataManager shareManager].isFirstRegist = NO;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
                                 }else{
                                     //创建udp,初始化操作
+                                    [BlueToothDataManager shareManager].isFirstRegist = YES;
                                     [UNPushKitMessageManager shareManager].isNeedRegister = YES;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
                                 }

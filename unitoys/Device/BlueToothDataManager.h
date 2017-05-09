@@ -64,6 +64,7 @@
 @property (nonatomic, assign) BOOL isCanSendAuthData; //是否允许解析鉴权数据(只有蓝牙注册后才允许)
 @property (nonatomic, copy) NSString *checkStr;//本次的加密文字
 @property (nonatomic, assign) BOOL isSame;//密文是否一样
+@property (nonatomic, assign) BOOL isFirstRegist;//判断是否第一次注册这张SIM卡
 
 
 @end
