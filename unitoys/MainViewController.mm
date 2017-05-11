@@ -220,7 +220,8 @@ typedef enum : NSUInteger {
             if (!phoneStr) {
                 if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
                     VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
-                    [self.selectedViewController presentViewController:verificationVc animated:YES completion:nil];
+                    navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
+                    [self.navigationController presentViewController:nav animated:YES completion:nil];
                 }
             }
         }

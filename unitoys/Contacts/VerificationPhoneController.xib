@@ -28,7 +28,7 @@
                     </constraints>
                     <nil key="textColor"/>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                    <textInputTraits key="textInputTraits"/>
+                    <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
                 </textField>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vte-Tk-UVZ">
                     <rect key="frame" x="24.5" y="80" width="325" height="49"/>
@@ -45,6 +45,8 @@
                 <constraint firstItem="UJ0-Za-dob" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="10" id="LeL-7d-FHe"/>
                 <constraint firstAttribute="trailing" secondItem="UJ0-Za-dob" secondAttribute="trailing" id="Mal-vk-2Gk"/>
                 <constraint firstItem="UJ0-Za-dob" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="bXA-MT-8Ki"/>
+                <constraint firstItem="vte-Tk-UVZ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="25" id="ewu-bu-zG0"/>
+                <constraint firstAttribute="trailing" secondItem="vte-Tk-UVZ" secondAttribute="trailing" constant="25" id="m5F-0r-46z"/>
             </constraints>
             <point key="canvasLocation" x="-346" y="-97"/>
         </view>

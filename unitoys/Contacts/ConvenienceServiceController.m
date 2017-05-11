@@ -14,6 +14,7 @@
 #import "ReceivePhoneTimeController.h"
 #import "UNPushKitMessageManager.h"
 #import "VerificationPhoneController.h"
+#import "navHomeViewController.h"
 
 @interface ConvenienceServiceController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -124,7 +125,8 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
         if (!phoneStr) {
             //验证号码
             VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
-            [self.navigationController presentViewController:verificationVc animated:YES completion:nil];
+            navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
+            [self.navigationController presentViewController:nav animated:YES completion:nil];
         }else{
             NSLog(@"省心服务");
             ConvenienceServiceDetailController *convenienceDetailVc = [[ConvenienceServiceDetailController alloc] init];
