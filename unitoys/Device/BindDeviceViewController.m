@@ -47,6 +47,8 @@
     [super viewWillAppear:YES];
 //    [self.navigationController setNavigationBarHidden:YES animated:animated];
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"img_nav_bj"] forBarMetrics:UIBarMetricsDefault];
+    //消除阴影
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
 //    self.lblStatue.text = self.hintStrFirst;
     self.lblStatue.text = [BlueToothDataManager shareManager].statuesTitleString;
     if ([BlueToothDataManager shareManager].isConnected) {

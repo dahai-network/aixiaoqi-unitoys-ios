@@ -120,4 +120,6 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 - (NSString *)convertDateWithString:(NSString *)dateString;
 
+- (void)setStatuesLabelTextWithLabel:(UILabel *)label String:(NSString *)string;
+
 @end

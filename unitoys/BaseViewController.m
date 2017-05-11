@@ -636,6 +636,22 @@
     return YES;
 }
 
+- (void)setStatuesLabelTextWithLabel:(UILabel *)label String:(NSString *)string {
+    if ([string isEqualToString:HOMESTATUETITLE_NETWORKCANNOTUSE]) {
+        label.text = @"当前网络不可用，请检查你的网络设置。";
+    } else if ([string isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
+        label.text = @"请先绑定爱小器智能通讯硬件。";
+    } else if ([string isEqualToString:HOMESTATUETITLE_NOTCONNECTED]) {
+        label.text = @"未连上爱小器智能通讯硬件，请检查周围的设备是否有电。";
+    } else if ([string isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
+        label.text = @"爱小器智能通讯硬件设备中未插入电话卡，或插入的卡无效。";
+    } else if ([string isEqualToString:HOMESTATUETITLE_REGISTING]) {
+        label.text = @"电话卡正在连接运营商，请稍后。";
+    } else {
+        label.text = string;
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     NSLog(@"界面出现 -- PhoneRecordController -- %d", [self isKindOfClass:NSClassFromString(@"PhoneRecordController")]);
     NSLog(@"界面出现 -- MessageRecordController -- %d", [self isKindOfClass:NSClassFromString(@"MessageRecordController")]);

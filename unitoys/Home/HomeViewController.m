@@ -150,7 +150,8 @@
     [self.statuesView addSubview:leftImg];
     //添加label
     self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
-    self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
+//    self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:[BlueToothDataManager shareManager].statuesTitleString];
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
@@ -191,7 +192,7 @@
     [UNBlueToothTool shareBlueToothTool].checkBLEAndResetBlock = ^(){
         NSString *showMessageStr;
         if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"0"]) {
-            showMessageStr = @"读取卡失败，您需要重启设备重新检测吗？";
+            showMessageStr = @"读取设备内SIM卡失败，请重启设备重新检测？";
         } else {
             showMessageStr = @"未能检测到设备内有电话卡，您需要重启设备重新检测吗？";
         }
@@ -326,13 +327,27 @@
 
 #pragma mark 手势点击事件
 - (void)jumpToShowDetail {
-    StatuesViewDetailViewController *statuesViewDetailVC = [[StatuesViewDetailViewController alloc] init];
-    [self.navigationController pushViewController:statuesViewDetailVC animated:YES];
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTCONNECTED]) {
+        if ([BlueToothDataManager shareManager].isBounded) {
+            //有绑定
+            UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Device" bundle:nil];
+            BindDeviceViewController *bindDeviceViewController = [mainStory instantiateViewControllerWithIdentifier:@"bindDeviceViewController"];
+            if (bindDeviceViewController) {
+                self.tabBarController.tabBar.hidden = YES;
+                bindDeviceViewController.hintStrFirst = [BlueToothDataManager shareManager].statuesTitleString;
+                [self.navigationController pushViewController:bindDeviceViewController animated:YES];
+            }
+        }
+    } else {
+        StatuesViewDetailViewController *statuesViewDetailVC = [[StatuesViewDetailViewController alloc] init];
+        [self.navigationController pushViewController:statuesViewDetailVC animated:YES];
+    }
 }
 
 - (void)homeViewChangeStatuesView:(NSNotification *)sender {
     NSLog(@"状态栏文字 --> %@", sender.object);
-    self.statuesLabel.text = sender.object;
+//    self.statuesLabel.text = sender.object;
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
