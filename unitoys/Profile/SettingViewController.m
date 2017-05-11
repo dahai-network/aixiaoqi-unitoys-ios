@@ -13,15 +13,26 @@
 #import "BlueToothDataManager.h"
 #import "UNBlueToothTool.h"
 #import "AddressBookManager.h"
+#import "ShowPathViewController.h"
 
 @implementation SettingViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+    NSString *phoneNumberStr = [userData objectForKey:@"Tel"];
+    if ([phoneNumberStr isEqualToString:@"15802747295"]) {
+        [self setRightButton:@"轨迹"];
+    }
     // 当前软件的版本号（从Info.plist中获得）
     NSString *key = @"CFBundleShortVersionString";
     self.versionNumberStr = [NSBundle mainBundle].infoDictionary[key];
     self.lblVersionNumber.text = self.versionNumberStr;
+}
+
+- (void)rightButtonClick {
+    ShowPathViewController *showPathVC = [[ShowPathViewController alloc] init];
+    [self.navigationController pushViewController:showPathVC animated:YES];
 }
 
 - (IBAction)logout:(id)sender {

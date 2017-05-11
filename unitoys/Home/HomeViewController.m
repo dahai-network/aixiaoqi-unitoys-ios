@@ -128,7 +128,7 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToShowDetail)];
     [self.statuesView addGestureRecognizer:tap];
     //添加百分比
-    if ([[BlueToothDataManager shareManager].stepNumber intValue] != 0) {
+    if ([[BlueToothDataManager shareManager].stepNumber intValue] != 0 && [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
         int longStr = [[BlueToothDataManager shareManager].stepNumber intValue];
         CGFloat progressWidth;
         if ([[BlueToothDataManager shareManager].operatorType intValue] == 1 || [[BlueToothDataManager shareManager].operatorType intValue] == 2) {
@@ -189,8 +189,15 @@
         });
     };
     [UNBlueToothTool shareBlueToothTool].checkBLEAndResetBlock = ^(){
-        [weakSelf dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:@"未能检测到设备内有电话卡，您需要重启设备重新检测吗？" alertAction:^{
+        NSString *showMessageStr;
+        if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"0"]) {
+            showMessageStr = @"读取卡失败，您需要重启设备重新检测吗？";
+        } else {
+            showMessageStr = @"未能检测到设备内有电话卡，您需要重启设备重新检测吗？";
+        }
+        [weakSelf dj_alertAction:self alertTitle:nil actionTitle:@"重启" message:showMessageStr alertAction:^{
             [BlueToothDataManager shareManager].isNeedToResert = YES;
+            [BlueToothDataManager shareManager].isBeingShowAlert = NO;
             //发送复位请求
             [[UNBlueToothTool shareBlueToothTool] sendBLESystemResetCommand];
             [BlueToothDataManager shareManager].isReseted = YES;
@@ -330,6 +337,9 @@
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
     } else {
+        if (![sender.object isEqualToString:HOMESTATUETITLE_REGISTING]) {
+            self.registProgressView.un_width = 0;
+        }
         self.statuesView.un_height = STATUESVIEWHEIGHT;
     }
     [self.tableView reloadData];
@@ -558,6 +568,20 @@
     [self presentViewController:alertVC animated:YES completion:nil];
 }
 
+- (void)dj_alertAction:(UIViewController *)controller alertTitle:(NSString *)alertTitle actionTitle:(NSString *)actionTitle message:(NSString *)message alertAction:(void (^)())alertAction {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [BlueToothDataManager shareManager].isBeingShowAlert = NO;
+    }];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(actionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        alertAction();
+    }];
+    [alertVC addAction:cancelAction];
+    [alertVC addAction:certailAction];
+    [controller presentViewController:alertVC animated:YES completion:nil];
+}
+
 #pragma mark 获取通话套餐数据
 - (void)checkCommunicatePackageData {
     self.checkToken = YES;
@@ -665,7 +689,7 @@
     if ([BlueToothDataManager shareManager].isConnected) {
         [BlueToothDataManager shareManager].bleStatueForCard = 0;
         //对卡上电
-        [[UNBlueToothTool shareBlueToothTool] phoneCardToUpeLectrifyWithType:@"01"];
+        [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
     }else{
         NSLog(@"蓝牙未连接");
         dispatch_async(dispatch_get_main_queue(), ^{

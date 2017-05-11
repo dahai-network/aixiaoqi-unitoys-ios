@@ -215,9 +215,13 @@
         [self countAndShowPercentage:senderStr];
     } else {
         NSLog(@"注册成功的时候处理");
-        self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
-        if (self.timer) {
-            [self.timer setFireDate:[NSDate distantFuture]];
+        if ([BlueToothDataManager shareManager].isRegisted) {
+            self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
+            if (self.timer) {
+                [self.timer setFireDate:[NSDate distantFuture]];
+            }
+        } else {
+            NSLog(@"信号强状态有问题");
         }
     }
 }
@@ -579,18 +583,17 @@
     if (indexPath.section == 0 && indexPath.row == 0) {
         if ([BlueToothDataManager shareManager].isConnected) {
             if (![BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
-//                if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
-//                    [self startAnimation];
-//                    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
-//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
-//                }
-                 
-                if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
+                if (![BlueToothDataManager shareManager].isBeingRegisting || [BlueToothDataManager shareManager].isRegisted) {
                     [self startAnimation];
                     [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
                 }
             }
+//            if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
+//                [self startAnimation];
+//                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
+//            }
         } else {
             HUDNormal(INTERNATIONALSTRING(@"未连接设备"))
         }

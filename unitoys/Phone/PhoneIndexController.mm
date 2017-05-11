@@ -75,7 +75,7 @@
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToShowDetail)];
     [self.statuesView addGestureRecognizer:tap];
     //添加百分比
-    if ([[BlueToothDataManager shareManager].stepNumber intValue] != 0) {
+    if ([[BlueToothDataManager shareManager].stepNumber intValue] != 0 && [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
         int longStr = [[BlueToothDataManager shareManager].stepNumber intValue];
         CGFloat progressWidth;
         if ([[BlueToothDataManager shareManager].operatorType intValue] == 1 || [[BlueToothDataManager shareManager].operatorType intValue] == 2) {
@@ -129,6 +129,9 @@
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
     } else {
+        if (![noti.object isEqualToString:HOMESTATUETITLE_REGISTING]) {
+            self.registProgressView.un_width = 0;
+        }
         self.statuesView.un_height = STATUESVIEWHEIGHT;
     }
     if ([UNDataTools sharedInstance].tipStatusHeight != self.statuesView.un_height) {

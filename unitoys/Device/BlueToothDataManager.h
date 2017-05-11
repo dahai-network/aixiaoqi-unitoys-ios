@@ -65,6 +65,7 @@
 @property (nonatomic, copy) NSString *checkStr;//本次的加密文字
 @property (nonatomic, assign) BOOL isSame;//密文是否一样
 @property (nonatomic, assign) BOOL isFirstRegist;//判断是否第一次注册这张SIM卡
+@property (nonatomic, assign) BOOL isBeingShowAlert;//是否正在显示卡的弹框
 
 
 @end

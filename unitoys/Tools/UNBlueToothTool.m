@@ -1073,7 +1073,7 @@ static dispatch_once_t onceToken;
     NSString *encryptStr = [NSString doEncryptBuffer:[self convenStrToCharWithString:appdenStr]];
 //    NSString *encryptStr = [NSString DES3StringFromText:@"0102030405060708"];
 //    NSString *hexStr = [NSString stringFromHexString:@"322966766D962BCE"];
-//    NSLog(@"转换之后的文字 -- %@", hexStr);
+    NSLog(@"转换之后的文字 -- %@", appdenStr);
     NSLog(@"加密之后的文字 -- %@", encryptStr);
     [BlueToothDataManager shareManager].checkStr = encryptStr;
     [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:appdenStr];
@@ -1776,6 +1776,13 @@ static dispatch_once_t onceToken;
                         case 0:
                         {
                             NSLog(@"卡状态改变 -- 无卡");
+                            if (![BlueToothDataManager shareManager].isBeingShowAlert && [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+                                [BlueToothDataManager shareManager].isBeingShowAlert = YES;
+                                [self checkBLEAndReset];
+                            }
+                            if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+                            }
                             [BlueToothDataManager shareManager].operatorType = @"5";
                             [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].operatorType forKey:@"operatorType"];
                             [UNPushKitMessageManager shareManager].isNeedRegister = NO;
@@ -1794,7 +1801,13 @@ static dispatch_once_t onceToken;
                             int cardType = [self convertRangeStringToIntWithString:contentStr rangeLoc:2 rangeLen:2];
                             switch (cardType) {
                                 case 0:
+                                {
                                     NSLog(@"插卡，上电失败");
+                                    if (![BlueToothDataManager shareManager].isBeingShowAlert && [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
+                                        [BlueToothDataManager shareManager].isBeingShowAlert = YES;
+                                        [self checkBLEAndReset];
+                                    }
+                                }
                                     break;
                                 case 1:
                                     NSLog(@"插卡，移动");
@@ -1807,6 +1820,9 @@ static dispatch_once_t onceToken;
                                     break;
                                 case 4:
                                     NSLog(@"插卡，爱小器");
+                                    if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
+                                        [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+                                    }
                                     break;
                                 default:
                                     NSLog(@"插卡，无法识别");
@@ -1845,9 +1861,11 @@ static dispatch_once_t onceToken;
                             NSLog(@"卡状态改变 -- 状态有问题");
                             break;
                     }
+                    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                 } else {
                     NSLog(@"这是旧版本的设备，需要强制空中升级");
                     [self showHudNormalString:@"您的蓝牙需要进行固件升级"];
+                    [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                     return;
                 }
                 break;

@@ -328,7 +328,7 @@
 
 #pragma mark 返回行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 44;
+    return 55;
 }
 
 #pragma mark 返回cell内容

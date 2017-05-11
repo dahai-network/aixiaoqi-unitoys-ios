@@ -114,6 +114,12 @@
     return CGFLOAT_MIN;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *sectionView = [UIView new];
+    sectionView.backgroundColor = UIColorFromRGB(0xf5f5f5);
+    return sectionView;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     PackageCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PackageCell"];
     

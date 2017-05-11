@@ -845,6 +845,14 @@
         [BlueToothDataManager shareManager].isRegisted = NO;
         return;
     }
+    if (![[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
+        //不是电话卡，断开tcp连接
+        NSLog(@"不是电话卡，断开tcp");
+        [BlueToothDataManager shareManager].isTcpConnected = NO;
+        [BlueToothDataManager shareManager].isRegisted = NO;
+        return;
+    }
+    
 //    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
 //        return;
 //    }
@@ -1347,10 +1355,11 @@
         //108a 0500 20fd ef90 0008 0006 0101006501b4
         //发送心跳包
         NSString *sendStr = [NSString stringWithFormat:@"108a0500%@%@00060101006501b4", self.communicateID, str];
-        NSLog(@"发送心跳包 -- %@", sendStr);
-        [self sendMsgWithMessage:sendStr];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"sendHeartPacket" object:@"sendHeartPacket"];
-        self.currentNumber++;
+        if ([BlueToothDataManager shareManager].isTcpConnected) {
+            NSLog(@"发送心跳包 -- %@", sendStr);
+            [self sendMsgWithMessage:sendStr];
+            self.currentNumber++;
+        }
     }
     self.sec++;
 //    NSLog(@"sec == %d", self.sec);
