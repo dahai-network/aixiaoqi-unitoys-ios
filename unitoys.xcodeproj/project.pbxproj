@@ -125,6 +125,7 @@
 		3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */; };
 		3C20C2131E6D00F1008078BB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C20C2121E6D00F1008078BB /* PushKit.framework */; };
 		3C27E1BF1EC06E7A00D48F12 /* UNPresentHomeTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */; };
+		3C3C0A201EC2A1FC000D2F59 /* UNPresentImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */; };
 		3C4863601E8CF111006FD87C /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C48635F1E8CF111006FD87C /* number_location.zip */; };
 		3C4A07761E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */; };
 		3C4A07791E9CC56400A6DDA9 /* ContactsCallDetailsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07781E9CC56400A6DDA9 /* ContactsCallDetailsController.m */; };
@@ -146,6 +147,23 @@
 		3C6668C51EA078860050FA66 /* UNDataTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6668C41EA078860050FA66 /* UNDataTools.m */; };
 		3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */; };
 		3C74D51E1EAD94EC009FE12D /* UNCustomTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C74D51D1EAD94EC009FE12D /* UNCustomTabBar.m */; };
+		3C7DECCE1EC2BB7C00CDCE34 /* UNConvertFormatTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECCD1EC2BB7C00CDCE34 /* UNConvertFormatTool.m */; };
+		3C7DECD11EC2C62B00CDCE34 /* ConvenienceServiceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECD01EC2C62B00CDCE34 /* ConvenienceServiceController.m */; };
+		3C7DECD51EC2E41000CDCE34 /* ConvenienceServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECD31EC2E41000CDCE34 /* ConvenienceServiceCell.m */; };
+		3C7DECD61EC2E41000CDCE34 /* ConvenienceServiceCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C7DECD41EC2E41000CDCE34 /* ConvenienceServiceCell.xib */; };
+		3C7DECDA1EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECD81EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.m */; };
+		3C7DECDB1EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C7DECD91EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.xib */; };
+		3C7DECDE1EC2F86800CDCE34 /* OpenConvenienceServiceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECDD1EC2F86800CDCE34 /* OpenConvenienceServiceController.m */; };
+		3C7DECE21EC2FE6C00CDCE34 /* OpenServiceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECE01EC2FE6C00CDCE34 /* OpenServiceCell.m */; };
+		3C7DECE31EC2FE6C00CDCE34 /* OpenServiceCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C7DECE11EC2FE6C00CDCE34 /* OpenServiceCell.xib */; };
+		3C7DECE71EC300A100CDCE34 /* OpenServiceMonthCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECE51EC300A100CDCE34 /* OpenServiceMonthCell.m */; };
+		3C7DECE81EC300A100CDCE34 /* OpenServiceMonthCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C7DECE61EC300A100CDCE34 /* OpenServiceMonthCell.xib */; };
+		3C7DECEC1EC30B0B00CDCE34 /* SelectPayTypeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECEA1EC30B0B00CDCE34 /* SelectPayTypeCell.m */; };
+		3C7DECED1EC30B0B00CDCE34 /* SelectPayTypeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C7DECEB1EC30B0B00CDCE34 /* SelectPayTypeCell.xib */; };
+		3C7DECF01EC31ED700CDCE34 /* OpenServiceBottomView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECEF1EC31ED700CDCE34 /* OpenServiceBottomView.m */; };
+		3C7DECF21EC31EE600CDCE34 /* OpenServiceBottomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C7DECF11EC31EE600CDCE34 /* OpenServiceBottomView.xib */; };
+		3C7DECF61EC32C0700CDCE34 /* OpenService2Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECF41EC32C0700CDCE34 /* OpenService2Cell.m */; };
+		3C7DECF71EC32C0700CDCE34 /* OpenService2Cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C7DECF51EC32C0700CDCE34 /* OpenService2Cell.xib */; };
 		3C80965F1E8A317200942B0C /* UNNetWorkStatuManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C80965E1E8A317200942B0C /* UNNetWorkStatuManager.m */; };
 		3C8096651E8A423D00942B0C /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C8096641E8A423D00942B0C /* Reachability.m */; };
 		3C85E1BE1E9DBF28006459F9 /* CustomButtonInset.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C85E1BD1E9DBF28006459F9 /* CustomButtonInset.m */; };
@@ -587,6 +605,8 @@
 		3C20C2121E6D00F1008078BB /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
 		3C27E1BD1EC06E7A00D48F12 /* UNPresentHomeTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPresentHomeTipView.h; sourceTree = "<group>"; };
 		3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPresentHomeTipView.m; sourceTree = "<group>"; };
+		3C3C0A1E1EC2A1FC000D2F59 /* UNPresentImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPresentImageView.h; sourceTree = "<group>"; };
+		3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPresentImageView.m; sourceTree = "<group>"; };
 		3C48635F1E8CF111006FD87C /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
 		3C4A07741E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UCallPhoneNumLabel.h; sourceTree = "<group>"; };
 		3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UCallPhoneNumLabel.m; sourceTree = "<group>"; };
@@ -620,6 +640,33 @@
 		3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDatabaseTools.m; sourceTree = "<group>"; };
 		3C74D51C1EAD94EC009FE12D /* UNCustomTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCustomTabBar.h; sourceTree = "<group>"; };
 		3C74D51D1EAD94EC009FE12D /* UNCustomTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCustomTabBar.m; sourceTree = "<group>"; };
+		3C7DECCC1EC2BB7C00CDCE34 /* UNConvertFormatTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNConvertFormatTool.h; sourceTree = "<group>"; };
+		3C7DECCD1EC2BB7C00CDCE34 /* UNConvertFormatTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNConvertFormatTool.m; sourceTree = "<group>"; };
+		3C7DECCF1EC2C62B00CDCE34 /* ConvenienceServiceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvenienceServiceController.h; sourceTree = "<group>"; };
+		3C7DECD01EC2C62B00CDCE34 /* ConvenienceServiceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvenienceServiceController.m; sourceTree = "<group>"; };
+		3C7DECD21EC2E41000CDCE34 /* ConvenienceServiceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvenienceServiceCell.h; sourceTree = "<group>"; };
+		3C7DECD31EC2E41000CDCE34 /* ConvenienceServiceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvenienceServiceCell.m; sourceTree = "<group>"; };
+		3C7DECD41EC2E41000CDCE34 /* ConvenienceServiceCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConvenienceServiceCell.xib; sourceTree = "<group>"; };
+		3C7DECD71EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvenienceServiceDetailController.h; sourceTree = "<group>"; };
+		3C7DECD81EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvenienceServiceDetailController.m; sourceTree = "<group>"; };
+		3C7DECD91EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConvenienceServiceDetailController.xib; sourceTree = "<group>"; };
+		3C7DECDC1EC2F86800CDCE34 /* OpenConvenienceServiceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenConvenienceServiceController.h; sourceTree = "<group>"; };
+		3C7DECDD1EC2F86800CDCE34 /* OpenConvenienceServiceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenConvenienceServiceController.m; sourceTree = "<group>"; };
+		3C7DECDF1EC2FE6C00CDCE34 /* OpenServiceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenServiceCell.h; sourceTree = "<group>"; };
+		3C7DECE01EC2FE6C00CDCE34 /* OpenServiceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenServiceCell.m; sourceTree = "<group>"; };
+		3C7DECE11EC2FE6C00CDCE34 /* OpenServiceCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OpenServiceCell.xib; sourceTree = "<group>"; };
+		3C7DECE41EC300A100CDCE34 /* OpenServiceMonthCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenServiceMonthCell.h; sourceTree = "<group>"; };
+		3C7DECE51EC300A100CDCE34 /* OpenServiceMonthCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenServiceMonthCell.m; sourceTree = "<group>"; };
+		3C7DECE61EC300A100CDCE34 /* OpenServiceMonthCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OpenServiceMonthCell.xib; sourceTree = "<group>"; };
+		3C7DECE91EC30B0B00CDCE34 /* SelectPayTypeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectPayTypeCell.h; sourceTree = "<group>"; };
+		3C7DECEA1EC30B0B00CDCE34 /* SelectPayTypeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectPayTypeCell.m; sourceTree = "<group>"; };
+		3C7DECEB1EC30B0B00CDCE34 /* SelectPayTypeCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SelectPayTypeCell.xib; sourceTree = "<group>"; };
+		3C7DECEE1EC31ED700CDCE34 /* OpenServiceBottomView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenServiceBottomView.h; sourceTree = "<group>"; };
+		3C7DECEF1EC31ED700CDCE34 /* OpenServiceBottomView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenServiceBottomView.m; sourceTree = "<group>"; };
+		3C7DECF11EC31EE600CDCE34 /* OpenServiceBottomView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OpenServiceBottomView.xib; sourceTree = "<group>"; };
+		3C7DECF31EC32C0700CDCE34 /* OpenService2Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenService2Cell.h; sourceTree = "<group>"; };
+		3C7DECF41EC32C0700CDCE34 /* OpenService2Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenService2Cell.m; sourceTree = "<group>"; };
+		3C7DECF51EC32C0700CDCE34 /* OpenService2Cell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OpenService2Cell.xib; sourceTree = "<group>"; };
 		3C80965D1E8A317200942B0C /* UNNetWorkStatuManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNNetWorkStatuManager.h; sourceTree = "<group>"; };
 		3C80965E1E8A317200942B0C /* UNNetWorkStatuManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNNetWorkStatuManager.m; sourceTree = "<group>"; };
 		3C8096601E8A3E7500942B0C /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = "../../../Library/Developer/Xcode/DerivedData/unitoys-bfusqwuvvilolxenmvououztjroi/Build/Products/Debug-iphoneos/Reachability/Reachability.framework"; sourceTree = "<group>"; };
@@ -1282,6 +1329,24 @@
 				3C4A07921E9CDB8900A6DDA9 /* CallDetailsLookAllCell.h */,
 				3C4A07931E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m */,
 				3C4A07941E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib */,
+				3C7DECD21EC2E41000CDCE34 /* ConvenienceServiceCell.h */,
+				3C7DECD31EC2E41000CDCE34 /* ConvenienceServiceCell.m */,
+				3C7DECD41EC2E41000CDCE34 /* ConvenienceServiceCell.xib */,
+				3C7DECDF1EC2FE6C00CDCE34 /* OpenServiceCell.h */,
+				3C7DECE01EC2FE6C00CDCE34 /* OpenServiceCell.m */,
+				3C7DECE11EC2FE6C00CDCE34 /* OpenServiceCell.xib */,
+				3C7DECE41EC300A100CDCE34 /* OpenServiceMonthCell.h */,
+				3C7DECE51EC300A100CDCE34 /* OpenServiceMonthCell.m */,
+				3C7DECE61EC300A100CDCE34 /* OpenServiceMonthCell.xib */,
+				3C7DECE91EC30B0B00CDCE34 /* SelectPayTypeCell.h */,
+				3C7DECEA1EC30B0B00CDCE34 /* SelectPayTypeCell.m */,
+				3C7DECEB1EC30B0B00CDCE34 /* SelectPayTypeCell.xib */,
+				3C7DECEE1EC31ED700CDCE34 /* OpenServiceBottomView.h */,
+				3C7DECEF1EC31ED700CDCE34 /* OpenServiceBottomView.m */,
+				3C7DECF11EC31EE600CDCE34 /* OpenServiceBottomView.xib */,
+				3C7DECF31EC32C0700CDCE34 /* OpenService2Cell.h */,
+				3C7DECF41EC32C0700CDCE34 /* OpenService2Cell.m */,
+				3C7DECF51EC32C0700CDCE34 /* OpenService2Cell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1335,6 +1400,8 @@
 				3CA898781E8DFD1600C38387 /* MBProgressHUD.bundle */,
 				3C6668C31EA078860050FA66 /* UNDataTools.h */,
 				3C6668C41EA078860050FA66 /* UNDataTools.m */,
+				3C7DECCC1EC2BB7C00CDCE34 /* UNConvertFormatTool.h */,
+				3C7DECCD1EC2BB7C00CDCE34 /* UNConvertFormatTool.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1548,6 +1615,8 @@
 				3C74D51D1EAD94EC009FE12D /* UNCustomTabBar.m */,
 				3C27E1BD1EC06E7A00D48F12 /* UNPresentHomeTipView.h */,
 				3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */,
+				3C3C0A1E1EC2A1FC000D2F59 /* UNPresentImageView.h */,
+				3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -1880,6 +1949,13 @@
 				043965CC1E07ED8100B67989 /* AddressBookManager.m */,
 				3C4A07771E9CC56400A6DDA9 /* ContactsCallDetailsController.h */,
 				3C4A07781E9CC56400A6DDA9 /* ContactsCallDetailsController.m */,
+				3C7DECCF1EC2C62B00CDCE34 /* ConvenienceServiceController.h */,
+				3C7DECD01EC2C62B00CDCE34 /* ConvenienceServiceController.m */,
+				3C7DECD71EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.h */,
+				3C7DECD81EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.m */,
+				3C7DECD91EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.xib */,
+				3C7DECDC1EC2F86800CDCE34 /* OpenConvenienceServiceController.h */,
+				3C7DECDD1EC2F86800CDCE34 /* OpenConvenienceServiceController.m */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -2283,13 +2359,16 @@
 				3C4A07961E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib in Resources */,
 				74A91C661DF7E9A9002B4FCE /* headCollectionReusableView.xib in Resources */,
 				04472ABF1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib in Resources */,
+				3C7DECDB1EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.xib in Resources */,
 				04440D4C1E77D15900206877 /* IsBoundingViewController.xib in Resources */,
 				9562EE9B1DD31B7B00E10C98 /* AlipaySDK.bundle in Resources */,
 				04440D371E77CE2800206877 /* CommunicateDetailViewController.xib in Resources */,
 				04440D291E77C6BA00206877 /* ExplainDetailsChildController.xib in Resources */,
+				3C7DECD61EC2E41000CDCE34 /* ConvenienceServiceCell.xib in Resources */,
 				3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */,
 				04440CFF1E77910F00206877 /* Package.storyboard in Resources */,
 				3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */,
+				3C7DECF71EC32C0700CDCE34 /* OpenService2Cell.xib in Resources */,
 				740FD3961E287F9E009413F1 /* simcom in Resources */,
 				3CD76AA31EA73394001E6466 /* UNLoginViewController.xib in Resources */,
 				04440D3E1E77CE9500206877 /* ActivateGiftCardViewController.xib in Resources */,
@@ -2299,8 +2378,10 @@
 				952B2B071DC22D75006A7C69 /* messages.plist in Resources */,
 				0480516D1E86682F00E8AB55 /* PurviewSettingViewController.xib in Resources */,
 				3C4A07821E9CD54B00A6DDA9 /* CallDetailsActionCell.xib in Resources */,
+				3C7DECE31EC2FE6C00CDCE34 /* OpenServiceCell.xib in Resources */,
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
 				0480E1681E7BD88900FCC33B /* ShowPathViewController.xib in Resources */,
+				3C7DECF21EC31EE600CDCE34 /* OpenServiceBottomView.xib in Resources */,
 				04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */,
 				04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
@@ -2335,6 +2416,8 @@
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
 				95F337221D853256000B5461 /* Main.storyboard in Resources */,
 				04553F361E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib in Resources */,
+				3C7DECED1EC30B0B00CDCE34 /* SelectPayTypeCell.xib in Resources */,
+				3C7DECE81EC300A100CDCE34 /* OpenServiceMonthCell.xib in Resources */,
 				3C15135B1E796CBD00AF48B6 /* AlarmListViewController.xib in Resources */,
 				04440D221E77C4C400206877 /* BindChargeCardViewController.xib in Resources */,
 				04F727B31E641CE4002EB54C /* index.html in Resources */,
@@ -2425,6 +2508,7 @@
 				95938D351D933FFA008A0A21 /* CountryCell.m in Sources */,
 				3C99A8911EA85CD100C96BE7 /* ExplainDetailsLastController.m in Sources */,
 				9520BCB01DA1048100F0B286 /* RechargeViewController.m in Sources */,
+				3C7DECD11EC2C62B00CDCE34 /* ConvenienceServiceController.m in Sources */,
 				04F7279F1E641CE4002EB54C /* ContextFilterLogFormatter.m in Sources */,
 				3C9035561E9B344700FF95C0 /* PhoneIndexController.mm in Sources */,
 				040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */,
@@ -2481,10 +2565,12 @@
 				95CD33F21D9CE4F300EE5DD3 /* RSADataSigner.m in Sources */,
 				0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */,
 				04A949821E82691F007611F7 /* WristbandSettingTableViewCell.m in Sources */,
+				3C7DECD51EC2E41000CDCE34 /* ConvenienceServiceCell.m in Sources */,
 				9581594A1DCB7DB8004474FF /* ProfileViewController.m in Sources */,
 				3CC3E0A71E63C22F00A62F8C /* CustomOrderCell.m in Sources */,
 				95E918601DDC91DD005DABC0 /* BeforeBackPageViewController.m in Sources */,
 				04F727A51E641CE4002EB54C /* HTTPAuthenticationRequest.m in Sources */,
+				3C7DECF61EC32C0700CDCE34 /* OpenService2Cell.m in Sources */,
 				043638DB1EB1A4AF0064207E /* StatuesViewDetailViewController.m in Sources */,
 				04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */,
 				043965CD1E07ED8100B67989 /* AddressBookManager.m in Sources */,
@@ -2530,23 +2616,28 @@
 				04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */,
 				95C575FC1DA77C1000F459DF /* MessageRecordCell.m in Sources */,
 				04F727A41E641CE4002EB54C /* DDRange.m in Sources */,
+				3C7DECF01EC31ED700CDCE34 /* OpenServiceBottomView.m in Sources */,
 				3C85E1BE1E9DBF28006459F9 /* CustomButtonInset.m in Sources */,
 				952B2AFC1DC228F2006A7C69 /* MJMessageCell.m in Sources */,
 				04F727AC1E641CE4002EB54C /* HTTPAsyncFileResponse.m in Sources */,
 				3CE5CC881E7F63F100FCEA81 /* UNBlueToothTool.m in Sources */,
+				3C7DECEC1EC30B0B00CDCE34 /* SelectPayTypeCell.m in Sources */,
 				95CD33ED1D9CE4F300EE5DD3 /* DataSigner.m in Sources */,
 				95E9185A1DDC7EB6005DABC0 /* BeforeOutViewController.m in Sources */,
 				04F727AB1E641CE4002EB54C /* MultipartMessageHeaderField.m in Sources */,
 				95CD33F01D9CE4F300EE5DD3 /* NSDataEx.m in Sources */,
+				3C7DECE21EC2FE6C00CDCE34 /* OpenServiceCell.m in Sources */,
 				3CA898771E8DF33F00C38387 /* MBProgressHUD+UNTip.m in Sources */,
 				04553F301E70EE980025CA34 /* ChooseDeviceTypeViewController.m in Sources */,
 				954A87CE1D98BBA700570843 /* JSONModelArray.m in Sources */,
 				9536B9741D8FC16600CD6B78 /* UnderlineField.m in Sources */,
 				04F7279D1E641CE4002EB54C /* DDLog.m in Sources */,
 				95CD33EC1D9CE4F300EE5DD3 /* base64.m in Sources */,
+				3C7DECDE1EC2F86800CDCE34 /* OpenConvenienceServiceController.m in Sources */,
 				3CD76AA21EA73394001E6466 /* UNLoginViewController.m in Sources */,
 				3C8CFA721E55AF4E0035A460 /* SearchContactsCell.m in Sources */,
 				954A87AA1D98B6E800570843 /* ContactModel.m in Sources */,
+				3C7DECDA1EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.m in Sources */,
 				955CCC3C1D90D55C00BC8110 /* AboutViewController.m in Sources */,
 				3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */,
 				3C90356B1E9B6A5C00FF95C0 /* PhoneRecordController.mm in Sources */,
@@ -2584,6 +2675,7 @@
 				740FD3931E287F9E009413F1 /* sim_com_interface.c in Sources */,
 				3C8E77981E5D280600C4833E /* UNDefines.m in Sources */,
 				954A87D51D98BBA700570843 /* JSONKeyMapper.m in Sources */,
+				3C3C0A201EC2A1FC000D2F59 /* UNPresentImageView.m in Sources */,
 				3C80965F1E8A317200942B0C /* UNNetWorkStatuManager.m in Sources */,
 				950072B51DBF58D000C16088 /* PhoneViewController.mm in Sources */,
 				04F727AE1E641CE4002EB54C /* HTTPDynamicFileResponse.m in Sources */,
@@ -2593,6 +2685,7 @@
 				95CD34151D9D1D3B00EE5DD3 /* OrderCell.m in Sources */,
 				95938D501D93F093008A0A21 /* UIPlaceHolderTextView.m in Sources */,
 				95C575F41DA77AB200F459DF /* PhoneRecordCell.m in Sources */,
+				3C7DECE71EC300A100CDCE34 /* OpenServiceMonthCell.m in Sources */,
 				95F1ED5C1DE6BC6A002E9259 /* LineProgressView.m in Sources */,
 				3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */,
 				040FC5161E7F81EE0056745D /* CutomButton.m in Sources */,
@@ -2607,6 +2700,7 @@
 				3C4A07901E9CD9B500A6DDA9 /* CallDetailsRecordCell.m in Sources */,
 				95FB44271DC8663800B81A0D /* navHomeViewController.m in Sources */,
 				3C85E1C11E9E39BB006459F9 /* UNEditMessageView.m in Sources */,
+				3C7DECCE1EC2BB7C00CDCE34 /* UNConvertFormatTool.m in Sources */,
 				9581594D1DCC1409004474FF /* VPImageCropperViewController.m in Sources */,
 				954A87D41D98BBA700570843 /* JSONModel+networking.m in Sources */,
 				95C404551DAE384B0001E566 /* MessageSessionViewController.m in Sources */,

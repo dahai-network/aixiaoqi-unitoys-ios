@@ -1073,7 +1073,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)callingAction:(NSNotification *)notification {
     if (notification.object) {
         NSString *action = notification.object;
-        
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
         if ([action isEqualToString:@"Hungup"]) {
             self.speakerStatus = NO;

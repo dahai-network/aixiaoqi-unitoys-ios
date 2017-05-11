@@ -271,6 +271,7 @@ void SipEventObserver::OnNetworkQuality(int ms,const char *unused){
 
 void SipEventObserver::OnRemoteDtmfClicked(int dtmf){
 	/*无需处理*/
+    NSLog(@"OnRemoteDtmfClicked--%d", dtmf);
 }
 
 void SipEventObserver::OnCallReport(CallReport *cdr){

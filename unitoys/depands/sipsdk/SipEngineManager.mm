@@ -144,7 +144,7 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
         theSipEngine->SetSpeakerVolume(255);
         theSipEngine->SetMicPhoneVolume(255);
         
-        theSipEngine->SetDtmfMode(RFC2833);
+//        theSipEngine->SetDtmfMode(RFC2833);
         
         /*设置用户代理*/
         theSipEngine->SetUserAgent("51dyt","iOS");

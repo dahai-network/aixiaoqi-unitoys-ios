@@ -22,6 +22,9 @@
 #import "BlueToothDataManager.h"
 #import "StatuesViewDetailViewController.h"
 #import "UIImage+Extension.h"
+#import "UNPresentImageView.h"
+#import "UNConvertFormatTool.h"
+#import "ConvenienceServiceController.h"
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
@@ -176,6 +179,67 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
+    
+    [self showPresentImageView];
+}
+
+- (void)showPresentImageView
+{
+    BOOL isPresent = NO;
+    NSString *localDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"PresentConvenienceTime"];
+    
+    NSDate *currentDate = [NSDate date];
+    NSString *currentDateStr = [UNConvertFormatTool dateStringYMDFromDate:currentDate];
+    if (localDate) {
+        if (![localDate isEqualToString:currentDateStr]) {
+            isPresent = YES;
+        }
+    }else{
+        isPresent = YES;
+//        [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+    }
+    
+    isPresent = YES;
+    if (isPresent) {
+//        self.checkToken = YES;
+//        [self getBasicHeader];
+//        [SSNetworkRequest getRequest:@"" params:nil success:^(id responseObj) {
+//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//                NSString *imageUrl = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494397069257&di=8ddbdaf3fc2d0149880be9abd985cb30&imgtype=0&src=http%3A%2F%2Fimg27.51tietu.net%2Fpic%2F2017-011500%2F20170115001256mo4qcbhixee164299.jpg";
+//                NSString *linkUrl = @"aaaaa";
+//                if (imageUrl) {
+//                    //如果有数据则出现
+//                    [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
+//                        NSLog(@"弹出福利详情界面---%@", linkUrl);
+//                    }];
+//                [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+//                }
+//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//            }
+//        } failure:^(id dataObj, NSError *error) {
+//            HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
+//            NSLog(@"啥都没：%@",[error description]);
+//        } headers:self.headers];
+        
+        NSString *imageUrl = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494397069257&di=8ddbdaf3fc2d0149880be9abd985cb30&imgtype=0&src=http%3A%2F%2Fimg27.51tietu.net%2Fpic%2F2017-011500%2F20170115001256mo4qcbhixee164299.jpg";
+        NSString *linkUrl = @"aaaaa";
+        if (imageUrl) {
+            //如果有数据则出现
+            kWeakSelf
+            [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
+                NSLog(@"弹出福利详情界面---%@", linkUrl);
+                [weakSelf presentConvenienceServiceVC];
+            }];
+            [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+        }
+    }
+}
+
+- (void)presentConvenienceServiceVC
+{
+    ConvenienceServiceController *convenienceVC = [[ConvenienceServiceController alloc] init];
+    [self.navigationController pushViewController:convenienceVC animated:YES];
 }
 
 #pragma mark 手势点击事件

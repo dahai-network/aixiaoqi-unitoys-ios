@@ -1090,7 +1090,6 @@
             if ([tempStr containsString:@" "]) {
                 tempStr = [tempStr stringByReplacingOccurrencesOfString:@" " withString:@""];
             }
-            
             [self checkManyPacketString:tempStr];
         }
     }

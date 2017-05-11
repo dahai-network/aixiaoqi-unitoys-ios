@@ -81,7 +81,9 @@ public:
     virtual int UpdateCall(bool enabled_video) = 0;
     /*for called*/
     virtual int AcceptCallUpdate(bool video) = 0;
+    
     virtual int SendDtmf(const char *dtmf) = 0;
+    
     virtual int SetCallHold() = 0;
     virtual int SetCallUnHold() = 0;
     
