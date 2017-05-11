@@ -12,5 +12,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblPayTips;
 @property (weak, nonatomic) IBOutlet UILabel *lblCreateDate;
 @property (weak, nonatomic) IBOutlet UILabel *lblAmount;
+@property (weak, nonatomic) IBOutlet UIImageView *imgDetail;
 
 @end

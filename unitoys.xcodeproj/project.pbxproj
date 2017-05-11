@@ -76,6 +76,10 @@
 		04A949831E82691F007611F7 /* WristbandSettingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04A949811E82691F007611F7 /* WristbandSettingTableViewCell.xib */; };
 		04ABBE2D1EAAEADA0070AFD1 /* LXWaveProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 04ABBE2A1EAAEADA0070AFD1 /* LXWaveProgressView.m */; };
 		04ABBE2E1EAAEADA0070AFD1 /* YYWeakProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 04ABBE2C1EAAEADA0070AFD1 /* YYWeakProxy.m */; };
+		04AFE65D1EC4359F00B3BC8F /* HavePackageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE65B1EC4359F00B3BC8F /* HavePackageDetailViewController.m */; };
+		04AFE65E1EC4359F00B3BC8F /* HavePackageDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04AFE65C1EC4359F00B3BC8F /* HavePackageDetailViewController.xib */; };
+		04AFE6621EC435C800B3BC8F /* HavePackageDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE6601EC435C800B3BC8F /* HavePackageDetailTableViewCell.m */; };
+		04AFE6631EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04AFE6611EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib */; };
 		04B416511EB35365005E31C9 /* 3des.c in Sources */ = {isa = PBXBuildFile; fileRef = 04B4164F1EB35365005E31C9 /* 3des.c */; };
 		04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */; };
 		04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */; };
@@ -527,6 +531,12 @@
 		04ABBE2A1EAAEADA0070AFD1 /* LXWaveProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LXWaveProgressView.m; sourceTree = "<group>"; };
 		04ABBE2B1EAAEADA0070AFD1 /* YYWeakProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYWeakProxy.h; sourceTree = "<group>"; };
 		04ABBE2C1EAAEADA0070AFD1 /* YYWeakProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYWeakProxy.m; sourceTree = "<group>"; };
+		04AFE65A1EC4359F00B3BC8F /* HavePackageDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HavePackageDetailViewController.h; sourceTree = "<group>"; };
+		04AFE65B1EC4359F00B3BC8F /* HavePackageDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HavePackageDetailViewController.m; sourceTree = "<group>"; };
+		04AFE65C1EC4359F00B3BC8F /* HavePackageDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HavePackageDetailViewController.xib; sourceTree = "<group>"; };
+		04AFE65F1EC435C800B3BC8F /* HavePackageDetailTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HavePackageDetailTableViewCell.h; sourceTree = "<group>"; };
+		04AFE6601EC435C800B3BC8F /* HavePackageDetailTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HavePackageDetailTableViewCell.m; sourceTree = "<group>"; };
+		04AFE6611EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HavePackageDetailTableViewCell.xib; sourceTree = "<group>"; };
 		04B4164F1EB35365005E31C9 /* 3des.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 3des.c; sourceTree = "<group>"; };
 		04B416501EB35365005E31C9 /* 3des.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3des.h; sourceTree = "<group>"; };
 		04D5EED21E9B959D0015B8DA /* ProductCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductCollectionViewCell.h; sourceTree = "<group>"; };
@@ -1868,6 +1878,12 @@
 				95FB44201DC82B9C00B81A0D /* AmountDetailViewController.m */,
 				95FB44221DC82C0000B81A0D /* AmountDetailCell.h */,
 				95FB44231DC82C0000B81A0D /* AmountDetailCell.m */,
+				04AFE65A1EC4359F00B3BC8F /* HavePackageDetailViewController.h */,
+				04AFE65B1EC4359F00B3BC8F /* HavePackageDetailViewController.m */,
+				04AFE65C1EC4359F00B3BC8F /* HavePackageDetailViewController.xib */,
+				04AFE65F1EC435C800B3BC8F /* HavePackageDetailTableViewCell.h */,
+				04AFE6601EC435C800B3BC8F /* HavePackageDetailTableViewCell.m */,
+				04AFE6611EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib */,
 				958159481DCB7DB7004474FF /* ProfileViewController.h */,
 				958159491DCB7DB7004474FF /* ProfileViewController.m */,
 				9581594E1DCCC31D004474FF /* SetValueViewController.h */,
@@ -2400,9 +2416,11 @@
 				04440D4C1E77D15900206877 /* IsBoundingViewController.xib in Resources */,
 				9562EE9B1DD31B7B00E10C98 /* AlipaySDK.bundle in Resources */,
 				04440D371E77CE2800206877 /* CommunicateDetailViewController.xib in Resources */,
+				04AFE65E1EC4359F00B3BC8F /* HavePackageDetailViewController.xib in Resources */,
 				04440D291E77C6BA00206877 /* ExplainDetailsChildController.xib in Resources */,
 				3C7DECD61EC2E41000CDCE34 /* ConvenienceServiceCell.xib in Resources */,
 				3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */,
+				04AFE6631EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib in Resources */,
 				04440CFF1E77910F00206877 /* Package.storyboard in Resources */,
 				3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */,
 				3C7DECF71EC32C0700CDCE34 /* OpenService2Cell.xib in Resources */,
@@ -2571,6 +2589,7 @@
 				952B2AEE1DC224F4006A7C69 /* UIImage+Extension.m in Sources */,
 				04F7279B1E641CE4002EB54C /* DDASLLogger.m in Sources */,
 				954A87D21D98BBA700570843 /* JSONAPI.m in Sources */,
+				04AFE6621EC435C800B3BC8F /* HavePackageDetailTableViewCell.m in Sources */,
 				041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */,
 				48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */,
 				95CD33EF1D9CE4F300EE5DD3 /* MD5DataSigner.m in Sources */,
@@ -2590,6 +2609,7 @@
 				95CD340F1D9D1B1900EE5DD3 /* OrderListViewController.m in Sources */,
 				95938D441D93DF87008A0A21 /* AgreementViewController.m in Sources */,
 				3C99A8A41EA9E4DC00C96BE7 /* UNTestViewController.m in Sources */,
+				04AFE65D1EC4359F00B3BC8F /* HavePackageDetailViewController.m in Sources */,
 				3C9035591E9B52C100FF95C0 /* HLTitlesView.m in Sources */,
 				95938D3E1D93ABCC008A0A21 /* PackageCell.m in Sources */,
 				04F727A71E641CE4002EB54C /* HTTPMessage.m in Sources */,

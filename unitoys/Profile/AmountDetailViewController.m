@@ -8,6 +8,7 @@
 
 #import "AmountDetailViewController.h"
 #import "AmountDetailCell.h"
+#import "HavePackageDetailViewController.h"
 
 @interface AmountDetailViewController ()
 
@@ -86,16 +87,37 @@
 //        cell.lblAmount.text = [NSString stringWithFormat:@"-￥%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
 //        [cell.lblAmount setTextColor:[UIColor blackColor]];
 //    }
+    if ([dicAmountDetail[@"IsHadDetail"] intValue] == 1) {
+        cell.imgDetail.hidden = NO;
+        cell.lblAmount.hidden = YES;
+        cell.userInteractionEnabled = YES;
+    } else {
+        cell.imgDetail.hidden = YES;
+        cell.lblAmount.hidden = NO;
+        cell.userInteractionEnabled = NO;
+    }
     if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==1) {
         cell.lblAmount.text = [NSString stringWithFormat:@"+%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
 //        [cell.lblAmount setTextColor:[UIColor greenColor]];
-    } else {
+    } else if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==0) {
         cell.lblAmount.text = [NSString stringWithFormat:@"-%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
 //        [cell.lblAmount setTextColor:[UIColor blackColor]];
+    } else {
+        cell.lblAmount.text = [NSString stringWithFormat:@"%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
     }
     return cell;
     
     
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    NSDictionary *dicAmountDetail = [self.arrAmountDetail objectAtIndex:indexPath.row];
+    if ([dicAmountDetail[@"IsHadDetail"] intValue] == 1) {
+        HavePackageDetailViewController *havePackageDetailVC = [[HavePackageDetailViewController alloc] init];
+        havePackageDetailVC.detailID = dicAmountDetail[@"ID"];
+        [self.navigationController pushViewController:havePackageDetailVC animated:YES];
+    }
 }
 
 @end
