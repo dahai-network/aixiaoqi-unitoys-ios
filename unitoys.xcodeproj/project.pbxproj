@@ -125,6 +125,15 @@
 		3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */; };
 		3C20C2131E6D00F1008078BB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C20C2121E6D00F1008078BB /* PushKit.framework */; };
 		3C27E1BF1EC06E7A00D48F12 /* UNPresentHomeTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */; };
+		3C388A7E1EC4186500A04BA8 /* ReceivePhoneTimeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A7C1EC4186500A04BA8 /* ReceivePhoneTimeController.m */; };
+		3C388A7F1EC4186500A04BA8 /* ReceivePhoneTimeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C388A7D1EC4186500A04BA8 /* ReceivePhoneTimeController.xib */; };
+		3C388A821EC4402D00A04BA8 /* ConvenienceOrderDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A811EC4402D00A04BA8 /* ConvenienceOrderDetailController.m */; };
+		3C388A861EC4438300A04BA8 /* ConvenienceOrderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A841EC4438300A04BA8 /* ConvenienceOrderCell.m */; };
+		3C388A871EC4438300A04BA8 /* ConvenienceOrderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C388A851EC4438300A04BA8 /* ConvenienceOrderCell.xib */; };
+		3C388A8B1EC44BA400A04BA8 /* ConvenienceOrder2Cell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A891EC44BA400A04BA8 /* ConvenienceOrder2Cell.m */; };
+		3C388A8C1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C388A8A1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib */; };
+		3C388A901EC4624B00A04BA8 /* VerificationPhoneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A8E1EC4624B00A04BA8 /* VerificationPhoneController.m */; };
+		3C388A911EC4624B00A04BA8 /* VerificationPhoneController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C388A8F1EC4624B00A04BA8 /* VerificationPhoneController.xib */; };
 		3C3C0A201EC2A1FC000D2F59 /* UNPresentImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */; };
 		3C4863601E8CF111006FD87C /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C48635F1E8CF111006FD87C /* number_location.zip */; };
 		3C4A07761E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */; };
@@ -605,6 +614,20 @@
 		3C20C2121E6D00F1008078BB /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
 		3C27E1BD1EC06E7A00D48F12 /* UNPresentHomeTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPresentHomeTipView.h; sourceTree = "<group>"; };
 		3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPresentHomeTipView.m; sourceTree = "<group>"; };
+		3C388A7B1EC4186500A04BA8 /* ReceivePhoneTimeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReceivePhoneTimeController.h; sourceTree = "<group>"; };
+		3C388A7C1EC4186500A04BA8 /* ReceivePhoneTimeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReceivePhoneTimeController.m; sourceTree = "<group>"; };
+		3C388A7D1EC4186500A04BA8 /* ReceivePhoneTimeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ReceivePhoneTimeController.xib; sourceTree = "<group>"; };
+		3C388A801EC4402D00A04BA8 /* ConvenienceOrderDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvenienceOrderDetailController.h; sourceTree = "<group>"; };
+		3C388A811EC4402D00A04BA8 /* ConvenienceOrderDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvenienceOrderDetailController.m; sourceTree = "<group>"; };
+		3C388A831EC4438300A04BA8 /* ConvenienceOrderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvenienceOrderCell.h; sourceTree = "<group>"; };
+		3C388A841EC4438300A04BA8 /* ConvenienceOrderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvenienceOrderCell.m; sourceTree = "<group>"; };
+		3C388A851EC4438300A04BA8 /* ConvenienceOrderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConvenienceOrderCell.xib; sourceTree = "<group>"; };
+		3C388A881EC44BA400A04BA8 /* ConvenienceOrder2Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvenienceOrder2Cell.h; sourceTree = "<group>"; };
+		3C388A891EC44BA400A04BA8 /* ConvenienceOrder2Cell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConvenienceOrder2Cell.m; sourceTree = "<group>"; };
+		3C388A8A1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ConvenienceOrder2Cell.xib; sourceTree = "<group>"; };
+		3C388A8D1EC4624B00A04BA8 /* VerificationPhoneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerificationPhoneController.h; sourceTree = "<group>"; };
+		3C388A8E1EC4624B00A04BA8 /* VerificationPhoneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerificationPhoneController.m; sourceTree = "<group>"; };
+		3C388A8F1EC4624B00A04BA8 /* VerificationPhoneController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerificationPhoneController.xib; sourceTree = "<group>"; };
 		3C3C0A1E1EC2A1FC000D2F59 /* UNPresentImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPresentImageView.h; sourceTree = "<group>"; };
 		3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPresentImageView.m; sourceTree = "<group>"; };
 		3C48635F1E8CF111006FD87C /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
@@ -1347,6 +1370,12 @@
 				3C7DECF31EC32C0700CDCE34 /* OpenService2Cell.h */,
 				3C7DECF41EC32C0700CDCE34 /* OpenService2Cell.m */,
 				3C7DECF51EC32C0700CDCE34 /* OpenService2Cell.xib */,
+				3C388A831EC4438300A04BA8 /* ConvenienceOrderCell.h */,
+				3C388A841EC4438300A04BA8 /* ConvenienceOrderCell.m */,
+				3C388A851EC4438300A04BA8 /* ConvenienceOrderCell.xib */,
+				3C388A881EC44BA400A04BA8 /* ConvenienceOrder2Cell.h */,
+				3C388A891EC44BA400A04BA8 /* ConvenienceOrder2Cell.m */,
+				3C388A8A1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1956,6 +1985,14 @@
 				3C7DECD91EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.xib */,
 				3C7DECDC1EC2F86800CDCE34 /* OpenConvenienceServiceController.h */,
 				3C7DECDD1EC2F86800CDCE34 /* OpenConvenienceServiceController.m */,
+				3C388A7B1EC4186500A04BA8 /* ReceivePhoneTimeController.h */,
+				3C388A7C1EC4186500A04BA8 /* ReceivePhoneTimeController.m */,
+				3C388A7D1EC4186500A04BA8 /* ReceivePhoneTimeController.xib */,
+				3C388A801EC4402D00A04BA8 /* ConvenienceOrderDetailController.h */,
+				3C388A811EC4402D00A04BA8 /* ConvenienceOrderDetailController.m */,
+				3C388A8D1EC4624B00A04BA8 /* VerificationPhoneController.h */,
+				3C388A8E1EC4624B00A04BA8 /* VerificationPhoneController.m */,
+				3C388A8F1EC4624B00A04BA8 /* VerificationPhoneController.xib */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -2380,6 +2417,7 @@
 				3C4A07821E9CD54B00A6DDA9 /* CallDetailsActionCell.xib in Resources */,
 				3C7DECE31EC2FE6C00CDCE34 /* OpenServiceCell.xib in Resources */,
 				0436C3701E1FA4C30033A8F1 /* CommunicateDetailTableViewCell.xib in Resources */,
+				3C388A871EC4438300A04BA8 /* ConvenienceOrderCell.xib in Resources */,
 				0480E1681E7BD88900FCC33B /* ShowPathViewController.xib in Resources */,
 				3C7DECF21EC31EE600CDCE34 /* OpenServiceBottomView.xib in Resources */,
 				04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */,
@@ -2389,6 +2427,7 @@
 				3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */,
 				04440D141E779CF900206877 /* Device.storyboard in Resources */,
 				3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */,
+				3C388A8C1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib in Resources */,
 				952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */,
 				043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */,
 				3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */,
@@ -2397,6 +2436,7 @@
 				954A87E21D9A0DA400570843 /* PhonePadView.xib in Resources */,
 				04127F631EA5F3BD00C18201 /* OrderListViewController.xib in Resources */,
 				04F727991E641CE4002EB54C /* About.txt in Resources */,
+				3C388A911EC4624B00A04BA8 /* VerificationPhoneController.xib in Resources */,
 				95C575FD1DA77C1000F459DF /* MessageRecordCell.xib in Resources */,
 				04F727B71E641CE4002EB54C /* Release.xcconfig in Resources */,
 				3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */,
@@ -2417,6 +2457,7 @@
 				95F337221D853256000B5461 /* Main.storyboard in Resources */,
 				04553F361E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.xib in Resources */,
 				3C7DECED1EC30B0B00CDCE34 /* SelectPayTypeCell.xib in Resources */,
+				3C388A7F1EC4186500A04BA8 /* ReceivePhoneTimeController.xib in Resources */,
 				3C7DECE81EC300A100CDCE34 /* OpenServiceMonthCell.xib in Resources */,
 				3C15135B1E796CBD00AF48B6 /* AlarmListViewController.xib in Resources */,
 				04440D221E77C4C400206877 /* BindChargeCardViewController.xib in Resources */,
@@ -2521,6 +2562,7 @@
 				3CCA72DE1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m in Sources */,
 				3C6668C51EA078860050FA66 /* UNDataTools.m in Sources */,
 				952B2B021DC229E0006A7C69 /* MJMessage.m in Sources */,
+				3C388A901EC4624B00A04BA8 /* VerificationPhoneController.m in Sources */,
 				95938D411D93ABF0008A0A21 /* PackageDetailViewController.m in Sources */,
 				95BAED651D87A5D4005A6402 /* BaseViewController.m in Sources */,
 				3C4A078B1E9CD87800A6DDA9 /* CallDetailsNumberCell.m in Sources */,
@@ -2536,6 +2578,7 @@
 				3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */,
 				954A87B11D98BA6500570843 /* ContactDataHelper.m in Sources */,
 				74A91C651DF7E9A9002B4FCE /* headCollectionReusableView.m in Sources */,
+				3C388A8B1EC44BA400A04BA8 /* ConvenienceOrder2Cell.m in Sources */,
 				3C9035651E9B5D2700FF95C0 /* MessageRecordController.m in Sources */,
 				9554C9EC1DE7E44400162624 /* FDCalendar.m in Sources */,
 				9554C9ED1DE7E44400162624 /* FDCalendarItem.m in Sources */,
@@ -2587,6 +2630,7 @@
 				3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */,
 				3C99A8A11EA9DF9C00C96BE7 /* UNPresentTool.m in Sources */,
 				0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */,
+				3C388A821EC4402D00A04BA8 /* ConvenienceOrderDetailController.m in Sources */,
 				95B099171DC0DA6A00743877 /* SipEngineEventObserver.mm in Sources */,
 				3C4A07811E9CD54B00A6DDA9 /* CallDetailsActionCell.m in Sources */,
 				04127F671EA5F69100C18201 /* OrderListTableViewCell.m in Sources */,
@@ -2635,6 +2679,7 @@
 				95CD33EC1D9CE4F300EE5DD3 /* base64.m in Sources */,
 				3C7DECDE1EC2F86800CDCE34 /* OpenConvenienceServiceController.m in Sources */,
 				3CD76AA21EA73394001E6466 /* UNLoginViewController.m in Sources */,
+				3C388A7E1EC4186500A04BA8 /* ReceivePhoneTimeController.m in Sources */,
 				3C8CFA721E55AF4E0035A460 /* SearchContactsCell.m in Sources */,
 				954A87AA1D98B6E800570843 /* ContactModel.m in Sources */,
 				3C7DECDA1EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.m in Sources */,
@@ -2650,6 +2695,7 @@
 				3C8096651E8A423D00942B0C /* Reachability.m in Sources */,
 				95CD33F31D9CE4F300EE5DD3 /* RSADataVerifier.m in Sources */,
 				95334A621D8A83DD002C1CFB /* BaseTableController.m in Sources */,
+				3C388A861EC4438300A04BA8 /* ConvenienceOrderCell.m in Sources */,
 				95938D321D92C3C6008A0A21 /* CountryListViewController.m in Sources */,
 				95938D3B1D93ABB2008A0A21 /* PackageListViewController.m in Sources */,
 				954A87D61D98BBA700570843 /* JSONValueTransformer.m in Sources */,

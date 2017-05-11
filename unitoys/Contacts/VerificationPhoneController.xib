@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VerificationPhoneController">
+            <connections>
+                <outlet property="phoneTextField" destination="UJ0-Za-dob" id="JIt-uO-Q5O"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="输入设备内手机号码" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UJ0-Za-dob">
+                    <rect key="frame" x="0.0" y="10" width="375" height="50"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="l91-LY-ycb"/>
+                    </constraints>
+                    <nil key="textColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vte-Tk-UVZ">
+                    <rect key="frame" x="24.5" y="80" width="325" height="49"/>
+                    <state key="normal" title="自动验证" backgroundImage="btn_open"/>
+                    <connections>
+                        <action selector="verificationAction:" destination="-1" eventType="touchUpInside" id="IoO-GC-h2f"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="vte-Tk-UVZ" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="8u0-Wp-pRd"/>
+                <constraint firstItem="vte-Tk-UVZ" firstAttribute="top" secondItem="UJ0-Za-dob" secondAttribute="bottom" constant="20" id="AtY-jX-DiM"/>
+                <constraint firstItem="UJ0-Za-dob" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="10" id="LeL-7d-FHe"/>
+                <constraint firstAttribute="trailing" secondItem="UJ0-Za-dob" secondAttribute="trailing" id="Mal-vk-2Gk"/>
+                <constraint firstItem="UJ0-Za-dob" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="bXA-MT-8Ki"/>
+            </constraints>
+            <point key="canvasLocation" x="-346" y="-97"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="btn_open" width="325" height="49"/>
+    </resources>
+</document>

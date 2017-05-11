@@ -67,9 +67,10 @@
     if (timeStr != nil) {
         CGFloat dataTime = [timeStr doubleValue];
         NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
-        timeValue = [dataDate timeIntervalSinceNow];
+        NSTimeInterval currentTime = [[NSDate date] timeIntervalSinceNow];
+        timeValue = currentTime - [dataDate timeIntervalSinceNow];
     }else{
-        timeValue = 400;
+        timeValue = 700;
     }
 
     NSLog(@"时间差为---%f", timeValue);
@@ -89,6 +90,7 @@
     NSDictionary *infoDic = [NSDictionary dictionaryWithObject:errorString forKey:@"DisConnect"];
     UILocalNotification *backgroudMsg = [[UILocalNotification alloc] init];
     if (backgroudMsg) {
+        NSLog(@"发送通知");
         backgroudMsg.timeZone = [NSTimeZone defaultTimeZone];
         backgroudMsg.alertBody = errorString;
 //        backgroudMsg.alertAction = dict[@"phone"];

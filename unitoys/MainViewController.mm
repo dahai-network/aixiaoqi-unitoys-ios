@@ -18,6 +18,12 @@
 #import "BlueToothDataManager.h"
 #import "UNDataTools.h"
 
+#import "UNConvertFormatTool.h"
+#import "UNPresentImageView.h"
+#import "ConvenienceServiceController.h"
+#import "UNPushKitMessageManager.h"
+#import "VerificationPhoneController.h"
+
 typedef enum : NSUInteger {
     DEFULTCOLOR,
     BLACKCOLOR,
@@ -108,7 +114,73 @@ typedef enum : NSUInteger {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.selectedViewController = self.childViewControllers[1];
     });
+    
+    
+    [self showPresentImageView];
 }
+
+- (void)showPresentImageView
+{
+    BOOL isPresent = NO;
+    NSString *localDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"PresentConvenienceTime"];
+    
+    NSDate *currentDate = [NSDate date];
+    NSString *currentDateStr = [UNConvertFormatTool dateStringYMDFromDate:currentDate];
+    if (localDate) {
+        if (![localDate isEqualToString:currentDateStr]) {
+            isPresent = YES;
+        }
+    }else{
+        isPresent = YES;
+        //        [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+    }
+    
+    isPresent = YES;
+    if (isPresent) {
+        //        self.checkToken = YES;
+        //        [self getBasicHeader];
+        //        [SSNetworkRequest getRequest:@"" params:nil success:^(id responseObj) {
+        //            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+        //                NSString *imageUrl = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494397069257&di=8ddbdaf3fc2d0149880be9abd985cb30&imgtype=0&src=http%3A%2F%2Fimg27.51tietu.net%2Fpic%2F2017-011500%2F20170115001256mo4qcbhixee164299.jpg";
+        //                NSString *linkUrl = @"aaaaa";
+        //                if (imageUrl) {
+        //                    //如果有数据则出现
+        //                    [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
+        //                        NSLog(@"弹出福利详情界面---%@", linkUrl);
+        //                    }];
+        //                [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+        //                }
+        //            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+        //                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        //            }
+        //        } failure:^(id dataObj, NSError *error) {
+        //            HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
+        //            NSLog(@"啥都没：%@",[error description]);
+        //        } headers:self.headers];
+        
+        NSString *imageUrl = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494397069257&di=8ddbdaf3fc2d0149880be9abd985cb30&imgtype=0&src=http%3A%2F%2Fimg27.51tietu.net%2Fpic%2F2017-011500%2F20170115001256mo4qcbhixee164299.jpg";
+        NSString *linkUrl = @"aaaaa";
+        if (imageUrl) {
+            //如果有数据则出现
+            kWeakSelf
+            [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
+                NSLog(@"弹出福利详情界面---%@", linkUrl);
+                [weakSelf presentConvenienceServiceVC];
+            }];
+            [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+        }
+    }
+}
+
+- (void)presentConvenienceServiceVC
+{
+    if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
+        ConvenienceServiceController *convenienceVC = [[ConvenienceServiceController alloc] init];
+        [self.selectedViewController pushViewController:convenienceVC animated:YES];
+    }
+}
+
+
 
 //- (void)viewWillAppear:(BOOL)animated {
 //    [super viewWillAppear:animated];
@@ -141,6 +213,18 @@ typedef enum : NSUInteger {
 //    } else {
 //        self.registProgress = nil;
 //    }
+    
+    if ([sender.object isEqualToString:HOMESTATUE_SIGNALSTRONG]) {
+        if ([UNPushKitMessageManager shareManager].iccidString) {
+            NSString *phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
+            if (!phoneStr) {
+                if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
+                    VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
+                    [self.selectedViewController presentViewController:verificationVc animated:YES completion:nil];
+                }
+            }
+        }
+    }
 }
 
 - (void)networkNotUse:(NSNotification *)sender {

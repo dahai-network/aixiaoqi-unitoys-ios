@@ -11,6 +11,9 @@
 #import "UITableView+RegisterNib.h"
 #import "ConvenienceServiceCell.h"
 #import "ConvenienceServiceDetailController.h"
+#import "ReceivePhoneTimeController.h"
+#import "UNPushKitMessageManager.h"
+#import "VerificationPhoneController.h"
 
 @interface ConvenienceServiceController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -111,11 +114,22 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSDictionary *dict = self.cellDatas[indexPath.row];
     if ([dict[@"type"] isEqualToString:@"1"]) {
-        NSLog(@"通话时长");
+        ReceivePhoneTimeController *receiveVc = [[ReceivePhoneTimeController alloc] init];
+        [self.navigationController pushViewController:receiveVc animated:YES];
     }else if ([dict[@"type"] isEqualToString:@"2"]){
-        NSLog(@"省心服务");
-        ConvenienceServiceDetailController *convenienceDetailVc = [[ConvenienceServiceDetailController alloc] init];
-        [self.navigationController pushViewController:convenienceDetailVc animated:YES];
+        NSString *phoneStr;
+        if ([UNPushKitMessageManager shareManager].iccidString) {
+            phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
+        }
+        if (!phoneStr) {
+            //验证号码
+            VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
+            [self.navigationController presentViewController:verificationVc animated:YES completion:nil];
+        }else{
+            NSLog(@"省心服务");
+            ConvenienceServiceDetailController *convenienceDetailVc = [[ConvenienceServiceDetailController alloc] init];
+            [self.navigationController pushViewController:convenienceDetailVc animated:YES];
+        }
     }
 }
 
