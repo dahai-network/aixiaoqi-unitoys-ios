@@ -40,12 +40,14 @@
 @property (nonatomic, assign) BOOL isHasNotActiveTip;
 //是否有固件升级提示
 @property (nonatomic, assign) BOOL isHasFirmwareUpdateTip;
+//是否已弹出验证界面
+@property (nonatomic, assign) BOOL isShowVerificationVc;
+
+@property (nonatomic, copy) NSDictionary *normalHeaders;
 
 @property (nonatomic, assign) CGFloat tipStatusHeight;
 @property (nonatomic, assign) CGFloat pageViewHeight;
 
-
-
-
++ (BOOL)isSaveTodayDateWithKey:(NSString *)key TodayString:(void(^)(NSString *todayStr))block;
 
 @end

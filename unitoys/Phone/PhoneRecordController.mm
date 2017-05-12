@@ -31,7 +31,9 @@
 #import "HLDragView.h"
 #import "ContactsCallDetailsController.h"
 #import "UNDataTools.h"
-
+#import "ServiceRecommendView.h"
+#import "ConvenienceServiceController.h"
+#import "MainViewController.h"
 
 @interface PhoneRecordController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -62,7 +64,6 @@
 @property (nonatomic, copy) NSString *currentCallPhone;
 
 @property (nonatomic, strong) UILabel *noDataLabel;
-
 @end
 
 static NSString *searchContactsCellID = @"SearchContactsCell";
@@ -1045,7 +1046,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)makeUnitysCallAction:(NSNotification *)notification {
     NSString *phoneNumber = notification.object;
-    
     if (phoneNumber) {
         [self callUnitysNumber:phoneNumber];
     }
@@ -1152,7 +1152,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     
                     NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
                     NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
-                    [db executeUpdate:[NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]];
+                    BOOL isUpdate = [db executeUpdate:[NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]];
+                    if (!isUpdate) {
+                        NSLog(@"更新通话记录接通状态失败");
+                    }
                     //                    BOOL isSuccess = [db executeUpdate:@"UPDATE CallRecord set datas='%@' calltime='%@' where dataid ='%@'", jsonStr2, timestemp, dataId];
                     //                    if (!isSuccess) {
                     //                        NSLog(@"更新通话记录失败！%@",dicPhoneRecord);
@@ -1604,7 +1607,58 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         return;
     }
+    __block NSString *currentDateStr;
+    BOOL isCallPhone = NO;
+    BOOL isHasPackage = NO;
+    //判断是否有流量套餐
+//    isHasPackage = YES;
     
+    if (isHasPackage) {
+        isCallPhone = YES;
+    }else{
+        //判断是否忽略今天提示(查询是否存储过今天的时间)
+        isCallPhone = [UNDataTools isSaveTodayDateWithKey:@"HiddenTodayTipWithCallPhone" TodayString:^(NSString *todayStr) {
+            currentDateStr = todayStr;
+        }];
+    }
+    
+    //测试手动设置为NO
+    isCallPhone = NO;
+    if (isCallPhone) {
+        [self showCallPhoneVc:strNumber];
+    }else{
+        [self showTipViewWithCurrentDate:currentDateStr];
+    }
+}
+
+//弹出提示
+- (void)showTipViewWithCurrentDate:(NSString *)currentDateStr
+{
+    //如果点击按钮后不再提示为选中,存储今日时间
+    kWeakSelf
+    [ServiceRecommendView shareServiceRecommendViewWithTitle:@"推荐使用爱小器0元话费体验包,向高额话费说拜拜" leftString:@"下次" rightString:@"去领取" buttnTap:^(NSInteger index, BOOL isNoTip) {
+        if (isNoTip) {
+            [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"HiddenTodayTipWithCallPhone"];
+        }
+        if (index == 1) {
+            [weakSelf showConvenienceVc];
+        }
+    }];
+}
+
+- (void)showConvenienceVc
+{
+    ConvenienceServiceController *convenienceVC = [[ConvenienceServiceController alloc] init];
+    if ([self.nav.parentViewController isKindOfClass:[MainViewController class]]) {
+        MainViewController *mainVc = (MainViewController *)self.nav.parentViewController;
+        if ([mainVc.selectedViewController isKindOfClass:[UINavigationController class]]) {
+            [mainVc.selectedViewController pushViewController:convenienceVC animated:YES];
+        }
+    }
+}
+
+- (void)showCallPhoneVc:(NSString *)strNumber
+{
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     if (storyboard) {
         if (strNumber) {

@@ -9,6 +9,7 @@
 #import "VerificationPhoneController.h"
 #import "UNPushKitMessageManager.h"
 #import "NSString+Addition.h"
+#import "UNDataTools.h"
 
 @interface VerificationPhoneController ()
 @property (weak, nonatomic) IBOutlet UITextField *phoneTextField;
@@ -16,13 +17,29 @@
 
 @implementation VerificationPhoneController
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSLog(@"viewWillAppear--VerificationPhoneController");
+    [UNDataTools sharedInstance].isShowVerificationVc = YES;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    NSLog(@"viewDidDisappear--VerificationPhoneController");
+    [UNDataTools sharedInstance].isShowVerificationVc = NO;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"手机号验证";
     self.navigationController.navigationBar.barTintColor = DefultColor;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor]};
     self.navigationController.navigationBar.translucent = NO;
-    
-    self.phoneTextField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, 1)];
+    self.phoneTextField.leftViewMode = UITextFieldViewModeAlways;
+    self.phoneTextField.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, self.phoneTextField.un_height)];
 //    self.navigationItem.leftBarButtonItem = nil;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon_close"] style:UIBarButtonItemStyleDone target:self action:@selector(dismissVc)];
 }
@@ -56,13 +73,14 @@
 
 - (void)showAlertView:(NSString *)title cancelAction:(void(^)())cancel
 {
-    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:title message:title preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         if (cancel) {
             cancel();
         }
     }];
     [alertVc addAction:cancelAction];
+    [self presentViewController:alertVc animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {

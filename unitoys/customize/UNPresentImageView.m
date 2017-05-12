@@ -61,7 +61,6 @@
     CGFloat height = width / (561.0/691);
     
     _imageTapView = [[UIImageView alloc] init];
-    _imageTapView.backgroundColor = [UIColor lightGrayColor];
     _imageTapView.un_size = CGSizeMake(width, height);
     _imageTapView.userInteractionEnabled = YES;
     [_imageTapView sd_setImageWithURL:[NSURL URLWithString:self.imageUrl] placeholderImage:nil];

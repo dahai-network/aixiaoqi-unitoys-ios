@@ -121,54 +121,43 @@ typedef enum : NSUInteger {
 
 - (void)showPresentImageView
 {
-    BOOL isPresent = NO;
-    NSString *localDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"PresentConvenienceTime"];
-    
-    NSDate *currentDate = [NSDate date];
-    NSString *currentDateStr = [UNConvertFormatTool dateStringYMDFromDate:currentDate];
-    if (localDate) {
-        if (![localDate isEqualToString:currentDateStr]) {
-            isPresent = YES;
-        }
-    }else{
-        isPresent = YES;
-        //        [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
-    }
-    
+//    BOOL isPresent = NO;
+//    NSString *localDate = [[NSUserDefaults standardUserDefaults] objectForKey:@"PresentConvenienceTime"];
+//    NSDate *currentDate = [NSDate date];
+//    NSString *currentDateStr = [UNConvertFormatTool dateStringYMDFromDate:currentDate];
+//    if (localDate) {
+//        if (![localDate isEqualToString:currentDateStr]) {
+//            isPresent = YES;
+//        }
+//    }else{
+//        isPresent = YES;
+//        //        [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+//    }
+    __block NSString *currentDateStr;
+    BOOL isPresent = [UNDataTools isSaveTodayDateWithKey:@"PresentConvenienceTime" TodayString:^(NSString *todayStr) {
+        currentDateStr = todayStr;
+    }];
     isPresent = YES;
     if (isPresent) {
-        //        self.checkToken = YES;
-        //        [self getBasicHeader];
-        //        [SSNetworkRequest getRequest:@"" params:nil success:^(id responseObj) {
-        //            if ([[responseObj objectForKey:@"status"] intValue]==1) {
-        //                NSString *imageUrl = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494397069257&di=8ddbdaf3fc2d0149880be9abd985cb30&imgtype=0&src=http%3A%2F%2Fimg27.51tietu.net%2Fpic%2F2017-011500%2F20170115001256mo4qcbhixee164299.jpg";
-        //                NSString *linkUrl = @"aaaaa";
-        //                if (imageUrl) {
-        //                    //如果有数据则出现
-        //                    [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
-        //                        NSLog(@"弹出福利详情界面---%@", linkUrl);
-        //                    }];
-        //                [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
-        //                }
-        //            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-        //                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        //            }
-        //        } failure:^(id dataObj, NSError *error) {
-        //            HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-        //            NSLog(@"啥都没：%@",[error description]);
-        //        } headers:self.headers];
-        
-        NSString *imageUrl = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494397069257&di=8ddbdaf3fc2d0149880be9abd985cb30&imgtype=0&src=http%3A%2F%2Fimg27.51tietu.net%2Fpic%2F2017-011500%2F20170115001256mo4qcbhixee164299.jpg";
-        NSString *linkUrl = @"aaaaa";
-        if (imageUrl) {
-            //如果有数据则出现
-            kWeakSelf
-            [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
-                NSLog(@"弹出福利详情界面---%@", linkUrl);
-                [weakSelf presentConvenienceServiceVC];
-            }];
-            [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
-        }
+        [SSNetworkRequest getRequest:apiPushContentGet params:nil success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                NSString *imageUrl = responseObj[@"data"][@"list"][0][@"Image"];
+                NSLog(@"imageUrl---%@",imageUrl);
+                if (imageUrl) {
+                    kWeakSelf
+                    //如果有数据则出现
+                    [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
+                        [weakSelf presentConvenienceServiceVC];
+                    }];
+                [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+                }
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }
+        } failure:^(id dataObj, NSError *error) {
+            HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
+            NSLog(@"啥都没：%@",[error description]);
+        } headers:[UNDataTools sharedInstance].normalHeaders];
     }
 }
 
@@ -214,14 +203,16 @@ typedef enum : NSUInteger {
 //        self.registProgress = nil;
 //    }
     
-    if ([sender.object isEqualToString:HOMESTATUE_SIGNALSTRONG]) {
+    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         if ([UNPushKitMessageManager shareManager].iccidString) {
             NSString *phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
             if (!phoneStr) {
                 if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
-                    VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
-                    navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
-                    [self.navigationController presentViewController:nav animated:YES completion:nil];
+                    if (![UNDataTools sharedInstance].isShowVerificationVc) {
+                        VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
+                        navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
+                        [self.selectedViewController presentViewController:nav animated:YES completion:nil];
+                    }
                 }
             }
         }

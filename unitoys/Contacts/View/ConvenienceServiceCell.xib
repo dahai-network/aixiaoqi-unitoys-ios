@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,17 +16,19 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="194"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="375" height="194"/>
+                <rect key="frame" x="0.0" y="0.0" width="375" height="193.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rRf-wc-XTx">
-                        <rect key="frame" x="15" y="10" width="345" height="183.5"/>
+                        <rect key="frame" x="15" y="10" width="345" height="184.5"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="rRf-wc-XTx" secondAttribute="height" multiplier="691:370" id="j7B-95-M7J"/>
+                        </constraints>
                     </imageView>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="rRf-wc-XTx" secondAttribute="trailing" constant="15" id="EIE-et-nQp"/>
-                    <constraint firstAttribute="bottom" secondItem="rRf-wc-XTx" secondAttribute="bottom" id="gFz-rO-7qk"/>
                     <constraint firstItem="rRf-wc-XTx" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="kfB-Uo-gR1"/>
                     <constraint firstItem="rRf-wc-XTx" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="rTC-ST-vtN"/>
                 </constraints>
@@ -34,7 +37,7 @@
             <connections>
                 <outlet property="bgimageView" destination="rRf-wc-XTx" id="AdS-9u-NF0"/>
             </connections>
-            <point key="canvasLocation" x="16" y="37"/>
+            <point key="canvasLocation" x="-245" y="33"/>
         </tableViewCell>
     </objects>
 </document>

@@ -18,6 +18,7 @@
 
 @interface ConvenienceServiceController ()<UITableViewDelegate, UITableViewDataSource>
 
+@property (nonatomic, copy) NSArray *serverDatas;
 @property (nonatomic, copy) NSArray *cellDatas;
 @property (nonatomic, strong) UITableView *tableView;
 
@@ -34,6 +35,14 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
     return _cellDatas;
 }
 
+- (NSArray *)serverDatas
+{
+    if (!_serverDatas) {
+        _serverDatas = [NSArray array];
+    }
+    return _serverDatas;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"省心服务";
@@ -44,30 +53,16 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
 {
     [self initTableView];
     [self initData];
-    [self.tableView reloadData];
 }
-
 //初始化展示数据
 - (void)initData
 {
-    self.cellDatas = @[
-                       @{
-                           @"imageUrl":@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494397069257&di=8ddbdaf3fc2d0149880be9abd985cb30&imgtype=0&src=http%3A%2F%2Fimg27.51tietu.net%2Fpic%2F2017-011500%2F20170115001256mo4qcbhixee164299.jpg",
-                           @"type":@"1",
-                           },
-                       @{
-                           @"imageUrl":@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1494397069257&di=8ddbdaf3fc2d0149880be9abd985cb30&imgtype=0&src=http%3A%2F%2Fimg27.51tietu.net%2Fpic%2F2017-011500%2F20170115001256mo4qcbhixee164299.jpg",
-                           @"type":@"2",
-                           },
-                       ];
-    [self.tableView reloadData];
-    
-    
     self.checkToken = YES;
     [self getBasicHeader];
-    [SSNetworkRequest getRequest:@"" params:nil success:^(id responseObj) {
+    [SSNetworkRequest getRequest:apiPackageGetRelaxed params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            self.cellDatas = @[];
+            NSLog(@"%@", responseObj);
+            self.cellDatas = responseObj[@"data"][@"list"];
             [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -86,7 +81,7 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
     self.tableView.delegate = self;
     self.tableView.tableFooterView = [UIView new];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.rowHeight = 194;
+    self.tableView.rowHeight = 10 + (kScreenWidthValue - 30)/(691.0/370);
     [self.view addSubview:self.tableView];
     [self.tableView registerNibWithNibId:convenienceServiceCellID];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -104,9 +99,14 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSDictionary *dict = self.cellDatas[indexPath.row];
     ConvenienceServiceCell *cell = [tableView dequeueReusableCellWithIdentifier:convenienceServiceCellID];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    [cell.bgimageView sd_setImageWithURL:[NSURL URLWithString:self.cellDatas[indexPath.row][@"imageUrl"]] placeholderImage:nil];
+    if ([dict[@"Haveed"] boolValue]) {
+        [cell.bgimageView sd_setImageWithURL:[NSURL URLWithString:dict[@"PicHaveed"]] placeholderImage:nil];
+    }else{
+        [cell.bgimageView sd_setImageWithURL:[NSURL URLWithString:dict[@"Pic"]] placeholderImage:nil];
+    }
     return cell;
 }
 
@@ -114,10 +114,13 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSDictionary *dict = self.cellDatas[indexPath.row];
-    if ([dict[@"type"] isEqualToString:@"1"]) {
+    if ([dict[@"Haveed"] boolValue]) {
+        return;
+    }
+    if ([dict[@"Category"] isEqualToString:@"4"]) {
         ReceivePhoneTimeController *receiveVc = [[ReceivePhoneTimeController alloc] init];
         [self.navigationController pushViewController:receiveVc animated:YES];
-    }else if ([dict[@"type"] isEqualToString:@"2"]){
+    }else if ([dict[@"Category"] isEqualToString:@"5"]){
         NSString *phoneStr;
         if ([UNPushKitMessageManager shareManager].iccidString) {
             phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
@@ -135,10 +138,8 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
     }
 }
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
-
 
 @end

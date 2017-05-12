@@ -140,6 +140,7 @@
 		3C388A8C1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C388A8A1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib */; };
 		3C388A901EC4624B00A04BA8 /* VerificationPhoneController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A8E1EC4624B00A04BA8 /* VerificationPhoneController.m */; };
 		3C388A911EC4624B00A04BA8 /* VerificationPhoneController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C388A8F1EC4624B00A04BA8 /* VerificationPhoneController.xib */; };
+		3C388A941EC588E000A04BA8 /* ServiceRecommendView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A931EC588E000A04BA8 /* ServiceRecommendView.m */; };
 		3C3C0A201EC2A1FC000D2F59 /* UNPresentImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */; };
 		3C4863601E8CF111006FD87C /* number_location.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3C48635F1E8CF111006FD87C /* number_location.zip */; };
 		3C4A07761E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07751E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m */; };
@@ -644,6 +645,8 @@
 		3C388A8D1EC4624B00A04BA8 /* VerificationPhoneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerificationPhoneController.h; sourceTree = "<group>"; };
 		3C388A8E1EC4624B00A04BA8 /* VerificationPhoneController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerificationPhoneController.m; sourceTree = "<group>"; };
 		3C388A8F1EC4624B00A04BA8 /* VerificationPhoneController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerificationPhoneController.xib; sourceTree = "<group>"; };
+		3C388A921EC588E000A04BA8 /* ServiceRecommendView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServiceRecommendView.h; sourceTree = "<group>"; };
+		3C388A931EC588E000A04BA8 /* ServiceRecommendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServiceRecommendView.m; sourceTree = "<group>"; };
 		3C3C0A1E1EC2A1FC000D2F59 /* UNPresentImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPresentImageView.h; sourceTree = "<group>"; };
 		3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPresentImageView.m; sourceTree = "<group>"; };
 		3C48635F1E8CF111006FD87C /* number_location.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = number_location.zip; sourceTree = "<group>"; };
@@ -1662,6 +1665,8 @@
 				3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */,
 				3C3C0A1E1EC2A1FC000D2F59 /* UNPresentImageView.h */,
 				3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */,
+				3C388A921EC588E000A04BA8 /* ServiceRecommendView.h */,
+				3C388A931EC588E000A04BA8 /* ServiceRecommendView.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -2648,6 +2653,7 @@
 				04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */,
 				043965CD1E07ED8100B67989 /* AddressBookManager.m in Sources */,
 				3CC3E0A31E63BE2500A62F8C /* AbroadMessageController.m in Sources */,
+				3C388A941EC588E000A04BA8 /* ServiceRecommendView.m in Sources */,
 				046BF7001E27A544008C10C7 /* YBPopupMenu.m in Sources */,
 				3C8CFA6B1E55988B0035A460 /* UCallPhoneButton.m in Sources */,
 				3C4A07861E9CD85800A6DDA9 /* CallDetailsNameCell.m in Sources */,

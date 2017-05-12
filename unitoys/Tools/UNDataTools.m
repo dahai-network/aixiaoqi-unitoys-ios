@@ -9,6 +9,8 @@
 #import "UNDataTools.h"
 #import "global.h"
 #import "UNDatabaseTools.h"
+#import <CommonCrypto/CommonDigest.h>
+#import "UNConvertFormatTool.h"
 
 @implementation UNDataTools
 
@@ -115,5 +117,52 @@
     return [formatter stringFromDate:date];
 }
 
+- (NSDictionary *)normalHeaders
+{
+    if (!_normalHeaders) {
+        //进行Header的构造，partner，Expries，Sign，TOKEN
+        NSMutableDictionary *headers = [[NSMutableDictionary alloc] init];
+        [headers setObject:@"2006808" forKey:@"partner"];
+        NSString *timestemp = @"1471316792";
+        [headers setObject:timestemp forKey:@"expires"];
+        timestemp = [NSString stringWithFormat:@"2006808%@BAS123!@#FD1A56K",timestemp];
+        [headers setObject:[self md5:timestemp] forKey:@"sign"];
+            NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+        if (userdata) {
+            [headers setObject:[userdata objectForKey:@"Token"] forKey:@"TOKEN"];
+        }
+        _normalHeaders = headers;
+    }
+    return _normalHeaders;
+}
+
+- (NSString *)md5:(NSString *)str
+{
+    const char *cStr = [str UTF8String];
+    unsigned char result[16];
+    CC_MD5(cStr, strlen(cStr), result); // This is the md5 call
+    return [NSString stringWithFormat:
+            @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15]
+            ];
+}
+
++ (BOOL)isSaveTodayDateWithKey:(NSString *)key TodayString:(void(^)(NSString *todayStr))block
+{
+    NSString *localDate = [[NSUserDefaults standardUserDefaults] objectForKey:key];
+    
+    NSDate *currentDate = [NSDate date];
+    NSString *currentDateStr = [UNConvertFormatTool dateStringYMDFromDate:currentDate];
+    if (block) {
+        block(currentDateStr);
+    }
+    if ([localDate isEqualToString:currentDateStr]) {
+        return YES;
+    }
+    return NO;
+}
 
 @end

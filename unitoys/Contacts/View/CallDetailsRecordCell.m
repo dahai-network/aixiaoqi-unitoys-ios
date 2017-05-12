@@ -26,10 +26,21 @@
 {
     _cellDatas = cellDatas;
     if ([cellDatas[@"calltype"] isEqualToString:@"去电"]) {
+        self.iconImageView.hidden = NO;
+        self.timelabel.textColor = UIColorFromRGB(0x333333);
         self.iconImageView.image = [UIImage imageNamed:@"to_phone"];
     }else{
-        self.iconImageView.image = [UIImage imageNamed:@"from_phone"];
+        if ([cellDatas[@"status"] intValue] == 0) {
+            self.iconImageView.hidden = YES;
+            self.timelabel.textColor = [UIColor redColor];
+        }else{
+            self.iconImageView.hidden = NO;
+            self.timelabel.textColor = UIColorFromRGB(0x333333);
+            self.iconImageView.image = [UIImage imageNamed:@"from_phone"];
+        }
     }
+    
+
     self.timelabel.text = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:cellDatas[@"calltime"]];
 }
 

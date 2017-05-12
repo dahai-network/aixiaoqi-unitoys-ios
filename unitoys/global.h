@@ -121,6 +121,9 @@
 //使用签名，查询套餐详情
 #define apiPackageByID defaultHost@"api/Package/GetByID"
 
+//使用签名，查询轻松服务
+#define apiPackageGetRelaxed defaultHost@"api/Package/GetRelaxed"
+
 //使用签名，用户反馈
 #define apiFeedback defaultHost@"api/Feedback/AddFeedback"
 
@@ -260,6 +263,9 @@
 
 //查询黑名单列表
 #define apiBlackListGet defaultHost@"api/BlackList/Get"
+
+//查询黑名单列表
+#define apiPushContentGet defaultHost@"api/PushContent/Get"
 
 //环形进度条密集度系数
 #define AnnularProgressBar @"60"
