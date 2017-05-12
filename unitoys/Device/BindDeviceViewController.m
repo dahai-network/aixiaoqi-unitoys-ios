@@ -66,6 +66,7 @@
     if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBeingRegisting) {
         self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
     }
+    self.lblStatue.text = [BlueToothDataManager shareManager].statuesTitleString;
     if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
         //正在注册
         NSString *senderStr = [BlueToothDataManager shareManager].stepNumber;
@@ -73,7 +74,6 @@
         //开启动画
         [self startTimerAction];
     }
-    self.lblStatue.text = [BlueToothDataManager shareManager].statuesTitleString;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

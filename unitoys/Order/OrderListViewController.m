@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *isEndButton;//已结束
 @property (strong, nonatomic) IBOutlet UIView *footView;
 @property (weak, nonatomic) IBOutlet UILabel *noDataLabel;
+@property (nonatomic, copy) NSString *statueStr;//记录当前状态
 
 @end
 
@@ -48,13 +49,14 @@
     
     self.tableView.tableFooterView = self.footView;
     self.tableView.rowHeight = 60;
-    [self checkOrderListWithOrderStatus:@"0"];
+    self.statueStr = @"0";
+    [self checkOrderListWithOrderStatus:self.statueStr];
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
 
 }
 
 - (void)checkOrderListForNotAct {
-    [self checkOrderListWithOrderStatus:@"0"];
+    [self checkOrderListWithOrderStatus:self.statueStr];
 }
 
 - (void)rightButtonClick
@@ -69,7 +71,8 @@
     [self.activitedButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [self.isEndButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
-    [self checkOrderListWithOrderStatus:@"1"];
+    self.statueStr = @"1";
+    [self checkOrderListWithOrderStatus:self.statueStr];
 }
 
 #pragma mark 未激活
@@ -77,7 +80,8 @@
     [self.activitedButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
     [self.isEndButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
-    [self checkOrderListWithOrderStatus:@"0"];
+    self.statueStr = @"0";
+    [self checkOrderListWithOrderStatus:self.statueStr];
 }
 
 #pragma mark 已结束
@@ -85,7 +89,8 @@
     [self.activitedButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [self.isEndButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
-    [self checkOrderListWithOrderStatus:@"2"];
+    self.statueStr = @"2";
+    [self checkOrderListWithOrderStatus:self.statueStr];
 }
 
 - (void)markButtonAction

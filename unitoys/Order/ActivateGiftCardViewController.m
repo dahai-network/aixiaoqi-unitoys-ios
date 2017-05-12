@@ -208,7 +208,11 @@
                 return 2;
                 break;
             default:
-                return 3;
+                if ([[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 0) {
+                    return 3;
+                } else {
+                    return 2;
+                }
                 break;
         }
     } else if (self.packageCategory == 1) {
@@ -359,17 +363,28 @@
             if (!self.secondCell) {
                 self.secondCell=[[NSBundle mainBundle] loadNibNamed:@"ActivateGiftCardTableViewCell" owner:nil options:nil][1];
             }
-            if (indexPath.row == 0) {
-                self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
-                self.secondCell.lblContent.text = self.dicOrderDetail[@"ExpireDays"];
-            } else if (indexPath.row == 1) {
-                self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"最晚激活日期");
-                self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"LastCanActivationDate"]];
+            if ([[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 0) {
+                if (indexPath.row == 0) {
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
+                    self.secondCell.lblContent.text = self.dicOrderDetail[@"ExpireDays"];
+                } else if (indexPath.row == 1) {
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"最晚激活日期");
+                    self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"LastCanActivationDate"]];
+                } else {
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
+                    [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue]];
+                }
+                return self.secondCell;
             } else {
-                self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
-                [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue]];
+                if (indexPath.row == 0) {
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
+                    self.secondCell.lblContent.text = self.dicOrderDetail[@"ExpireDays"];
+                } else {
+                    self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"套餐状态");
+                    [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue]];
+                }
+                return self.secondCell;
             }
-            return self.secondCell;
             break;
     }
 }

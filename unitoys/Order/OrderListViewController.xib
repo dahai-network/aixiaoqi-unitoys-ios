@@ -98,7 +98,7 @@
                 <constraint firstItem="YTk-Y6-GCk" firstAttribute="leading" secondItem="C0M-AQ-wph" secondAttribute="trailing" id="uf5-LH-xyf"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="-643.5" y="-272"/>
+            <point key="canvasLocation" x="-508" y="-254"/>
         </view>
         <view contentMode="scaleToFill" id="adS-P6-KS4">
             <rect key="frame" x="0.0" y="0.0" width="375" height="77"/>
