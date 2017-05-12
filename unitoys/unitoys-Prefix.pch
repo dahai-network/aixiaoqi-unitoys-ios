@@ -16,6 +16,7 @@
 #import "global.h"
 #import "UILabel+Extension.h"
 #import "UIView+Utils.h"
+#import "MJRefresh.h"
 
 //#define MAS_SHORTHAND
 //#import "Masonry/Masonry/Masonry.h"

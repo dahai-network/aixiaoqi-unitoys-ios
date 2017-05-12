@@ -18,19 +18,35 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self checkDataList];
+    [self goToRreshWithTableView:self.tableView];
     self.tableView.tableFooterView = [UIView new];
     // Do any additional setup after loading the view.
+}
+
+- (void)checkDataList {
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber", nil];
+//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@(self.CurrentPage),@"PageNumber", nil];
+    
+    NSMutableDictionary *info=[NSMutableDictionary new];
+    [info setValue:@(self.CurrentPage) forKey:@"PageNumber"];
+    [info setValue:@"20" forKey:@"PageSize"];
+
     
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
-    [SSNetworkRequest getRequest:apiGetUserBill params:params success:^(id responseObj) {
+    //    NSLog(@"表头：%@",self.headers);
+    [SSNetworkRequest getRequest:apiGetUserBill params:info success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            self.arrAmountDetail = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+            NSArray *listArr = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+            if (listArr.count) {
+                [self.dataSourceArray addObjectsFromArray:listArr];
+            } else {
+                [self.tableView.mj_footer endRefreshingWithNoMoreData];
+            }
+//            self.arrAmountDetail = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
             
             [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -40,11 +56,15 @@
             //数据请求失败
         }
         
-//        NSLog(@"查询到的套餐数据：%@",responseObj);
+        //        NSLog(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         //
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
+}
+
+-(void)requesetOfPage:(NSInteger)page{
+    [self checkDataList];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -69,41 +89,32 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.arrAmountDetail.count;
+    return self.dataSourceArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     //获取数据；
     AmountDetailCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AmountDetailCell"];
-    
-    NSDictionary *dicAmountDetail = [self.arrAmountDetail objectAtIndex:indexPath.row];
-    
-    cell.lblPayTips.text = [dicAmountDetail objectForKey:@"Descr"];
-    cell.lblCreateDate.text =  [self formatTime: [self convertDate:[[dicAmountDetail objectForKey:@"CreateDate"] stringValue]]];
-//    if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==1) {
-//        cell.lblAmount.text = [NSString stringWithFormat:@"+￥%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
-//        [cell.lblAmount setTextColor:[UIColor greenColor]];
-//    } else {
-//        cell.lblAmount.text = [NSString stringWithFormat:@"-￥%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
-//        [cell.lblAmount setTextColor:[UIColor blackColor]];
-//    }
-    if ([dicAmountDetail[@"IsHadDetail"] intValue] == 1) {
-        cell.imgDetail.hidden = NO;
-        cell.lblAmount.hidden = YES;
-        cell.userInteractionEnabled = YES;
-    } else {
-        cell.imgDetail.hidden = YES;
-        cell.lblAmount.hidden = NO;
-        cell.userInteractionEnabled = NO;
-    }
-    if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==1) {
-        cell.lblAmount.text = [NSString stringWithFormat:@"+%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
-//        [cell.lblAmount setTextColor:[UIColor greenColor]];
-    } else if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==0) {
-        cell.lblAmount.text = [NSString stringWithFormat:@"-%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
-//        [cell.lblAmount setTextColor:[UIColor blackColor]];
-    } else {
-        cell.lblAmount.text = [NSString stringWithFormat:@"%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+    if (self.dataSourceArray.count) {
+        NSDictionary *dicAmountDetail = [self.dataSourceArray objectAtIndex:indexPath.row];
+        cell.lblPayTips.text = [dicAmountDetail objectForKey:@"Descr"];
+        cell.lblCreateDate.text =  [self formatTime: [self convertDate:[[dicAmountDetail objectForKey:@"CreateDate"] stringValue]]];
+        if ([dicAmountDetail[@"IsHadDetail"] intValue] == 1) {
+            cell.imgDetail.hidden = NO;
+            cell.lblAmount.hidden = YES;
+            cell.userInteractionEnabled = YES;
+        } else {
+            cell.imgDetail.hidden = YES;
+            cell.lblAmount.hidden = NO;
+            cell.userInteractionEnabled = NO;
+        }
+        if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==1) {
+            cell.lblAmount.text = [NSString stringWithFormat:@"+%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+        } else if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==0) {
+            cell.lblAmount.text = [NSString stringWithFormat:@"-%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+        } else {
+            cell.lblAmount.text = [NSString stringWithFormat:@"%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+        }
     }
     return cell;
     
@@ -112,7 +123,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    NSDictionary *dicAmountDetail = [self.arrAmountDetail objectAtIndex:indexPath.row];
+    NSDictionary *dicAmountDetail = [self.dataSourceArray objectAtIndex:indexPath.row];
     if ([dicAmountDetail[@"IsHadDetail"] intValue] == 1) {
         HavePackageDetailViewController *havePackageDetailVC = [[HavePackageDetailViewController alloc] init];
         havePackageDetailVC.detailID = dicAmountDetail[@"ID"];

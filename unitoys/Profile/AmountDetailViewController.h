@@ -6,10 +6,10 @@
 //  Copyright © 2016年 sumars. All rights reserved.
 //
 
-#import "BaseTableController.h"
+#import "ZBTableRreshViewController.h"
 
-@interface AmountDetailViewController : BaseTableController
+@interface AmountDetailViewController : ZBTableRreshViewController
 
-@property (strong,nonatomic) NSMutableArray *arrAmountDetail;
+//@property (strong,nonatomic) NSMutableArray *arrAmountDetail;
 
 @end

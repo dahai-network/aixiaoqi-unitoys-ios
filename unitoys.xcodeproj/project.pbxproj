@@ -80,6 +80,8 @@
 		04AFE65E1EC4359F00B3BC8F /* HavePackageDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04AFE65C1EC4359F00B3BC8F /* HavePackageDetailViewController.xib */; };
 		04AFE6621EC435C800B3BC8F /* HavePackageDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE6601EC435C800B3BC8F /* HavePackageDetailTableViewCell.m */; };
 		04AFE6631EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04AFE6611EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib */; };
+		04AFE6661EC568D700B3BC8F /* ZBRreshViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE6651EC568D700B3BC8F /* ZBRreshViewController.m */; };
+		04AFE6691EC584D100B3BC8F /* ZBTableRreshViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE6681EC584D100B3BC8F /* ZBTableRreshViewController.m */; };
 		04B416511EB35365005E31C9 /* 3des.c in Sources */ = {isa = PBXBuildFile; fileRef = 04B4164F1EB35365005E31C9 /* 3des.c */; };
 		04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */; };
 		04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */; };
@@ -537,6 +539,10 @@
 		04AFE65F1EC435C800B3BC8F /* HavePackageDetailTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HavePackageDetailTableViewCell.h; sourceTree = "<group>"; };
 		04AFE6601EC435C800B3BC8F /* HavePackageDetailTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HavePackageDetailTableViewCell.m; sourceTree = "<group>"; };
 		04AFE6611EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HavePackageDetailTableViewCell.xib; sourceTree = "<group>"; };
+		04AFE6641EC568D700B3BC8F /* ZBRreshViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBRreshViewController.h; sourceTree = "<group>"; };
+		04AFE6651EC568D700B3BC8F /* ZBRreshViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBRreshViewController.m; sourceTree = "<group>"; };
+		04AFE6671EC584D100B3BC8F /* ZBTableRreshViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZBTableRreshViewController.h; sourceTree = "<group>"; };
+		04AFE6681EC584D100B3BC8F /* ZBTableRreshViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBTableRreshViewController.m; sourceTree = "<group>"; };
 		04B4164F1EB35365005E31C9 /* 3des.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 3des.c; sourceTree = "<group>"; };
 		04B416501EB35365005E31C9 /* 3des.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3des.h; sourceTree = "<group>"; };
 		04D5EED21E9B959D0015B8DA /* ProductCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductCollectionViewCell.h; sourceTree = "<group>"; };
@@ -2282,6 +2288,10 @@
 				95BAED641D87A5D4005A6402 /* BaseViewController.m */,
 				95334A601D8A83DD002C1CFB /* BaseTableController.h */,
 				95334A611D8A83DD002C1CFB /* BaseTableController.m */,
+				04AFE6641EC568D700B3BC8F /* ZBRreshViewController.h */,
+				04AFE6651EC568D700B3BC8F /* ZBRreshViewController.m */,
+				04AFE6671EC584D100B3BC8F /* ZBTableRreshViewController.h */,
+				04AFE6681EC584D100B3BC8F /* ZBTableRreshViewController.m */,
 				3C90355D1E9B53B700FF95C0 /* PageViewController.h */,
 				3C90355E1E9B53B700FF95C0 /* PageViewController.m */,
 				95334A631D8A83FF002C1CFB /* global.h */,
@@ -2647,6 +2657,7 @@
 				04472AB91E1CABD70042CEE1 /* ActivateGiftCardViewController.m in Sources */,
 				954D37EF1D8CD5A7002A8F46 /* RegisterViewController.m in Sources */,
 				95FB44211DC82B9C00B81A0D /* AmountDetailViewController.m in Sources */,
+				04AFE6661EC568D700B3BC8F /* ZBRreshViewController.m in Sources */,
 				3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */,
 				3C99A8A11EA9DF9C00C96BE7 /* UNPresentTool.m in Sources */,
 				0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */,
@@ -2716,6 +2727,7 @@
 				95CD33F31D9CE4F300EE5DD3 /* RSADataVerifier.m in Sources */,
 				95334A621D8A83DD002C1CFB /* BaseTableController.m in Sources */,
 				3C388A861EC4438300A04BA8 /* ConvenienceOrderCell.m in Sources */,
+				04AFE6691EC584D100B3BC8F /* ZBTableRreshViewController.m in Sources */,
 				95938D321D92C3C6008A0A21 /* CountryListViewController.m in Sources */,
 				95938D3B1D93ABB2008A0A21 /* PackageListViewController.m in Sources */,
 				954A87D61D98BBA700570843 /* JSONValueTransformer.m in Sources */,
