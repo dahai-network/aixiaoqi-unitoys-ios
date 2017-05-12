@@ -11,23 +11,16 @@
 
 @interface HavePackageDetailViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *detailArr;
 
 @end
 
 @implementation HavePackageDetailViewController
 
-- (NSMutableArray *)detailArr {
-    if (!_detailArr) {
-        self.detailArr = [NSMutableArray array];
-    }
-    return _detailArr;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"账单明细";
     [self checkDetail];
+    [self goToRreshWithTableView:self.tableView];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -35,14 +28,22 @@
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber", self.detailID, @"ParentID", nil];
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@(self.CurrentPage),@"PageNumber", self.detailID, @"ParentID", nil];
     
     [self getBasicHeader];
     //    NSLog(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiGetUserBill params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            self.detailArr = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+            NSArray *listArr = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+            if (listArr.count) {
+                [self.dataSourceArray addObjectsFromArray:listArr];
+                if (listArr.count < 20) {
+                    [self.tableView.mj_footer endRefreshingWithNoMoreData];
+                }
+            } else {
+                [self.tableView.mj_footer endRefreshingWithNoMoreData];
+            }
             
             [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -59,8 +60,12 @@
     } headers:self.headers];
 }
 
+-(void)requesetOfPage:(NSInteger)page{
+    [self checkDetail];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.detailArr.count;
+    return self.dataSourceArray.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -70,17 +75,19 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier=@"HavePackageDetailTableViewCell";
     HavePackageDetailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    NSDictionary *dicAmountDetail = [self.detailArr objectAtIndex:indexPath.row];
     if (!cell) {
         cell=[[[NSBundle mainBundle] loadNibNamed:@"HavePackageDetailTableViewCell" owner:nil options:nil] firstObject];
     }
-    cell.lblFirstStr.text = [dicAmountDetail objectForKey:@"Descr"];
-    if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==1) {
-        cell.lblSecondStr.text = [NSString stringWithFormat:@"+%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
-    } else if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==0) {
-        cell.lblSecondStr.text = [NSString stringWithFormat:@"-%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
-    } else {
-        cell.lblSecondStr.text = [NSString stringWithFormat:@"%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+    if (self.dataSourceArray.count) {
+        NSDictionary *dicAmountDetail = [self.dataSourceArray objectAtIndex:indexPath.row];
+        cell.lblFirstStr.text = [dicAmountDetail objectForKey:@"Descr"];
+        if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==1) {
+            cell.lblSecondStr.text = [NSString stringWithFormat:@"+%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+        } else if ([[dicAmountDetail objectForKey:@"BillType"] intValue]==0) {
+            cell.lblSecondStr.text = [NSString stringWithFormat:@"-%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+        } else {
+            cell.lblSecondStr.text = [NSString stringWithFormat:@"%.2f",[[dicAmountDetail objectForKey:@"Amount"] floatValue]];
+        }
     }
     return cell;
 }

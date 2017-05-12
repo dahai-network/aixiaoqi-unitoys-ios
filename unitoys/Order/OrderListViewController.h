@@ -7,11 +7,9 @@
 //  Copyright © 2016年 sumars. All rights reserved.
 //
 
-#import "BaseViewController.h"
+#import "ZBRreshViewController.h"
 
-@interface OrderListViewController : BaseViewController<NSURLConnectionDelegate>
-
-@property (strong,nonatomic) NSMutableArray *arrOrderData;
+@interface OrderListViewController : ZBRreshViewController<NSURLConnectionDelegate>
 
 //是否为境外套餐
 @property (nonatomic, assign) BOOL isAbroadMessage;

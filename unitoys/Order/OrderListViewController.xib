@@ -17,7 +17,6 @@
                 <outlet property="isEndButton" destination="YTk-Y6-GCk" id="HkE-dP-6fe"/>
                 <outlet property="noDataLabel" destination="39G-VC-Rwg" id="I5o-sm-p4f"/>
                 <outlet property="notActivitedButton" destination="C0M-AQ-wph" id="MyO-if-7pu"/>
-                <outlet property="sectionView" destination="xwq-3G-yS9" id="JhB-P6-Af2"/>
                 <outlet property="tableView" destination="gqw-ac-ehZ" id="iRh-KJ-owt"/>
                 <outlet property="view" destination="iN0-l3-epB" id="Dyj-mo-hvE"/>
             </connections>
@@ -28,77 +27,79 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="gqw-ac-ehZ">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                    <rect key="frame" x="0.0" y="50" width="375" height="617"/>
                     <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="4wa-Rb-y1Z"/>
                         <outlet property="delegate" destination="-1" id="POj-f1-Hak"/>
                     </connections>
                 </tableView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h3L-NN-ddn">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aeN-zo-84P">
+                            <rect key="frame" x="0.0" y="0.0" width="125" height="40"/>
+                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <state key="normal" title="已激活">
+                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="activitedAction:" destination="-1" eventType="touchUpInside" id="ydJ-7x-59i"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C0M-AQ-wph">
+                            <rect key="frame" x="125" y="0.0" width="125" height="40"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <state key="normal" title="未激活">
+                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="notActivitedAction:" destination="-1" eventType="touchUpInside" id="jAH-Fx-0tb"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YTk-Y6-GCk">
+                            <rect key="frame" x="250" y="0.0" width="125" height="40"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <state key="normal" title="已结束">
+                                <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="isEndAction:" destination="-1" eventType="touchUpInside" id="tbr-ni-fMX"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="C0M-AQ-wph" firstAttribute="top" secondItem="aeN-zo-84P" secondAttribute="top" id="4g9-NX-84B"/>
+                        <constraint firstItem="YTk-Y6-GCk" firstAttribute="width" secondItem="aeN-zo-84P" secondAttribute="width" id="CFT-QG-nlS"/>
+                        <constraint firstItem="YTk-Y6-GCk" firstAttribute="leading" secondItem="C0M-AQ-wph" secondAttribute="trailing" id="CVc-16-Grh"/>
+                        <constraint firstAttribute="height" constant="50" id="DCU-Zd-kk9"/>
+                        <constraint firstItem="aeN-zo-84P" firstAttribute="top" secondItem="h3L-NN-ddn" secondAttribute="top" id="G2c-qy-al2"/>
+                        <constraint firstItem="C0M-AQ-wph" firstAttribute="width" secondItem="aeN-zo-84P" secondAttribute="width" id="Qjk-SZ-yrN"/>
+                        <constraint firstItem="C0M-AQ-wph" firstAttribute="leading" secondItem="aeN-zo-84P" secondAttribute="trailing" id="hsL-LA-9oc"/>
+                        <constraint firstAttribute="bottom" secondItem="aeN-zo-84P" secondAttribute="bottom" constant="10" id="nyY-Qg-CdX"/>
+                        <constraint firstItem="aeN-zo-84P" firstAttribute="width" secondItem="h3L-NN-ddn" secondAttribute="width" multiplier="1:3" id="qwU-2a-EQ9"/>
+                        <constraint firstItem="YTk-Y6-GCk" firstAttribute="height" secondItem="aeN-zo-84P" secondAttribute="height" id="rxX-cK-ugX"/>
+                        <constraint firstItem="C0M-AQ-wph" firstAttribute="height" secondItem="aeN-zo-84P" secondAttribute="height" id="vxI-Qb-VTX"/>
+                        <constraint firstItem="aeN-zo-84P" firstAttribute="leading" secondItem="h3L-NN-ddn" secondAttribute="leading" id="yY6-m7-e2U"/>
+                        <constraint firstItem="YTk-Y6-GCk" firstAttribute="top" secondItem="aeN-zo-84P" secondAttribute="top" id="yaN-xY-Dbd"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="gqw-ac-ehZ" secondAttribute="trailing" id="0L7-wA-ADc"/>
                 <constraint firstItem="gqw-ac-ehZ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Hdn-on-Xuh"/>
-                <constraint firstItem="gqw-ac-ehZ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="eTX-XV-SOy"/>
+                <constraint firstItem="h3L-NN-ddn" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="cZU-5J-dH8"/>
+                <constraint firstItem="gqw-ac-ehZ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="50" id="eTX-XV-SOy"/>
                 <constraint firstAttribute="bottom" secondItem="gqw-ac-ehZ" secondAttribute="bottom" id="ijT-BN-jJb"/>
+                <constraint firstItem="h3L-NN-ddn" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="kgm-gA-WxQ"/>
+                <constraint firstAttribute="trailing" secondItem="h3L-NN-ddn" secondAttribute="trailing" id="yDz-jf-MVW"/>
             </constraints>
-        </view>
-        <view contentMode="scaleToFill" id="xwq-3G-yS9">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aeN-zo-84P">
-                    <rect key="frame" x="0.0" y="0.0" width="125" height="40"/>
-                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <state key="normal" title="已激活">
-                        <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </state>
-                    <connections>
-                        <action selector="activitedAction:" destination="-1" eventType="touchUpInside" id="ydJ-7x-59i"/>
-                    </connections>
-                </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="C0M-AQ-wph">
-                    <rect key="frame" x="125" y="0.0" width="125" height="40"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <state key="normal" title="未激活">
-                        <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </state>
-                    <connections>
-                        <action selector="notActivitedAction:" destination="-1" eventType="touchUpInside" id="jAH-Fx-0tb"/>
-                    </connections>
-                </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YTk-Y6-GCk">
-                    <rect key="frame" x="250" y="0.0" width="125" height="40"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <state key="normal" title="已结束">
-                        <color key="titleColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </state>
-                    <connections>
-                        <action selector="isEndAction:" destination="-1" eventType="touchUpInside" id="tbr-ni-fMX"/>
-                    </connections>
-                </button>
-            </subviews>
-            <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-            <constraints>
-                <constraint firstItem="YTk-Y6-GCk" firstAttribute="width" secondItem="aeN-zo-84P" secondAttribute="width" id="2Jn-Bj-kLC"/>
-                <constraint firstItem="aeN-zo-84P" firstAttribute="top" secondItem="xwq-3G-yS9" secondAttribute="top" id="65p-GT-XVv"/>
-                <constraint firstItem="YTk-Y6-GCk" firstAttribute="height" secondItem="aeN-zo-84P" secondAttribute="height" id="6Up-Hn-jZp"/>
-                <constraint firstItem="aeN-zo-84P" firstAttribute="width" secondItem="xwq-3G-yS9" secondAttribute="width" multiplier="1:3" id="CNL-Rt-d7H"/>
-                <constraint firstAttribute="bottom" secondItem="aeN-zo-84P" secondAttribute="bottom" constant="10" id="INx-vG-ard"/>
-                <constraint firstItem="C0M-AQ-wph" firstAttribute="width" secondItem="aeN-zo-84P" secondAttribute="width" id="Nl8-VJ-DeC"/>
-                <constraint firstItem="YTk-Y6-GCk" firstAttribute="top" secondItem="aeN-zo-84P" secondAttribute="top" id="gyT-kV-zhd"/>
-                <constraint firstItem="C0M-AQ-wph" firstAttribute="leading" secondItem="aeN-zo-84P" secondAttribute="trailing" id="jFM-Fy-Xvg"/>
-                <constraint firstItem="C0M-AQ-wph" firstAttribute="top" secondItem="aeN-zo-84P" secondAttribute="top" id="pWl-of-nlc"/>
-                <constraint firstItem="aeN-zo-84P" firstAttribute="leading" secondItem="xwq-3G-yS9" secondAttribute="leading" id="sZf-5T-Sq8"/>
-                <constraint firstItem="C0M-AQ-wph" firstAttribute="height" secondItem="aeN-zo-84P" secondAttribute="height" id="trr-3p-nUR"/>
-                <constraint firstItem="YTk-Y6-GCk" firstAttribute="leading" secondItem="C0M-AQ-wph" secondAttribute="trailing" id="uf5-LH-xyf"/>
-            </constraints>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="-508" y="-254"/>
+            <point key="canvasLocation" x="33.5" y="66.5"/>
         </view>
         <view contentMode="scaleToFill" id="adS-P6-KS4">
             <rect key="frame" x="0.0" y="0.0" width="375" height="77"/>

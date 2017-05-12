@@ -20,7 +20,7 @@
 
 @interface OrderListViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) IBOutlet UIView *sectionView;
+//@property (strong, nonatomic) IBOutlet UIView *sectionView;
 @property (weak, nonatomic) IBOutlet UIButton *activitedButton;//已激活
 @property (weak, nonatomic) IBOutlet UIButton *notActivitedButton;//未激活
 @property (weak, nonatomic) IBOutlet UIButton *isEndButton;//已结束
@@ -51,12 +51,20 @@
     self.tableView.rowHeight = 60;
     self.statueStr = @"0";
     [self checkOrderListWithOrderStatus:self.statueStr];
+    [self goToRreshWithTableView:self.tableView];
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
 
 }
 
-- (void)checkOrderListForNotAct {
+-(void)requesetOfPage:(NSInteger)page{
     [self checkOrderListWithOrderStatus:self.statueStr];
+}
+
+- (void)checkOrderListForNotAct {
+    [self.dataSourceArray removeAllObjects];
+    [self.tableView.mj_footer resetNoMoreData];
+    [self requesetOfPage:1];
+//    [self checkOrderListWithOrderStatus:self.statueStr];
 }
 
 - (void)rightButtonClick
@@ -72,7 +80,10 @@
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [self.isEndButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     self.statueStr = @"1";
-    [self checkOrderListWithOrderStatus:self.statueStr];
+//    [self checkOrderListWithOrderStatus:self.statueStr];
+    [self.dataSourceArray removeAllObjects];
+    [self.tableView.mj_footer resetNoMoreData];
+    [self requesetOfPage:1];
 }
 
 #pragma mark 未激活
@@ -81,7 +92,10 @@
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
     [self.isEndButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     self.statueStr = @"0";
-    [self checkOrderListWithOrderStatus:self.statueStr];
+//    [self checkOrderListWithOrderStatus:self.statueStr];
+    [self.dataSourceArray removeAllObjects];
+    [self.tableView.mj_footer resetNoMoreData];
+    [self requesetOfPage:1];
 }
 
 #pragma mark 已结束
@@ -90,7 +104,10 @@
     [self.notActivitedButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [self.isEndButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
     self.statueStr = @"2";
-    [self checkOrderListWithOrderStatus:self.statueStr];
+//    [self checkOrderListWithOrderStatus:self.statueStr];
+    [self.dataSourceArray removeAllObjects];
+    [self.tableView.mj_footer resetNoMoreData];
+    [self requesetOfPage:1];
 }
 
 - (void)markButtonAction
@@ -142,27 +159,41 @@
 - (void)checkOrderListWithOrderStatus:(NSString *)statue {
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
-    NSDictionary *params;
+    NSMutableDictionary *info=[NSMutableDictionary new];
     NSString *apiNameStr;
     if (self.isAbroadMessage) {
-        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber",@"0",@"PackageCategory", nil];
+        [info setValue:@(self.CurrentPage) forKey:@"PageNumber"];
+        [info setValue:@"20" forKey:@"PageSize"];
+        [info setValue:@"0" forKey:@"PackageCategory"];
+        
         apiNameStr = [NSString stringWithFormat:@"%@PackageCategory%@", @"apiOrderList", @"0"];
     }else{
-        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber", statue, @"OrderStatus", nil];
+        [info setValue:@(self.CurrentPage) forKey:@"PageNumber"];
+        [info setValue:@"20" forKey:@"PageSize"];
+        [info setValue:statue forKey:@"OrderStatus"];
+        
         apiNameStr = [NSString stringWithFormat:@"%@PackageCategory", @"apiOrderList"];
     }
     
     [self getBasicHeader];
 //    NSLog(@"表头：%@",self.headers);
     
-    [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
+    [SSNetworkRequest getRequest:apiOrderList params:info success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
-            
-            self.arrOrderData = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
-            if (!self.arrOrderData.count) {
+            NSArray *listArr = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
+            if (listArr.count) {
+                [self.dataSourceArray addObjectsFromArray:listArr];
+                if (listArr.count < 20) {
+                    [self.tableView.mj_footer endRefreshingWithNoMoreData];
+                }
+            } else {
+                [self.tableView.mj_footer endRefreshingWithNoMoreData];
+            }
+            if (!self.dataSourceArray.count) {
                 self.noDataLabel.hidden = NO;
+                self.footView.un_height = 70;
                 switch ([statue intValue]) {
                     case 0:
 //                        HUDNormal(@"没有未激活的套餐")
@@ -181,6 +212,7 @@
                 }
             } else {
                 self.noDataLabel.hidden = YES;
+                self.footView.un_height = 0;
             }
             
             [self.tableView reloadData];
@@ -192,24 +224,21 @@
             //数据请求失败
         }
         
-//        NSLog(@"查询到的套餐数据：%@",responseObj);
+        NSLog(@"查询到的套餐数据：%@",responseObj[@"msg"]);
     } failure:^(id dataObj, NSError *error) {
-        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
-        if (responseObj) {
-            self.arrOrderData = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
-            [self.tableView reloadData];
-        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
 - (void)activityActionNow:(CutomButton *)sender {
-    NSDictionary *dicOrder = self.arrOrderData[sender.indexPath.row];
-    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-    OrderActivationViewController *orderActivationViewController = [mainStory instantiateViewControllerWithIdentifier:@"orderActivationViewController"];
-    if (orderActivationViewController) {
-        orderActivationViewController.dicOrderDetail = dicOrder;
-        [self.navigationController pushViewController:orderActivationViewController animated:YES];
+    if (self.dataSourceArray.count) {
+        NSDictionary *dicOrder = self.dataSourceArray[sender.indexPath.row];
+        UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+        OrderActivationViewController *orderActivationViewController = [mainStory instantiateViewControllerWithIdentifier:@"orderActivationViewController"];
+        if (orderActivationViewController) {
+            orderActivationViewController.dicOrderDetail = dicOrder;
+            [self.navigationController pushViewController:orderActivationViewController animated:YES];
+        }
     }
 }
 
@@ -235,20 +264,20 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.arrOrderData.count;
+    return self.dataSourceArray.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
     return 110;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 50;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+//    return 50;
+//}
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return self.sectionView;
-}
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+//    return self.sectionView;
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -258,81 +287,84 @@
         cell=[[[NSBundle mainBundle] loadNibNamed:@"OrderListTableViewCell" owner:nil options:nil] firstObject];
         [cell.activityButton addTarget:self action:@selector(activityActionNow:) forControlEvents:UIControlEventTouchUpInside];
     }
-    
-    NSDictionary *dicOrder = [self.arrOrderData objectAtIndex:indexPath.row];
-//    cell.ivLogoPic.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
-    [cell.ivLogoPic sd_setImageWithURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]];
-    cell.lblFlow.text = [dicOrder objectForKey:@"PackageName"];//[NSString stringWithFormat:@"流量:%dMB",[[dicOrder objectForKey:@"Flow"] intValue]/1024];
-    cell.lblExpireDays.text = [dicOrder objectForKey:@"ExpireDays"];
-//    cell.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
-    [cell.lblPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]]];
-    cell.activityButton.indexPath = indexPath;
-//    cell.lblTotalPrice.font = [UIFont systemFontOfSize:15 weight:2];
-    if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
-        NSLog(@"未支付");
-    }else{
-        //order_actived
-        switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
-            case 0:
-                [cell.activityButton setTitle:INTERNATIONALSTRING(@"去激活") forState:UIControlStateNormal];
-                cell.activityButton.hidden = NO;
-//                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-//                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
-                break;
-            case 1:
-                [cell.activityButton setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
-                cell.activityButton.hidden = YES;
-//                if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
-//                    [cell.activityButton setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
-////                    [cell.activityButton setImage:nil forState:UIControlStateNormal];
-//                } else {
-//                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
-////                    [cell.activityButton setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
-//                }
-//                [cell.activityButton setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
-                break;
-            case 2:
-                [cell.activityButton setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
-                cell.activityButton.hidden = YES;
-//                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-//                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
-                break;
-            case 3:
-                [cell.activityButton setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
-                cell.activityButton.hidden = YES;
-//                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-//                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
-                break;
-            case 4:
-                [cell.activityButton setTitle:INTERNATIONALSTRING(@"去激活") forState:UIControlStateNormal];
-//                [cell.activityButton setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
-                cell.activityButton.hidden = NO;
-//                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-//                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
-                break;
-                
-            default:
-                [cell.activityButton setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
-                cell.activityButton.hidden = YES;
-//                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-//                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
-                break;
+    if (self.dataSourceArray.count) {
+        NSDictionary *dicOrder = [self.dataSourceArray objectAtIndex:indexPath.row];
+        //    cell.ivLogoPic.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]]];
+        [cell.ivLogoPic sd_setImageWithURL:[NSURL URLWithString:[dicOrder objectForKey:@"LogoPic"]]];
+        cell.lblFlow.text = [dicOrder objectForKey:@"PackageName"];//[NSString stringWithFormat:@"流量:%dMB",[[dicOrder objectForKey:@"Flow"] intValue]/1024];
+        cell.lblExpireDays.text = [dicOrder objectForKey:@"ExpireDays"];
+        //    cell.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
+        [cell.lblPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]]];
+        cell.activityButton.indexPath = indexPath;
+        //    cell.lblTotalPrice.font = [UIFont systemFontOfSize:15 weight:2];
+        if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
+            NSLog(@"未支付");
+        }else{
+            //order_actived
+            switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
+                case 0:
+                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"去激活") forState:UIControlStateNormal];
+                    cell.activityButton.hidden = NO;
+                    //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                    //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
+                    break;
+                case 1:
+                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
+                    cell.activityButton.hidden = YES;
+                    //                if ([[dicOrder objectForKey:@"PackageCategory"] intValue] == 1) {
+                    //                    [cell.activityButton setTitle:[NSString stringWithFormat:@"%@ %@ %@", INTERNATIONALSTRING(@"剩余"), dicOrder[@"RemainingCallMinutes"], INTERNATIONALSTRING(@"分钟")] forState:UIControlStateNormal];
+                    ////                    [cell.activityButton setImage:nil forState:UIControlStateNormal];
+                    //                } else {
+                    //                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"已激活") forState:UIControlStateNormal];
+                    ////                    [cell.activityButton setImage:[UIImage imageNamed:@"order_actived"] forState:UIControlStateNormal];
+                    //                }
+                    //                [cell.activityButton setTitleColor:[UIColor colorWithRed:23/255.0 green:186/255.0 blue:34/255.0 alpha:1.0] forState:UIControlStateNormal];
+                    break;
+                case 2:
+                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"已过期") forState:UIControlStateNormal];
+                    cell.activityButton.hidden = YES;
+                    //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                    //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
+                    break;
+                case 3:
+                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"已取消") forState:UIControlStateNormal];
+                    cell.activityButton.hidden = YES;
+                    //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                    //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
+                    break;
+                case 4:
+                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"去激活") forState:UIControlStateNormal];
+                    //                [cell.activityButton setTitle:INTERNATIONALSTRING(@"激活失败") forState:UIControlStateNormal];
+                    cell.activityButton.hidden = NO;
+                    //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                    //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
+                    break;
+                    
+                default:
+                    [cell.activityButton setTitle:INTERNATIONALSTRING(@"未知状态") forState:UIControlStateNormal];
+                    cell.activityButton.hidden = YES;
+                    //                [cell.activityButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                    //                [cell.activityButton setImage:[UIImage imageNamed:@"order_unactive"] forState:UIControlStateNormal];
+                    break;
+            }
         }
+        
+        //    cell.activityButton.text = [dicOrder objectForKey:@"Operators"];
     }
-    
-//    cell.activityButton.text = [dicOrder objectForKey:@"Operators"];
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    NSDictionary *dicOrder = [self.arrOrderData objectAtIndex:indexPath.row];
-    ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
-    giftCardVC.packageCategory = [dicOrder[@"PackageCategory"] intValue];
-    giftCardVC.idOrder = dicOrder[@"OrderID"];
-    giftCardVC.isAbroadMessage = self.isAbroadMessage;
-    [self.navigationController pushViewController:giftCardVC animated:YES];
+    if (self.dataSourceArray.count) {
+        NSDictionary *dicOrder = [self.dataSourceArray objectAtIndex:indexPath.row];
+        ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
+        giftCardVC.packageCategory = [dicOrder[@"PackageCategory"] intValue];
+        giftCardVC.idOrder = dicOrder[@"OrderID"];
+        giftCardVC.isAbroadMessage = self.isAbroadMessage;
+        [self.navigationController pushViewController:giftCardVC animated:YES];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated

@@ -6,9 +6,9 @@
 //  Copyright © 2017年 sumars. All rights reserved.
 //
 
-#import "BaseViewController.h"
+#import "ZBRreshViewController.h"
 
-@interface HavePackageDetailViewController : BaseViewController
+@interface HavePackageDetailViewController : ZBRreshViewController
 @property (nonatomic, copy) NSString *detailID;
 
 @end

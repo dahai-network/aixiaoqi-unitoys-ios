@@ -43,6 +43,9 @@
             NSArray *listArr = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
             if (listArr.count) {
                 [self.dataSourceArray addObjectsFromArray:listArr];
+                if (listArr.count < 20) {
+                    [self.tableView.mj_footer endRefreshingWithNoMoreData];
+                }
             } else {
                 [self.tableView.mj_footer endRefreshingWithNoMoreData];
             }
