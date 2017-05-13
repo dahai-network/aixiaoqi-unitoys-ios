@@ -85,16 +85,19 @@
                 [self checkVeriResult];
             });
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            self.veriButton.enabled = YES;
             [BlueToothDataManager shareManager].isShowHud = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
             [BlueToothDataManager shareManager].isShowHud = NO;
+            self.veriButton.enabled = YES;
         }
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"啥都没：%@",[error description]);
         HUDNormal(INTERNATIONALSTRING(@"验证失败"))
         [BlueToothDataManager shareManager].isShowHud = NO;
+        self.veriButton.enabled = YES;
     } headers:self.headers];
 }
 

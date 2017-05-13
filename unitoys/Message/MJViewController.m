@@ -116,6 +116,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSMSAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuControllerDidHide:) name:UIMenuControllerDidHideMenuNotification object:nil];
 }
 
 - (void)initAllItems
@@ -633,25 +635,18 @@
         NSString *receiveNumbers = self.toTelephone;
         
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
-        
         [self getBasicHeader];
-//        NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest postRequest:apiSMSSend params:params success:^(id responseObj) {
             NSLog(@"查询到的用户数据：%@",responseObj);
-            
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 self.txtSendText.text = @"";
                 [self.txtSendText resignFirstResponder];
-                
                 _messageFrames = nil;
-                
                 [self loadMessages];
                 self.btnSend.enabled = YES;
                 [self updateMessageList];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
-                
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                 self.btnSend.enabled = YES;
             }else{
@@ -681,12 +676,6 @@
 //设置响应
 -(BOOL)canBecomeFirstResponder
 {
-    return YES;
-}
-
-- (BOOL)resignFirstResponder
-{
-    [self deleteMenuController];
     return YES;
 }
 
@@ -731,7 +720,6 @@
 //复制
 - (void)copyText:(id)sender
 {
-    [self deleteMenuController];
     if (self.cellContent.length) {
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         [pasteboard setString:self.cellContent];
@@ -740,7 +728,6 @@
 
 - (void)deleteText:(id)sender
 {
-    [self deleteMenuController];
     if (_currentIndex < self.messageFrames.count) {
         MJMessageFrame *messageFrame = self.messageFrames[_currentIndex];
         NSLog(@"当前删除短信%@", messageFrame);
@@ -750,7 +737,6 @@
 
 - (void)deleteSelectText:(id)sender
 {
-    [self deleteMenuController];
     [self beComeEditMode];
 }
 
@@ -817,10 +803,17 @@
     } headers:self.headers];
 }
 
+- (void)menuControllerDidHide:(NSNotification *)noti
+{
+    [self deleteMenuController];
+}
+
 - (void)deleteMenuController
 {
     UIMenuController *menuController = [UIMenuController sharedMenuController];
-    menuController.menuItems = nil;
+    if (menuController.menuItems) {
+        menuController.menuItems = nil;
+    }
 }
 
 - (void)updateMessageList
