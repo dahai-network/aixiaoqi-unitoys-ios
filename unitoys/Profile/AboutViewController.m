@@ -468,7 +468,11 @@
                 NSLog(@"没有已激活的套餐");
             } else {
                 self.totalPackageNum.text = [NSString stringWithFormat:@"%@个", responseObj[@"data"][@"Used"][@"TotalNum"]];
-                self.commicateMin.text = [NSString stringWithFormat:@"%@分钟", responseObj[@"data"][@"Used"][@"TotalRemainingCallMinutes"]];
+                if ([responseObj[@"data"][@"Used"][@"ServiceName"] isEqualToString:@""]) {
+                    self.commicateMin.text = @"----";
+                } else {
+                    self.commicateMin.text = responseObj[@"data"][@"Used"][@"ServiceName"];
+                }
                 switch ([responseObj[@"data"][@"Used"][@"TotalNumFlow"] intValue]) {
                     case 0:
                         NSLog(@"没有已激活的流量套餐(买了没有激活或者没有购买套餐)");

@@ -1932,7 +1932,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     NSDictionary *dicCountry = self.productInfoArr[indexPath.row];
-    if (dicCountry[@"Url"]) {
+    if (![dicCountry[@"Url"] isEqualToString:@""]) {
         UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         BrowserViewController *browserViewController = [mainStory instantiateViewControllerWithIdentifier:@"browserViewController"];
         if (browserViewController) {
@@ -1941,6 +1941,8 @@
             browserViewController.titleStr = dicCountry[@"Title"];
             [self.navigationController pushViewController:browserViewController animated:YES];
         }
+    } else {
+        HUDNormal(@"我们正在努力研发中，\n敬请期待!")
     }
 }
 

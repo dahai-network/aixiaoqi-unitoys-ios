@@ -1371,6 +1371,7 @@ static dispatch_once_t onceToken;
                 }
                 NSLog(@"版本号:%@", versionNumber);
                 [BlueToothDataManager shareManager].versionNumber = versionNumber;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshVersionNumber" object:@"refreshVersionNumber"];
                 //电量
                 int electricQuantity = [self convertRangeStringToIntWithString:contentStr rangeLoc:4 rangeLen:2];
                 NSLog(@"当前电量为：%d%%", electricQuantity);

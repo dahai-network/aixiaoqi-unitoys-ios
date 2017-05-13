@@ -28,7 +28,7 @@
 -(void)goToRreshWithTableView:(UIScrollView *)RreshScrollView{
     self.scrollView = RreshScrollView;
     self.scrollView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.dataSourceArray removeAllObjects];
             self.CurrentPage=1;
             [self.scrollView.mj_footer resetNoMoreData];
@@ -39,7 +39,7 @@
     self.scrollView.mj_header.automaticallyChangeAlpha = YES;
     
     self.scrollView.mj_footer = [MJRefreshBackNormalFooter footerWithRefreshingBlock:^{
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             if (self.dataSourceArray.count < 10) {
                 [self.scrollView.mj_footer endRefreshingWithNoMoreData];
                 return ;

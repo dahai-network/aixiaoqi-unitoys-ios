@@ -28,8 +28,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"img_nav_bj"] forBarMetrics:UIBarMetricsDefault];
+//    //消除阴影
+//    self.navigationController.navigationBar.shadowImage = [UIImage new];
     [self setRedLabel:self.versionLabel];
-    [self checkIsHaveNewVersion];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        [self checkIsHaveNewVersion];
+    }
     
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addElectricQue) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
@@ -40,16 +45,17 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatueAll:) name:@"changeStatueAll" object:nil];//状态改变
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(boundDeviceFail) name:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];//绑定钥匙扣的时候如果没有点击确认绑定就会发送此通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chargeStatueChanged) name:@"chargeStatuChanged" object:@"chargeStatuChanged"];//充电状态改变了
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkIsHaveNewVersion) name:@"refreshVersionNumber" object:@"refreshVersionNumber"];
     // Do any additional setup after loading the view.
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
 //    [self.navigationController setNavigationBarHidden:YES animated:animated];
+//    self.lblStatue.text = self.hintStrFirst;
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"img_nav_bj"] forBarMetrics:UIBarMetricsDefault];
     //消除阴影
     self.navigationController.navigationBar.shadowImage = [UIImage new];
-//    self.lblStatue.text = self.hintStrFirst;
     self.lblStatue.text = [BlueToothDataManager shareManager].statuesTitleString;
     if ([BlueToothDataManager shareManager].isConnected) {
         [self addElectricQue];
@@ -60,6 +66,7 @@
         self.deviceName.hidden = YES;
         self.versionNumber.hidden = YES;
         self.macAddress.hidden = YES;
+        self.versionLabel.hidden = YES;
         self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
     }
     
@@ -257,6 +264,7 @@
     self.deviceName.hidden = YES;
     self.versionNumber.hidden = YES;
     self.macAddress.hidden = YES;
+    self.versionLabel.hidden = YES;
     self.lblStatue.text = INTERNATIONALSTRING(@"未连接");
     if (self.timer) {
         [self.timer setFireDate:[NSDate distantFuture]];
@@ -441,6 +449,7 @@
                 self.versionNumber.hidden = YES;
                 self.macAddress.hidden = YES;
                 self.deviceName.hidden = YES;
+                self.versionLabel.hidden = YES;
                 self.lblStatue.text = INTERNATIONALSTRING(@"未绑定");
                 if (self.timer) {
                     [self.timer setFireDate:[NSDate distantFuture]];
@@ -644,6 +653,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"cardNumberNotTrue" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"refreshVersionNumber" object:@"refreshVersionNumber"];
 }
 
 /*

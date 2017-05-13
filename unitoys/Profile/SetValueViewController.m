@@ -23,8 +23,9 @@
 //    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"取消") style:UIBarButtonItemStyleDone target:self action:@selector(leftButtonAction)];
 //    self.navigationItem.leftBarButtonItem = left;
     
-    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"保存") style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
-    self.navigationItem.rightBarButtonItem = right;
+//    UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"保存") style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
+//    self.navigationItem.rightBarButtonItem = right;
+    [self setRightButton:INTERNATIONALSTRING(@"保存")];
     
 //    NSMutableDictionary *textAttrs = [NSMutableDictionary dictionary];
 //    textAttrs[NSForegroundColorAttributeName] = [UIColor whiteColor];
@@ -38,7 +39,11 @@
 //    [self.navigationController popViewControllerAnimated:YES];
 //}
 
-- (void)rightButtonAction {
+//- (void)rightButtonAction {
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"setValue" object:self.edtValue.text];
+//}
+
+- (void)rightButtonClick {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"setValue" object:self.edtValue.text];
 }
 

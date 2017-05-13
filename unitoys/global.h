@@ -264,7 +264,7 @@
 //查询黑名单列表
 #define apiBlackListGet defaultHost@"api/BlackList/Get"
 
-//查询黑名单列表
+//查询省心服务推送消息
 #define apiPushContentGet defaultHost@"api/PushContent/Get"
 
 //环形进度条密集度系数

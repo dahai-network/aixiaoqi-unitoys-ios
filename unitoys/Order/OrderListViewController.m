@@ -57,6 +57,7 @@
 }
 
 -(void)requesetOfPage:(NSInteger)page{
+//    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     [self checkOrderListWithOrderStatus:self.statueStr];
 }
 
