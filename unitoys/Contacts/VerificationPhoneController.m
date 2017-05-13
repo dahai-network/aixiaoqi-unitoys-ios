@@ -90,6 +90,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
+            HUDNormal(INTERNATIONALSTRING(@"验证失败"))
             [BlueToothDataManager shareManager].isShowHud = NO;
             self.veriButton.enabled = YES;
         }
@@ -149,6 +150,7 @@
             [self deleteVeriTimer];
             [BlueToothDataManager shareManager].isShowHud = NO;
         }else{
+            HUDNormal(INTERNATIONALSTRING(@"验证失败"))
             //关闭定时器
             [self deleteVeriTimer];
             //数据请求失败
@@ -206,6 +208,11 @@
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
 {
     [self.view endEditing:YES];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

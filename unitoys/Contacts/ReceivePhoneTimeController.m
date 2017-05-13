@@ -33,8 +33,6 @@
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.allowsSelection = NO;
     [self checkCommunicateDetailById];
-    
-    [self.tableView reloadData];
 }
 
 #pragma mark 根据ID查询套餐详情
