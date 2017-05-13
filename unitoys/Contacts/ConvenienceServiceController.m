@@ -114,26 +114,39 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSDictionary *dict = self.cellDatas[indexPath.row];
-    if ([dict[@"Haveed"] boolValue]) {
-        return;
-    }
     if ([dict[@"Category"] isEqualToString:@"4"]) {
         ReceivePhoneTimeController *receiveVc = [[ReceivePhoneTimeController alloc] init];
+        receiveVc.packageID = dict[@"PackageId"];
+        receiveVc.isAlreadyReceive = [dict[@"Haveed"] boolValue];
+        kWeakSelf
+        receiveVc.reloadDataWithReceivePhoneTime = ^{
+            [weakSelf initData];
+        };
         [self.navigationController pushViewController:receiveVc animated:YES];
     }else if ([dict[@"Category"] isEqualToString:@"5"]){
         NSString *phoneStr;
         if ([UNPushKitMessageManager shareManager].iccidString) {
             phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
         }
-        if (!phoneStr) {
+        if (!phoneStr || (phoneStr.length == 0)) {
             //验证号码
             VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
+            verificationVc.veriIccidString = [UNPushKitMessageManager shareManager].iccidString;
             navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
             [self.navigationController presentViewController:nav animated:YES completion:nil];
         }else{
             NSLog(@"省心服务");
-            ConvenienceServiceDetailController *convenienceDetailVc = [[ConvenienceServiceDetailController alloc] init];
-            [self.navigationController pushViewController:convenienceDetailVc animated:YES];
+            if (![dict[@"Haveed"] boolValue]) {
+                //没有开通,进入开通页面
+                ConvenienceServiceDetailController *convenienceDetailVc = [[ConvenienceServiceDetailController alloc] init];
+                convenienceDetailVc.currentPhoneNum = phoneStr;
+                convenienceDetailVc.packageId = dict[@"PackageId"];
+//                convenienceDetailVc.phoneNumLabel.text = phoneStr;
+                [self.navigationController pushViewController:convenienceDetailVc animated:YES];
+            }else{
+                //已开通,进入订单详情
+                NSLog(@"%@",dict);
+            }
         }
     }
 }

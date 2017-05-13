@@ -10,4 +10,6 @@
 
 @interface VerificationPhoneController : BaseViewController
 
+@property (nonatomic, copy) NSString *veriIccidString;
+
 @end

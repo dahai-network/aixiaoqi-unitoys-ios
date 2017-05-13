@@ -180,7 +180,7 @@
         for (MJMessageFrame *messageFrame in self.selectRemoveData) {
             [smsArray addObject:messageFrame.message.SMSID];
         }
-        [self deleteMessageSWithDatas:self.selectRemoveData SMSIds:[smsArray copy]];
+        [self deleteMessageSWithDatas:[self.selectRemoveData copy] SMSIds:[smsArray copy]];
         
         [self cancelEdit];
     }
@@ -684,6 +684,12 @@
     return YES;
 }
 
+- (BOOL)resignFirstResponder
+{
+    [self deleteMenuController];
+    return YES;
+}
+
 //长按响应
 - (void)longPressActionWithIndex:(NSInteger)index Content:(NSString *)content longPressView:(UIView *)longPressView
 {
@@ -725,6 +731,7 @@
 //复制
 - (void)copyText:(id)sender
 {
+    [self deleteMenuController];
     if (self.cellContent.length) {
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         [pasteboard setString:self.cellContent];
@@ -733,6 +740,7 @@
 
 - (void)deleteText:(id)sender
 {
+    [self deleteMenuController];
     if (_currentIndex < self.messageFrames.count) {
         MJMessageFrame *messageFrame = self.messageFrames[_currentIndex];
         NSLog(@"当前删除短信%@", messageFrame);
@@ -742,6 +750,7 @@
 
 - (void)deleteSelectText:(id)sender
 {
+    [self deleteMenuController];
     [self beComeEditMode];
 }
 
@@ -772,7 +781,7 @@
     } headers:self.headers];
 }
 
-- (void)deleteMessageSWithDatas:(NSMutableArray *)Datas SMSIds:(NSArray *)smsIds
+- (void)deleteMessageSWithDatas:(NSArray *)Datas SMSIds:(NSArray *)smsIds
 {
     kWeakSelf
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: smsIds ,@"Ids",nil];
@@ -787,18 +796,16 @@
             //防止数据不同步
             NSMutableArray *tempArray = [NSMutableArray array];
             for (MJMessageFrame *messageFrame in Datas) {
-                if (![weakSelf.messageFrames containsObject:messageFrame]) {
+                if ([weakSelf.messageFrames containsObject:messageFrame]) {
                     [tempArray addObject:messageFrame];
                 }
             }
             if (tempArray.count) {
-                [Datas removeObjectsInArray:tempArray];
+                [weakSelf.messageFrames removeObjectsInArray:tempArray];
             }
-            [weakSelf.messageFrames removeObjectsInArray:Datas];
-            
             [weakSelf.tableView reloadData];
             //自动滚动到底部
-            [self scrollTableViewToBottomWithAnimated:NO];
+//            [self scrollTableViewToBottomWithAnimated:NO];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -808,6 +815,12 @@
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"删除单条短信异常：%@",[error description]);
     } headers:self.headers];
+}
+
+- (void)deleteMenuController
+{
+    UIMenuController *menuController = [UIMenuController sharedMenuController];
+    menuController.menuItems = nil;
 }
 
 - (void)updateMessageList

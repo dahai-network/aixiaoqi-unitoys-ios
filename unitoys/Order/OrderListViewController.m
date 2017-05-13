@@ -17,6 +17,7 @@
 #import "UNDatabaseTools.h"
 #import "CutomButton.h"
 #import "OrderActivationViewController.h"
+#import "ConvenienceOrderDetailController.h"
 
 @interface OrderListViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -360,11 +361,17 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     if (self.dataSourceArray.count) {
         NSDictionary *dicOrder = [self.dataSourceArray objectAtIndex:indexPath.row];
-        ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
-        giftCardVC.packageCategory = [dicOrder[@"PackageCategory"] intValue];
-        giftCardVC.idOrder = dicOrder[@"OrderID"];
-        giftCardVC.isAbroadMessage = self.isAbroadMessage;
-        [self.navigationController pushViewController:giftCardVC animated:YES];
+        if ([dicOrder[@"PackageCategory"] isEqualToString:@"4"] || [dicOrder[@"PackageCategory"] isEqualToString:@"5"]) {
+            ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
+            convenienceOrderVc.orderDetailId = dicOrder[@"OrderID"];
+            [self.navigationController pushViewController:convenienceOrderVc animated:YES];
+        }else{
+            ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
+            giftCardVC.packageCategory = [dicOrder[@"PackageCategory"] intValue];
+            giftCardVC.idOrder = dicOrder[@"OrderID"];
+            giftCardVC.isAbroadMessage = self.isAbroadMessage;
+            [self.navigationController pushViewController:giftCardVC animated:YES];
+        }
     }
 }
 

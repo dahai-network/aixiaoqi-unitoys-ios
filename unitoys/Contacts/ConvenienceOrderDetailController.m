@@ -12,11 +12,13 @@
 #import "ConvenienceOrder2Cell.h"
 #import "UITableView+RegisterNib.h"
 #import "ConvenienceServiceController.h"
+#import "UNDatabaseTools.h"
 
 @interface ConvenienceOrderDetailController ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, copy) NSArray *cellDatas;
+//@property (nonatomic, copy) NSDictionary *dicOrderDetail;
 @end
 
 static NSString *convenienceOrderCellID = @"ConvenienceOrderCell";
@@ -34,7 +36,7 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self initTableView];
-    [self initCellDatas];
+    [self initDatas];
 }
 
 - (void)initTableView
@@ -56,30 +58,75 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
     }];
 }
 
+- (void)initDatas
+{
+    
+    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
+    self.checkToken = YES;
+    
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderDetailId,@"id", nil];
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderId%@", @"apiOrderById", [self.orderDetailId stringByReplacingOccurrencesOfString:@"-" withString:@""]];
+    [self getBasicHeader];
+    //    NSLog(@"表头：%@",self.headers);
+    [SSNetworkRequest getRequest:apiOrderById params:params success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
+            NSLog(@"apiOrderById==responseObj");
+            self.orderData = [responseObj objectForKey:@"data"][@"list"];
+            [self initCellDatas];
+            [self.tableView reloadData];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+        }
+    } failure:^(id dataObj, NSError *error) {
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            NSLog(@"apiOrderById==responseObj");
+            self.orderData = [responseObj objectForKey:@"data"][@"list"];
+            [self.tableView reloadData];
+        }else{
+            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+        }
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
 - (void)initCellDatas
 {
-    self.cellDatas = @[
+    NSString *payMode;
+    if ([self.orderData[@"PaymentMethod"] isEqualToString:@"1"]) {
+        payMode = @"支付宝";
+    }else if ([self.orderData[@"PaymentMethod"] isEqualToString:@"2"]){
+        payMode = @"微信";
+    }else if ([self.orderData[@"PaymentMethod"] isEqualToString:@"3"]){
+        payMode = @"余额";
+    }else{
+        payMode = @"官方赠送";
+    }
+    _cellDatas = @[
                        @{
                            @"cellName":@"订单编号",
-                           @"cellText":@"123456",
+                           @"cellText":self.orderData[@"OrderNum"],
                          },
                        @{
                            @"cellName":@"支付费用",
-                           @"cellText":[NSString stringWithFormat:@"￥%@", @"100"],
+                           @"cellText":[NSString stringWithFormat:@"￥%@", self.orderData[@"TotalPrice"]],
                            },
                        @{
                            @"cellName":@"支付时间",
-                           @"cellText":@"2017-01-01 10:00",
+                           @"cellText":self.orderData[@"OrderDate"],
                            },
                        @{
                            @"cellName":@"支付方式",
-                           @"cellText":@"支付宝",
+                           @"cellText":payMode,
                            },
                        @{
                            @"cellName":@"服务时间",
-                           @"cellText":@"2017年10月-2017年11月",
+                           @"cellText":self.orderData[@"ExpireDays"] ? self.orderData[@"ExpireDays"] : @"",
                            },
-                       
                        ];
 }
 
@@ -90,10 +137,12 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (section == 0) {
-        return 1;
-    }else if (section == 1){
-        return self.cellDatas.count;
+    if (self.orderData) {
+        if (section == 0) {
+            return 1;
+        }else if (section == 1){
+            return self.cellDatas.count;
+        }
     }
     return 0;
 }
@@ -102,10 +151,14 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
 {
     if (indexPath.section == 0) {
         ConvenienceOrderCell *cell = [tableView dequeueReusableCellWithIdentifier:convenienceOrderCellID];
-        cell.imgCommunicatePhoto.image = [UIImage imageNamed:@"icon_iphone"];
-        cell.lblCommunicateName.text = @"省心服务";
-        cell.lblValidity.text = @"通话无限制";
-        [cell.lblCommunicatePrice changeLabelTexeFontWithString:@"￥0.00"];
+        setImage(cell.imgCommunicatePhoto, self.orderData[@"LogoPic"])
+        cell.lblCommunicateName.text = self.orderData[@"PackageName"];
+        if ([self.orderData[@"RemainingCallMinutes"] isEqualToString:@"0"]) {
+            cell.lblValidity.text = @"通话无限制";
+        }else{
+            cell.lblValidity.text = [NSString stringWithFormat:@"%@分钟", self.orderData[@"RemainingCallMinutes"]];
+        }
+        [cell.lblCommunicatePrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%@", self.orderData[@"TotalPrice"]]];
         return cell;
     }else if (indexPath.section == 1){
         ConvenienceOrder2Cell *cell = [tableView dequeueReusableCellWithIdentifier:convenienceOrder2CellID];

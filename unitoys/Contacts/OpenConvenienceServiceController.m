@@ -48,6 +48,13 @@
 @property (nonatomic, assign) CGFloat currentOtherPrice;
 //当前应付金额
 @property (nonatomic, assign) CGFloat payPrice;
+
+//订单数据
+@property (nonatomic, copy) NSDictionary *dicOrder;
+//订单id
+@property (nonatomic, copy) NSString *orderID;
+//套餐类型
+@property (nonatomic, assign) int packageCategory;
 @end
 
 static NSString *openServiceCellID = @"OpenServiceCell";
@@ -78,7 +85,9 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 }
 - (void)initData
 {
+    //当前余额
     self.surplusMoney = 100.0;
+    
     self.currentSelectMonth = 0;
     self.currentPayType = 0;
     if (self.surplusMoney) {
@@ -101,7 +110,6 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         make.right.equalTo(self.view);
         make.height.mas_equalTo(@54);
     }];
-    
 }
 
 - (void)updatePrice
@@ -157,27 +165,30 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 
 - (void)getDataFromServer
 {
-    //假数据
-    self.nowPrice = 2.0;
-    self.beforePrice = 10.0;
+
+    if (self.packageDict) {
+        self.nowPrice = [self.packageDict[@"Price"] floatValue];
+        self.beforePrice = [self.packageDict[@"OriginalPrice"] floatValue];
+    }
     [self.tableView reloadData];
     [self updatePrice];
-    self.checkToken = YES;
-    [self getBasicHeader];
-    [SSNetworkRequest getRequest:@"" params:nil success:^(id responseObj) {
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            self.nowPrice = 0;
-            self.beforePrice = 0;
-            [self.tableView reloadData];
-            [self updatePrice];
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }
-    } failure:^(id dataObj, NSError *error) {
-        HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-        NSLog(@"啥都没：%@",[error description]);
-    } headers:self.headers];
     
+    
+//    self.checkToken = YES;
+//    [self getBasicHeader];
+//    [SSNetworkRequest getRequest:@"" params:nil success:^(id responseObj) {
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            self.nowPrice = 0;
+//            self.beforePrice = 0;
+//            [self.tableView reloadData];
+//            [self updatePrice];
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }
+//    } failure:^(id dataObj, NSError *error) {
+//        HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
+//        NSLog(@"啥都没：%@",[error description]);
+//    } headers:self.headers];
 }
 
 - (void)initCellDatas
@@ -250,6 +261,13 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         return;
     }
     button.enabled = NO;
+    //提交订单
+    [self commitOrder];
+    button.enabled = YES;
+}
+
+- (void)startPay
+{
     //确认支付
     if (self.currentPayType == 1) {
         //余额支付
@@ -265,25 +283,23 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     }else{
         NSLog(@"支付类型错误");
     }
-    
-    button.enabled = YES;
 }
 
-#pragma mark --- 余额支付
-- (void)useMyMoneyPay
-{
-    NSLog(@"余额支付--%f", self.payPrice);
-}
-#pragma mark --- 微信支付
-- (void)useWeChatPay
-{
-    NSLog(@"微信支付--%f", self.payPrice);
-}
-#pragma mark --- 支付宝支付
-- (void)useAliPay
-{
-    NSLog(@"支付宝支付--%f", self.payPrice);
-}
+//#pragma mark --- 余额支付
+//- (void)useMyMoneyPay
+//{
+//    NSLog(@"余额支付--%f", self.payPrice);
+//}
+//#pragma mark --- 微信支付
+//- (void)useWeChatPay
+//{
+//    NSLog(@"微信支付--%f", self.payPrice);
+//}
+//#pragma mark --- 支付宝支付
+//- (void)useAliPay
+//{
+//    NSLog(@"支付宝支付--%f", self.payPrice);
+//}
 
 - (void)monthPriceChange:(UITextField *)textField
 {
@@ -436,40 +452,40 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 }
 
 #pragma mark --- 余额支付
-//- (void)useMyMoneyPay
-//{
-//    self.checkToken = YES;
-//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrder objectForKey:@"OrderID"],@"OrderID", nil];
-//    [self getBasicHeader];
-//    [SSNetworkRequest postRequest:apiPayOrderByUserAmount params:params success:^(id responseObj) {
-//        NSLog(@"查询到的用户数据：%@",responseObj);
-//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-//            if (storyboard) {
-//                PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
-//                
-//                if (paySuccessViewController) {
-//                    
-//                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
-//                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
-//                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%@",self.lblOrderAmount.text];
-//                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
-//                    paySuccessViewController.orderID = self.orderID;
-//                    paySuccessViewController.packageCategory = self.packageCategory;
-//                    [self.navigationController pushViewController:paySuccessViewController animated:YES];
-//                }
-//            }
-//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//            
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//        }else{
-//            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
-//        }
-//    } failure:^(id dataObj, NSError *error) {
-//        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-//        NSLog(@"啥都没：%@",[error description]);
-//    } headers:self.headers];
-//}
+- (void)useMyMoneyPay
+{
+    self.checkToken = YES;
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrder objectForKey:@"OrderID"],@"OrderID", nil];
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiPayOrderByUserAmount params:params success:^(id responseObj) {
+        NSLog(@"查询到的用户数据：%@",responseObj);
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+            if (storyboard) {
+                PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
+                
+                if (paySuccessViewController) {
+                    
+                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
+                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%zd",self.currentSelectMonth];
+                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
+                    paySuccessViewController.orderID = self.orderID;
+                    paySuccessViewController.packageCategory = self.packageCategory;
+                    [self.navigationController pushViewController:paySuccessViewController animated:YES];
+                }
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
 
 
 - (BOOL)isWXAppInstalled
@@ -488,155 +504,196 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     return YES;
 }
 
-//- (void)useWeChatPay {
-//    self.checkToken = YES;
-//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrder objectForKey:@"OrderNum"],@"orderOrPayment", nil];
-//    
-//    [self getBasicHeader];
-//    //    NSLog(@"表演头：%@",self.headers);
-//    [SSNetworkRequest postRequest:apiGetPrepayID params:params success:^(id responseObj) {
-//        NSLog(@"查询到的用户数据：%@",responseObj);
-//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//            NSMutableDictionary *dict = NULL;
-//            
-//            dict = [responseObj objectForKey:@"data"];
-//            
-//            if(dict != nil){
-//                NSMutableString *retcode = [dict objectForKey:@"retcode"];
-//                if (retcode.intValue == 0){
-//                    NSMutableString *stamp  = [dict objectForKey:@"timestamp"];
-//                    
-//                    //调起微信支付
-//                    PayReq* req             = [[PayReq alloc] init];
-//                    req.partnerId           = [dict objectForKey:@"partnerid"];
-//                    req.prepayId            = [dict objectForKey:@"prepayid"];
-//                    req.nonceStr            = [dict objectForKey:@"noncestr"];
-//                    req.timeStamp           = stamp.intValue;
-//                    req.package             = [dict objectForKey:@"package"];
-//                    req.sign                = [dict objectForKey:@"sign"];
-//                    
-//                    [[NSUserDefaults standardUserDefaults] setObject:@"Order" forKey:@"WeipayType"];
-//                    [[NSUserDefaults standardUserDefaults] synchronize];
-//                    
-//                    [WXApi sendReq:req];
-//                    //日志输出
-//                    NSLog(@"appid=%@\npartid=%@\nprepayid=%@\nnoncestr=%@\ntimestamp=%ld\npackage=%@\nsign=%@",[dict objectForKey:@"appid"],req.partnerId,req.prepayId,req.nonceStr,(long)req.timeStamp,req.package,req.sign );
-//                    //                    return @"";
-//                }else{
-//                    //                    return [dict objectForKey:@"retmsg"];
-//                    NSLog(@"支付返回异常:%@",[dict objectForKey:@"retmsg"]);
-//                }
-//            }else{
-//                NSLog(@"服务器返回异常");
-//                //                return @"服务器返回错误，未获取到json对象";
-//            }
-//            
-//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//            
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//        }else{
-//            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
-//        }
-//    } failure:^(id dataObj, NSError *error) {
-//        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-//        NSLog(@"啥都没：%@",[error description]);
-//    } headers:self.headers];
-//    
-//}
+- (void)useWeChatPay {
+    self.checkToken = YES;
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrder objectForKey:@"OrderNum"],@"orderOrPayment", nil];
+    
+    [self getBasicHeader];
+    //    NSLog(@"表演头：%@",self.headers);
+    [SSNetworkRequest postRequest:apiGetPrepayID params:params success:^(id responseObj) {
+        NSLog(@"查询到的用户数据：%@",responseObj);
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSMutableDictionary *dict = NULL;
+            
+            dict = [responseObj objectForKey:@"data"];
+            
+            if(dict != nil){
+                NSMutableString *retcode = [dict objectForKey:@"retcode"];
+                if (retcode.intValue == 0){
+                    NSMutableString *stamp  = [dict objectForKey:@"timestamp"];
+                    
+                    //调起微信支付
+                    PayReq* req             = [[PayReq alloc] init];
+                    req.partnerId           = [dict objectForKey:@"partnerid"];
+                    req.prepayId            = [dict objectForKey:@"prepayid"];
+                    req.nonceStr            = [dict objectForKey:@"noncestr"];
+                    req.timeStamp           = stamp.intValue;
+                    req.package             = [dict objectForKey:@"package"];
+                    req.sign                = [dict objectForKey:@"sign"];
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:@"Order" forKey:@"WeipayType"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    
+                    [WXApi sendReq:req];
+                    //日志输出
+                    NSLog(@"appid=%@\npartid=%@\nprepayid=%@\nnoncestr=%@\ntimestamp=%ld\npackage=%@\nsign=%@",[dict objectForKey:@"appid"],req.partnerId,req.prepayId,req.nonceStr,(long)req.timeStamp,req.package,req.sign );
+                    //                    return @"";
+                }else{
+                    //                    return [dict objectForKey:@"retmsg"];
+                    NSLog(@"支付返回异常:%@",[dict objectForKey:@"retmsg"]);
+                }
+            }else{
+                NSLog(@"服务器返回异常");
+                //                return @"服务器返回错误，未获取到json对象";
+            }
+            
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+    
+}
 
-//- (void)useAliPay {
-//    /*
-//     *商户的唯一的parnter和seller。
-//     *签约后，支付宝会为每个商户分配一个唯一的 parnter 和 seller。
-//     */
-//    
-//    /*============================================================================*/
-//    /*=======================需要填写商户app申请的===================================*/
-//    /*============================================================================*/
-//    NSString *appID =   @"2016081201740861";
-//    NSString *partner = @"2088421645383390";
-//    NSString *seller = @"13054445444@qq.com";
-//    NSString *privateKey =
-//    @"MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJU3u9F8d4jxw1jkRwGx2g9kOzP3Exv9U/lfxkaSuBuEWASLXI2cFdFkGOyD3mKMM5XTs9HYD4qLFXtaldyC2lY0fxb80F/vRU+3Oe8D9TH/CJ7p6SeTG8MfeIeWEK8VIQr6NnM7ywwECvpG8uElzfnGlUSB28cBMCqARYGlyWhfAgMBAAECgYBB+VJhXNa9BaeJNeTvKuNuyrIiV6trRKZMK7xOl7Au+mSwHa3eLpS277rVV7iLedGU/PUUYqL8bmIhF/wKcxB1QAaKpDpPv9SIAzfHLw+KuYv0JN3Ypvet+EtLKTO2k74oQGN/GTFp2mOtYKwfkU/lyO73HcgTUbVBcRL5iLIHAQJBAMadZPoQ5CF2A2OBp7cfCEeHmhtxk6QQBQ3cTRLC2ZZ9R8zgl3Hyqvx6/BT1muuu5DOmzUHmfSZR/BV9pVduQNcCQQDAVKq00NXmpqi0+esS9iozsvBNY6sS8q2r5EpyWdnzyLE8x/B0vjNoai6AW/t4m0aMGrXmfEaonCOeMjWuzTu5AkEAsfJAjx9lFWmjfZqjhhjClTuz4dSvf7Vuoc14LE/xHLigBLpQVaIiedVCVxD5vSFTicdvbRSxmgyoOyT4Z037vwJAIjErI/gYfufUCFCB5R4URJqkM+3rJPQ1weBVB91HbRqZv8d/zRFfTEnMOI+htkBMm23INtCTMziG8IHWn1vnKQJAbXasp5GarlCFiEYDaQVmR+JQAwFC6Xd5V1xwFcEpdkcIyvw8wkWObbKz0oWrMkKgHqpj8kQ2i+5eD/ECJXgy9w==";
-//    /*============================================================================*/
-//    /*============================================================================*/
-//    /*============================================================================*/
-//    
-//    //partner和seller获取失败,提示
-//    if ([partner length] == 0 ||
-//        [seller length] == 0 ||
-//        [privateKey length] == 0)
-//    {
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示")
-//                                                        message:INTERNATIONALSTRING(@"缺少partner或者seller或者私钥。")
-//                                                       delegate:self
-//                                              cancelButtonTitle:INTERNATIONALSTRING(@"确定")
-//                                              otherButtonTitles:nil];
-//        [alert show];
-//        //        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-//        return;
-//    }
-//    /*
-//     *生成订单信息及签名
-//     */
-//    //将商品信息赋予AlixPayOrder的成员变量
-//    Order* order = [Order new];
-//    
-//    // NOTE: app_id设置
-//    order.app_id = appID;
-//    
-//    // NOTE: 支付接口名称
-//    order.method = @"alipay.trade.app.pay";
-//    
-//    // NOTE: 参数编码格式
-//    order.charset = @"utf-8";
-//    
-//    // NOTE: 当前时间点
-//    NSDateFormatter* formatter = [NSDateFormatter new];
-//    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-//    order.timestamp = [formatter stringFromDate:[NSDate date]];
-//    
-//    // NOTE: 支付版本
-//    order.version = @"1.0";
-//    
-//    // NOTE: sign_type设置
-//    order.sign_type = @"RSA";
-//    
-//    // NOTE: 商品数据
-//    order.biz_content = [BizContent new];
-//    order.biz_content.body = [self.dicOrder objectForKey:@"PackageName"];
-//    order.biz_content.subject = @"套餐购买";
-//    order.biz_content.out_trade_no = [self.dicOrder objectForKey:@"OrderNum"]; //订单ID（由商家自行制定）
-//    order.biz_content.timeout_express = @"30m"; //超时时间设置
-//    order.biz_content.total_amount = [self.dicOrder objectForKey:@"TotalPrice"]; //商品价格
-//    //    order.notify_url =  @"https://api.unitoys.com/api/AliPay/NotifyAsync";
-//    order.notify_url = apiAlipayNotify;
-//    //将商品信息拼接成字符串
-//    NSString *orderInfo = [order orderInfoEncoded:NO];
-//    NSString *orderInfoEncoded = [order orderInfoEncoded:YES];
-//    NSLog(@"orderSpec = %@",orderInfo);
-//    
-//    // NOTE: 获取私钥并将商户信息签名，外部商户的加签过程请务必放在服务端，防止公私钥数据泄露；
-//    //       需要遵循RSA签名规范，并将签名字符串base64编码和UrlEncode
-//    id<DataSigner> signer = CreateRSADataSigner(privateKey);
-//    NSString *signedString = [signer signString:orderInfo];
-//    // NOTE: 如果加签成功，则继续执行支付
-//    if (signedString != nil) {
-//        //应用注册scheme,在AliSDKDemo-Info.plist定义URL types
-//        NSString *appScheme = @"unitoys";
-//        // NOTE: 将签名成功字符串格式化为订单字符串,请严格按照该格式
-//        NSString *orderString = [NSString stringWithFormat:@"%@&sign=%@",
-//                                 orderInfoEncoded, signedString];
-//        // NOTE: 调用支付结果开始支付
-//        [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
-//            NSLog(@"reslut = %@",resultDic);
-//        }];
-//    }
-//}
+- (void)useAliPay {
+    /*
+     *商户的唯一的parnter和seller。
+     *签约后，支付宝会为每个商户分配一个唯一的 parnter 和 seller。
+     */
+    
+    /*============================================================================*/
+    /*=======================需要填写商户app申请的===================================*/
+    /*============================================================================*/
+    NSString *appID =   @"2016081201740861";
+    NSString *partner = @"2088421645383390";
+    NSString *seller = @"13054445444@qq.com";
+    NSString *privateKey =
+    @"MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJU3u9F8d4jxw1jkRwGx2g9kOzP3Exv9U/lfxkaSuBuEWASLXI2cFdFkGOyD3mKMM5XTs9HYD4qLFXtaldyC2lY0fxb80F/vRU+3Oe8D9TH/CJ7p6SeTG8MfeIeWEK8VIQr6NnM7ywwECvpG8uElzfnGlUSB28cBMCqARYGlyWhfAgMBAAECgYBB+VJhXNa9BaeJNeTvKuNuyrIiV6trRKZMK7xOl7Au+mSwHa3eLpS277rVV7iLedGU/PUUYqL8bmIhF/wKcxB1QAaKpDpPv9SIAzfHLw+KuYv0JN3Ypvet+EtLKTO2k74oQGN/GTFp2mOtYKwfkU/lyO73HcgTUbVBcRL5iLIHAQJBAMadZPoQ5CF2A2OBp7cfCEeHmhtxk6QQBQ3cTRLC2ZZ9R8zgl3Hyqvx6/BT1muuu5DOmzUHmfSZR/BV9pVduQNcCQQDAVKq00NXmpqi0+esS9iozsvBNY6sS8q2r5EpyWdnzyLE8x/B0vjNoai6AW/t4m0aMGrXmfEaonCOeMjWuzTu5AkEAsfJAjx9lFWmjfZqjhhjClTuz4dSvf7Vuoc14LE/xHLigBLpQVaIiedVCVxD5vSFTicdvbRSxmgyoOyT4Z037vwJAIjErI/gYfufUCFCB5R4URJqkM+3rJPQ1weBVB91HbRqZv8d/zRFfTEnMOI+htkBMm23INtCTMziG8IHWn1vnKQJAbXasp5GarlCFiEYDaQVmR+JQAwFC6Xd5V1xwFcEpdkcIyvw8wkWObbKz0oWrMkKgHqpj8kQ2i+5eD/ECJXgy9w==";
+    /*============================================================================*/
+    /*============================================================================*/
+    /*============================================================================*/
+    
+    //partner和seller获取失败,提示
+    if ([partner length] == 0 ||
+        [seller length] == 0 ||
+        [privateKey length] == 0)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示")
+                                                        message:INTERNATIONALSTRING(@"缺少partner或者seller或者私钥。")
+                                                       delegate:self
+                                              cancelButtonTitle:INTERNATIONALSTRING(@"确定")
+                                              otherButtonTitles:nil];
+        [alert show];
+        //        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
+    /*
+     *生成订单信息及签名
+     */
+    //将商品信息赋予AlixPayOrder的成员变量
+    Order* order = [Order new];
+    
+    // NOTE: app_id设置
+    order.app_id = appID;
+    
+    // NOTE: 支付接口名称
+    order.method = @"alipay.trade.app.pay";
+    
+    // NOTE: 参数编码格式
+    order.charset = @"utf-8";
+    
+    // NOTE: 当前时间点
+    NSDateFormatter* formatter = [NSDateFormatter new];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    order.timestamp = [formatter stringFromDate:[NSDate date]];
+    
+    // NOTE: 支付版本
+    order.version = @"1.0";
+    
+    // NOTE: sign_type设置
+    order.sign_type = @"RSA";
+    
+    // NOTE: 商品数据
+    order.biz_content = [BizContent new];
+    order.biz_content.body = [self.dicOrder objectForKey:@"PackageName"];
+    order.biz_content.subject = @"套餐购买";
+    order.biz_content.out_trade_no = [self.dicOrder objectForKey:@"OrderNum"]; //订单ID（由商家自行制定）
+    order.biz_content.timeout_express = @"30m"; //超时时间设置
+    order.biz_content.total_amount = [self.dicOrder objectForKey:@"TotalPrice"]; //商品价格
+    //    order.notify_url =  @"https://api.unitoys.com/api/AliPay/NotifyAsync";
+    order.notify_url = apiAlipayNotify;
+    //将商品信息拼接成字符串
+    NSString *orderInfo = [order orderInfoEncoded:NO];
+    NSString *orderInfoEncoded = [order orderInfoEncoded:YES];
+    NSLog(@"orderSpec = %@",orderInfo);
+    
+    // NOTE: 获取私钥并将商户信息签名，外部商户的加签过程请务必放在服务端，防止公私钥数据泄露；
+    //       需要遵循RSA签名规范，并将签名字符串base64编码和UrlEncode
+    id<DataSigner> signer = CreateRSADataSigner(privateKey);
+    NSString *signedString = [signer signString:orderInfo];
+    // NOTE: 如果加签成功，则继续执行支付
+    if (signedString != nil) {
+        //应用注册scheme,在AliSDKDemo-Info.plist定义URL types
+        NSString *appScheme = @"unitoys";
+        // NOTE: 将签名成功字符串格式化为订单字符串,请严格按照该格式
+        NSString *orderString = [NSString stringWithFormat:@"%@&sign=%@",
+                                 orderInfoEncoded, signedString];
+        // NOTE: 调用支付结果开始支付
+        [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
+            NSLog(@"reslut = %@",resultDic);
+        }];
+    }
+}
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
+
+- (BOOL)commitOrder {
+    self.checkToken = YES;
+    NSString *paymentMethod;
+    if (self.currentPayType==3) {
+        //支付宝
+        paymentMethod = @"1";
+    } else if(self.currentPayType==2) {
+        //微信
+        paymentMethod = @"2";
+    }else if(self.currentPayType==1) {
+        //余额
+        paymentMethod = @"3";
+    }else{
+        NSLog(@"支付类型出错");
+        return NO;
+    }
+    if (!paymentMethod) {
+        return NO;
+    }
+    NSDictionary *params = @{@"PackageId":self.packageDict[@"PackageId"], @"Quantity" : [NSString stringWithFormat:@"%ld", self.currentSelectMonth], @"PaymentMethod": paymentMethod, @"MonthPackageFee":[NSString stringWithFormat:@"%.2f",self.currentMonthPrice]};
+    HUDNoStop1(INTERNATIONALSTRING(@"正在提交订单..."))
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiOrderAdd params:params success:^(id responseObj) {
+        NSLog(@"查询到的订单数据：%@",responseObj);
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            self.dicOrder = [[responseObj objectForKey:@"data"] objectForKey:@"order"];
+            self.orderID = self.dicOrder[@"OrderID"];
+            self.packageCategory = [self.dicOrder[@"PackageCategory"] intValue];
+            [self startPay];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            HUDNormal(INTERNATIONALSTRING(@"支付失败"))
+        }
+        /*
+         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+    return YES;
 }
 
 

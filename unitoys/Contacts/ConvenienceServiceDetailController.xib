@@ -12,6 +12,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ConvenienceServiceDetailController">
             <connections>
+                <outlet property="bannerImageView" destination="waR-Tj-byH" id="vve-7J-IdS"/>
+                <outlet property="detailImageView" destination="SSd-Ob-4In" id="q7b-bG-fQ1"/>
                 <outlet property="phoneNumLabel" destination="MH8-tu-NZU" id="Vj3-Fu-Ur9"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -25,13 +27,13 @@
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="convenience_banner" translatesAutoresizingMaskIntoConstraints="NO" id="waR-Tj-byH">
-                            <rect key="frame" x="0.0" y="0.0" width="375" height="220"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="287"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="220" id="Qu3-K4-j1Y"/>
+                                <constraint firstAttribute="width" secondItem="waR-Tj-byH" secondAttribute="height" multiplier="750:574" id="yLv-O8-1F2"/>
                             </constraints>
                         </imageView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2QB-jh-f3H">
-                            <rect key="frame" x="25.5" y="240" width="325" height="48"/>
+                            <rect key="frame" x="25.5" y="307" width="325" height="48"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="48" id="Pmu-jo-1WC"/>
                             </constraints>
@@ -41,13 +43,13 @@
                             </connections>
                         </button>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="convenience_notice" translatesAutoresizingMaskIntoConstraints="NO" id="SSd-Ob-4In">
-                            <rect key="frame" x="0.0" y="308" width="375" height="591"/>
+                            <rect key="frame" x="0.0" y="375" width="375" height="591"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="SSd-Ob-4In" secondAttribute="height" multiplier="749:1183" id="H9d-y2-RpT"/>
                             </constraints>
                         </imageView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Vy-Wb-sDr">
-                            <rect key="frame" x="15" y="160" width="345" height="60"/>
+                            <rect key="frame" x="15" y="227" width="345" height="60"/>
                             <subviews>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="texbox" translatesAutoresizingMaskIntoConstraints="NO" id="wqM-TM-D5N">
                                     <rect key="frame" x="0.0" y="0.0" width="345" height="60"/>
@@ -62,7 +64,7 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MH8-tu-NZU">
-                                    <rect key="frame" x="122" y="27.5" width="211" height="0.0"/>
+                                    <rect key="frame" x="122" y="27.5" width="208" height="0.0"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                     <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                     <nil key="highlightedColor"/>
@@ -79,7 +81,7 @@
                                 <constraint firstAttribute="trailing" secondItem="wqM-TM-D5N" secondAttribute="trailing" id="knj-KC-iDl"/>
                                 <constraint firstItem="wqM-TM-D5N" firstAttribute="top" secondItem="4Vy-Wb-sDr" secondAttribute="top" id="lf7-XN-9FR"/>
                                 <constraint firstAttribute="bottom" secondItem="wqM-TM-D5N" secondAttribute="bottom" id="q8I-19-c6V"/>
-                                <constraint firstAttribute="trailing" secondItem="MH8-tu-NZU" secondAttribute="trailing" constant="12" id="xWg-gn-s9b"/>
+                                <constraint firstAttribute="trailing" secondItem="MH8-tu-NZU" secondAttribute="trailing" constant="15" id="xWg-gn-s9b"/>
                             </constraints>
                         </view>
                     </subviews>
@@ -109,7 +111,7 @@
                 <constraint firstItem="73r-1b-TC0" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="e7B-U6-Vk2"/>
                 <constraint firstAttribute="trailing" secondItem="73r-1b-TC0" secondAttribute="trailing" id="jLc-dA-iAF"/>
             </constraints>
-            <point key="canvasLocation" x="-52" y="39"/>
+            <point key="canvasLocation" x="-180" y="28"/>
         </view>
     </objects>
     <resources>

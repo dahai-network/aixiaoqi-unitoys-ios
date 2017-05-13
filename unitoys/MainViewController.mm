@@ -206,10 +206,11 @@ typedef enum : NSUInteger {
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         if ([UNPushKitMessageManager shareManager].iccidString) {
             NSString *phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
-            if (!phoneStr) {
+            if (!phoneStr || (phoneStr.length == 0)) {
                 if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
                     if (![UNDataTools sharedInstance].isShowVerificationVc) {
                         VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
+                        verificationVc.veriIccidString = [UNPushKitMessageManager shareManager].iccidString;
                         navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
                         [self.selectedViewController presentViewController:nav animated:YES completion:nil];
                     }

@@ -10,4 +10,7 @@
 
 @interface ConvenienceOrderDetailController : BaseViewController
 
+@property (nonatomic, copy) NSString *orderDetailId;
+@property (nonatomic, copy) NSDictionary *orderData;
+
 @end

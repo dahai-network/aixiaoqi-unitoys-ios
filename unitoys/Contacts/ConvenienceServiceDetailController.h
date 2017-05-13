@@ -9,6 +9,10 @@
 #import "BaseViewController.h"
 
 @interface ConvenienceServiceDetailController : BaseViewController
-@property (weak, nonatomic) IBOutlet UILabel *phoneNumLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *bannerImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *detailImageView;
 
+@property (nonatomic, copy) NSString *packageId;
+@property (nonatomic, copy) NSString *currentPhoneNum;
+@property (weak, nonatomic) IBOutlet UILabel *phoneNumLabel;
 @end

@@ -40,7 +40,6 @@
         }
     }
     
-
     self.timelabel.text = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:cellDatas[@"calltime"]];
 }
 

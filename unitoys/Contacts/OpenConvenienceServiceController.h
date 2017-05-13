@@ -9,5 +9,6 @@
 #import "BaseViewController.h"
 
 @interface OpenConvenienceServiceController : BaseViewController
-
+@property (nonatomic, copy) NSString *packageID;
+@property (nonatomic, copy) NSDictionary *packageDict;
 @end

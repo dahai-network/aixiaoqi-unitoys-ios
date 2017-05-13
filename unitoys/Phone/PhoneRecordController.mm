@@ -1608,9 +1608,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         return;
     }
     __block NSString *currentDateStr;
+    //是否直接拨打电话
     BOOL isCallPhone = NO;
+    //是否有流量套餐
     BOOL isHasPackage = NO;
-    //判断是否有流量套餐
 //    isHasPackage = YES;
     
     if (isHasPackage) {
@@ -1627,21 +1628,25 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (isCallPhone) {
         [self showCallPhoneVc:strNumber];
     }else{
-        [self showTipViewWithCurrentDate:currentDateStr];
+        [self showTipViewWithCurrentDate:currentDateStr StringNumber:strNumber];
     }
 }
 
 //弹出提示
-- (void)showTipViewWithCurrentDate:(NSString *)currentDateStr
+- (void)showTipViewWithCurrentDate:(NSString *)currentDateStr StringNumber:(NSString *)phoneNumber
 {
     //如果点击按钮后不再提示为选中,存储今日时间
     kWeakSelf
     [ServiceRecommendView shareServiceRecommendViewWithTitle:@"推荐使用爱小器0元话费体验包,向高额话费说拜拜" leftString:@"下次" rightString:@"去领取" buttnTap:^(NSInteger index, BOOL isNoTip) {
         if (isNoTip) {
-            [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"HiddenTodayTipWithCallPhone"];
+            if (currentDateStr) {
+                [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"HiddenTodayTipWithCallPhone"];
+            }
         }
         if (index == 1) {
             [weakSelf showConvenienceVc];
+        }else{
+            [weakSelf showCallPhoneVc:phoneNumber];
         }
     }];
 }
@@ -1667,7 +1672,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         if (self.phoneNumber) {
             self.calledTelNum = [NSString stringWithFormat:@"986%@",self.phoneNumber];
         }
-        
         CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
         if (callingViewController) {
             self.callStartTime = [NSDate date];

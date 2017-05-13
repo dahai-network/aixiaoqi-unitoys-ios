@@ -267,6 +267,19 @@
 //查询省心服务推送消息
 #define apiPushContentGet defaultHost@"api/PushContent/Get"
 
+//创建免费订单
+#define apiOrderAddReceive defaultHost@"api/Order/AddReceive"
+
+//设备内手机号码验证
+#define apiUserDeviceTelConfirmed defaultHost@"api/UserDeviceTel/Confirmed"
+
+//查询最新已验证信息
+#define apiUserDeviceTelGetFirst defaultHost@"api/UserDeviceTel/GetFirst"
+
+//检查是否需要验证
+#define apiUserDeviceTelCheckConfirmed defaultHost@"api/UserDeviceTel/CheckConfirmed"
+
+
 //环形进度条密集度系数
 #define AnnularProgressBar @"60"
 

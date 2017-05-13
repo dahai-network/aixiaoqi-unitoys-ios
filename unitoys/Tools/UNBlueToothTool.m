@@ -1873,8 +1873,10 @@ static dispatch_once_t onceToken;
             case 13:
                 NSLog(@"接收到SIM卡ICCID -- %@", contentStr);
                 if (contentStr) {
-                    [[NSUserDefaults standardUserDefaults] setObject:contentStr forKey:@"SIMICCIDString"];
+//                    [[NSUserDefaults standardUserDefaults] setObject:contentStr forKey:@"SIMICCIDString"];
+                    [self getboundPhoneWithIccid:contentStr];
                 }
+                
                 if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                     if (contentStr && [[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
                         //判断本地是否存在ICCID
@@ -1953,6 +1955,38 @@ static dispatch_once_t onceToken;
                 break;
         }
     }
+}
+
+- (void)getboundPhoneWithIccid:(NSString *)iccidString
+{
+    NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", iccidString];
+    NSString *phone = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
+    if (!phone || (phone.length == 0)) {
+        self.checkToken = YES;
+        NSDictionary *params = @{@"ICCID" : iccidString};
+        [self getBasicHeader];
+        [SSNetworkRequest getRequest:apiUserDeviceTelCheckConfirmed params:params success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                if ([responseObj[@"data"][@"IsConfirmed"] boolValue]) {
+                    if (responseObj[@"data"][@"Tel"] && [responseObj[@"data"][@"Tel"] length]) {
+                        [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"Tel"] forKey:iccidKey];
+                    }
+                }
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+                NSLog(@"请求失败：%@", responseObj[@"msg"]);
+            }
+        } failure:^(id dataObj, NSError *error) {
+            NSLog(@"请求失败：%@", error);
+        } headers:self.headers];
+    }
+    
+//#if DEBUG
+//#warning 删除数据便于测试
+//    [[NSUserDefaults standardUserDefaults] removeObjectForKey:iccidKey];
+//#endif
 }
 
 - (void)closeConnecting {

@@ -8,8 +8,13 @@
 
 #import "BaseViewController.h"
 
+typedef void(^ReloadDataWithReceivePhoneTime)();
 @interface ReceivePhoneTimeController : BaseViewController
 
-@property (nonatomic, copy) NSString *communicateDetailID;
+@property (nonatomic, copy) NSString *packageID;
+@property (nonatomic, copy) NSString *packageName;
+@property (nonatomic, assign) BOOL isAlreadyReceive;
+
+@property (nonatomic, copy) ReloadDataWithReceivePhoneTime reloadDataWithReceivePhoneTime;
 
 @end

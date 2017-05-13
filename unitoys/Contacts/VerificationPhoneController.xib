@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="VerificationPhoneController">
             <connections>
                 <outlet property="phoneTextField" destination="UJ0-Za-dob" id="JIt-uO-Q5O"/>
+                <outlet property="veriButton" destination="vte-Tk-UVZ" id="HFb-P5-eh6"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
