@@ -1198,6 +1198,7 @@
         if (![_udpSocket isClosed]) {
             [_udpSocket close];
         }
+        [UNPushKitMessageManager shareManager].isNeedRegister = NO;
     }else if ([classStr isEqualToString:@"0f"]) {
         NSLog(@"sim卡断开连接");
         [BlueToothDataManager shareManager].isBeingRegisting = NO;
