@@ -409,6 +409,7 @@
             self.operatorName.text = @"----";
             self.electricNum.text = @"----";
             self.deviceName.text = [NSString stringWithFormat:@"设备：---"];
+            self.hasNewVersionLabel.hidden = YES;
         }
         
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
