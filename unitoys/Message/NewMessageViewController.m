@@ -115,6 +115,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSMSAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuControllerDidHide:) name:UIMenuControllerDidHideMenuNotification object:nil];
 }
 
 - (void)initAllItems
@@ -778,16 +779,14 @@
     }else if ([[self.txtLinkman.text substringWithRange:NSMakeRange(self.txtLinkman.selectedRange.location-1, 1)] isEqualToString:@" "]){
         //检查前一个人是不是号码，如果是号码则仅删除数字，否则删除联系人和文本修改设定光标
         if (self.txtLinkman.text.length>0) {
-            //            NSString *prevLinkman = [self.txtLinkman.text substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location)];
+            //NSString *prevLinkman = [self.txtLinkman.text substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location)];
             
             NSString *initLinkman = [[self getLinkmans] substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location-1)];
-            
             NSMutableArray *mans = [[NSMutableArray alloc] initWithArray:[initLinkman componentsSeparatedByString:@" "]];
-            
             
             if ([self isPureInt:[mans lastObject]]) {
                 //删除号位，更新数据
-                //                [self pairLinkman];
+                //[self pairLinkman];
                 self.txtLinkman.text = [self getLinkmans];
                 [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
             }else{
@@ -1097,7 +1096,6 @@
             [weakSelf.tableView reloadData];
             //自动滚动到底部
             [self scrollTableViewToBottomWithAnimated:NO];
-            
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -1107,6 +1105,19 @@
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"删除单条短信异常：%@",[error description]);
     } headers:self.headers];
+}
+
+- (void)menuControllerDidHide:(NSNotification *)noti
+{
+    [self deleteMenuController];
+}
+
+- (void)deleteMenuController
+{
+    UIMenuController *menuController = [UIMenuController sharedMenuController];
+    if (menuController.menuItems) {
+        menuController.menuItems = nil;
+    }
 }
 
 - (void)updateMessageList

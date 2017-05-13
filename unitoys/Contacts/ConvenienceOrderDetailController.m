@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, copy) NSArray *cellDatas;
 //@property (nonatomic, copy) NSDictionary *dicOrderDetail;
+@property (nonatomic, copy) NSDictionary *orderData;
 @end
 
 static NSString *convenienceOrderCellID = @"ConvenienceOrderCell";
@@ -35,6 +36,7 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.title = @"订单详情";
     [self initTableView];
     [self initDatas];
 }
@@ -60,7 +62,6 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
 
 - (void)initDatas
 {
-    
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
     
@@ -117,7 +118,7 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
                            },
                        @{
                            @"cellName":@"支付时间",
-                           @"cellText":self.orderData[@"OrderDate"],
+                           @"cellText":[self convertDateWithString:self.orderData[@"OrderDate"]],
                            },
                        @{
                            @"cellName":@"支付方式",

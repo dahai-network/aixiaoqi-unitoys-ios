@@ -290,7 +290,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-//    self.navigationController.hidesBottomBarWhenPushed = NO;
 }
 
 - (void)sendMessageStatuChange:(NSNotification *)noti

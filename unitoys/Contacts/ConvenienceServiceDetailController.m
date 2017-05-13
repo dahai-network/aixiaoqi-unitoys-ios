@@ -23,11 +23,6 @@
     [self checkCommunicateDetailById];
 }
 
-- (void)initData
-{
-    
-}
-
 - (void)checkCommunicateDetailById {
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
@@ -58,8 +53,8 @@
 
 - (void)reloadData
 {
-    [self.bannerImageView sd_setImageWithURL:[NSURL URLWithString:self.communicateDetailInfo[@"DescTitlePic"]] placeholderImage:nil];
-    [self.detailImageView sd_setImageWithURL:[NSURL URLWithString:self.communicateDetailInfo[@"DescPic"]] placeholderImage:nil];
+    [self.bannerImageView sd_setImageWithURL:[NSURL URLWithString:self.communicateDetailInfo[@"DescTitlePic"]] placeholderImage:[UIImage imageNamed:@"convenience_banner"]];
+    [self.detailImageView sd_setImageWithURL:[NSURL URLWithString:self.communicateDetailInfo[@"DescPic"]] placeholderImage:[UIImage imageNamed:@"convenience_notice"]];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -82,12 +82,11 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     [self getDataFromServer];
     [self initCellDatas];
     [self updatePrice];
+    [self loadAmmount];
 }
 - (void)initData
 {
     //当前余额
-    self.surplusMoney = 100.0;
-    
     self.currentSelectMonth = 0;
     self.currentPayType = 0;
     if (self.surplusMoney) {
@@ -96,6 +95,27 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         self.isAllowPayUseMoney = NO;
     }
 }
+
+- (void) loadAmmount {
+    self.checkToken = YES;
+    [self getBasicHeader];
+    [SSNetworkRequest getRequest:apiGetUserAmount params:nil success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            self.surplusMoney = [[[responseObj objectForKey:@"data"] objectForKey:@"amount"] floatValue];
+            [self initData];
+            [self initCellDatas];
+            [self.tableView reloadData];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            
+        }
+        //        NSLog(@"查询到的用户数据：%@",responseObj);
+    } failure:^(id dataObj, NSError *error) {
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
 
 - (void)initBottomView
 {
@@ -170,8 +190,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         self.nowPrice = [self.packageDict[@"Price"] floatValue];
         self.beforePrice = [self.packageDict[@"OriginalPrice"] floatValue];
     }
-    [self.tableView reloadData];
-    [self updatePrice];
+//    [self updatePrice];
     
     
 //    self.checkToken = YES;
@@ -253,11 +272,16 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                        
                        ]
                    ];
+    [self.tableView reloadData];
 }
 
 - (void)surePayAction:(UIButton *)button
 {
     if (!self.payPrice) {
+        return;
+    }
+    if (self.currentPayType == 1 && self.payPrice > self.surplusMoney) {
+        HUDNormal(@"余额不足,建议使用其他方式支付");
         return;
     }
     button.enabled = NO;
@@ -468,7 +492,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                     
                     paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
                     paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
-                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%zd",self.currentSelectMonth];
+                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%.2f",self.payPrice];
                     paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
                     paySuccessViewController.orderID = self.orderID;
                     paySuccessViewController.packageCategory = self.packageCategory;

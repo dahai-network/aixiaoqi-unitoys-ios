@@ -136,17 +136,19 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
             [self.navigationController presentViewController:nav animated:YES completion:nil];
         }else{
             NSLog(@"省心服务");
-            if (![dict[@"Haveed"] boolValue]) {
+//            if (![dict[@"Haveed"] boolValue]) {
                 //没有开通,进入开通页面
                 ConvenienceServiceDetailController *convenienceDetailVc = [[ConvenienceServiceDetailController alloc] init];
                 convenienceDetailVc.currentPhoneNum = phoneStr;
                 convenienceDetailVc.packageId = dict[@"PackageId"];
-//                convenienceDetailVc.phoneNumLabel.text = phoneStr;
                 [self.navigationController pushViewController:convenienceDetailVc animated:YES];
-            }else{
-                //已开通,进入订单详情
-                NSLog(@"%@",dict);
-            }
+//            }else{
+//                //已开通,进入订单详情
+//                NSLog(@"%@",dict);
+//                ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
+//                convenienceOrderVc.orderDetailId = responseObj[@"data"][@"order"][@"OrderID"];
+//                [self.navigationController pushViewController:convenienceOrderVc animated:YES];
+//            }
         }
     }
 }

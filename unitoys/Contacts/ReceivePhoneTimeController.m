@@ -25,7 +25,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = self.packageName;
+    
+    self.title = @"套餐详情";
     self.showIndex = 1;
 //    self.communicateDetailInfo = [[NSDictionary alloc] init];
     //cell高度自适应
@@ -206,7 +207,6 @@
             }
             ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
             convenienceOrderVc.orderDetailId = responseObj[@"data"][@"order"][@"OrderID"];
-//            convenienceOrderVc.orderData = responseObj[@"data"][@"order"];
             [self.navigationController pushViewController:convenienceOrderVc animated:YES];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
