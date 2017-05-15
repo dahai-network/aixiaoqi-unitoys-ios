@@ -18,5 +18,6 @@ typedef void(^SelectMonthBlock)(NSInteger selectMonth);
 
 //width : kwidth - 30
 @property (weak, nonatomic) IBOutlet UIView *monthContentView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *monthContentViewHeight;
 
 @end

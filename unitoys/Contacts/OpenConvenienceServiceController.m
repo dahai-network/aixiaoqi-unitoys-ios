@@ -212,6 +212,10 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 
 - (void)initCellDatas
 {
+#warning 测试选择月份高度
+//    NSInteger rowCount = (array.count + colCount - 1) / colCount;
+    NSInteger rowCount = (4 + 3 - 1) / 3;
+    CGFloat selectMonthCellHeight = 50 + 50 * rowCount + 7 * (rowCount - 1) + 10;
     _cellDatas = @[
                    @[
                        @{
@@ -240,7 +244,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                            @"cellName":@"购买月份",
 //                           @"cellHeight":@(177),
                            //需要根据月数动态计算
-                           @"cellHeight":@(177),
+                           @"cellHeight":@(selectMonthCellHeight),
                            @"isHiddenLine":@(YES),
                            },
                    ],
@@ -376,6 +380,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         }else{
             kWeakSelf
             OpenServiceMonthCell *cell = [tableView dequeueReusableCellWithIdentifier:openServiceMonthCellID];
+            [cell updateCellWithDatas:@{}];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             cell.selectMonthBlock = ^(NSInteger selectMonth) {
                 weakSelf.currentSelectMonth= selectMonth;

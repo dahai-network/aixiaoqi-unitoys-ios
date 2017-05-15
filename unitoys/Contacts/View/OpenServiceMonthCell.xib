@@ -25,9 +25,9 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fpc-UG-5Oi">
-                        <rect key="frame" x="15" y="47.5" width="345" height="110"/>
+                        <rect key="frame" x="15" y="49.5" width="345" height="110"/>
                         <subviews>
-                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gJK-ep-WFh">
+                            <button hidden="YES" opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gJK-ep-WFh">
                                 <rect key="frame" x="0.0" y="-0.5" width="108.5" height="51.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="1个月">
@@ -40,7 +40,7 @@
                                     <action selector="selectMonthAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="7M7-kG-QZU"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WCM-Gf-axb">
+                            <button hidden="YES" opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WCM-Gf-axb">
                                 <rect key="frame" x="118" y="-0.5" width="108" height="51.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="3个月">
@@ -53,7 +53,7 @@
                                     <action selector="selectMonthAction:" destination="KGk-i7-Jjw" eventType="touchDown" id="am4-q0-d12"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="asv-b1-2it">
+                            <button hidden="YES" opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="asv-b1-2it">
                                 <rect key="frame" x="236" y="-0.5" width="108.5" height="51.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="6个月">
@@ -66,7 +66,7 @@
                                     <action selector="selectMonthAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="gWO-jF-lne"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="9" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mag-wm-Xlt">
+                            <button hidden="YES" opaque="NO" tag="9" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mag-wm-Xlt">
                                 <rect key="frame" x="0.0" y="58.5" width="108.5" height="51.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="9个月">
@@ -79,7 +79,7 @@
                                     <action selector="selectMonthAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="yYQ-hE-EEb"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" tag="12" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1F0-HQ-pgZ">
+                            <button hidden="YES" opaque="NO" tag="12" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1F0-HQ-pgZ">
                                 <rect key="frame" x="118" y="58.5" width="108" height="51.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <state key="normal" title="12个月">
@@ -123,19 +123,20 @@
                     <constraint firstAttribute="trailing" secondItem="fpc-UG-5Oi" secondAttribute="trailing" constant="15" id="1By-lo-S4F"/>
                     <constraint firstItem="LuA-xh-56g" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="20" id="IxH-Nu-v4p"/>
                     <constraint firstItem="LuA-xh-56g" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="RvU-na-Nul"/>
+                    <constraint firstItem="fpc-UG-5Oi" firstAttribute="top" secondItem="LuA-xh-56g" secondAttribute="bottom" constant="10" id="WkR-CB-1cE"/>
                     <constraint firstItem="fpc-UG-5Oi" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="fH3-Wb-C3E"/>
-                    <constraint firstAttribute="bottom" secondItem="fpc-UG-5Oi" secondAttribute="bottom" constant="19" id="xmk-7k-xFm"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="monthContentView" destination="fpc-UG-5Oi" id="hsd-wu-ESK"/>
+                <outlet property="monthContentViewHeight" destination="Nrx-he-hpV" id="XmH-GK-4JE"/>
                 <outletCollection property="selectMonthButtons" destination="WCM-Gf-axb" id="Txn-Mq-SWL"/>
                 <outletCollection property="selectMonthButtons" destination="gJK-ep-WFh" id="cor-fl-GjH"/>
                 <outletCollection property="selectMonthButtons" destination="asv-b1-2it" id="GzB-EP-FzY"/>
                 <outletCollection property="selectMonthButtons" destination="Mag-wm-Xlt" id="UGr-v3-bp9"/>
                 <outletCollection property="selectMonthButtons" destination="1F0-HQ-pgZ" id="7Sm-Sc-46g"/>
             </connections>
-            <point key="canvasLocation" x="-134" y="11"/>
+            <point key="canvasLocation" x="-17.5" y="14.5"/>
         </tableViewCell>
     </objects>
 </document>

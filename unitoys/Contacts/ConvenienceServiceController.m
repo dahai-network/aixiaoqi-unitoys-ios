@@ -127,6 +127,9 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
         NSString *phoneStr;
         if ([UNPushKitMessageManager shareManager].iccidString) {
             phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
+        }else{
+            HUDNormal(@"需要SIM卡注册成功")
+            return;
         }
         if (!phoneStr || (phoneStr.length == 0)) {
             //验证号码
