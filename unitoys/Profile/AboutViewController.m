@@ -93,12 +93,6 @@
         [self.tableView reloadData];
     }
     
-    //消除导航栏横线
-    //自定义一个NaVIgationBar
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    //消除阴影
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needRefreshAmount) name:@"NeedRefreshAmount" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(queryAmount) name:@"NeedRefreshInfo" object:nil];
@@ -378,6 +372,11 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
     self.tabBarController.tabBar.hidden = NO;
+    //消除导航栏横线
+    //自定义一个NaVIgationBar
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    //消除阴影
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
     [self checkPackageResidue];
     [self checkBLEStatue];
 }
