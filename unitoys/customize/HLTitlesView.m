@@ -8,6 +8,7 @@
 
 #import "HLTitlesView.h"
 #import "UIView+Utils.h"
+#import "AddTouchAreaButton.h"
 
 
 #define UIColorFromHex_hl(hexValue) [UIColor colorWithRed:((float)((hexValue & 0xFF0000) >> 16))/255.0 green:((float)((hexValue & 0xFF00) >> 8))/255.0 blue:((float)(hexValue & 0xFF))/255.0 alpha:1]
@@ -15,7 +16,7 @@
 @interface HLTitlesView ()
 
 @property (nonatomic, weak) UIImageView *titleBottomView;
-@property (nonatomic, weak) UIButton *selectButton;
+@property (nonatomic, weak) AddTouchAreaButton *selectButton;
 
 //@property (nonatomic, assign) CGFloat margin;
 @end
@@ -57,13 +58,14 @@
         NSString *currentStr = titlesArray[i];
         CGFloat titleW = [currentStr boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:17]} context:nil].size.width;
         
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+        AddTouchAreaButton *button = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];
         button.titleLabel.font = [UIFont boldSystemFontOfSize:17];
         [button setTitle:currentStr forState:UIControlStateNormal];
 //        [button setTitleColor:[UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1] forState:UIControlStateNormal];
 //        [button setTitleColor:UIColorFromHex_hl(0x42a5f5) forState:UIControlStateSelected];
         [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         button.frame = CGRectMake(titlesViewW, 10, titleW + margin, 20);
+        button.touchEdgeInset = UIEdgeInsetsMake(15, 10, 15, 10);
         button.tag = i;
         [button addTarget:self action:@selector(topButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:button];
@@ -86,7 +88,7 @@
 }
 
 
-- (void)topButtonSelect:(UIButton *)button isAnimate:(BOOL)animate
+- (void)topButtonSelect:(AddTouchAreaButton *)button isAnimate:(BOOL)animate
 {
     if (button.isSelected) return;
     self.selectButton.selected = NO;
@@ -105,7 +107,7 @@
     }
 }
 
-- (void)topButtonClick:(UIButton *)button
+- (void)topButtonClick:(AddTouchAreaButton *)button
 {
     if (button.isSelected) return;
     [self topButtonSelect:button isAnimate:YES];

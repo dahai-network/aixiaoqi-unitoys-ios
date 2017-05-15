@@ -20,4 +20,7 @@
 @property (nonatomic, assign) int packageCategory;
 
 - (IBAction)resultConfrim:(id)sender;
+
+//禁止点击详情
+@property (nonatomic, assign) BOOL isNoClickDetail;
 @end

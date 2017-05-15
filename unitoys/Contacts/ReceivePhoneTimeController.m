@@ -114,7 +114,6 @@
         switch (self.showIndex) {
             case 1:
                 self.secondCell.lblContent2.text = self.communicateDetailInfo[@"Details"];
-//                self.secondCell.lblContent2.text = @"哈哈哈";
                 [self.secondCell.firstButton2 setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
                 self.secondCell.firstButtonView2.hidden = NO;
                 [self.secondCell.secondButton2 setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
@@ -124,7 +123,6 @@
                 break;
             case 2:
                 self.secondCell.lblContent2.text = self.communicateDetailInfo[@"Features"];
-//                self.secondCell.lblContent2.text = @"嘿嘿嘿";
                 [self.secondCell.firstButton2 setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
                 self.secondCell.firstButtonView2.hidden = YES;
                 [self.secondCell.secondButton2 setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
@@ -134,7 +132,6 @@
                 break;
             case 3:
                 self.secondCell.lblContent2.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"paymentOfTerms"];
-//                self.secondCell.lblContent2.text = @"呵呵呵";
                 [self.secondCell.firstButton2 setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
                 self.secondCell.firstButtonView2.hidden = YES;
                 [self.secondCell.secondButton2 setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
@@ -144,7 +141,6 @@
                 break;
             default:
                 self.secondCell.lblContent2.text = self.communicateDetailInfo[@"Details"];
-//                self.secondCell.lblContent2.text = @"哈哈哈";
                 [self.secondCell.firstButton2 setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
                 self.secondCell.firstButtonView2.hidden = NO;
                 [self.secondCell.secondButton2 setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];

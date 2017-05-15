@@ -12,5 +12,6 @@
 
 @property (nonatomic, copy) NSString *orderDetailId;
 
-
+//禁止点击详情
+@property (nonatomic, assign) BOOL isNoClickDetail;
 @end

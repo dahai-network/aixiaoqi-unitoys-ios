@@ -53,6 +53,7 @@
 //            giftCardVC.isPaySuccess = YES;
 //            [self.navigationController pushViewController:giftCardVC animated:YES];
             ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
+            convenienceOrderVc.isNoClickDetail = self.isNoClickDetail;
             convenienceOrderVc.orderDetailId = self.orderID;
             [self.navigationController pushViewController:convenienceOrderVc animated:YES];
         }else{

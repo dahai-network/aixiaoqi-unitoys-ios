@@ -179,6 +179,9 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     if (indexPath.section == 0) {
+        if (self.isNoClickDetail) {
+            return;
+        }
         ConvenienceServiceController *convenienceVc = [[ConvenienceServiceController alloc] init];
         [self.navigationController pushViewController:convenienceVc animated:YES];
     }

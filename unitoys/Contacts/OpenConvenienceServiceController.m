@@ -487,20 +487,18 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
             if (storyboard) {
                 PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
-                
                 if (paySuccessViewController) {
-                    
                     paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
                     paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
                     paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%.2f",self.payPrice];
                     paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
                     paySuccessViewController.orderID = self.orderID;
                     paySuccessViewController.packageCategory = self.packageCategory;
+                    paySuccessViewController.isNoClickDetail = YES;
                     [self.navigationController pushViewController:paySuccessViewController animated:YES];
                 }
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
