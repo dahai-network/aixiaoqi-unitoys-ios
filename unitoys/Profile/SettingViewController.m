@@ -78,7 +78,9 @@
         [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
         
         if ([BlueToothDataManager shareManager].isConnected) {
-            [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+            if ([UNBlueToothTool shareBlueToothTool].peripheral) {
+                [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+            }
         }
 //        [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
 //        [UNBlueToothTool shareBlueToothTool] = nil;

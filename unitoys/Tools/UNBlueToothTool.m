@@ -132,11 +132,13 @@ static dispatch_once_t onceToken;
 - (void)clearInstance
 {
     self.isKill = YES;
-    [self.mgr stopScan];
-    self.mgr = nil;
-    self.peripheral = nil;
-    self.peripherals = nil;
-    self.strongestRssiPeripheral = nil;
+    if (_mgr) {
+        [_mgr stopScan];
+        _mgr = nil;
+    }
+    _peripheral = nil;
+    _peripherals = nil;
+    _strongestRssiPeripheral = nil;
      [[NSNotificationCenter defaultCenter] removeObserver:self];
     instance = nil;
     onceToken=0l;

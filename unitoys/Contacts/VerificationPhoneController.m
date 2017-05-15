@@ -113,7 +113,7 @@
     self.checkToken = YES;
     [self getBasicHeader];
 //    NSDictionary *params = @{@"checkVeriId" : self.phoneTextField.text};
-    [SSNetworkRequest getRequest:apiUserDeviceTelGetFirst params:nil success:^(id responseObj) {
+    [SSNetworkRequest getRequest:apiUserDeviceTelGetCurrent params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             if ([responseObj[@"data"][@"ICCID"] isEqualToString:self.veriIccidString]) {
                 NSLog(@"验证成功");

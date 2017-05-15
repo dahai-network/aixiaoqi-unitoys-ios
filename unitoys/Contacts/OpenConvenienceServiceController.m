@@ -238,6 +238,8 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                            },
                        @{
                            @"cellName":@"购买月份",
+//                           @"cellHeight":@(177),
+                           //需要根据月数动态计算
                            @"cellHeight":@(177),
                            @"isHiddenLine":@(YES),
                            },

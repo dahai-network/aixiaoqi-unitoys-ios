@@ -14,4 +14,9 @@ typedef void(^SelectMonthBlock)(NSInteger selectMonth);
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *selectMonthButtons;
 @property (nonatomic, copy) SelectMonthBlock selectMonthBlock;
 
+- (void)updateCellWithDatas:(NSDictionary *)dict;
+
+//width : kwidth - 30
+@property (weak, nonatomic) IBOutlet UIView *monthContentView;
+
 @end

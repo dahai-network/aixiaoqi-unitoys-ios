@@ -326,7 +326,9 @@ typedef enum : NSUInteger {
     [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
     [UNBlueToothTool shareBlueToothTool].isKill = YES;
     if ([BlueToothDataManager shareManager].isConnected) {
-        [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+        if ([UNBlueToothTool shareBlueToothTool].peripheral) {
+            [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+        }
     }
 //    [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
     [[UNBlueToothTool shareBlueToothTool] clearInstance];

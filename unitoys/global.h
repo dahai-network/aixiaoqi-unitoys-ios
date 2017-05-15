@@ -274,7 +274,7 @@
 #define apiUserDeviceTelConfirmed defaultHost@"api/UserDeviceTel/Confirmed"
 
 //查询最新已验证信息
-#define apiUserDeviceTelGetFirst defaultHost@"api/UserDeviceTel/GetFirst"
+#define apiUserDeviceTelGetCurrent defaultHost@"api/UserDeviceTel/GetCurrent"
 
 //检查是否需要验证
 #define apiUserDeviceTelCheckConfirmed defaultHost@"api/UserDeviceTel/CheckConfirmed"

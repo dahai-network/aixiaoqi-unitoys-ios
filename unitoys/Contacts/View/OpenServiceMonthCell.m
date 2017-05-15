@@ -24,10 +24,20 @@
     }
 }
 
+//contentViewWidth:kwidth - 30 height:buttonHeight * count + 7*(count-1)
+//buttonheight:50 buttonwidthMargin:
+- (void)updateCellWithDatas:(NSDictionary *)dict
+{
+//    NSArray *array = dict[@""];
+//    NSArray *array = [NSArray array];
+//    for (NSInteger i = 0; i < array.count; i++) {
+//        UIButton *monthButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    }
+}
+
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 - (IBAction)selectMonthAction:(UIButton *)sender {
     if (sender.isSelected) {
