@@ -26,10 +26,10 @@
 
 //contentViewWidth:kwidth - 30 height:buttonHeight * count + 7*(count-1)
 //buttonheight:50 buttonwidthMargin:
-- (void)updateCellWithDatas:(NSDictionary *)dict
+- (void)updateCellWithDatas:(NSDictionary *)dict appendText:(NSString *)appendString selectIndex:(NSInteger)selectIndex
 {
 #warning 测试数量
-    NSArray *array = @[@"1", @"2", @"3", @"4"];
+    NSArray *array = dict[@"datas"];
     NSInteger colCount = 3;
     NSInteger rowCount = (array.count + colCount - 1) / colCount;
     CGFloat widthMargin = 10;
@@ -45,14 +45,23 @@
         UIButton *monthButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [self.monthContentView addSubview:monthButton];
         monthButton.frame = CGRectMake(buttonX, buttonY, buttonWidth, buttonHeight);
-        [monthButton setTitle:[NSString stringWithFormat:@"%@个月",array[i]] forState:UIControlStateNormal];
-        monthButton.tag = i;
+        if (appendString) {
+            [monthButton setTitle:[NSString stringWithFormat:@"%@%@",array[i], appendString] forState:UIControlStateNormal];
+        }else{
+            [monthButton setTitle:[NSString stringWithFormat:@"%@",array[i]] forState:UIControlStateNormal];
+        }
+        
+        monthButton.tag = 100 + i;
         [monthButton addTarget:self action:@selector(selectMonthAction:) forControlEvents:UIControlEventTouchDown];
         monthButton.titleLabel.font = [UIFont systemFontOfSize:15];
         [monthButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
         [monthButton setTitleColor:[UIColor whiteColor] forState:UIControlStateSelected];
         monthButton.layer.borderWidth = 1.0;
         monthButton.layer.borderColor = UIColorFromRGB(0xe5e5e5).CGColor;
+        if (monthButton.tag == selectIndex) {
+            monthButton.selected = YES;
+            self.selectButton = monthButton;
+        }
     }
 }
 
@@ -70,8 +79,8 @@
     sender.backgroundColor = UIColorFromRGB(0xf21f20);
     self.selectButton = sender;
     sender.enabled = NO;
-    if (_selectMonthBlock) {
-        _selectMonthBlock(sender.tag);
+    if (_selectIndexBlock) {
+        _selectIndexBlock(sender.tag);
     }
     sender.enabled = YES;
 }

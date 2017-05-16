@@ -27,7 +27,9 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, copy) NSArray *cellDatas;
 
-//当前购买月份(1.3.6.9.12)
+//当前选中的通话时长类型
+@property (nonatomic, assign) NSInteger currentSelectPhoneTime;
+//当前购买月份(tag值,需要根据服务器获取)
 @property (nonatomic, assign) NSInteger currentSelectMonth;
 //当前支付方式(1:余额,2:微信,3:支付宝)
 @property (nonatomic, assign) NSInteger currentPayType;
@@ -134,7 +136,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 
 - (void)updatePrice
 {
-    self.payPrice = self.currentMonthPrice + self.currentSelectMonth * self.nowPrice;
+    self.payPrice = self.currentMonthPrice + (self.currentSelectMonth - 100)* self.nowPrice;
     NSDictionary *smallDict = @{NSFontAttributeName : [UIFont systemFontOfSize:12]};
     NSDictionary *bigDict = @{NSFontAttributeName : [UIFont systemFontOfSize:21]};
     NSMutableAttributedString *string = [[NSMutableAttributedString alloc] init];
@@ -192,7 +194,6 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     }
 //    [self updatePrice];
     
-    
 //    self.checkToken = YES;
 //    [self getBasicHeader];
 //    [SSNetworkRequest getRequest:@"" params:nil success:^(id responseObj) {
@@ -212,10 +213,15 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 
 - (void)initCellDatas
 {
+    
+    
 #warning 测试选择月份高度
 //    NSInteger rowCount = (array.count + colCount - 1) / colCount;
-    NSInteger rowCount = (4 + 3 - 1) / 3;
+    NSInteger rowCount = (5 + 3 - 1) / 3;
     CGFloat selectMonthCellHeight = 50 + 50 * rowCount + 7 * (rowCount - 1) + 10;
+    
+    NSInteger selectTimeCount = (4 + 3 - 1) / 3;
+    CGFloat selectTimeCellHeight = 50 + 50 * selectTimeCount + 7 * (selectTimeCount - 1) + 10;
     _cellDatas = @[
                    @[
                        @{
@@ -229,8 +235,8 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                    @[
                        @{
                            @"cellName":@"通话时长",
-                           @"cellDetailName":@"无限通话",
-                           @"cellHeight":@(84),
+//                           @"cellDetailName":@"无限通话",
+                           @"cellHeight":@(selectTimeCellHeight),
                            @"isHiddenLine":@(NO),
                            },
                        @{
@@ -360,33 +366,59 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         return cell;
     }else if (indexPath.section == 1) {
         if (dict[@"cellDetailName"]) {
-            OpenService2Cell *cell = [tableView dequeueReusableCellWithIdentifier:openService2CellID];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.nameLabel.text = dict[@"cellName"];
-            NSMutableAttributedString *attriString = [[NSMutableAttributedString alloc] init];
-            NSAttributedString *string = [[NSAttributedString alloc] initWithString:dict[@"cellDetailName"] attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:16], NSForegroundColorAttributeName: UIColorFromRGB(0x333333)}];
-            [attriString appendAttributedString:string];
-            if (dict[@"cellDetailAttriName"]) {
-                NSAttributedString *string2 = [[NSAttributedString alloc] initWithString:dict[@"cellDetailAttriName"] attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:14], NSForegroundColorAttributeName: UIColorFromRGB(0xf21f20),NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid),NSStrikethroughColorAttributeName:UIColorFromRGB(0xf21f20)}];
-                [attriString appendAttributedString:string2];
-            }
-            cell.detailLabel.attributedText = attriString;
-            if ([dict[@"isHiddenLine"] boolValue]) {
-                cell.lineView.hidden = YES;
-            }else{
-                cell.lineView.hidden = NO;
-            }
-            return cell;
+//            if (indexPath.row == 0) {
+//                kWeakSelf
+//                OpenServiceMonthCell *cell = [tableView dequeueReusableCellWithIdentifier:openServiceMonthCellID];
+//                [cell updateCellWithDatas:@{@"datas":@[@"100",@"300",@"600",@"1000"]} appendText:@"分钟"];
+//                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//                cell.selectIndexBlock = ^(NSInteger selectIndex) {
+//                    weakSelf.currentSelectPhoneTime = selectIndex;
+//                    [weakSelf updatePrice];
+//                };
+//                return cell;
+//            }else{
+                OpenService2Cell *cell = [tableView dequeueReusableCellWithIdentifier:openService2CellID];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                cell.nameLabel.text = dict[@"cellName"];
+                NSMutableAttributedString *attriString = [[NSMutableAttributedString alloc] init];
+                NSAttributedString *string = [[NSAttributedString alloc] initWithString:dict[@"cellDetailName"] attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:16], NSForegroundColorAttributeName: UIColorFromRGB(0x333333)}];
+                [attriString appendAttributedString:string];
+                if (dict[@"cellDetailAttriName"]) {
+                    NSAttributedString *string2 = [[NSAttributedString alloc] initWithString:dict[@"cellDetailAttriName"] attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:14], NSForegroundColorAttributeName: UIColorFromRGB(0xf21f20),NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid),NSStrikethroughColorAttributeName:UIColorFromRGB(0xf21f20)}];
+                    [attriString appendAttributedString:string2];
+                }
+                cell.detailLabel.attributedText = attriString;
+//                if ([dict[@"isHiddenLine"] boolValue]) {
+//                    cell.lineView.hidden = YES;
+//                }else{
+//                    cell.lineView.hidden = NO;
+//                }
+                return cell;
+//            }
         }else{
-            kWeakSelf
-            OpenServiceMonthCell *cell = [tableView dequeueReusableCellWithIdentifier:openServiceMonthCellID];
-            [cell updateCellWithDatas:@{}];
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            cell.selectMonthBlock = ^(NSInteger selectMonth) {
-                weakSelf.currentSelectMonth= selectMonth;
-                [weakSelf updatePrice];
-            };
-            return cell;
+            if (indexPath.row == 0) {
+                kWeakSelf
+                OpenServiceMonthCell *cell = [tableView dequeueReusableCellWithIdentifier:openServiceMonthCellID       ];
+                cell.titleLabel.text = dict[@"cellName"];
+                [cell updateCellWithDatas:@{@"datas":@[@"100",@"300",@"600",@"1000"]} appendText:@"分钟" selectIndex:self.currentSelectPhoneTime];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                cell.selectIndexBlock = ^(NSInteger selectIndex) {
+                    weakSelf.currentSelectPhoneTime = selectIndex;
+                    [weakSelf updatePrice];
+                };
+                return cell;
+            }else{
+                kWeakSelf
+                OpenServiceMonthCell *cell = [tableView dequeueReusableCellWithIdentifier:openServiceMonthCellID];
+                cell.titleLabel.text = dict[@"cellName"];
+                [cell updateCellWithDatas:@{@"datas":@[@"1",@"3",@"6",@"8",@"12"]} appendText:@"个月" selectIndex:self.currentSelectMonth];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                cell.selectIndexBlock = ^(NSInteger selectMonth) {
+                    weakSelf.currentSelectMonth = selectMonth;
+                    [weakSelf updatePrice];
+                };
+                return cell;
+            }
         }
     }else{
 //        NSDictionary *dict = self.cellDatas[indexPath.section][indexPath.row];

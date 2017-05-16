@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^SelectMonthBlock)(NSInteger selectMonth);
+typedef void(^SelectIndexBlock)(NSInteger selectIndex);
 @interface OpenServiceMonthCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
 @property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *selectMonthButtons;
-@property (nonatomic, copy) SelectMonthBlock selectMonthBlock;
+@property (nonatomic, copy) SelectIndexBlock selectIndexBlock;
 
-- (void)updateCellWithDatas:(NSDictionary *)dict;
+- (void)updateCellWithDatas:(NSDictionary *)dict appendText:(NSString *)appendString selectIndex:(NSInteger)selectIndex;
 
 //width : kwidth - 30
 @property (weak, nonatomic) IBOutlet UIView *monthContentView;

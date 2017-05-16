@@ -139,7 +139,7 @@ static dispatch_once_t onceToken;
     _peripheral = nil;
     _peripherals = nil;
     _strongestRssiPeripheral = nil;
-     [[NSNotificationCenter defaultCenter] removeObserver:self];
+//     [[NSNotificationCenter defaultCenter] removeObserver:self];
     instance = nil;
     onceToken=0l;
 }
@@ -151,6 +151,7 @@ static dispatch_once_t onceToken;
     }
     self.isKill = NO;
     NSLog(@"初始化蓝牙");
+    NSLog(@"当前初始化线程======%@", [NSThread currentThread]);
     self.isInitInstance = YES;
     self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
     
@@ -172,7 +173,8 @@ static dispatch_once_t onceToken;
 
 - (void)initObserverAction
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    NSLog(@"注册监听");
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downElectToCard) name:@"downElectic" object:@"downElectic"];//对卡断电
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];//接收PushKit消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据

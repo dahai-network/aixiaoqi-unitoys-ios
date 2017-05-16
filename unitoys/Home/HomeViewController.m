@@ -119,6 +119,10 @@
     
     [super viewDidLoad];
     
+    if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+        [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+    }
+    
     [self checkPackageResidue];
     
     //添加状态栏
@@ -167,9 +171,9 @@
     self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
     self.navigationItem.leftBarButtonItem = nil;
     
-    if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-        [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
-    }
+//    if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+//        [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+//    }
     kWeakSelf
     [UNBlueToothTool shareBlueToothTool].updateButtonImageAndTitleBlock = ^(NSString *title){
         NSLog(@"updateButtonImageAndTitleBlock---%@", title);

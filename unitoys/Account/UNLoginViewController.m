@@ -443,7 +443,7 @@
             [weakSelf addBlackLists:responseObj[@"data"]];
             [UNDataTools sharedInstance].blackLists = nil;
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
         }
         NSLog(@"查询到的消息数据：%@",responseObj);

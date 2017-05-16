@@ -1107,7 +1107,11 @@
     if (tempStr.length>= 24 + leng * 2) {
         NSString *currentStr = [tempStr substringWithRange:NSMakeRange(0, 24 + leng*2)];
         NSLog(@"当前数据包---%@", currentStr);
-        [self checkPacketDetailWithString:currentStr];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"checkPacketDetailWithString-----%@",[NSThread currentThread]);
+            [self checkPacketDetailWithString:currentStr];
+        });
+        
         if (tempStr.length > 24 + leng * 2) {
             NSLog(@"粘包处理");
             [self checkManyPacketString:[tempStr substringFromIndex:(24 + leng * 2)]];
@@ -1272,11 +1276,17 @@
             NSLog(@"两位leng = %zd  需要传入的字符串 -- %@", leng, TLVdetail);
             
             if ([UNPushKitMessageManager shareManager].isNeedRegister) {
+                NSLog(@"需要注册");
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"updataElectic" object:@"updataElectic"];//发送对卡上电通知
                 //发送给sdk
                 [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
             }else{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"AnalysisAuthData" object:TLVdetail];
+                NSLog(@"发送鉴权数据-----%@",[NSThread currentThread]);
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"AnalysisAuthData" object:TLVdetail];
+                });
+                
             }
 
             //发送给sdk

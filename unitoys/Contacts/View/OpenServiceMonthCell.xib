@@ -130,6 +130,7 @@
             <connections>
                 <outlet property="monthContentView" destination="fpc-UG-5Oi" id="hsd-wu-ESK"/>
                 <outlet property="monthContentViewHeight" destination="Nrx-he-hpV" id="XmH-GK-4JE"/>
+                <outlet property="titleLabel" destination="LuA-xh-56g" id="v3M-bq-CyS"/>
                 <outletCollection property="selectMonthButtons" destination="WCM-Gf-axb" id="Txn-Mq-SWL"/>
                 <outletCollection property="selectMonthButtons" destination="gJK-ep-WFh" id="cor-fl-GjH"/>
                 <outletCollection property="selectMonthButtons" destination="asv-b1-2it" id="GzB-EP-FzY"/>

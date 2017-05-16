@@ -150,7 +150,7 @@
             [self deleteVeriTimer];
             [BlueToothDataManager shareManager].isShowHud = NO;
         }else{
-            HUDNormal(INTERNATIONALSTRING(@"验证失败"))
+            HUDNormal(INTERNATIONALSTRING(@"验证失败,请检查手机号是否正确"))
             //关闭定时器
             [self deleteVeriTimer];
             //数据请求失败
@@ -158,7 +158,7 @@
         }
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"啥都没：%@",[error description]);
-        HUDNormal(INTERNATIONALSTRING(@"验证失败"))
+        HUDNormal(INTERNATIONALSTRING(@"网络出错,验证失败"))
         //关闭定时器
         [self deleteVeriTimer];
         [BlueToothDataManager shareManager].isShowHud = NO;
