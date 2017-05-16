@@ -127,7 +127,7 @@
         [headers setObject:timestemp forKey:@"expires"];
         timestemp = [NSString stringWithFormat:@"2006808%@BAS123!@#FD1A56K",timestemp];
         [headers setObject:[self md5:timestemp] forKey:@"sign"];
-            NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
         if (userdata) {
             [headers setObject:[userdata objectForKey:@"Token"] forKey:@"TOKEN"];
         }

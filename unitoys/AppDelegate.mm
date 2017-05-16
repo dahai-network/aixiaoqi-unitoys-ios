@@ -1619,13 +1619,13 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
     
     //删除存储的绑定信息
-    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
-    [UNBlueToothTool shareBlueToothTool].isKill = YES;
-    if ([BlueToothDataManager shareManager].isConnected) {
-        [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
-    }
+//    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+//    [UNBlueToothTool shareBlueToothTool].isKill = YES;
+//    if ([BlueToothDataManager shareManager].isConnected) {
+//        [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+//    }
     //    [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
-    [[UNBlueToothTool shareBlueToothTool] clearInstance];
+//    [[UNBlueToothTool shareBlueToothTool] clearInstance];
 }
 
 #pragma mark 注册及初始化极光推送

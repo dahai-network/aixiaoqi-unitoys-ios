@@ -653,10 +653,11 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    NSLog(@"界面出现 -- PhoneRecordController -- %d", [self isKindOfClass:NSClassFromString(@"PhoneRecordController")]);
-    NSLog(@"界面出现 -- MessageRecordController -- %d", [self isKindOfClass:NSClassFromString(@"MessageRecordController")]);
-    NSLog(@"界面出现 -- ContactsViewController -- %d", [self isKindOfClass:NSClassFromString(@"ContactsViewController")]);
-    NSLog(@"界面出现 -- PageViewController -- %d", [self isKindOfClass:NSClassFromString(@"PageViewController")]);
+    NSLog(@"viewDidAppear---%@", [self class]);
+//    NSLog(@"界面出现 -- PhoneRecordController -- %d", [self isKindOfClass:NSClassFromString(@"PhoneRecordController")]);
+//    NSLog(@"界面出现 -- MessageRecordController -- %d", [self isKindOfClass:NSClassFromString(@"MessageRecordController")]);
+//    NSLog(@"界面出现 -- ContactsViewController -- %d", [self isKindOfClass:NSClassFromString(@"ContactsViewController")]);
+//    NSLog(@"界面出现 -- PageViewController -- %d", [self isKindOfClass:NSClassFromString(@"PageViewController")]);
     if ([self isKindOfClass:NSClassFromString(@"PhoneRecordController")] || [self isKindOfClass:NSClassFromString(@"MessageRecordController")] || [self isKindOfClass:NSClassFromString(@"ContactsViewController")] || [self isKindOfClass:NSClassFromString(@"PageViewController")]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"isShowProgress" object:@"1"];
     } else {

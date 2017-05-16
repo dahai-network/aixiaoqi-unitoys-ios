@@ -302,12 +302,25 @@ typedef enum : NSUInteger {
 }
 
 - (void)reloginAction {
+    NSLog(@"调用reloginAction方法");
+//    [UNBlueToothTool shareBlueToothTool].isKill = YES;
+    //删除存储的绑定信息
+//    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+//    if ([BlueToothDataManager shareManager].isConnected) {
+//        NSLog(@"断开蓝牙1");
+//        if ([UNBlueToothTool shareBlueToothTool].peripheral) {
+//            NSLog(@"断开蓝牙2");
+//            [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+//        }
+//    }
+    [[UNBlueToothTool shareBlueToothTool] clearInstance];
     //注销极光推送
     [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
     }];
     //关闭tcp
     [[NSNotificationCenter defaultCenter] postNotificationName:@"disconnectTCP" object:@"disconnectTCP"];
-    
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"appIsKilled" object:@"appIsKilled"];
+    [self appIsKilled];
     //将连接的信息存储到本地
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
@@ -323,18 +336,20 @@ typedef enum : NSUInteger {
     }
     
     //删除存储的绑定信息
-    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
-    [UNBlueToothTool shareBlueToothTool].isKill = YES;
-    if ([BlueToothDataManager shareManager].isConnected) {
-        if ([UNBlueToothTool shareBlueToothTool].peripheral) {
-            [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
-        }
-    }
-//    [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
-    [[UNBlueToothTool shareBlueToothTool] clearInstance];
+//    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+//    [UNBlueToothTool shareBlueToothTool].isKill = YES;
+//    if ([BlueToothDataManager shareManager].isConnected) {
+//        if ([UNBlueToothTool shareBlueToothTool].peripheral) {
+//            [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
+//        }
+//    }
+//    [[UNBlueToothTool shareBlueToothTool] clearInstance];
+    
+    [UNDataTools sharedInstance].normalHeaders = nil;
     
     UIApplication *application = [UIApplication sharedApplication];
     if ([application.keyWindow.rootViewController isKindOfClass:[UNLoginViewController class]]) {
+        NSLog(@"dismissViewControllerAnimated");
         [self dismissViewControllerAnimated:YES completion:nil];
     }else{
 //        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -349,6 +364,7 @@ typedef enum : NSUInteger {
 //            }
 //        }
         UNLoginViewController *loginVc = [[UNLoginViewController alloc] init];
+        NSLog(@"UNLoginViewController");
         if (loginVc) {
             application.keyWindow.rootViewController = loginVc;
             [application.keyWindow makeKeyAndVisible];
@@ -439,6 +455,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isShowProgress" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"reloginNotify" object:nil];
 }
 
 @end

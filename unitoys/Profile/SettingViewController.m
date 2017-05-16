@@ -40,65 +40,27 @@
     UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:nil message:INTERNATIONALSTRING(@"确定要退出登录吗？") preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:nil];
     UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [UNBlueToothTool shareBlueToothTool].isKill = YES;
-        //点击事件
+//        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
+        NSLog(@"退出登录");
+        //关闭tcp
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"disconnectTCP" object:@"disconnectTCP"];
         self.checkToken = YES;
-        
         [self getBasicHeader];
-//        NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest getRequest:apiLogout params:nil success:^(id responseObj) {
-            //
             NSLog(@"查询到的用户数据：%@",responseObj);
-            
         } failure:^(id dataObj, NSError *error) {
-            //
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
         
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  //清除密码信息
-//        [userDefaults setObject:@"" forKey:@"KEY_USER_NAME"];
+        //        [userDefaults setObject:@"" forKey:@"KEY_USER_NAME"];
         [userDefaults setObject:@"" forKey:@"KEY_PASS_WORD"];
         [userDefaults synchronize];
-        
-        //将连接的信息存储到本地
-        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-        if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-            [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
-        }
-        [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"]) {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"offsetStatue"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-        
-        //删除存储的绑定信息
-        [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
-        
-        if ([BlueToothDataManager shareManager].isConnected) {
-            if ([UNBlueToothTool shareBlueToothTool].peripheral) {
-                [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
-            }
-        }
-//        [UNBlueToothTool shareBlueToothTool].isInitInstance = NO;
-//        [UNBlueToothTool shareBlueToothTool] = nil;
-//        [[UNBlueToothTool shareBlueToothTool] clearInstance];
-        
         [AddressBookManager shareManager].isOpenedAddress = NO;
-        //注销极光推送
-        [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
-            
-        }];
-//        [[UIApplication sharedApplication] unregisterForRemoteNotifications];
-        NSLog(@"退出登录");
-        //关闭tcp
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"disconnectTCP" object:@"disconnectTCP"];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"appIsKilled" object:@"appIsKilled"];
-        [[UNBlueToothTool shareBlueToothTool] clearInstance];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"appIsKilled" object:@"appIsKilled"];
+//        [[UNBlueToothTool shareBlueToothTool] clearInstance];
     }];
     [alertVC addAction:cancelAction];
     [alertVC addAction:certailAction];

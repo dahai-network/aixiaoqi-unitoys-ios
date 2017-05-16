@@ -80,7 +80,6 @@ typedef enum : NSUInteger {
 @end
 
 static UNBlueToothTool *instance = nil;
-static dispatch_once_t onceToken;
 @implementation UNBlueToothTool
 
 - (void)setPushKitStatu:(BOOL)isPushKit
@@ -123,6 +122,7 @@ static dispatch_once_t onceToken;
 
 + (UNBlueToothTool *)shareBlueToothTool
 {
+    static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [[UNBlueToothTool alloc] init];
     });
@@ -131,7 +131,16 @@ static dispatch_once_t onceToken;
 
 - (void)clearInstance
 {
+    NSLog(@"clearInstance");
     self.isKill = YES;
+    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
+    if ([BlueToothDataManager shareManager].isConnected) {
+        NSLog(@"断开蓝牙1");
+        if (_peripheral) {
+            NSLog(@"断开蓝牙2");
+            [_mgr cancelPeripheralConnection:_peripheral];
+        }
+    }
     if (_mgr) {
         [_mgr stopScan];
         _mgr = nil;
@@ -139,19 +148,71 @@ static dispatch_once_t onceToken;
     _peripheral = nil;
     _peripherals = nil;
     _strongestRssiPeripheral = nil;
-//     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    instance = nil;
-    onceToken=0l;
+    
+    _macAddressDict = nil;
+    _RSSIDict = nil;
+    _simtype = nil;
+    
+//    //sim卡类型
+//    @property (nonatomic, copy) NSString *simtype;
+//    /*蓝牙相关*/
+//    @property (nonatomic, strong) CBCentralManager *mgr;
+//    @property (nonatomic, strong) NSMutableArray *peripherals;
+//    //外设
+//    @property (nonatomic, strong) CBPeripheral *peripheral;
+//    //信号最强的外设
+//    @property (nonatomic, strong) CBPeripheral *strongestRssiPeripheral;
+//    //写属性特征
+//    @property (nonatomic, strong) CBCharacteristic *characteristic;
+//    //通知属性特征
+//    @property (nonatomic, strong) CBCharacteristic *notifyCharacteristic;
+//    @property (nonatomic, strong) CBCharacteristic *notifyCharacteristic2;
+//    @property (nonatomic, strong) CBCharacteristic *notifyCharacteristic3;
+//    //存储uuid的数组
+//    @property (nonatomic, strong) NSMutableArray *uuidArray;
+//    //存放mac地址的字典
+//    @property (nonatomic, strong) NSMutableDictionary *macAddressDict;
+//    //存放RSSI的字典
+//    @property (nonatomic, strong) NSMutableDictionary *RSSIDict;
+//    //存放数据包的数组
+//    @property (nonatomic, strong) NSMutableArray *dataPacketArray;
+//    //存放最终总数据的字符串
+//    @property (nonatomic, copy) NSString *totalString;
+//    //存放绑定的设备的信息
+//    @property (nonatomic, strong) NSDictionary *boundedDeviceInfo;
+//    //记录需要激活的大王卡的序列号(空卡序列号)
+//    @property (nonatomic, copy) NSString *bigKingCardNumber;
+//    //激活的订单id
+//    @property (nonatomic, copy) NSString *activityOrderId;
+//    //计时器相关
+//    @property (nonatomic, strong)NSTimer *timer;
+//    @property (nonatomic, assign)int time;
+//    //记录接收到包的类型
+//    @property (nonatomic, assign) int dataPackegType;
+//    //已连接的配对设备
+//    @property (nonatomic, strong) NSArray *pairedArr;
+//    //是否使能通知的数据数组
+//    @property (nonatomic, strong) NSMutableArray *dataArr;
+    self.isInitInstance = NO;
+}
+
+- (instancetype)init
+{
+    if (self = [super init]) {
+        [self initObserverAction];
+    }
+    return self;
 }
 
 - (void)initBlueTooth
 {
-    if (self.isInitInstance || self.isKill) {
+    if (self.isInitInstance) {
         return;
     }
-    self.isKill = NO;
     NSLog(@"初始化蓝牙");
     NSLog(@"当前初始化线程======%@", [NSThread currentThread]);
+    
+    self.isKill = NO;
     self.isInitInstance = YES;
     self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
     
@@ -167,7 +228,7 @@ static dispatch_once_t onceToken;
     [BlueToothDataManager shareManager].isNeedToResert = YES;
     [BlueToothDataManager shareManager].currentStep = @"0";
     
-    [self initObserverAction];
+//    [self initObserverAction];
     [self checkBindedDeviceFromNet];
 }
 
@@ -182,6 +243,10 @@ static dispatch_once_t onceToken;
 
 - (void)receivePushKitMessage
 {
+    if (self.isKill || !self.isInitInstance) {
+        return;
+    }
+    
     NSLog(@"接收到PushKit消息---receivePushKitMessage");
     if ([BlueToothDataManager shareManager].isConnected) {
         
@@ -213,6 +278,9 @@ static dispatch_once_t onceToken;
 //解析鉴权数据
 - (void)analysisAuthData:(NSNotification *)noti
 {
+    if (self.isKill || !self.isInitInstance) {
+        return;
+    }
     NSLog(@"analysisAuthData---%@", noti.object);
     [self analysisAuthDataWithString:noti.object];
 }
@@ -225,6 +293,10 @@ static dispatch_once_t onceToken;
 
 #pragma mark 对卡断电
 - (void)downElectToCard {
+    if (self.isKill || !self.isInitInstance) {
+        return;
+    }
+    
     if ([BlueToothDataManager shareManager].isConnected) {
         NSLog(@"对卡断电");
         [self phoneCardToOutageNew];
@@ -2546,6 +2618,7 @@ static dispatch_once_t onceToken;
                     //扫描蓝牙设备
                     [self scanAndConnectDevice];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                    NSLog(@"reloginNotify");
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                     [self scanAndConnectDevice];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==0){
