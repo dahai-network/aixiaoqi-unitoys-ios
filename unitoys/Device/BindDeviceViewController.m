@@ -418,7 +418,7 @@
                 
                 //删除存储的绑定信息
                 [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
-                if ([BlueToothDataManager shareManager].isConnected) {
+                if ([BlueToothDataManager shareManager].isConnected && [UNBlueToothTool shareBlueToothTool].peripheral) {
                     [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
                 }
                 if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"]) {
@@ -431,9 +431,9 @@
                 }
                 self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
                 //发送解除绑定成功通知
+                [BlueToothDataManager shareManager].isConnected = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
                 [BlueToothDataManager shareManager].isBounded = NO;
-                [BlueToothDataManager shareManager].isConnected = NO;
                 [BlueToothDataManager shareManager].isRegisted = NO;
                 [BlueToothDataManager shareManager].deviceMacAddress = nil;
                 [BlueToothDataManager shareManager].electricQuantity = nil;

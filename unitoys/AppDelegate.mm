@@ -845,7 +845,7 @@
         [BlueToothDataManager shareManager].isRegisted = NO;
         return;
     }
-    if (![[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
+    if (![[BlueToothDataManager shareManager].cardType isEqualToString:@"2"] || ![BlueToothDataManager shareManager].isHaveCard) {
         //不是电话卡，断开tcp连接
         NSLog(@"不是电话卡，断开tcp");
         [BlueToothDataManager shareManager].isTcpConnected = NO;
@@ -1286,7 +1286,6 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"AnalysisAuthData" object:TLVdetail];
                 });
-                
             }
 
             //发送给sdk
