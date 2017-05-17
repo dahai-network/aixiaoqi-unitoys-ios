@@ -60,6 +60,9 @@
 
 -(void)requesetOfPage:(NSInteger)page{
 //    HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
+    if (page) {
+        self.CurrentPage = page;
+    }
     [self checkOrderListWithOrderStatus:self.statueStr];
 }
 
@@ -177,7 +180,7 @@
         
         apiNameStr = [NSString stringWithFormat:@"%@PackageCategory", @"apiOrderList"];
     }
-    
+//    NSLog(@"当前打印的页数 == %ld", (long)self.CurrentPage);
     [self getBasicHeader];
 //    NSLog(@"表头：%@",self.headers);
     
@@ -227,7 +230,7 @@
             //数据请求失败
         }
         
-        NSLog(@"查询到的套餐数据：%@",responseObj[@"msg"]);
+//        NSLog(@"查询到的套餐数据：%@",responseObj[@"msg"]);
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];

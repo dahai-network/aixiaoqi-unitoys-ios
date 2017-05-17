@@ -751,7 +751,16 @@
 }
 
 - (IBAction)editProfile:(id)sender {
-    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Profile" bundle:nil];
+    if (storyboard) {
+        self.tabBarController.tabBar.hidden = YES;
+        UIViewController *profileViewController = [storyboard instantiateViewControllerWithIdentifier:@"profileViewController"];
+        if (profileViewController) {
+            [self.navigationController pushViewController:profileViewController animated:YES];
+        }
+    }
+}
+- (IBAction)tapToEditProfile:(UITapGestureRecognizer *)sender {
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Profile" bundle:nil];
     if (storyboard) {
         self.tabBarController.tabBar.hidden = YES;

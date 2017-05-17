@@ -49,7 +49,7 @@
                                         <rect key="frame" x="0.0" y="35" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="UCA-br-3KP" id="97b-Jc-ofQ">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="联系我们" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BYT-sV-9jB">
@@ -73,7 +73,7 @@
                                         <rect key="frame" x="0.0" y="79" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ckg-VF-HWH" id="9Xk-d5-pP8">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="用户反馈" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NZm-H5-Lrq">
@@ -101,7 +101,7 @@
                                         <rect key="frame" x="0.0" y="159" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="iVH-PY-oxD" id="VxE-kh-t5y">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="用户许可及服务协议" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dn-oi-FKu">
@@ -125,7 +125,7 @@
                                         <rect key="frame" x="0.0" y="203" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="X3v-Af-Vik" id="jcV-D3-vCW">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="App版本" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="PyL-ff-CC3">
@@ -329,12 +329,11 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZDN-R1-g1B">
-                                <rect key="frame" x="17" y="292" width="341" height="40"/>
-                                <color key="backgroundColor" red="0.0039215686269999999" green="0.81568627449999997" blue="0.75294117650000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="15" y="292" width="345" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="aXn-82-eEA"/>
+                                    <constraint firstAttribute="height" constant="50" id="aXn-82-eEA"/>
                                 </constraints>
-                                <state key="normal" title="发送">
+                                <state key="normal" title="发送" backgroundImage="btn_bj_l_nor">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <userDefinedRuntimeAttributes>
@@ -348,14 +347,14 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="0.91764705879999997" green="0.92549019610000005" blue="0.94117647059999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="ZDN-R1-g1B" firstAttribute="leading" secondItem="lKx-fg-ZvD" secondAttribute="leadingMargin" constant="1" id="19B-dB-GpN"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="ZDN-R1-g1B" secondAttribute="trailing" constant="1" id="58p-iD-bO2"/>
                             <constraint firstAttribute="trailing" secondItem="oLV-Cs-TeA" secondAttribute="trailing" constant="8" id="EoQ-fX-yQO"/>
+                            <constraint firstItem="ZDN-R1-g1B" firstAttribute="leading" secondItem="lKx-fg-ZvD" secondAttribute="leading" constant="15" id="GwC-hi-Pu4"/>
                             <constraint firstItem="ZDN-R1-g1B" firstAttribute="top" secondItem="oLV-Cs-TeA" secondAttribute="bottom" constant="15" id="QOh-pM-ygl"/>
                             <constraint firstItem="RQ3-g7-pma" firstAttribute="leading" secondItem="lKx-fg-ZvD" secondAttribute="leading" id="XyT-wW-EYS"/>
                             <constraint firstAttribute="bottom" secondItem="RQ3-g7-pma" secondAttribute="bottom" constant="390" id="grE-5x-b79"/>
+                            <constraint firstAttribute="trailing" secondItem="ZDN-R1-g1B" secondAttribute="trailing" constant="15" id="hrp-4X-wF4"/>
                             <constraint firstItem="X2W-ZX-Nr3" firstAttribute="top" secondItem="oLV-Cs-TeA" secondAttribute="bottom" constant="390" id="kGf-gt-85w"/>
                             <constraint firstAttribute="trailing" secondItem="RQ3-g7-pma" secondAttribute="trailing" id="qUq-cG-c8F"/>
                             <constraint firstItem="RQ3-g7-pma" firstAttribute="top" secondItem="pUa-xh-nUQ" secondAttribute="bottom" constant="13" id="qWz-cf-5gg"/>

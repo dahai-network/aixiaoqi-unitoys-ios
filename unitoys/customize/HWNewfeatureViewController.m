@@ -229,8 +229,8 @@
 - (void)timerLessAction {
     self.seconds--;
     self.timeLabel.text = [NSString stringWithFormat:@"%d秒", self.seconds];
+//    NSLog(@"读秒 -- %d", self.seconds);
     if (self.seconds == 0) {
-        [self.timer setFireDate:[NSDate distantFuture]];
         [self startClick];
     }
 }
@@ -243,29 +243,8 @@
 
 - (void)startClick
 {
-    // 切换到HWTabBarController
-    /*
-     切换控制器的手段
-     1.push：依赖于UINavigationController，控制器的切换是可逆的，比如A切换到B，B又可以回到A
-     2.modal：控制器的切换是可逆的，比如A切换到B，B又可以回到A
-     3.切换window的rootViewController
-     */
-//    UIWindow *window = [UIApplication sharedApplication].keyWindow;
-//    window.rootViewController = [[navHomeViewController  alloc]initWithRootViewController:[[LoginViewController alloc]init]];
-    
-//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//    if (storyboard) {
-//        UIViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-//        if (loginViewController) {
-//            UIWindow *window = [UIApplication sharedApplication].keyWindow;
-//            window.rootViewController = loginViewController;
-//        }
-//    }
+    [self.timer setFireDate:[NSDate distantFuture]];
     [self checkLogin];
-    
-    // modal方式，不建议采取：新特性控制器不会销毁
-//    HWTabBarViewController *main = [[HWTabBarViewController alloc] init];
-//    [self presentViewController:main animated:YES completion:nil];
 }
 
 - (void)checkLogin {

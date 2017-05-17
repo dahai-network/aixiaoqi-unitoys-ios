@@ -1637,7 +1637,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 {
     //如果点击按钮后不再提示为选中,存储今日时间
     kWeakSelf
-    [ServiceRecommendView shareServiceRecommendViewWithTitle:@"推荐使用爱小器0元话费体验包,向高额话费说拜拜" leftString:@"下次" rightString:@"去领取" buttnTap:^(NSInteger index, BOOL isNoTip) {
+    [ServiceRecommendView shareServiceRecommendViewWithTitle:@"推荐使用爱小器0元话费体验包,向高额话费说拜拜!" leftString:@"下次" rightString:@"去领取" buttnTap:^(NSInteger index, BOOL isNoTip) {
         if (isNoTip) {
             if (currentDateStr) {
                 [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"HiddenTodayTipWithCallPhone"];
