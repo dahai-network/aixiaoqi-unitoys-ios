@@ -279,6 +279,16 @@
 //检查是否需要验证
 #define apiUserDeviceTelCheckConfirmed defaultHost@"api/UserDeviceTel/CheckConfirmed"
 
+//查询套餐组合
+#define apiPackageGetAttrsByID defaultHost@"api/Package/GetAttrsByID"
+
+
+
+
+
+
+
+
 
 //环形进度条密集度系数
 #define AnnularProgressBar @"60"

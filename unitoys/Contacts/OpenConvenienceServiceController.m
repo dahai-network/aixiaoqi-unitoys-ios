@@ -40,10 +40,14 @@
 //当前选中支付类型
 @property (nonatomic, weak) SelectPayTypeCell *selectPayCell;
 
+@property (nonatomic, weak) OpenService2Cell *service2Cell;
+
 //当前月套餐费用
 @property (nonatomic, assign) CGFloat currentMonthPrice;
-//现格
-@property (nonatomic, assign) CGFloat nowPrice;
+////现格
+//@property (nonatomic, assign) CGFloat nowPrice;
+//当前服务费用
+@property (nonatomic, assign) CGFloat currentServicePrice;
 //原价
 @property (nonatomic, assign) CGFloat beforePrice;
 //当前选择价格
@@ -57,6 +61,16 @@
 @property (nonatomic, copy) NSString *orderID;
 //套餐类型
 @property (nonatomic, assign) int packageCategory;
+
+//总数据列表
+@property (nonatomic, copy) NSArray *dataLists;
+//总套餐数
+@property (nonatomic, copy) NSArray *packageLists;
+//总月份
+@property (nonatomic, copy) NSArray *monthLists;
+//当前选中数据(需要同时选中月份和套餐)
+@property (nonatomic, copy) NSDictionary *currentSelectData;
+
 @end
 
 static NSString *openServiceCellID = @"OpenServiceCell";
@@ -74,6 +88,30 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     return _cellDatas;
 }
 
+- (NSArray *)dataLists
+{
+    if (!_dataLists) {
+        _dataLists = [NSArray array];
+    }
+    return _dataLists;
+}
+
+- (NSArray *)packageLists
+{
+    if (!_packageLists) {
+        _packageLists = [NSArray array];
+    }
+    return _packageLists;
+}
+
+- (NSArray *)monthLists
+{
+    if (!_monthLists) {
+        _monthLists = [NSArray array];
+    }
+    return _monthLists;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"开通省心服务";
@@ -85,6 +123,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     [self initCellDatas];
     [self updatePrice];
     [self loadAmmount];
+    [self initObserver];
 }
 - (void)initData
 {
@@ -118,11 +157,18 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     } headers:self.headers];
 }
 
+- (void)initObserver
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alipayComplete:) name:@"AlipayComplete" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(weipayComplete:) name:@"WeipayComplete" object:nil];
+}
 
 - (void)initBottomView
 {
     OpenServiceBottomView *bottomView = [[NSBundle mainBundle] loadNibNamed:@"OpenServiceBottomView" owner:self options:nil].lastObject;
     bottomView.surePayButton.enabled = NO;
+    bottomView.surePayButton.backgroundColor = UIColorFromRGB(0xe5e5e5);
+    [bottomView.surePayButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [bottomView.surePayButton addTarget:self action:@selector(surePayAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:bottomView];
     self.bottomView = bottomView;
@@ -136,9 +182,31 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 
 - (void)updatePrice
 {
-    self.payPrice = self.currentMonthPrice + (self.currentSelectMonth - 100)* self.nowPrice;
+    if (self.currentSelectPhoneTime != 0 || self.currentSelectMonth != 0) {
+        NSString *currentCallMinutesDescr;
+        NSString *currentExpireDaysDescr;
+        if (self.packageLists.count > (self.currentSelectPhoneTime - 100)) {
+            currentCallMinutesDescr = self.packageLists[self.currentSelectPhoneTime - 100];
+        }
+        if (self.monthLists.count > (self.currentSelectMonth - 100)) {
+            currentExpireDaysDescr = self.monthLists[self.currentSelectMonth - 100];
+        }
+        if (currentCallMinutesDescr && currentExpireDaysDescr) {
+            for (NSDictionary *dict in self.dataLists) {
+                if ([currentCallMinutesDescr isEqualToString:dict[@"CallMinutesDescr"]] && [currentExpireDaysDescr isEqualToString:dict[@"ExpireDaysDescr"]]) {
+                    self.currentSelectData = dict;
+                    break;
+                }
+            }
+        }
+        if (self.currentSelectData) {
+            self.payPrice = self.currentMonthPrice * [self.currentSelectData[@"ExpireDays"] intValue] + [self.currentSelectData[@"Price"] floatValue];
+            self.beforePrice = self.currentMonthPrice * [self.currentSelectData[@"ExpireDays"] intValue] + [self.currentSelectData[@"OriginalPrice"] floatValue];
+        }
+    }
     NSDictionary *smallDict = @{NSFontAttributeName : [UIFont systemFontOfSize:12]};
     NSDictionary *bigDict = @{NSFontAttributeName : [UIFont systemFontOfSize:21]};
+    NSDictionary *beforeDict = @{NSFontAttributeName : [UIFont systemFontOfSize:12], NSForegroundColorAttributeName : [UIColor lightGrayColor],NSStrikethroughStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid), NSBaselineOffsetAttributeName:@(NSUnderlineStyleNone)};
     NSMutableAttributedString *string = [[NSMutableAttributedString alloc] init];
     [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"￥" attributes:smallDict]];
     NSString *payString = [NSString stringWithFormat:@"%.2f", self.payPrice];
@@ -149,9 +217,12 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     }else{
         [string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@", payString] attributes:bigDict]];
     }
+    if (self.beforePrice > self.payPrice) {
+        [string appendAttributedString:[[NSAttributedString alloc] initWithString:@"  "]];
+        [string appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%.2f", self.beforePrice] attributes:beforeDict]];
+    }
     self.bottomView.payMoneyLabel.attributedText = string;
-    
-    if (!self.currentMonthPrice || !self.currentSelectMonth || !self.currentPayType) {
+    if (!self.currentSelectMonth || !self.currentPayType || !self.currentSelectPhoneTime) {
         self.bottomView.surePayButton.backgroundColor = UIColorFromRGB(0xe5e5e5);
         [self.bottomView.surePayButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
         self.bottomView.surePayButton.enabled = NO;
@@ -185,42 +256,64 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     }];
 }
 
+//获取总数据
 - (void)getDataFromServer
 {
 
     if (self.packageDict) {
-        self.nowPrice = [self.packageDict[@"Price"] floatValue];
-        self.beforePrice = [self.packageDict[@"OriginalPrice"] floatValue];
+        self.currentServicePrice = [self.packageDict[@"Price"] floatValue];
+//        self.beforePrice = [self.packageDict[@"OriginalPrice"] floatValue];
     }
 //    [self updatePrice];
     
-//    self.checkToken = YES;
-//    [self getBasicHeader];
-//    [SSNetworkRequest getRequest:@"" params:nil success:^(id responseObj) {
-//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//            self.nowPrice = 0;
-//            self.beforePrice = 0;
-//            [self.tableView reloadData];
-//            [self updatePrice];
-//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//        }
-//    } failure:^(id dataObj, NSError *error) {
-//        HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-//        NSLog(@"啥都没：%@",[error description]);
-//    } headers:self.headers];
+    self.checkToken = YES;
+    [self getBasicHeader];
+    [SSNetworkRequest getRequest:apiPackageGetAttrsByID params:@{@"id" : self.packageDict[@"PackageId"]} success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            self.dataLists = responseObj[@"data"][@"list"];
+            [self getSelectData];
+            [self initCellDatas];
+            [self.tableView reloadData];
+            [self updatePrice];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
+- (void)getSelectData
+{
+    if (!self.dataLists.count) {
+        return;
+    }
+    NSString *firstPackage = self.dataLists.firstObject[@"CallMinutesDescr"];
+    NSString *firstDay = self.dataLists.firstObject[@"ExpireDaysDescr"];
+    
+    NSMutableArray *packageArray = [NSMutableArray array];
+    NSMutableArray *dayArray = [NSMutableArray array];
+    for (NSDictionary *dict in self.dataLists) {
+        if ([dict[@"CallMinutesDescr"] isEqualToString:firstPackage]) {
+            [dayArray addObject:dict[@"ExpireDaysDescr"]];
+        }
+        if ([dict[@"ExpireDaysDescr"] isEqualToString:firstDay]){
+            [packageArray addObject:dict[@"CallMinutesDescr"]];
+        }
+    }
+    self.packageLists = packageArray;
+    self.monthLists = dayArray;
 }
 
 - (void)initCellDatas
 {
-    
-    
 #warning 测试选择月份高度
-//    NSInteger rowCount = (array.count + colCount - 1) / colCount;
-    NSInteger rowCount = (5 + 3 - 1) / 3;
+    NSInteger rowCount = (self.monthLists.count + 3 - 1) / 3;
+    rowCount = rowCount ? rowCount : 1;
     CGFloat selectMonthCellHeight = 50 + 50 * rowCount + 7 * (rowCount - 1) + 10;
-    
-    NSInteger selectTimeCount = (4 + 3 - 1) / 3;
+    NSInteger selectTimeCount = (self.packageLists.count + 3 - 1) / 3;
+    selectTimeCount = selectTimeCount ? selectTimeCount : 1;
     CGFloat selectTimeCellHeight = 50 + 50 * selectTimeCount + 7 * (selectTimeCount - 1) + 10;
     _cellDatas = @[
                    @[
@@ -234,16 +327,15 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                        ],
                    @[
                        @{
-                           @"cellName":@"通话时长",
-//                           @"cellDetailName":@"无限通话",
-                           @"cellHeight":@(selectTimeCellHeight),
+                           @"cellName":@"服务费用",
+                           @"cellDetailName":[NSString stringWithFormat:@"%.2f元/月  ", self.currentServicePrice],
+//                           @"cellDetailAttriName":[NSString stringWithFormat:@"原价:%.f元/月", self.beforePrice],
+                           @"cellHeight":@(84),
                            @"isHiddenLine":@(NO),
                            },
                        @{
-                           @"cellName":@"服务费用",
-                           @"cellDetailName":[NSString stringWithFormat:@"现优惠:%.f元/月  ", self.nowPrice],
-                           @"cellDetailAttriName":[NSString stringWithFormat:@"原价:%.f元/月", self.beforePrice],
-                           @"cellHeight":@(84),
+                           @"cellName":@"通话时长",
+                           @"cellHeight":@(selectTimeCellHeight),
                            @"isHiddenLine":@(NO),
                            },
                        @{
@@ -318,6 +410,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         [self useAliPay];
     }else{
         NSLog(@"支付类型错误");
+        HUDNormal(INTERNATIONALSTRING(@"支付失败"))
     }
 }
 
@@ -366,41 +459,27 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         return cell;
     }else if (indexPath.section == 1) {
         if (dict[@"cellDetailName"]) {
-//            if (indexPath.row == 0) {
-//                kWeakSelf
-//                OpenServiceMonthCell *cell = [tableView dequeueReusableCellWithIdentifier:openServiceMonthCellID];
-//                [cell updateCellWithDatas:@{@"datas":@[@"100",@"300",@"600",@"1000"]} appendText:@"分钟"];
-//                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//                cell.selectIndexBlock = ^(NSInteger selectIndex) {
-//                    weakSelf.currentSelectPhoneTime = selectIndex;
-//                    [weakSelf updatePrice];
-//                };
-//                return cell;
-//            }else{
-                OpenService2Cell *cell = [tableView dequeueReusableCellWithIdentifier:openService2CellID];
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                cell.nameLabel.text = dict[@"cellName"];
-                NSMutableAttributedString *attriString = [[NSMutableAttributedString alloc] init];
-                NSAttributedString *string = [[NSAttributedString alloc] initWithString:dict[@"cellDetailName"] attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:16], NSForegroundColorAttributeName: UIColorFromRGB(0x333333)}];
-                [attriString appendAttributedString:string];
-                if (dict[@"cellDetailAttriName"]) {
-                    NSAttributedString *string2 = [[NSAttributedString alloc] initWithString:dict[@"cellDetailAttriName"] attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:14], NSForegroundColorAttributeName: UIColorFromRGB(0xf21f20),NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid),NSStrikethroughColorAttributeName:UIColorFromRGB(0xf21f20)}];
-                    [attriString appendAttributedString:string2];
-                }
-                cell.detailLabel.attributedText = attriString;
-//                if ([dict[@"isHiddenLine"] boolValue]) {
-//                    cell.lineView.hidden = YES;
-//                }else{
-//                    cell.lineView.hidden = NO;
+            OpenService2Cell *cell = [tableView dequeueReusableCellWithIdentifier:openService2CellID];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.nameLabel.text = dict[@"cellName"];
+//                NSMutableAttributedString *attriString = [[NSMutableAttributedString alloc] init];
+//                NSAttributedString *string = [[NSAttributedString alloc] initWithString:dict[@"cellDetailName"] attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:16], NSForegroundColorAttributeName: UIColorFromRGB(0x333333)}];
+//                [attriString appendAttributedString:string];
+//                if (dict[@"cellDetailAttriName"]) {
+//                    NSAttributedString *string2 = [[NSAttributedString alloc] initWithString:dict[@"cellDetailAttriName"] attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:14], NSForegroundColorAttributeName: UIColorFromRGB(0xf21f20),NSStrikethroughStyleAttributeName:@(NSUnderlineStyleSingle|NSUnderlinePatternSolid),NSStrikethroughColorAttributeName:UIColorFromRGB(0xf21f20)}];
+//                    [attriString appendAttributedString:string2];
 //                }
-                return cell;
+//                cell.detailLabel.attributedText = attriString;
+            cell.detailLabel.text = dict[@"cellDetailName"];
+            self.service2Cell = cell;
+            return cell;
 //            }
         }else{
-            if (indexPath.row == 0) {
+            if (indexPath.row == 1) {
                 kWeakSelf
                 OpenServiceMonthCell *cell = [tableView dequeueReusableCellWithIdentifier:openServiceMonthCellID       ];
                 cell.titleLabel.text = dict[@"cellName"];
-                [cell updateCellWithDatas:@{@"datas":@[@"100",@"300",@"600",@"1000"]} appendText:@"分钟" selectIndex:self.currentSelectPhoneTime];
+                [cell updateCellWithDatas:@{@"datas":self.packageLists} appendText:nil selectIndex:self.currentSelectPhoneTime];
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell.selectIndexBlock = ^(NSInteger selectIndex) {
                     weakSelf.currentSelectPhoneTime = selectIndex;
@@ -411,7 +490,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                 kWeakSelf
                 OpenServiceMonthCell *cell = [tableView dequeueReusableCellWithIdentifier:openServiceMonthCellID];
                 cell.titleLabel.text = dict[@"cellName"];
-                [cell updateCellWithDatas:@{@"datas":@[@"1",@"3",@"6",@"8",@"12"]} appendText:@"个月" selectIndex:self.currentSelectMonth];
+                [cell updateCellWithDatas:@{@"datas":self.monthLists} appendText:nil selectIndex:self.currentSelectMonth];
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell.selectIndexBlock = ^(NSInteger selectMonth) {
                     weakSelf.currentSelectMonth = selectMonth;
@@ -527,6 +606,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
             if (storyboard) {
                 PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
                 if (paySuccessViewController) {
+                    paySuccessViewController.isConvenienceOrder = YES;
                     paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
                     paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
                     paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%.2f",self.payPrice];
@@ -602,9 +682,11 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                 }else{
                     //                    return [dict objectForKey:@"retmsg"];
                     NSLog(@"支付返回异常:%@",[dict objectForKey:@"retmsg"]);
+                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:@"服务器异常,请稍后再试" delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
                 }
             }else{
                 NSLog(@"服务器返回异常");
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:@"服务器异常,请稍后再试" delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
                 //                return @"服务器返回错误，未获取到json对象";
             }
             
@@ -712,7 +794,6 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 }
 
 
-
 - (BOOL)commitOrder {
     self.checkToken = YES;
     NSString *paymentMethod;
@@ -727,12 +808,13 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         paymentMethod = @"3";
     }else{
         NSLog(@"支付类型出错");
+        HUDNormal(INTERNATIONALSTRING(@"支付失败"))
         return NO;
     }
     if (!paymentMethod) {
         return NO;
     }
-    NSDictionary *params = @{@"PackageId":self.packageDict[@"PackageId"], @"Quantity" : [NSString stringWithFormat:@"%ld", self.currentSelectMonth], @"PaymentMethod": paymentMethod, @"MonthPackageFee":[NSString stringWithFormat:@"%.2f",self.currentMonthPrice]};
+    NSDictionary *params = @{@"PackageId":self.packageDict[@"PackageId"], @"Quantity" : @"1", @"PaymentMethod": paymentMethod, @"MonthPackageFee":[NSString stringWithFormat:@"%.2f",self.currentMonthPrice], @"PackageAttributeId" : self.currentSelectData[@"ID"]};
     HUDNoStop1(INTERNATIONALSTRING(@"正在提交订单..."))
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiOrderAdd params:params success:^(id responseObj) {
@@ -757,5 +839,65 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     return YES;
 }
 
+- (void)alipayComplete: (NSNotification *)notification{
+    NSDictionary *resultDic = notification.object;
+    NSString *payResult = [resultDic objectForKey:@"result"];//notification.object;
+    
+    if ([payResult rangeOfString:[self.dicOrder objectForKey:@"OrderNum"]].location==NSNotFound) {
+        
+    }else{
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+        if (storyboard) {
+            PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
+            if (paySuccessViewController) {
+                paySuccessViewController.isConvenienceOrder = YES;
+                paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+                paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"支付宝");
+                paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%.2f",self.payPrice];
+                paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
+                paySuccessViewController.orderID = self.orderID;
+                paySuccessViewController.packageCategory = self.packageCategory;
+                paySuccessViewController.isNoClickDetail = YES;
+                [self.navigationController pushViewController:paySuccessViewController animated:YES];
+            }
+        }
+    }
+}
+
+- (void)weipayComplete: (NSNotification *)notification{
+    NSString *payResult = notification.object;
+    NSString *weipayType = [[NSUserDefaults standardUserDefaults] objectForKey:@"WeipayType"];
+    if ([weipayType isEqualToString:@"Order"]) {
+        if ([payResult isEqualToString:@"success"]) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+            if (storyboard) {
+                PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
+                if (paySuccessViewController) {
+                    paySuccessViewController.isConvenienceOrder = YES;
+                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"微信支付");
+                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%.2f",self.payPrice];
+                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
+                    paySuccessViewController.orderID = self.orderID;
+                    paySuccessViewController.packageCategory = self.packageCategory;
+                    paySuccessViewController.isNoClickDetail = YES;
+                    [self.navigationController pushViewController:paySuccessViewController animated:YES];
+                }
+            }
+        }else{
+            if (payResult) {
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:payResult delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            } else {
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"支付失败，可能已取消支付或者其他原因") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            }
+        }
+    }
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AlipayComplete" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"WeipayComplete" object:nil];
+}
 
 @end

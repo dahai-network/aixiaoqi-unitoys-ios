@@ -28,7 +28,6 @@
 //buttonheight:50 buttonwidthMargin:
 - (void)updateCellWithDatas:(NSDictionary *)dict appendText:(NSString *)appendString selectIndex:(NSInteger)selectIndex
 {
-#warning 测试数量
     NSArray *array = dict[@"datas"];
     NSInteger colCount = 3;
     NSInteger rowCount = (array.count + colCount - 1) / colCount;

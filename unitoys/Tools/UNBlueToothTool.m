@@ -2130,7 +2130,12 @@ static UNBlueToothTool *instance = nil;
 
 - (void)getboundPhoneWithIccid:(NSString *)iccidString
 {
+
     NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", iccidString];
+//#if DEBUG
+//#warning 删除数据便于测试
+//    [[NSUserDefaults standardUserDefaults] removeObjectForKey:iccidKey];
+//#endif
     NSString *phone = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
     if (!phone || (phone.length == 0)) {
         self.checkToken = YES;
@@ -2153,11 +2158,6 @@ static UNBlueToothTool *instance = nil;
             NSLog(@"请求失败：%@", error);
         } headers:self.headers];
     }
-    
-//#if DEBUG
-//#warning 删除数据便于测试
-//    [[NSUserDefaults standardUserDefaults] removeObjectForKey:iccidKey];
-//#endif
 }
 
 - (void)closeConnecting {

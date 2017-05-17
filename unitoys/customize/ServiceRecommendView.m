@@ -177,6 +177,7 @@
     if (_bgWindow) {
         [_bgWindow resignKeyWindow];
         [self removeFromSuperview];
+        _bgWindow.hidden = YES;
         _bgWindow = nil;
     }
 }

@@ -12,6 +12,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnHintInfo;
 @property (weak, nonatomic) IBOutlet UILabel *lblPayMethod;
 @property (weak, nonatomic) IBOutlet UILabel *lblPayAmount;
+@property (weak, nonatomic) IBOutlet UIButton *paySuccessButton;
 
 @property (readwrite) NSString *strHintInfo;
 @property (readwrite) NSString *strPayMethod;
@@ -23,4 +24,5 @@
 
 //禁止点击详情
 @property (nonatomic, assign) BOOL isNoClickDetail;
+@property (nonatomic, assign) BOOL isConvenienceOrder;
 @end

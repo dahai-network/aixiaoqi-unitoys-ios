@@ -85,17 +85,20 @@
                 [self checkVeriResult];
             });
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            HUDStop
             self.veriButton.enabled = YES;
             [BlueToothDataManager shareManager].isShowHud = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
+            HUDStop
             HUDNormal(INTERNATIONALSTRING(@"验证失败"))
             [BlueToothDataManager shareManager].isShowHud = NO;
             self.veriButton.enabled = YES;
         }
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"啥都没：%@",[error description]);
+        HUDStop
         HUDNormal(INTERNATIONALSTRING(@"验证失败"))
         [BlueToothDataManager shareManager].isShowHud = NO;
         self.veriButton.enabled = YES;
@@ -124,10 +127,11 @@
                     [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"Tel"] forKey:[NSString stringWithFormat:@"ValidateICCID%@", self.veriIccidString]];
                 }
                 //提示验证成功
+                HUDStop
                 HUDNormal(INTERNATIONALSTRING(@"验证成功"))
                 [BlueToothDataManager shareManager].isShowHud = NO;
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self dismissVc];
                 });
             }else{
@@ -135,6 +139,7 @@
                     //关闭定时器
                     [self deleteVeriTimer];
                     //提示验证失败
+                    HUDStop
                     HUDNormal(INTERNATIONALSTRING(@"验证失败"))
                     [BlueToothDataManager shareManager].isShowHud = NO;
                 }else{
@@ -145,11 +150,13 @@
                 }
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            HUDStop
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             //关闭定时器
             [self deleteVeriTimer];
             [BlueToothDataManager shareManager].isShowHud = NO;
         }else{
+            HUDStop
             HUDNormal(INTERNATIONALSTRING(@"验证失败,请检查手机号是否正确"))
             //关闭定时器
             [self deleteVeriTimer];
@@ -158,6 +165,7 @@
         }
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"啥都没：%@",[error description]);
+        HUDStop
         HUDNormal(INTERNATIONALSTRING(@"网络出错,验证失败"))
         //关闭定时器
         [self deleteVeriTimer];

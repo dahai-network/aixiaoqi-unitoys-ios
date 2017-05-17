@@ -22,8 +22,19 @@
     self.lblPayAmount.text = self.strPayAmount;
     self.lblPayMethod.text = self.strPayMethod;
     
+    if (self.isConvenienceOrder) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"完成" style:UIBarButtonItemStyleDone target:self action:@selector(paySuccessAction)];
+        [self.paySuccessButton setTitle:@"查看订单" forState:UIControlStateNormal];
+    }
+    
     [self.btnHintInfo setTitle:self.title forState:UIControlStateNormal];
     // Do any additional setup after loading the view.
+}
+
+
+- (void)paySuccessAction
+{
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

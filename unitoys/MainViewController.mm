@@ -206,7 +206,8 @@ typedef enum : NSUInteger {
     
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         if ([UNPushKitMessageManager shareManager].iccidString) {
-            NSString *phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
+            NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", [UNPushKitMessageManager shareManager].iccidString];
+            NSString *phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
             if (!phoneStr || (phoneStr.length == 0)) {
                 if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
                     if (![UNDataTools sharedInstance].isShowVerificationVc) {

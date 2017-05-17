@@ -392,7 +392,6 @@
                 [UNPushKitMessageManager shareManager].iccidString = nil;
                 //从服务器获取黑名单列表
                 [weakSelf getBlackListsFromServer];
-                
                 //                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userData[@"Tel"]];
                 //更新别名为token
                 NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userData[@"Token"]];

@@ -54,17 +54,16 @@
     [manager GET:url parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
         //
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        //
-        successHandler(responseObject);
         if (![BlueToothDataManager shareManager].isShowHud) {
             HUDStop;
         }
+        successHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         //
-        failureHandler(task.response,error);
         if (![BlueToothDataManager shareManager].isShowHud) {
             HUDStop;
         }
+        failureHandler(task.response,error);
     }];
     
 }
@@ -112,16 +111,16 @@
         //
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         //
-        successHandler(responseObject);
         if (![BlueToothDataManager shareManager].isShowHud) {
             HUDStop;
         }
+        successHandler(responseObject);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         //
-        failureHandler(task.response,error);
         if (![BlueToothDataManager shareManager].isShowHud) {
             HUDStop;
         }
+        failureHandler(task.response,error);
     }];
     /*
      [manager POST:url parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
@@ -223,15 +222,15 @@
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     
     [manager PUT:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (![BlueToothDataManager shareManager].isShowHud) {
+            HUDStop;
+        }
         successHandler(responseObject);
-        if (![BlueToothDataManager shareManager].isShowHud) {
-            HUDStop;
-        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        failureHandler(task.response,error);
         if (![BlueToothDataManager shareManager].isShowHud) {
             HUDStop;
         }
+        failureHandler(task.response,error);
     }];
     /*
      [manager PUT:url parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
@@ -254,15 +253,15 @@
     AFHTTPSessionManager *manager = [self getRequstManager];
     
     [manager DELETE:url parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (![BlueToothDataManager shareManager].isShowHud) {
+            HUDStop;
+        }
         successHandler(responseObject);
-        if (![BlueToothDataManager shareManager].isShowHud) {
-            HUDStop;
-        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        failureHandler(error);
         if (![BlueToothDataManager shareManager].isShowHud) {
             HUDStop;
         }
+        failureHandler(error);
     }];
     /*
      [manager DELETE:url parameters:params success:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
