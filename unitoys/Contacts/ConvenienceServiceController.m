@@ -59,6 +59,7 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
 {
     self.checkToken = YES;
     [self getBasicHeader];
+    HUDNoStop1(@"")
     [SSNetworkRequest getRequest:apiPackageGetRelaxed params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"%@", responseObj);

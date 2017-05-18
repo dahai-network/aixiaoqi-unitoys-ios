@@ -368,7 +368,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
         }
     }
-    
 }
 
 

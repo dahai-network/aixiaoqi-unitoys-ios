@@ -41,8 +41,10 @@
         bgTaskId = [application beginBackgroundTaskWithExpirationHandler:^{
             NSLog(@"bgTask 过期 %lu",(unsigned long)bgTaskId);
             [self.bgTaskIdList removeObject:@(bgTaskId)];//过期任务从后台数组删除
-            bgTaskId = UIBackgroundTaskInvalid;
+//            bgTaskId = UIBackgroundTaskInvalid;
+//            [application endBackgroundTask:bgTaskId];
             [application endBackgroundTask:bgTaskId];
+            bgTaskId = UIBackgroundTaskInvalid;
         }];
     }
     //如果上次记录的后台任务已经失效了，就记录最新的任务为主任务
@@ -57,7 +59,6 @@
         [self.bgTaskIdList addObject:@(bgTaskId)];
         [self endBackGroundTask:NO];//留下最新创建的后台任务
     }
-
     return bgTaskId;
 }
 /**

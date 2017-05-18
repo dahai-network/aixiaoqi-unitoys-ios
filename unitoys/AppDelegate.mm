@@ -1367,6 +1367,7 @@
 }
 
 - (void)timerAction {
+//    if (self.sec == 300) {
     if (self.sec == 300) {
         self.sec = 0;
         NSString *num = [NSString stringWithFormat:@"%d", self.currentNumber];
