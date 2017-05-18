@@ -2056,11 +2056,15 @@
                                                                 </label>
                                                             </subviews>
                                                             <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <gestureRecognizers/>
                                                             <constraints>
                                                                 <constraint firstItem="vzV-B3-qlj" firstAttribute="top" secondItem="gGE-zu-rpk" secondAttribute="top" constant="20" id="MUA-pn-AXi"/>
                                                                 <constraint firstItem="5Y6-8b-Co2" firstAttribute="leading" secondItem="vzV-B3-qlj" secondAttribute="leading" id="aIn-kA-uhb"/>
                                                                 <constraint firstItem="5Y6-8b-Co2" firstAttribute="top" secondItem="vzV-B3-qlj" secondAttribute="bottom" constant="5" id="uvk-8X-evN"/>
                                                             </constraints>
+                                                            <connections>
+                                                                <outletCollection property="gestureRecognizers" destination="m1v-Qp-wuf" appends="YES" id="lf7-Do-DKw"/>
+                                                            </connections>
                                                         </view>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gdd-A8-ILI">
                                                             <rect key="frame" x="230" y="41" width="114" height="80"/>
@@ -2506,6 +2510,11 @@
                 <tapGestureRecognizer id="Vgr-jz-uN1">
                     <connections>
                         <action selector="tapToEditProfile:" destination="wn9-cs-emF" id="pPb-Tz-bcK"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="m1v-Qp-wuf">
+                    <connections>
+                        <action selector="tapToJumpService:" destination="wn9-cs-emF" id="884-LO-ONV"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>

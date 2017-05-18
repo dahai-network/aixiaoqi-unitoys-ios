@@ -22,6 +22,7 @@
 #import "UITabBar+UNRedTip.h"
 #import "UNDatabaseTools.h"
 #import "StatuesViewDetailViewController.h"
+#import "ConvenienceServiceController.h"
 
 #define CELLHEIGHT 44
 
@@ -770,6 +771,26 @@
         }
     }
 }
+
+#pragma mark 点击手势进入服务相关
+- (IBAction)tapToJumpService:(UITapGestureRecognizer *)sender {
+    if ([self.commicateMin.text isEqualToString:@"----"]) {
+        ConvenienceServiceController *convenienceServiceVC = [[ConvenienceServiceController alloc] init];
+        if (convenienceServiceVC) {
+            [self.navigationController pushViewController:convenienceServiceVC animated:YES];
+        }
+    } else {
+        OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
+        if (orderListViewController) {
+            if ([UNDataTools sharedInstance].isHasNotActiveTip) {
+                [UNDataTools sharedInstance].isHasNotActiveTip = NO;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+            }
+            [self.navigationController pushViewController:orderListViewController animated:YES];
+        }
+    }
+}
+
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"NeedRefreshAmount" object:nil];

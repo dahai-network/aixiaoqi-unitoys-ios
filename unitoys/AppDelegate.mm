@@ -101,7 +101,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -1122,23 +1122,34 @@
 
 #pragma mark 处理数据包
 - (void)checkPacketDetailWithString:(NSString *)string {
+    NSString *classStr = [string substringWithRange:NSMakeRange(4, 2)];
+    NSString *errorStr = [string substringWithRange:NSMakeRange(6, 2)];
+    if (![errorStr isEqualToString:@"00"]) {
+        NSLog(@"电话端口错误");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [BlueToothDataManager shareManager].isBeingRegisting = NO;
+            [BlueToothDataManager shareManager].isRegisted = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"cardNumberNotTrue" object:HOMESTATUETITLE_NOSIGNAL];
+            if ([errorStr isEqualToString:@"15"]) {
+                //用户不存在或token已过期
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            } else if ([errorStr isEqualToString:@"29"]) {
+                //会话id错误
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"身份验证失败，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            } else if ([errorStr isEqualToString:@"35"]) {
+                //服务端暂时不可用
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"服务端暂时开小差啦，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            } else {
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            }
+        });
+        return;
+    }
     if (![self.communicateID isEqualToString:@"00000000"] && ![self.communicateID isEqualToString:[string substringWithRange:NSMakeRange(8, 8)]]) {
         NSLog(@"忽略的包 -- %@", string);
         return;
     }
-    NSString *classStr = [string substringWithRange:NSMakeRange(4, 2)];
-    NSString *errorStr = [string substringWithRange:NSMakeRange(6, 2)];
     if ([classStr isEqualToString:@"84"]) {
-        if (![errorStr isEqualToString:@"00"]) {
-            NSLog(@"电话端口错误");
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [BlueToothDataManager shareManager].isBeingRegisting = NO;
-                [BlueToothDataManager shareManager].isRegisted = NO;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"cardNumberNotTrue" object:HOMESTATUETITLE_NOSIGNAL];
-                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
-            });
-            return;
-        }
         
         NSLog(@"建立连接");
         self.communicateID = [string substringWithRange:NSMakeRange(8, 8)];
