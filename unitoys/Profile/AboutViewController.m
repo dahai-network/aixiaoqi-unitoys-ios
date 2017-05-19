@@ -23,6 +23,7 @@
 #import "UNDatabaseTools.h"
 #import "StatuesViewDetailViewController.h"
 #import "ConvenienceServiceController.h"
+#import "ConvenienceOrderDetailController.h"
 
 #define CELLHEIGHT 44
 
@@ -41,6 +42,8 @@
 @property (nonatomic, strong)UIView *statuesView;
 @property (nonatomic, strong)UILabel *statuesLabel;
 @property (nonatomic, strong)UIView *registProgressView;
+@property (nonatomic, copy)NSString *serviceOrderId;//服务的订单ID
+//@property (nonatomic, assign) int servicePackageCategory;//服务的类型
 
 @end
 
@@ -473,6 +476,8 @@
                     self.commicateMin.text = @"----";
                 } else {
                     self.commicateMin.text = responseObj[@"data"][@"Used"][@"ServiceName"];
+                    self.serviceOrderId = responseObj[@"data"][@"Used"][@"OrderId"];
+//                    self.servicePackageCategory = [responseObj[@"data"][@"Used"][@"PackageCategory"] intValue];
                 }
                 switch ([responseObj[@"data"][@"Used"][@"TotalNumFlow"] intValue]) {
                     case 0:
@@ -780,14 +785,18 @@
             [self.navigationController pushViewController:convenienceServiceVC animated:YES];
         }
     } else {
-        OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
-        if (orderListViewController) {
-            if ([UNDataTools sharedInstance].isHasNotActiveTip) {
-                [UNDataTools sharedInstance].isHasNotActiveTip = NO;
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
-            }
-            [self.navigationController pushViewController:orderListViewController animated:YES];
-        }
+//        OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
+//        if (orderListViewController) {
+//            if ([UNDataTools sharedInstance].isHasNotActiveTip) {
+//                [UNDataTools sharedInstance].isHasNotActiveTip = NO;
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+//            }
+//            [self.navigationController pushViewController:orderListViewController animated:YES];
+//        }
+        //通话时长服务
+        ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
+        convenienceOrderVc.orderDetailId = self.serviceOrderId;
+        [self.navigationController pushViewController:convenienceOrderVc animated:YES];
     }
 }
 

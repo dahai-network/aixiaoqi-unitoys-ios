@@ -2078,8 +2078,15 @@ static UNBlueToothTool *instance = nil;
                                     
                                 } else {
                                     if ([BlueToothDataManager shareManager].isTcpConnected) {
-                                        NSLog(@"注册卡---信号强");
-                                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                        if ([BlueToothDataManager shareManager].isRegisted) {
+                                            NSLog(@"注册卡---信号强");
+                                            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                        } else {
+                                            NSLog(@"注册卡---需要重新注册");
+                                            NSLog(@"判断用户是否存在指定套餐");
+                                            [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                                            [self checkUserIsExistAppointPackage];
+                                        }
                                     }else{
                                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
                                     }
