@@ -18,6 +18,11 @@
 static FMDatabaseQueue *_database =nil;
 @implementation UNDatabaseTools
 
+- (NSString *)getPhoneStr
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"];
+}
+
 + (instancetype)sharedFMDBTools
 {
     static UNDatabaseTools *databaseTool;
@@ -32,17 +37,24 @@ static FMDatabaseQueue *_database =nil;
 {
     if (!_database) {
 //        _database = [FMDatabase databaseWithPath:[self filePath]];
-        _database = [FMDatabaseQueue databaseQueueWithPath:[self filePath]];
+        if ([self filePath]) {
+            _database = [FMDatabaseQueue databaseQueueWithPath:[self filePath]];
+        }else{
+            _database = nil;
+        }
     }
     return _database;
 }
 
 - (NSString *)filePath
 {
-    NSString *dataName = [NSString stringWithFormat:@"%@.db", [NSString stringWithFormat:@"%@_dataName", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]]];
-    NSString *string = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
-    NSString *stringPath = [string stringByAppendingPathComponent:dataName];
-    return stringPath;
+    if (self.getPhoneStr) {
+        NSString *dataName = [NSString stringWithFormat:@"%@.db", [NSString stringWithFormat:@"%@_dataName", self.getPhoneStr]];
+        NSString *string = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+        NSString *stringPath = [string stringByAppendingPathComponent:dataName];
+        return stringPath;
+    }
+    return nil;
 }
 
 - (BOOL)isHasFileWithPath:(NSString *)dbPath
@@ -60,49 +72,54 @@ static FMDatabaseQueue *_database =nil;
 
 - (BOOL)insertDataWithAPIName:(NSString *)apiName dictData:(NSDictionary *)response
 {
+    if (!self.database) {
+        return NO;
+    }
     NSString *jsonString = [self dictionaryToJson:response];
     __block BOOL isSuccess = YES;
-        [self.database inDatabase:^(FMDatabase *db) {
-            //打开数据库
-            if ([db open]) {
-                NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
-                FMResultSet *rs = [db executeQuery:existsSql];
-                if ([rs next]) {
-                    NSInteger count = [rs intForColumn:@"countNum"];
-                    if (count == 0) {
-                        NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (datas Text)", apiName];
-                        [db executeUpdate:sqlString];
-                    }
-                    NSString *selectStr = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
-                    rs = [db executeQuery:selectStr];
-                    if ([rs next]) {
-                        NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET datas='%@'", apiName, jsonString];
-                        BOOL isSuccess = [db executeUpdate:sqlString];
-                        if (!isSuccess) {
-                            NSLog(@"更新数据库文件失败");
-                            isSuccess = NO;
-                        }
-                    }else{
-                        NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(datas) VALUES ('%@');", apiName, jsonString];
-                        BOOL isSuccess = [db executeUpdate:insertStr];
-                        if (!isSuccess) {
-                            NSLog(@"插入数据库文件失败");
-                            isSuccess = NO;
-                        }
-                    }
-                    [rs close];
+    [self.database inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                if (count == 0) {
+                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (datas Text)", apiName];
+                    [db executeUpdate:sqlString];
                 }
-                [db close];
-            }else{
-                isSuccess = NO;
+                NSString *selectStr = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
+                rs = [db executeQuery:selectStr];
+                if ([rs next]) {
+                    NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET datas='%@'", apiName, jsonString];
+                    BOOL isSuccess = [db executeUpdate:sqlString];
+                    if (!isSuccess) {
+                        NSLog(@"更新数据库文件失败");
+                        isSuccess = NO;
+                    }
+                }else{
+                    NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@(datas) VALUES ('%@');", apiName, jsonString];
+                    BOOL isSuccess = [db executeUpdate:insertStr];
+                    if (!isSuccess) {
+                        NSLog(@"插入数据库文件失败");
+                        isSuccess = NO;
+                    }
+                }
+                [rs close];
             }
-        }];
+            [db close];
+        }else{
+            isSuccess = NO;
+        }
+    }];
     return isSuccess;
 }
 
 - (BOOL)deleteTableWithAPIName:(NSString *)apiName {
+    if (!self.database) {
+        return NO;
+    }
     __block BOOL isSuccess = YES;
-    
     [self.database inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
@@ -124,6 +141,9 @@ static FMDatabaseQueue *_database =nil;
 
 - (NSDictionary *)getResponseWithAPIName:(NSString *)apiName
 {
+    if (!self.database) {
+        return nil;
+    }
     //打开数据库
     __block NSDictionary *dict;
     [self.database inDatabase:^(FMDatabase *db) {
@@ -166,8 +186,10 @@ static FMDatabaseQueue *_database =nil;
 //插入一条数据
 - (BOOL)insertDataWithAPIName:(NSString *)apiName stringData:(NSString *)string
 {
+    if (!self.database) {
+        return NO;
+    }
     __block BOOL isSuccess = NO;
-    
     [self.database inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
@@ -211,8 +233,10 @@ static FMDatabaseQueue *_database =nil;
 
 - (BOOL)deleteDataWithAPIName:(NSString *)apiName stringData:(NSString *)string
 {
+    if (!self.database) {
+        return NO;
+    }
     __block BOOL isSuccess = NO;
-    
     [self.database inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
@@ -269,9 +293,11 @@ static FMDatabaseQueue *_database =nil;
 //将数据逐条取出
 - (NSArray *)getArrayResponseWithAPIName:(NSString *)apiName
 {
+    if (!self.database) {
+        return [NSMutableArray array];
+    }
     //打开数据库
     __block NSMutableArray *arrayDatas = [NSMutableArray array];
-    
     [self.database inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
@@ -301,28 +327,40 @@ static FMDatabaseQueue *_database =nil;
 //插入黑名单数据
 - (BOOL)insertBlackListWithPhoneString:(NSString *)string
 {
-    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
+    if (!self.getPhoneStr) {
+        return NO;
+    }
+    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", self.getPhoneStr];
     return [self insertDataWithAPIName:apiName stringData:string];
 }
 
 //删除黑名单数据
 - (BOOL)deleteBlackListWithPhoneString:(NSString *)string
 {
-    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
+    if (!self.getPhoneStr) {
+        return NO;
+    }
+    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", self.getPhoneStr];
     return [self deleteDataWithAPIName:apiName stringData:string];
 }
 
 //清空黑名单数据
 - (BOOL)deleteAllBlackLists
 {
-    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
+    if (!self.getPhoneStr) {
+        return NO;
+    }
+    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", self.getPhoneStr];
     return [self deleteDataWithAPIName:apiName stringData:nil];
 }
 
 //获取黑名单数据
 - (NSArray *)getBlackLists
 {
-    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Tel"]];
+    if (!self.getPhoneStr) {
+        return [NSArray array];
+    }
+    NSString *apiName = [NSString stringWithFormat:@"BlackList%@", self.getPhoneStr];
     return [self getArrayResponseWithAPIName:apiName];
 }
 

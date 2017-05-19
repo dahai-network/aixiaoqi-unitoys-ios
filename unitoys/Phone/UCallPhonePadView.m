@@ -91,7 +91,7 @@
                                },
                            @{
                                @"TopTitle" : @"0",
-                               @"BottomTitle" : @"+",
+                               @"BottomTitle" : @"",
                                },
                            @{
                                @"TopTitle" : @"#",
@@ -161,8 +161,23 @@
     
     for (NSInteger i = 0; i < _buttonCount; i++) {
         NSDictionary *dict = self.keyboardItems[i];
+//        BOOL isLongPress;
+//        if ([dict[@"TopTitle"] isEqualToString:@"0"]) {
+//            isLongPress = YES;
+//        }else{
+//            isLongPress = NO;
+//        }
         UCallPhoneButton *callButton = [UCallPhoneButton callPhoneButtonWithTopTitle:dict[@"TopTitle"] BottomTitle:dict[@"BottomTitle"] IsCanLongPress:NO];
         callButton.isTransparent = _isTransparent;
+//        callButton.phoneButtonLongPressAction = ^(NSString *topTitle, NSString *bottomTitle) {
+//            NSString *sendchar = bottomTitle;
+//            if (weakSelf.inputedPhoneNumber.length>0){
+//                weakSelf.inputedPhoneNumber = [weakSelf.inputedPhoneNumber stringByAppendingString:sendchar];
+//            }else{
+//                weakSelf.inputedPhoneNumber = sendchar;
+//            }
+//            [weakSelf.phoneNumLabel updatePhoneLabel:weakSelf.inputedPhoneNumber currentNum:sendchar];
+//        };
         callButton.backgroundColor = bgColor;
         [callButton addTarget:self action:@selector(callButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [self.buttonArray addObject:callButton];

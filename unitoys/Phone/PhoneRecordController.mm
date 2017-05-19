@@ -145,6 +145,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     [self showWindow];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipStatuBarHeightChange:) name:@"TipStatuBarHeightChange" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registerSipServer) name:@"NetStatusIsWell" object:nil];
     NSLog(@"statusBarHeight--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
 }
 
@@ -194,9 +195,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
-
-- (BOOL)initEngine {
-    NSLog(@"PhoneRecordController---initEngine");
+- (void)registerSipServer
+{
     [[SipEngineManager instance] Init];
     [[SipEngineManager instance] LoadConfig];
     
@@ -207,6 +207,23 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self doRegister];
     
     [self getMaxPhoneCall];
+}
+
+
+- (BOOL)initEngine {
+    NSLog(@"PhoneRecordController---initEngine");
+//    [[SipEngineManager instance] Init];
+//    [[SipEngineManager instance] LoadConfig];
+//    
+//    [[SipEngineManager instance] setCallDelegate:self];
+//    
+//    [[SipEngineManager instance] setRegistrationDelegate:self];
+//    
+//    [self doRegister];
+//    
+//    [self getMaxPhoneCall];
+    
+    [self registerSipServer];
     
     //读取本地缓存的账号信息
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
@@ -912,9 +929,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             [db close];
         }
-        
     }
-    
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     path = [paths objectAtIndex:0];
@@ -1264,6 +1279,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             NSLog(@"在黑名单内,挂断电话");
             [self hungupPhone];
         }else{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"NewCallInComing" object:nil];
+            //dismiss手机验证界面
+            if (self.nav.presentedViewController) {
+                [self.nav.presentedViewController dismissViewControllerAnimated:NO completion:nil];
+            }
+            
             if (kSystemVersionValue >= 10.0 && isUseCallKit) {
                 [self InComingCallWithCallKitName:[self checkLinkNameWithPhoneStr:cid] PhoneNumber:cid];
             }else{
@@ -1474,6 +1495,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String],"", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue],1800);
                 callEngine->SetEnCrypt(NO, NO);
                 //IP地址
+//                virtual int RegisterSipAccount(const char *username, const char *password, const char *relam, const char *server, int port, int expire = 1800) = 0;
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
                 //域名
                 //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [@"asterisk.unitoys.com" UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);

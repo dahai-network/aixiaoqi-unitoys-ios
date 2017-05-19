@@ -100,7 +100,9 @@
 {
     if (pressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
         if (_phoneButtonLongPressAction) {
-            _phoneButtonLongPressAction(self.topTitle);
+            if (self.topTitle && self.bottomTitle) {
+                _phoneButtonLongPressAction(self.topTitle, self.bottomTitle);
+            }
         }
     }
 }

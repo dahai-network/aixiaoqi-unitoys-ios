@@ -15,4 +15,6 @@ typedef void(^ImageViewTapBlock)();
 
 - (instancetype)initPresentImageViewWithImageUrl:(NSString *)imageUrl cancelImageName:(NSString *)cancelName imageTap:(ImageViewTapBlock)imageBlock;
 
+- (void)dismissWindow;
+
 @end

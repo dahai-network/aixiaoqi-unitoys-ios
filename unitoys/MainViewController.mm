@@ -31,6 +31,12 @@ typedef enum : NSUInteger {
     YELLOWCOLOR,
 } CHOOSECOLOR;
 
+@interface MainViewController()
+
+@property (nonatomic, weak) UNPresentImageView *presentImageView;
+
+@end
+
 @implementation MainViewController
 
 - (void)viewDidLoad {
@@ -110,6 +116,8 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatuesAll:) name:@"changeStatueAll" object:nil];//状态改变
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkNotUse:) name:@"netWorkNotToUse" object:nil];//网络状态不可用
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCallInComing) name:@"NewCallInComing" object:nil];//有新呼叫
+    
     self.selectedViewController = self.childViewControllers[0];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.selectedViewController = self.childViewControllers[1];
@@ -117,6 +125,14 @@ typedef enum : NSUInteger {
     
     
     [self showPresentImageView];
+}
+
+- (void)newCallInComing
+{
+    //dismisswindow
+    if (self.presentImageView) {
+        [self.presentImageView dismissWindow];
+    }
 }
 
 - (void)showPresentImageView
@@ -133,21 +149,24 @@ typedef enum : NSUInteger {
 //        isPresent = YES;
 //        //        [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
 //    }
+    
     __block NSString *currentDateStr;
     BOOL isPresent = [UNDataTools isSaveTodayDateWithKey:@"PresentConvenienceTime" TodayString:^(NSString *todayStr) {
         currentDateStr = todayStr;
     }];
 #warning - Mark 测试数据,直接弹出
     isPresent = YES;
+    kWeakSelf
     if (isPresent) {
         [SSNetworkRequest getRequest:apiPushContentGet params:nil success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 NSString *imageUrl = responseObj[@"data"][@"list"][0][@"Image"];
                 NSLog(@"imageUrl---%@",imageUrl);
+                 //需要判断当前是否正在通话,如果正在通话则不弹出
+                
                 if (imageUrl) {
-                    kWeakSelf
                     //如果有数据则出现
-                    [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
+                    weakSelf.presentImageView = [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
                         [weakSelf presentConvenienceServiceVC];
                     }];
                 [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];

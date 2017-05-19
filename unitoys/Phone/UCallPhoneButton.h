@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^PhoneButtonLongPressAction)(NSString *topTitle);
+typedef void(^PhoneButtonLongPressAction)(NSString *topTitle, NSString *bottomTitle);
 
 @interface UCallPhoneButton : UIControl
 

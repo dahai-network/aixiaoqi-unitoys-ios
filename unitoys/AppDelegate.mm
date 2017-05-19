@@ -101,7 +101,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -127,7 +127,10 @@
             [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_REGISTING;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"1"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"NetStatusIsWell" object:nil];
             });
+            
+            
             if (self.tcpPacketStr) {
                 NSLog(@"注册Tcp");
                 [self closeTCP];
