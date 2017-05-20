@@ -101,7 +101,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -287,6 +287,28 @@
     // 关闭套接字
 //    [self.sendTcpSocket disconnect];
 //    self.sendTcpSocket = nil;
+}
+
+- (void)sendDataToCheckRegistStatue {
+    //发送检查是否在线的数据
+    
+    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+    NSString *token;
+    if (userdata) {
+        token = userdata[@"Token"];
+    }
+    
+    NSString *ascHex = [self hexStringFromString:token];
+    //    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
+    NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
+    //    NSLog(@"长度为 -- %@", lengthHex);
+    NSString *tokenHex = [NSString stringWithFormat:@"78%@%@", lengthHex, ascHex];
+    //正常状态TCP包
+    NSString *tempHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", tokenHex.length/2]];
+    
+    NSString *sendStr = [NSString stringWithFormat:@"108a0900000000000001%@%@", tempHex, tokenHex];
+    NSLog(@"发送检查是否在线的数据 -- %@", sendStr);
+    [self sendMsgWithMessage:sendStr];
 }
 
 - (void)loadBasicConfig {
@@ -561,6 +583,8 @@
     NSString *tempHex = [self hexTLVLength:[NSString stringWithFormat:@"%zd", tempString.length/2]];
     NSString *tcpPacket = [NSString stringWithFormat:@"%@%@0001%@%@", TCPFIRSTSUBNOT, TCPCOMMUNICATEID, tempHex, tempString];
     
+    //创建连接，重置会话id
+    self.communicateID = @"00000000";
     if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate && ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground)) {
         //PushKit
         self.tcpPacketStr = pushKitTcpPacket;
@@ -831,6 +855,7 @@
                     NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
                     //发送数据
                     [self sendMsgWithMessage:self.tcpPacketStr];
+                    [self sendDataToCheckRegistStatue];
                 }
             }
         }
@@ -1127,7 +1152,7 @@
 - (void)checkPacketDetailWithString:(NSString *)string {
     NSString *classStr = [string substringWithRange:NSMakeRange(4, 2)];
     NSString *errorStr = [string substringWithRange:NSMakeRange(6, 2)];
-    if (![errorStr isEqualToString:@"00"]) {
+    if (![errorStr isEqualToString:@"00"] && ![classStr isEqualToString:@"89"]) {
         NSLog(@"电话端口错误");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
@@ -1304,7 +1329,9 @@
             //发送给sdk
 //            [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
         }
-    }else {
+    }else if ([classStr isEqualToString:@"89"]) {
+        NSLog(@"接收到卡的注册状态数据 -- %@", string);
+    } else {
         NSLog(@"这是什么鬼");
     }
 }
