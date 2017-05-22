@@ -176,7 +176,7 @@
 - (BOOL)verificationPhone:(NSString *)phone
 {
     //验证号码
-    if (![phone isValidateMobile]) {
+    if (![self validateMobile:phone]) {
         kWeakSelf
         [self showAlertView:INTERNATIONALSTRING(@"您输入的号码格式不正确") cancelAction:^{
             weakSelf.phoneTextField.text = nil;
@@ -196,6 +196,14 @@
     self.veriButton.enabled = YES;
 }
 
+- (BOOL)validateMobile:(NSString *)phone
+{
+    if (phone.length == 11) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
 
 - (void)showAlertView:(NSString *)title cancelAction:(void(^)())cancel
 {

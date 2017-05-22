@@ -101,7 +101,9 @@
 //        self.page = 1;
 //        [self loadMessage];
 //    }];
+    
     self.page = 1;
+//    self.page = 0;
     self.tableView.mj_header = [CustomRefreshMessageHeader headerWithRefreshingBlock:^{
         [self cancelEdit];
         [self loadMoreMessage];
@@ -313,17 +315,81 @@
     [self updateMessageList];
 }
 
+//- (void)loadMessages{
+//    if (_messageFrames == nil) {
+//        __block NSMutableArray *dictArray = [NSMutableArray array];
+//        self.checkToken = YES;
+//        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber",self.toTelephone,@"Tel", nil];
+//        
+//        [self getBasicHeader];
+////        NSLog(@"表演头：%@",self.headers);
+//        [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
+//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//                //可通过异步处理优化
+//                NSArray *arrMessages = [responseObj objectForKey:@"data"];
+//                
+//                //将数组倒序
+//                arrMessages = [[arrMessages reverseObjectEnumerator] allObjects];
+//                
+//                for (NSDictionary *dict in arrMessages){
+//                    NSLog(@"%@", dict[@"SMSID"]);
+//                    if ([[dict objectForKey:@"IsSend"] boolValue]) {
+//                        //己方发送
+//                        //                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//                    }else{
+//                        //对方发送
+//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//                    }
+//                }
+//                
+//                NSMutableArray *mfArray = [NSMutableArray array];
+//                for (NSDictionary *dict in dictArray) {
+//                    // 消息模型
+//                    MJMessage *msg = [MJMessage messageWithDict:dict];
+//                    
+//                    // 取出上一个模型
+//                    MJMessageFrame *lastMf = [mfArray lastObject];
+//                    MJMessage *lastMsg = lastMf.message;
+//                    
+//                    // 判断两个消息的时间是否一致
+//                    msg.hideTime = [msg.time isEqualToString:lastMsg.time];
+//                    
+//                    // frame模型
+//                    MJMessageFrame *mf = [[MJMessageFrame alloc] init];
+//                    mf.message = msg;
+//                    
+//                    // 添加模型
+//                    [mfArray addObject:mf];
+//                }
+//                _messageFrames = mfArray;
+//                self.page = 1;
+//                [self.tableView reloadData];
+//                
+//                //自动滚动到底部
+//                [self scrollTableViewToBottomWithAnimated:NO];
+//                
+//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//                
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//            }else{
+//            }
+//            NSLog(@"查询到的消息数据：%@",responseObj);
+//        } failure:^(id dataObj, NSError *error) {
+//            HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
+//            NSLog(@"啥都没：%@",[error description]);
+//        } headers:self.headers];
+//    }
+//}
+
 - (void)loadMessages{
     if (_messageFrames == nil) {
         __block NSMutableArray *dictArray = [NSMutableArray array];
-        
-        
         self.checkToken = YES;
-        
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber",self.toTelephone,@"Tel", nil];
         
         [self getBasicHeader];
-//        NSLog(@"表演头：%@",self.headers);
+        //        NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 //可通过异步处理优化
@@ -345,7 +411,6 @@
                 }
                 
                 NSMutableArray *mfArray = [NSMutableArray array];
-                
                 for (NSDictionary *dict in dictArray) {
                     // 消息模型
                     MJMessage *msg = [MJMessage messageWithDict:dict];
@@ -364,7 +429,6 @@
                     // 添加模型
                     [mfArray addObject:mf];
                 }
-                
                 _messageFrames = mfArray;
                 self.page = 1;
                 [self.tableView reloadData];
@@ -377,17 +441,16 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
             }
-            
             NSLog(@"查询到的消息数据：%@",responseObj);
-            
-            
         } failure:^(id dataObj, NSError *error) {
             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
             NSLog(@"啥都没：%@",[error description]);
         } headers:self.headers];
-        
     }
 }
+
+
+
 
 //加载更多数据
 - (void)loadMoreMessage

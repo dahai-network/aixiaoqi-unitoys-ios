@@ -10,12 +10,16 @@
 
 @interface UNDatabaseTools()
 
-@property (nonatomic, copy) NSString *filePath;
+@property (nonatomic, copy) NSString *phoneRecordfilePath;
+@property (nonatomic, copy) NSString *msgRecordfilePath;
+@property (nonatomic, copy) NSString *msgContentfilePath;
 //@property (nonatomic, strong) FMDatabase *database;
 
 @end
 
-static FMDatabaseQueue *_database =nil;
+static FMDatabaseQueue *_phoneDatabase =nil;
+static FMDatabaseQueue *_msgDatabase =nil;
+static FMDatabaseQueue *_msgContentDatabase =nil;
 @implementation UNDatabaseTools
 
 - (NSString *)getPhoneStr
@@ -33,20 +37,19 @@ static FMDatabaseQueue *_database =nil;
     return databaseTool;
 }
 
-- (FMDatabaseQueue *)database
+- (FMDatabaseQueue *)phoneDatabase
 {
-    if (!_database) {
-//        _database = [FMDatabase databaseWithPath:[self filePath]];
-        if ([self filePath]) {
-            _database = [FMDatabaseQueue databaseQueueWithPath:[self filePath]];
+    if (!_phoneDatabase) {
+        if ([self phoneRecordfilePath]) {
+            _phoneDatabase = [FMDatabaseQueue databaseQueueWithPath:[self phoneRecordfilePath]];
         }else{
-            _database = nil;
+            _phoneDatabase = nil;
         }
     }
-    return _database;
+    return _phoneDatabase;
 }
 
-- (NSString *)filePath
+- (NSString *)phoneRecordfilePath
 {
     if (self.getPhoneStr) {
         NSString *dataName = [NSString stringWithFormat:@"%@.db", [NSString stringWithFormat:@"%@_dataName", self.getPhoneStr]];
@@ -72,12 +75,12 @@ static FMDatabaseQueue *_database =nil;
 
 - (BOOL)insertDataWithAPIName:(NSString *)apiName dictData:(NSDictionary *)response
 {
-    if (!self.database) {
+    if (!self.phoneDatabase) {
         return NO;
     }
     NSString *jsonString = [self dictionaryToJson:response];
     __block BOOL isSuccess = YES;
-    [self.database inDatabase:^(FMDatabase *db) {
+    [self.phoneDatabase inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
             NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
@@ -116,11 +119,11 @@ static FMDatabaseQueue *_database =nil;
 }
 
 - (BOOL)deleteTableWithAPIName:(NSString *)apiName {
-    if (!self.database) {
+    if (!self.phoneDatabase) {
         return NO;
     }
     __block BOOL isSuccess = YES;
-    [self.database inDatabase:^(FMDatabase *db) {
+    [self.phoneDatabase inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
             NSString *sqlString = [NSString stringWithFormat:@"DROP TABLE IF EXISTS %@", apiName];
@@ -141,12 +144,12 @@ static FMDatabaseQueue *_database =nil;
 
 - (NSDictionary *)getResponseWithAPIName:(NSString *)apiName
 {
-    if (!self.database) {
+    if (!self.phoneDatabase) {
         return nil;
     }
     //打开数据库
     __block NSDictionary *dict;
-    [self.database inDatabase:^(FMDatabase *db) {
+    [self.phoneDatabase inDatabase:^(FMDatabase *db) {
         if ([db open]) {
             NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
             FMResultSet *rs = [db executeQuery:existsSql];
@@ -186,11 +189,11 @@ static FMDatabaseQueue *_database =nil;
 //插入一条数据
 - (BOOL)insertDataWithAPIName:(NSString *)apiName stringData:(NSString *)string
 {
-    if (!self.database) {
+    if (!self.phoneDatabase) {
         return NO;
     }
     __block BOOL isSuccess = NO;
-    [self.database inDatabase:^(FMDatabase *db) {
+    [self.phoneDatabase inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
             NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
@@ -233,11 +236,11 @@ static FMDatabaseQueue *_database =nil;
 
 - (BOOL)deleteDataWithAPIName:(NSString *)apiName stringData:(NSString *)string
 {
-    if (!self.database) {
+    if (!self.phoneDatabase) {
         return NO;
     }
     __block BOOL isSuccess = NO;
-    [self.database inDatabase:^(FMDatabase *db) {
+    [self.phoneDatabase inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
             NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
@@ -293,12 +296,12 @@ static FMDatabaseQueue *_database =nil;
 //将数据逐条取出
 - (NSArray *)getArrayResponseWithAPIName:(NSString *)apiName
 {
-    if (!self.database) {
+    if (!self.phoneDatabase) {
         return [NSMutableArray array];
     }
     //打开数据库
     __block NSMutableArray *arrayDatas = [NSMutableArray array];
-    [self.database inDatabase:^(FMDatabase *db) {
+    [self.phoneDatabase inDatabase:^(FMDatabase *db) {
         //打开数据库
         if ([db open]) {
             NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
@@ -363,6 +366,253 @@ static FMDatabaseQueue *_database =nil;
     NSString *apiName = [NSString stringWithFormat:@"BlackList%@", self.getPhoneStr];
     return [self getArrayResponseWithAPIName:apiName];
 }
+
+
+
+//短信数据库
+- (NSString *)msgRecordfilePath
+{
+    if (self.getPhoneStr) {
+        NSString *dataName = [NSString stringWithFormat:@"%@.db", [NSString stringWithFormat:@"%@_msgRecordDataName", self.getPhoneStr]];
+        NSString *string = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+        NSString *stringPath = [string stringByAppendingPathComponent:dataName];
+        return stringPath;
+    }
+    return nil;
+}
+- (FMDatabaseQueue *)msgDatabase
+{
+    if (!_msgDatabase) {
+        if ([self msgRecordfilePath]) {
+            _msgDatabase = [FMDatabaseQueue databaseQueueWithPath:[self msgRecordfilePath]];
+        }else{
+            _msgDatabase = nil;
+        }
+    }
+    return _msgDatabase;
+}
+
+//获取短信列表最后一条的时间
+- (NSString *)getLastTimeWithMessageList
+{
+    return [self getLastTimeWithMessageListWithApiName:@"MessageSessionList" isMessageContent:NO];
+}
+//获取指定页数的短信列表
+- (NSArray *)getMessageListsWithPage:(NSInteger)page
+{
+    return [self getMessageListsWithPage:page apiName:@"MessageSessionList" isMessageContent:NO];
+}
+//插入短信列表
+- (BOOL)insertMessageListWithMessageLists:(NSArray *)messageList
+{
+    BOOL isSuccess = YES;
+    for (NSDictionary *dict in messageList) {
+        if (![self insertMessageListWithMessage:dict apiName:@"MessageSessionList" isMessageContent:NO]) {
+            isSuccess = NO;
+        }
+    }
+    return isSuccess;
+}
+
+
+- (NSString *)getLastTimeWithMessageListWithApiName:(NSString *)apiName isMessageContent:(BOOL)isContent
+{
+    FMDatabaseQueue *database = isContent ? self.msgContentDatabase : self.msgDatabase;
+    if (!database) {
+        return nil;
+    }
+    __block NSString *timeString = nil;
+    [database inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                if (count != 0) {
+//                    NSString *selectStr = [NSString stringWithFormat:@"SELECT * FROM %@ where id='%@'", apiName, messageDict[@"msgId"]];
+//                    rs = [db executeQuery:selectStr];
+//                    @"select * from CallRecord order by calltime desc limit 0,1"
+                    NSString *selectStr = [NSString stringWithFormat:@"select * from %@ order by msgtime desc limit 0,1", apiName];
+                    rs = [db executeQuery:selectStr];
+                    if ([rs next]) {
+                        timeString = [rs stringForColumn:@"msgtime"];
+                        NSLog(@"timeString--%@", timeString);
+//                        NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET data='%@' msgtime='%@' where id='%@'", apiName, jsonString,messageDict[@"msgTime"] ,messageDict[@"msgId"]];
+//                        BOOL isSuccess = [db executeUpdate:sqlString];
+//                        if (!isSuccess) {
+//                            NSLog(@"更新数据库文件失败");
+//                            isSuccess = NO;
+//                        }
+                    }else{
+                        NSLog(@"没有查询到条目");
+                    }
+                }else{
+                    NSLog(@"没有查询到表");
+//                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id text PRIMARY KEY, msgtime TimeStamp NOT NULL, data text NOT NULL)", apiName];
+//                    BOOL result = [db executeUpdate:sqlString];
+//                    if (result) {
+//                        NSLog(@"成功创表");
+//                    } else {
+//                        NSLog(@"创表失败");
+//                    }
+                }
+                [rs close];
+            }
+            [db close];
+        }
+    }];
+    return timeString;
+}
+
+- (NSArray *)getMessageListsWithPage:(NSInteger)page apiName:(NSString *)apiName isMessageContent:(BOOL)isContent
+{
+    FMDatabaseQueue *database = isContent ? self.msgContentDatabase : self.msgDatabase;
+    if (!database) {
+        return [NSMutableArray array];
+    }
+    //打开数据库
+    __block NSMutableArray *arrayDatas = [NSMutableArray array];
+    [database inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                if (count) {
+//                    NSString *sqlString = [NSString stringWithFormat:@"SELECT * FROM %@", apiName];
+//                    FMResultSet *nextRs = [db executeQuery:sqlString];
+                    NSString *selectStr = [NSString stringWithFormat:@"select * from %@ order by msgtime desc limit '%@',20", apiName, @(page * 20)];
+                    FMResultSet *nextRs = [db executeQuery:selectStr];
+                    while ([nextRs next]) {
+                        NSString *dataStr = [nextRs stringForColumn:@"data"];
+                        NSDictionary *dataDict = [self jsonToDictionary:dataStr];
+                        if (dataDict) {
+                            [arrayDatas addObject:dataDict];
+                        }
+                    }
+                    [nextRs close];
+                }
+                [rs close];
+            }
+            [db close];
+        }
+    }];
+    return arrayDatas;
+}
+
+- (BOOL)insertMessageListWithMessage:(NSDictionary *)messageDict apiName:(NSString *)apiName isMessageContent:(BOOL)isContent
+{
+    FMDatabaseQueue *database = isContent ? self.msgContentDatabase : self.msgDatabase;
+    if (!database) {
+        return NO;
+    }
+    NSString *jsonString = [self dictionaryToJson:messageDict];
+    NSString *otherPhone;
+    if (isContent) {
+        otherPhone = messageDict[@"SMSID"];
+    }else{
+        if ([messageDict[@"IsSend"] boolValue]) {
+            otherPhone = messageDict[@"To"];
+        }else{
+            otherPhone = messageDict[@"Fm"];
+        }
+    }
+    __block BOOL isSuccess = YES;
+    [database inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                if (count == 0) {
+                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id text PRIMARY KEY, msgtime TimeStamp NOT NULL, data text NOT NULL)", apiName];
+                    BOOL result = [db executeUpdate:sqlString];
+                    if (result) {
+                        NSLog(@"成功创表");
+                    } else {
+                        NSLog(@"创表失败");
+                    }
+                }
+                NSString *selectStr = [NSString stringWithFormat:@"SELECT * FROM %@ where id='%@'", apiName, otherPhone];
+                rs = [db executeQuery:selectStr];
+                if ([rs next]) {
+                    NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET data='%@' msgtime='%@' where id='%@'", apiName, jsonString,messageDict[@"SMSTime"] ,otherPhone];
+                    BOOL isSuccess = [db executeUpdate:sqlString];
+                    if (!isSuccess) {
+                        NSLog(@"更新数据库文件失败");
+                        isSuccess = NO;
+                    }
+                }else{
+                    NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@ (data, msgtime, id) VALUES ('%@', '%@', '%@');", apiName, jsonString, messageDict[@"SMSTime"], otherPhone];
+                    BOOL isSuccess = [db executeUpdate:insertStr];
+                    if (!isSuccess) {
+                        NSLog(@"插入数据库文件失败");
+                        isSuccess = NO;
+                    }
+                }
+                [rs close];
+            }
+            [db close];
+        }else{
+            isSuccess = NO;
+        }
+    }];
+    return isSuccess;
+}
+
+
+
+//短信内容数据库
+- (NSString *)msgContentfilePath
+{
+    if (self.getPhoneStr) {
+        NSString *dataName = [NSString stringWithFormat:@"%@.db", [NSString stringWithFormat:@"%@_msgContentDataName", self.getPhoneStr]];
+        NSString *string = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+        NSString *stringPath = [string stringByAppendingPathComponent:dataName];
+        return stringPath;
+    }
+    return nil;
+}
+- (FMDatabaseQueue *)msgContentDatabase
+{
+    if (!_msgContentDatabase) {
+        if ([self msgContentfilePath]) {
+            _msgContentDatabase = [FMDatabaseQueue databaseQueueWithPath:[self msgContentfilePath]];
+        }else{
+            _msgContentDatabase = nil;
+        }
+    }
+    return _msgContentDatabase;
+}
+//获取联系人短信内容最后一条的时间
+- (NSString *)getLastTimeMessageContentWithPhone:(NSString *)phone
+{
+    return [self getLastTimeWithMessageListWithApiName:phone isMessageContent:YES];
+}
+//获取指定页数的短信内容
+- (NSArray *)getMessageContentWithPage:(NSInteger)page Phone:(NSString *)phone
+{
+    return [self getMessageListsWithPage:page apiName:phone isMessageContent:YES];
+}
+//插入短信内容
+- (BOOL)insertMessageContentWithMessageContent:(NSArray *)messageContents Phone:(NSString *)phone
+{
+    BOOL isSuccess = YES;
+    for (NSDictionary *dict in messageContents) {
+        if (![self insertMessageListWithMessage:dict apiName:phone isMessageContent:YES]) {
+            isSuccess = NO;
+        }
+    }
+    return isSuccess;
+}
+
+
+
+
+
 
 
 - (NSString *)dictionaryToJson:(NSDictionary *)dic

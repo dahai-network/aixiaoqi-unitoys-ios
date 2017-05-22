@@ -130,7 +130,6 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"NetStatusIsWell" object:nil];
             });
             
-            
             if (self.tcpPacketStr) {
                 NSLog(@"注册Tcp");
                 [self closeTCP];
@@ -368,6 +367,9 @@
 //    [BlueToothDataManager shareManager].isBeingRegisting = YES;
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"100"];
 //    [BlueToothDataManager shareManager].stepNumber = @"100";
+    if (![UNPushKitMessageManager shareManager].iccidString) {
+        return;
+    }
     NSLog(@"获取ICCID数据");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
     [BlueToothDataManager shareManager].isReseted = NO;
@@ -2547,7 +2549,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(dealyTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"已创建TCP");
-            if (!self.tcpPacketStr) {
+            if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected) {
                 self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"PushKitTCPPacketStr"];
             }
             if (self.sendTcpSocket) {

@@ -14,6 +14,7 @@
 #import "AddTouchAreaButton.h"
 #import "UITableView+RegisterNib.h"
 #import "UNDataTools.h"
+#import "UNDatabaseTools.h"
 
 @interface MessageRecordController ()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
@@ -32,8 +33,13 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [self initNoDataLabel];
     [self initRefresh];
     
-    self.page = 1;
+//    self.page = 1;
+    self.page = 0;
     if (!_arrMessageRecord) {
+        _arrMessageRecord = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:self.page];
+        if (_arrMessageRecord && _arrMessageRecord.count) {
+            [self.tableView reloadData];
+        }
         [self loadMessage];
     }
 
@@ -48,7 +54,8 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
 - (void)updateMessgeList
 {
-    self.page = 1;
+//    self.page = 1;
+    self.page = 0;
     [self.tableView.mj_footer resetNoMoreData];
     [self loadMessage];
 }
@@ -114,7 +121,8 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 - (void)initRefresh
 {
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        self.page = 1;
+//        self.page = 1;
+        self.page = 0;
         [self.tableView.mj_footer resetNoMoreData];
         [self loadMessage];
     }];
@@ -148,24 +156,75 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     }
 }
 
+//- (void)loadMessage {
+//    self.checkToken = YES;
+//    
+//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber", nil];
+//    
+//    [self getBasicHeader];
+//    //    NSLog(@"表演头：%@",self.headers);
+//    [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
+//        NSLog(@"查询到的用户数据：%@",responseObj);
+//        [self.tableView.mj_header endRefreshing];
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            _arrMessageRecord = [responseObj objectForKey:@"data"];
+//            if (_arrMessageRecord.count>=20) {
+//                self.tableView.mj_footer.hidden = NO;
+//            }else{
+//                self.tableView.mj_footer.hidden = YES;
+//            }
+//            [self.tableView reloadData];
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//            NSLog(@"请求短信数据失败");
+//        }
+//    } failure:^(id dataObj, NSError *error) {
+//        [self.tableView.mj_header endRefreshing];
+//    } headers:self.headers];
+//}
+
+
+
 - (void)loadMessage {
+//    if (_arrMessageRecord.count>=20) {
+//        self.tableView.mj_footer.hidden = NO;
+//    }else{
+//        self.tableView.mj_footer.hidden = YES;
+//    }
+
+    NSString *lastTime = [[UNDatabaseTools sharedFMDBTools] getLastTimeWithMessageList];
     self.checkToken = YES;
-    
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber", nil];
-    
+    NSDictionary *params;
+    if (lastTime) {
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber",lastTime,@"beginSMSTime", nil];
+    }else{
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber", nil];
+    }
     [self getBasicHeader];
-    //    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
         NSLog(@"查询到的用户数据：%@",responseObj);
         [self.tableView.mj_header endRefreshing];
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            _arrMessageRecord = [responseObj objectForKey:@"data"];
+            if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
+                [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:responseObj[@"data"]];
+                _arrMessageRecord = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:self.page];
+                [self.tableView reloadData];
+            }
             if (_arrMessageRecord.count>=20) {
                 self.tableView.mj_footer.hidden = NO;
             }else{
                 self.tableView.mj_footer.hidden = YES;
             }
-            [self.tableView reloadData];
+            
+//            _arrMessageRecord = [responseObj objectForKey:@"data"];
+//            if (_arrMessageRecord.count>=20) {
+//                self.tableView.mj_footer.hidden = NO;
+//            }else{
+//                self.tableView.mj_footer.hidden = YES;
+//            }
+//            [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -177,44 +236,60 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     } headers:self.headers];
 }
 
+- (NSString *)getTimeIntervalFromSqlite
+{
+    
+    return nil;
+}
+
 //短信加载更多数据
 - (void)loadMoreMessage {
     if (self.tableView.mj_header.isRefreshing) {
         [self.tableView.mj_footer endRefreshing];
         return;
     }
-    self.checkToken = YES;
     
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber", nil];
-    
-    [self getBasicHeader];
-    
-    [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
-        NSLog(@"查询到的用户数据：%@",responseObj);
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSArray *arrNewMessages = [responseObj objectForKey:@"data"];
-            if (arrNewMessages.count>0) {
-                self.page = self.page + 1;
-                _arrMessageRecord = [_arrMessageRecord arrayByAddingObjectsFromArray:arrNewMessages];
-                [self.tableView.mj_footer endRefreshing];
-            }else{
-                [self.tableView.mj_footer endRefreshingWithNoMoreData];
-            }
-            
-            [self.tableView reloadData];
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-            HUDNormal(INTERNATIONALSTRING(@"请求失败"))
-            [self.tableView.mj_footer endRefreshing];
-        }
-        
-    } failure:^(id dataObj, NSError *error) {
+    NSArray *pageArray = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:(self.page + 1)];
+    if (pageArray.count > 0) {
+        self.page++;
+        _arrMessageRecord = [_arrMessageRecord arrayByAddingObjectsFromArray:pageArray];
         [self.tableView.mj_footer endRefreshing];
-        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-    } headers:self.headers];
+        [self.tableView reloadData];
+    }else{
+        [self.tableView.mj_footer endRefreshingWithNoMoreData];
+    }
+    
+//    self.checkToken = YES;
+//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber", nil];
+//    
+//    [self getBasicHeader];
+//    
+//    [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
+//        NSLog(@"查询到的用户数据：%@",responseObj);
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            NSArray *arrNewMessages = [responseObj objectForKey:@"data"];
+//            if (arrNewMessages.count>0) {
+//                self.page = self.page + 1;
+//                _arrMessageRecord = [_arrMessageRecord arrayByAddingObjectsFromArray:arrNewMessages];
+//                [self.tableView.mj_footer endRefreshing];
+//            }else{
+//                [self.tableView.mj_footer endRefreshingWithNoMoreData];
+//            }
+//            
+//            [self.tableView reloadData];
+//            
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//            HUDNormal(INTERNATIONALSTRING(@"请求失败"))
+//            [self.tableView.mj_footer endRefreshing];
+//        }
+//        
+//    } failure:^(id dataObj, NSError *error) {
+//        [self.tableView.mj_footer endRefreshing];
+//        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+//    } headers:self.headers];
 }
 
 - (void)writeMessage

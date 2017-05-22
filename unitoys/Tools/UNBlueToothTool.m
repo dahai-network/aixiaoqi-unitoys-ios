@@ -668,9 +668,9 @@ static UNBlueToothTool *instance = nil;
 #warning 为了提高连接时间，此处去掉延时，可能对手环连接有影响
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //已经被系统或者其他APP连接上的设备数组
-                if (!self.pairedArr) {
+                if (!self.pairedArr){
                     self.pairedArr = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
-                } else {
+                }else{
                     self.pairedArr = nil;
                     self.pairedArr = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
                 }
