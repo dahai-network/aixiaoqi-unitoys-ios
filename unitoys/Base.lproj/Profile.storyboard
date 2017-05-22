@@ -633,6 +633,7 @@
                         <outlet property="btnAlipay" destination="Xwk-Py-wiW" id="rmk-HT-fLb"/>
                         <outlet property="btnWeipay" destination="J4T-QO-xeV" id="ru6-Do-WgN"/>
                         <outlet property="edtRechargeValue" destination="qoF-c8-4EU" id="Ubb-ak-rma"/>
+                        <outlet property="payButton" destination="S5j-lF-x0G" id="N7d-WZ-fsx"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q1b-xW-z61" userLabel="First Responder" sceneMemberID="firstResponder"/>

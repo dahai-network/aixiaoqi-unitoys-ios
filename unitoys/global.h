@@ -295,7 +295,7 @@
 //#define EMAIL @"630893613@qq.com"
 
 //客服电话
-#define TELEPHONE @"075532979727"
+#define TELEPHONE @"075529988454"
 
 //端口
 #define PORT 4567

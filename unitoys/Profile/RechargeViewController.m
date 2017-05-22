@@ -18,6 +18,7 @@
 @interface RechargeViewController ()<UITextFieldDelegate, UITableViewDelegate>
 
 @property (nonatomic, strong) UIButton *currentSelectButton;
+@property (weak, nonatomic) IBOutlet UIButton *payButton;
 
 @end
 
@@ -33,6 +34,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alipayComplete:) name:@"AlipayComplete" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(weipayComplete:) name:@"WeipayComplete" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshButtonStatue) name:@"appEnterForeground" object:@"appEnterForeground"];
     // Do any additional setup after loading the view.
     
     self.arrValues = [[NSArray alloc] initWithObjects:_btn20,_btn50,_btn100,_btn300,_btn500, nil];
@@ -40,6 +43,14 @@
     self.btnSelected = _btn20;
     self.currentSelectButton = self.btnAlipay;
     
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    self.payButton.enabled = YES;
+}
+
+- (void)refreshButtonStatue {
+    self.payButton.enabled = YES;
 }
 
 - (IBAction)useChargeCard:(UIButton *)sender {
@@ -328,7 +339,8 @@
 //    }
 }
 
-- (IBAction)payment:(id)sender {
+- (IBAction)payment:(UIButton *)sender {
+    sender.enabled = NO;
     self.checkToken = YES;
     //    ;
     //
@@ -382,8 +394,10 @@
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            sender.enabled = YES;
         }else{
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            sender.enabled = YES;
         }
         
         
@@ -392,6 +406,7 @@
     } failure:^(id dataObj, NSError *error) {
         //
         NSLog(@"啥都没：%@",[error description]);
+        sender.enabled = YES;
     } headers:self.headers];
     
     

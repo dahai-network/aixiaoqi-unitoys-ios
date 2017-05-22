@@ -1175,7 +1175,7 @@
         });
         return;
     }
-    if (![self.communicateID isEqualToString:@"00000000"] && ![self.communicateID isEqualToString:[string substringWithRange:NSMakeRange(8, 8)]]) {
+    if (![self.communicateID isEqualToString:@"00000000"] && ![self.communicateID isEqualToString:[string substringWithRange:NSMakeRange(8, 8)]] && ![classStr isEqualToString:@"89"]) {
         NSLog(@"忽略的包 -- %@", string);
         return;
     }
@@ -1333,6 +1333,53 @@
         }
     }else if ([classStr isEqualToString:@"89"]) {
         NSLog(@"接收到卡的注册状态数据 -- %@", string);
+        if ([errorStr isEqualToString:@"00"]) {
+            NSString *communicateIdStr = [string substringWithRange:NSMakeRange(8, 8)];
+            if ([string containsString:@"00be"] && [string containsString:@"00bf"] && [string containsString:@"00a0"]) {
+                NSRange iccidRange = [string rangeOfString:@"00be"];
+                NSRange imsiRange = [string rangeOfString:@"00bf"];
+                NSRange goipnsRange = [string rangeOfString:@"00a0"];
+                NSLog(@"iccidRange - %lu,%lu", iccidRange.location+4, imsiRange.location - (iccidRange.location+4));
+                NSLog(@"imsiRange - %lu,%lu", imsiRange.location+4, goipnsRange.location - (imsiRange.location+4));
+                NSLog(@"goipnsRange - %lu,%lu", goipnsRange.location+4, string.length-(goipnsRange.location+4));
+                NSString *iccidStr = [string substringWithRange:NSMakeRange(iccidRange.location+4, imsiRange.location - (iccidRange.location+4))];
+                NSString *newIccidString = [NSString stringFromHexString:iccidStr];
+                NSString *imsiStr = [string substringWithRange:NSMakeRange(imsiRange.location+4, goipnsRange.location - (imsiRange.location+4))];
+                NSString *newImsiString = [NSString stringFromHexString:imsiStr];
+                NSString *goipnsStr = [string substringWithRange:NSMakeRange(goipnsRange.location+4, string.length-(goipnsRange.location+4))];
+                NSString *newGoipnsString = [NSString stringFromHexString:goipnsStr];
+                NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@", communicateIdStr, newIccidString, newImsiString, newGoipnsString);
+            } else {
+                NSLog(@"接收到的数据有问题");
+            }
+//            NSString *iccidStr = [string substringWithRange:NSMakeRange(36, 42)];
+//            NSString *newIccidString = [NSString stringFromHexString:iccidStr];
+//            NSString *imsiStr = [string substringWithRange:NSMakeRange(82, 32)];
+//            NSString *newImsiString = [NSString stringFromHexString:imsiStr];
+//            NSString *goipnsStr = [string substringWithRange:NSMakeRange(118, 28)];
+//            NSString *newGoipnsString = [NSString stringFromHexString:goipnsStr];
+//            NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@", communicateIdStr, newIccidString, newImsiString, newGoipnsString);
+        } else {
+            if ([errorStr isEqualToString:@"15"]) {
+                //用户不存在或token已过期
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            } else if ([errorStr isEqualToString:@"16"]) {
+                //需要重新注册
+                NSLog(@"需要重新注册");
+            } else if ([errorStr isEqualToString:@"29"]) {
+                //会话id错误
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"身份验证失败，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            } else if ([errorStr isEqualToString:@"35"]) {
+                //服务端暂时不可用
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"服务端暂时开小差啦，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            } else {
+                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            }
+        }
+    } else if ([classStr isEqualToString:@"8d"]) {
+        NSLog(@"关闭tcp成功");
+        [BlueToothDataManager shareManager].isTcpConnected = NO;
+        [BlueToothDataManager shareManager].isRegisted = NO;
     } else {
         NSLog(@"这是什么鬼");
     }
@@ -1852,6 +1899,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [JPUSHService resetBadge];
     [application setApplicationIconBadgeNumber:0];
     [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"appEnterForeground" object:@"appEnterForeground"];
     
     //进入前台重新注册
     if (![UNPushKitMessageManager shareManager].isAlreadyInForeground) {
