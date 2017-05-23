@@ -1919,10 +1919,27 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             //在pushkit里初始化蓝牙
 //            [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+        } else {
+            [self checkRegistStatueEnterForeground];
         }
         [UNPushKitMessageManager shareManager].isAlreadyInForeground = YES;
+    } else {
+        [self checkRegistStatueEnterForeground];
     }
     [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
+}
+
+#pragma mark 从后台进入前台时执行的方法
+- (void)checkRegistStatueEnterForeground {
+    if ([BlueToothDataManager shareManager].isOpened) {
+        if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
+            
+        } else {
+            NSLog(@"进入前台--没网络");
+        }
+    } else {
+        NSLog(@"进入前台--蓝牙未开");
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

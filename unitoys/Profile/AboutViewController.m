@@ -633,13 +633,22 @@
             break;
         case 3:
         {
-            OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
-            if (orderListViewController) {
-                if ([UNDataTools sharedInstance].isHasNotActiveTip) {
-                    [UNDataTools sharedInstance].isHasNotActiveTip = NO;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+            if (self.havePackageView.hidden) {
+                UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+                UIViewController *countryListViewController = [mainStory instantiateViewControllerWithIdentifier:@"countryListViewController"];
+                if (countryListViewController) {
+                    self.tabBarController.tabBar.hidden = YES;
+                    [self.navigationController pushViewController:countryListViewController animated:YES];
                 }
-                [self.navigationController pushViewController:orderListViewController animated:YES];
+            } else {
+                OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
+                if (orderListViewController) {
+                    if ([UNDataTools sharedInstance].isHasNotActiveTip) {
+                        [UNDataTools sharedInstance].isHasNotActiveTip = NO;
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+                    }
+                    [self.navigationController pushViewController:orderListViewController animated:YES];
+                }
             }
         }
             break;
