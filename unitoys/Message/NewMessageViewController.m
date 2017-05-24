@@ -18,11 +18,14 @@
 #import "MessagePhoneDetailController.h"
 #import "UNEditMessageView.h"
 #import "ContactsCallDetailsController.h"
+#import "UNDatabaseTools.h"
+#import "UNDataTools.h"
 
 @interface NewMessageViewController ()<UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *messageFrames;
+@property (nonatomic, strong) NSMutableArray *messageDict;
 
 //@property (weak, nonatomic) IBOutlet UITextField *inputView;
 
@@ -102,10 +105,14 @@
     
     self.txtSendText.delegate = self;
     
-    self.page = 1;
+    self.page = 0;
     self.tableView.mj_header = [CustomRefreshMessageHeader headerWithRefreshingBlock:^{
-        [self cancelEdit];
-        [self loadMoreMessage];
+        if (self.toTelephone && self.toTelephone.length) {
+            [self cancelEdit];
+            [self loadMoreMessage];
+        }else{
+            [self.tableView.mj_header endRefreshing];
+        }
     }];
     
     self.txtLinkman.notifyTextFieldDelegate = self;
@@ -130,7 +137,13 @@
 - (void)selectAllCell
 {
     if (self.selectRemoveData.count == self.messageFrames.count) {
-        return;
+//        return;
+        //取消全选
+        [self.selectRemoveData removeAllObjects];
+        for (int i = 0; i < self.messageFrames.count; i ++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+            [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+        }
     }
     [self.selectRemoveData removeAllObjects];
     for (int i = 0; i < self.messageFrames.count; i ++) {
@@ -152,6 +165,9 @@
 
 - (void)cancelEdit
 {
+    if (_bottomView == nil) {
+        return;
+    }
     self.bottomInputView.hidden = NO;
     [self hideEditView];
     self.navigationItem.leftBarButtonItem = self.defaultLeftItem;
@@ -204,9 +220,33 @@
 - (void)rightBarButtonAction
 {
     if ([self.toTelephone containsString:@","]) {
-        MessagePhoneDetailController *detailVc = [[MessagePhoneDetailController alloc] init];
-        detailVc.toPhoneStr = self.toTelephone;
-        [self.navigationController pushViewController:detailVc animated:YES];
+//        MessagePhoneDetailController *detailVc = [[MessagePhoneDetailController alloc] init];
+//        detailVc.toPhoneStr = self.toTelephone;
+//        [self.navigationController pushViewController:detailVc animated:YES];
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+        if (!storyboard) {
+            return;
+        }
+        ContactsDetailViewController *contactsDetailViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsDetailViewController"];
+        if (!contactsDetailViewController) {
+            return;
+        }
+        kWeakSelf
+        contactsDetailViewController.contactMan = self.linkManTele;
+        contactsDetailViewController.phoneNumbers = self.linkManTele;
+        //不更新
+        contactsDetailViewController.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
+            if (nickName) {
+                weakSelf.title = nickName;
+            }else{
+                weakSelf.title = phoneNumber;
+            }
+//            self.linkManTele = weakSelf.title;
+            self.linkManTele = phoneNumber;
+        };
+        //        contactsDetailViewController.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
+        contactsDetailViewController.isMessagePush = YES;
+        [self.navigationController pushViewController:contactsDetailViewController animated:YES];
     }else{
         kWeakSelf
         ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
@@ -222,6 +262,7 @@
         callDetailsVc.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         callDetailsVc.nickName = self.title;
         callDetailsVc.phoneNumber = self.toTelephone;
+        callDetailsVc.isMessagePush = YES;
         [self.navigationController pushViewController:callDetailsVc animated:YES];
     }
 }
@@ -249,7 +290,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.navigationController.hidesBottomBarWhenPushed = NO;
+//    self.navigationController.hidesBottomBarWhenPushed = NO;
 }
 
 - (void)sendMessageStatuChange:(NSNotification *)noti
@@ -274,87 +315,44 @@
 }
 
 - (void)loadMessages{
-    if (_messageFrames == nil) {
-        __block NSMutableArray *dictArray = [[NSMutableArray alloc] init];
-        
-        self.checkToken = YES;
+    if (_messageFrames == nil || !_messageFrames.count) {
         if (self.linkManTele) {
             NSString *name = [self getLinkmans];
-//            if ([name containsString:@" "]) {
-//                NSString *teleStr = [name substringToIndex:[name rangeOfString:@" "].location];
-//                self.title = teleStr;
-//            } else {
-//              self.title = name;
-//            }
             self.title = name;
-        } else {
+        }else {
             self.title = INTERNATIONALSTRING(@"新信息");
         }
-        NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber",self.linkManTele,@"Tel", nil];
         
+        NSString *lastTime = [[UNDatabaseTools sharedFMDBTools] getLastTimeMessageContentWithPhone:self.linkManTele];
+        NSDictionary *params;
+        if (lastTime) {
+            params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber",lastTime,@"beginSMSTime", self.linkManTele,@"Tel",nil];
+        }else{
+            params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber", self.linkManTele,@"Tel", nil];
+        }
+        
+        self.checkToken = YES;
         [self getBasicHeader];
-//        NSLog(@"表演头：%@",self.headers);
         kWeakSelf
-        [SSNetworkRequest getRequest:apiSMSByTel params:info success:^(id responseObj) {
+        [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                
-                NSArray *arrMessages = [responseObj objectForKey:@"data"];
+//                NSArray *arrMessages = [responseObj objectForKey:@"data"];
                 weakSelf.toTelephone = weakSelf.linkManTele;
                 weakSelf.navigationItem.rightBarButtonItem = weakSelf.defaultRightItem;
-                //排序
-//                arrMessages = [arrMessages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-//                    
-//                    NSString *time1 = [obj1 objectForKey:@"SMSTime"];
-//                    NSString *time2 = [obj2 objectForKey:@"SMSTime"];
-//                    
-//                    NSComparisonResult result = [time1 compare:time2];
-//                    return result == NSOrderedDescending; // 升序
-//                    //        return result == NSOrderedAscending;  // 降序
-//                }];
-                arrMessages = [[arrMessages reverseObjectEnumerator] allObjects];
-                
-                for (NSDictionary *dict in arrMessages){
-//                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.title]) {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
-//                    } else {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
-//                    }
-                    if ([[dict objectForKey:@"IsSend"] boolValue]) {
-                        //己方发送
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
-                    }else{
-                        //对方发送
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
-                    }
+
+                if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
+                    [[UNDatabaseTools sharedFMDBTools] insertMessageContentWithMessageContent:responseObj[@"data"] Phone:self.linkManTele];
                 }
-                
-                NSMutableArray *mfArray = [NSMutableArray array];
-                
-                for (NSDictionary *dict in dictArray) {
-                    // 消息模型
-                    MJMessage *msg = [MJMessage messageWithDict:dict];
-                    
-                    // 取出上一个模型
-                    MJMessageFrame *lastMf = [mfArray lastObject];
-                    MJMessage *lastMsg = lastMf.message;
-                    
-                    // 判断两个消息的时间是否一致
-                    msg.hideTime = [msg.time isEqualToString:lastMsg.time];
-                    
-                    // frame模型
-                    MJMessageFrame *mf = [[MJMessageFrame alloc] init];
-                    mf.message = msg;
-                    
-                    // 添加模型
-                    [mfArray addObject:mf];
-                }
-                
-                _messageFrames = mfArray;
-                self.page = 1;
+                NSArray *arrMessages = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:0 Phone:self.linkManTele];
+                _messageDict = [NSMutableArray arrayWithArray:[[arrMessages reverseObjectEnumerator] allObjects]];
+                _messageFrames = [self changeDictToMessage:arrMessages];
+                //                self.page = 1;
+                self.page = 0;
                 [self.tableView reloadData];
-                
                 //自动滚动到底部
                 [self scrollTableViewToBottomWithAnimated:NO];
+                [self.tableView reloadData];
+                [self getMessageStatuFromServer:arrMessages];
                 
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
@@ -375,98 +373,201 @@
     }
 }
 
+- (NSMutableArray *)changeDictToMessage:(NSArray *)tempArray
+{
+    NSMutableArray *resultArray = [NSMutableArray array];
+    NSArray *arrMessages = [[tempArray reverseObjectEnumerator] allObjects];
+    for (NSDictionary *dict in arrMessages){
+        NSLog(@"%@", dict[@"SMSID"]);
+        if ([[dict objectForKey:@"IsSend"] boolValue]) {
+            //己方发送
+            [resultArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+        }else{
+            //对方发送
+            [resultArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
+        }
+    }
+    
+    NSMutableArray *mfArray = [NSMutableArray array];
+    for (NSDictionary *dict in resultArray) {
+        // 消息模型
+        MJMessage *msg = [MJMessage messageWithDict:dict];
+        
+        // 取出上一个模型
+        MJMessageFrame *lastMf = [mfArray lastObject];
+        MJMessage *lastMsg = lastMf.message;
+        
+        // 判断两个消息的时间是否一致
+        msg.hideTime = [msg.time isEqualToString:lastMsg.time];
+        
+        // frame模型
+        MJMessageFrame *mf = [[MJMessageFrame alloc] init];
+        mf.message = msg;
+        
+        // 添加模型
+        [mfArray addObject:mf];
+    }
+    return mfArray;
+}
+
+//从服务器更新短信状态
+- (void)getMessageStatuFromServer:(NSArray *)messageArray
+{
+    //    if (self.isHasSuccessMsg) {
+    //        return;
+    //    }
+    NSMutableArray *smsIdArray = [NSMutableArray array];
+    for (NSDictionary *dict in messageArray) {
+        if ([dict[@"Status"] isEqualToString:@"0"]) {
+            [smsIdArray addObject:dict[@"SMSID"]];
+            //            [messageStatus addObject:@{@"SMSID" : dict[@"SMSID"] , @"Status" : dict[@"Status"]}];
+        }
+    }
+    if (smsIdArray.count) {
+        //从服务器更新
+        self.checkToken = YES;
+        [self getBasicHeader];
+        NSDictionary *params = @{@"Ids" : smsIdArray};
+        [SSNetworkRequest getJsonRequest:apiSMSGets params:params success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                if ([responseObj[@"data"][@"list"] count]) {
+                    [[UNDatabaseTools sharedFMDBTools] updateMessageStatuWithSMSIDDictArray:responseObj[@"data"][@"list"]];
+                    [self updateCellMessageStatu:responseObj[@"data"][@"list"]];
+                }
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                
+            }
+            NSLog(@"查询到的消息数据：%@",responseObj);
+        } failure:^(id dataObj, NSError *error) {
+            HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
+            NSLog(@"啥都没：%@",[error description]);
+        } headers:self.headers];
+    }
+}
+
+- (void)updateCellMessageStatu:(NSArray *)statuArray
+{
+    for (NSDictionary *dict in statuArray) {
+        if ([dict[@"Status"] isEqualToString:@"0"]) {
+            continue;
+        }
+        NSString *smsId = [dict valueForKey:@"SMSID"];
+        if (!smsId) {
+            continue;
+        }
+        __block MJMessageStatu statu = (MJMessageStatu)[[dict valueForKey:@"Status"] integerValue];
+        kWeakSelf
+        [self.messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(MJMessageFrame *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([messageFrame.message.SMSID isEqualToString:smsId]) {
+                if (statu != messageFrame.message.Status) {
+                    NSLog(@"短信状态改变");
+                    messageFrame.message.Status = statu;
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                    [weakSelf.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                    *stop = YES;
+                }
+            }
+        }];
+    }
+}
 
 //加载更多数据
 - (void)loadMoreMessage
 {
-    self.checkToken = YES;
-    
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber",self.linkManTele,@"Tel", nil];
-    
-    [self getBasicHeader];
-//    NSLog(@"表演头：%@",self.headers);
-    
-    [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
-        
-        NSLog(@"查询到的用户数据：%@",responseObj);
-        
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+    NSArray *pageArray = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:(self.page + 1) Phone:self.linkManTele];
+    if (pageArray.count) {
+        NSIndexSet *dictIndexs = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, pageArray.count)];
+        [_messageDict insertObjects:[[pageArray reverseObjectEnumerator] allObjects] atIndexes:dictIndexs];
+        NSArray *mfArray = [self changeDictToMessage:pageArray];
+        if (mfArray.count>0) {
+            self.page = self.page + 1;
+            NSIndexSet *indexs = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, mfArray.count)];
+            [_messageFrames insertObjects:mfArray atIndexes:indexs];
             
-            NSMutableArray *dictArray = [NSMutableArray array];
-            NSArray *arrNewMessages = [responseObj objectForKey:@"data"];
-            if (arrNewMessages.count) {
-                //将数组倒序
-                arrNewMessages = [[arrNewMessages reverseObjectEnumerator] allObjects];
-                
-                //                for (NSDictionary *dict in arrNewMessages){
-                //                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.toTelephone]) {
-                //                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type", nil]];
-                //                    } else {
-                //                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", nil]];
-                //                    }
-                //                }
-                
-                for (NSDictionary *dict in arrNewMessages){
-//                    if ([[dict objectForKey:@"Fm"] isEqualToString:self.linkManTele]) {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",[dict valueForKey:@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
-//                    } else {
-//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type", [dict valueForKey:@"Status"], @"Status",[dict objectForKey:@"SMSID"],@"SMSID", nil]];
-//                    }
-                    if ([[dict objectForKey:@"IsSend"] boolValue]) {
-                        //己方发送
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
-                    }else{
-                        //对方发送
-                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
-                    }
-                }
-                
-                NSMutableArray *mfArray = [NSMutableArray array];
-                for (NSDictionary *dict in dictArray) {
-                    // 消息模型
-                    MJMessage *msg = [MJMessage messageWithDict:dict];
-                    // 取出上一个模型
-                    MJMessageFrame *lastMf = [mfArray lastObject];
-                    MJMessage *lastMsg = lastMf.message;
-                    // 判断两个消息的时间是否一致
-                    msg.hideTime = [msg.time isEqualToString:lastMsg.time];
-                    // frame模型
-                    MJMessageFrame *mf = [[MJMessageFrame alloc] init];
-                    mf.message = msg;
-                    // 添加模型
-                    [mfArray addObject:mf];
-                }
-                
-                if (mfArray.count>0) {
-                    self.page = self.page + 1;
-                    NSIndexSet *indexs = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, mfArray.count)];
-                    [_messageFrames insertObjects:mfArray atIndexes:indexs];
-                    
-                    [self.tableView.mj_header endRefreshing];
-                    [self.tableView reloadData];
-                    
-                    //移动到当前查看位置
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:mfArray.count inSection:0];
-                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
-                }else{
-                    [self.tableView.mj_header endRefreshing];
-                }
-            }else{
-                NSLog(@"无更多数据加载");
-                [self.tableView.mj_header endRefreshing];
-            }
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            [self.tableView.mj_header endRefreshing];
+            [self.tableView reloadData];
+            //移动到当前查看位置
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:mfArray.count inSection:0];
+            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
         }else{
-            //数据请求失败
             [self.tableView.mj_header endRefreshing];
         }
-        
-    } failure:^(id dataObj, NSError *error) {
-        //        [self.tableView.mj_header endRefreshing];
+    }else{
+        NSLog(@"无更多数据加载");
         [self.tableView.mj_header endRefreshing];
-    } headers:self.headers];
+    }
+
+    
+//    self.checkToken = YES;
+//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber",self.linkManTele,@"Tel", nil];
+//    [self getBasicHeader];
+//    
+//    [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
+//        NSLog(@"查询到的用户数据：%@",responseObj);
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            
+//            NSMutableArray *dictArray = [NSMutableArray array];
+//            NSArray *arrNewMessages = [responseObj objectForKey:@"data"];
+//            if (arrNewMessages.count) {
+//                //将数组倒序
+//                arrNewMessages = [[arrNewMessages reverseObjectEnumerator] allObjects];
+//                for (NSDictionary *dict in arrNewMessages){
+//                    if ([[dict objectForKey:@"IsSend"] boolValue]) {
+//                        //己方发送
+//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//                    }else{
+//                        //对方发送
+//                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//                    }
+//                }
+//                
+//                NSMutableArray *mfArray = [NSMutableArray array];
+//                for (NSDictionary *dict in dictArray) {
+//                    // 消息模型
+//                    MJMessage *msg = [MJMessage messageWithDict:dict];
+//                    // 取出上一个模型
+//                    MJMessageFrame *lastMf = [mfArray lastObject];
+//                    MJMessage *lastMsg = lastMf.message;
+//                    // 判断两个消息的时间是否一致
+//                    msg.hideTime = [msg.time isEqualToString:lastMsg.time];
+//                    // frame模型
+//                    MJMessageFrame *mf = [[MJMessageFrame alloc] init];
+//                    mf.message = msg;
+//                    // 添加模型
+//                    [mfArray addObject:mf];
+//                }
+//                
+//                if (mfArray.count>0) {
+//                    self.page = self.page + 1;
+//                    NSIndexSet *indexs = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, mfArray.count)];
+//                    [_messageFrames insertObjects:mfArray atIndexes:indexs];
+//                    
+//                    [self.tableView.mj_header endRefreshing];
+//                    [self.tableView reloadData];
+//                    
+//                    //移动到当前查看位置
+//                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:mfArray.count inSection:0];
+//                    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:NO];
+//                }else{
+//                    [self.tableView.mj_header endRefreshing];
+//                }
+//            }else{
+//                NSLog(@"无更多数据加载");
+//                [self.tableView.mj_header endRefreshing];
+//            }
+//            
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//            [self.tableView.mj_header endRefreshing];
+//        }
+//        
+//    } failure:^(id dataObj, NSError *error) {
+//        [self.tableView.mj_header endRefreshing];
+//    } headers:self.headers];
     
 }
 
@@ -499,6 +600,7 @@
     
     // 2.给cell传递模型
     cell.messageFrame = self.messageFrames[indexPath.row];
+    cell.selectedBackgroundView = [[UIView alloc]init];
     cell.tag = indexPath.row;
     cell.longPressCellBlock = ^(NSInteger index, NSString *content, UIView *longPressView){
 //        [weakSelf longPressActionWithContent:content longPressView:longPressView];
@@ -562,6 +664,14 @@
 {
 }
 
+/**
+ *  当开始拖拽表格的时候就会调用
+ */
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    // 退出键盘
+    [self.view endEditing:YES];
+}
 
 - (void)repeatSendMessage:(MJMessageFrame *)messageFrame
 {
@@ -606,15 +716,6 @@
 }
 
 
-/**
- *  当开始拖拽表格的时候就会调用
- */
-
- - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
- {
- // 退出键盘
- [self.view endEditing:YES];
- }
 
 - (IBAction)addLinkman:(id)sender {
     [self.txtLinkman endEditing:YES];
@@ -663,18 +764,28 @@
              NSLog(@"查询到的用户数据：%@",responseObj);
              
              if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            //     [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"发送成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-            //     HUDNormal(@"发送成功")
-                 self.txtSendText.text = @"";
-                 [self.txtSendText resignFirstResponder];
-                 _messageFrames = nil;
-                 
                  //隐藏发送textfield
                  self.topEditMessageViewHeight.constant = 0;
                  self.topEditMessageView.hidden = YES;
                  
+                 self.txtSendText.text = @"";
+                 [self.txtSendText resignFirstResponder];
+                 _messageFrames = nil;
+                 
                  [self loadMessages];
-                self.btnSend.enabled = YES;
+                 self.btnSend.enabled = YES;
+                 [self updateMessageList];
+
+//                 NSArray *messages = [NSMutableArray arrayWithArray:[[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:self.page Phone:self.toTelephone]];
+//                 if (messages && messages.count) {
+//                     _messageFrames = [self changeDictToMessage:messages];
+//                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                         [self.tableView reloadData];
+//                         [self scrollTableViewToBottomWithAnimated:NO];
+//                         [self.tableView reloadData];
+//                     });
+//                 }
+                 
              [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
                  
              }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -1044,10 +1155,7 @@
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"删除单条短信成功");
-//            [weakSelf.messageFrames removeObjectAtIndex:index];
-//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-//            [weakSelf.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:@[smsId] WithPhone:self.toTelephone];
             if ((weakSelf.messageFrames.count == index + 1) || weakSelf.messageFrames.count == 1) {
                 //刷新外部界面
                 [weakSelf updateMessageList];
@@ -1057,11 +1165,32 @@
                 [weakSelf.messageFrames removeObjectAtIndex:index];
             }
             [weakSelf.tableView reloadData];
+            if (!weakSelf.messageFrames.count) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [weakSelf.navigationController popViewControllerAnimated:YES];
+                });
+            }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"删除单条短信失败");
+            NSLog(@"删除单条短信失败--%@", responseObj[@"msg"]);
+            
+            [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:@[smsId] WithPhone:self.toTelephone];
+            if ((weakSelf.messageFrames.count == index + 1) || weakSelf.messageFrames.count == 1) {
+                //刷新外部界面
+                [weakSelf updateMessageList];
+            }
+            NSLog(@"删除单条短信成功");
+            if (weakSelf.messageFrames.count > index) {
+                [weakSelf.messageFrames removeObjectAtIndex:index];
+            }
+            [weakSelf.tableView reloadData];
+            if (!weakSelf.messageFrames.count) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [weakSelf.navigationController popViewControllerAnimated:YES];
+                });
+            }
         }
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"删除单条短信异常：%@",[error description]);
@@ -1076,31 +1205,56 @@
     [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"删除多条短信成功");
-//            NSMutableArray *indexPathsArray = [NSMutableArray array];
-//            for (MJMessageFrame *messageFrame in Datas) {
-//                //刷新外部界面
-//                [weakSelf updateMessageList];
-//                
-//                NSInteger row = [weakSelf.messageFrames indexOfObject:messageFrame];
-//                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-//                [indexPathsArray addObject:indexPath];
-//            }
-//            if (indexPathsArray.count) {
-//                [weakSelf.messageFrames removeObjectsInArray:Datas];
-//                [weakSelf.tableView deleteRowsAtIndexPaths:indexPathsArray withRowAnimation:UITableViewRowAnimationAutomatic];
-//            }
+            [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:smsIds WithPhone:self.toTelephone];
             //刷新外部界面
             [weakSelf updateMessageList];
             
-            [weakSelf.messageFrames removeObjectsInArray:Datas];
+            //防止数据不同步
+            NSMutableArray *tempArray = [NSMutableArray array];
+            for (MJMessageFrame *messageFrame in Datas) {
+                if ([weakSelf.messageFrames containsObject:messageFrame]) {
+                    [tempArray addObject:messageFrame];
+                }
+            }
+            if (tempArray.count) {
+                [weakSelf.messageFrames removeObjectsInArray:tempArray];
+            }
             [weakSelf.tableView reloadData];
             //自动滚动到底部
-            [self scrollTableViewToBottomWithAnimated:NO];
+            //            [self scrollTableViewToBottomWithAnimated:NO];
+            if (!weakSelf.messageFrames.count) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [weakSelf.navigationController popViewControllerAnimated:YES];
+                });
+            }
+
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"删除多条短信失败");
+            NSLog(@"删除多条短信失败--%@", responseObj[@"msg"]);
+            [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:smsIds WithPhone:self.toTelephone];
+            //刷新外部界面
+            [weakSelf updateMessageList];
+            
+            //防止数据不同步
+            NSMutableArray *tempArray = [NSMutableArray array];
+            for (MJMessageFrame *messageFrame in Datas) {
+                if ([weakSelf.messageFrames containsObject:messageFrame]) {
+                    [tempArray addObject:messageFrame];
+                }
+            }
+            if (tempArray.count) {
+                [weakSelf.messageFrames removeObjectsInArray:tempArray];
+            }
+            [weakSelf.tableView reloadData];
+            //自动滚动到底部
+            //            [self scrollTableViewToBottomWithAnimated:NO];
+            if (!weakSelf.messageFrames.count) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [weakSelf.navigationController popViewControllerAnimated:YES];
+                });
+            }
         }
     } failure:^(id dataObj, NSError *error) {
         NSLog(@"删除单条短信异常：%@",[error description]);

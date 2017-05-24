@@ -70,12 +70,12 @@
         NSTimeInterval currentTime = [[NSDate date] timeIntervalSinceNow];
         timeValue = currentTime - [dataDate timeIntervalSinceNow];
     }else{
-        timeValue = 700;
+        timeValue = 10000;
     }
 
     NSLog(@"时间差为---%f", timeValue);
     //判断时间限制
-    if (timeValue > 600) {
+    if (timeValue > 1200) {
         //存储新的时间数据
         NSTimeInterval time = [[NSDate date] timeIntervalSince1970];
         NSString *timeString = [NSString stringWithFormat:@"%f", time];

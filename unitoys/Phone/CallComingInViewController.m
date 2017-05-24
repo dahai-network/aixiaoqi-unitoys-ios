@@ -36,6 +36,8 @@
     self.lbName.text = self.nameStr;
     // Do any additional setup after loading the view from its nib.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sipRegisterFailed) name:@"NetWorkPhoneRegisterFailed" object:nil];
+    
     self.lbTime.text = INTERNATIONALSTRING(@"新来电");
     
     if (self.isPresentInCallKit) {
@@ -48,13 +50,25 @@
     }
 }
 
+- (void)sipRegisterFailed
+{
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(@"错误提示") message:INTERNATIONALSTRING(@"通话异常,请检查网络或账号正常") preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [self endCallPhone];
+    }];
+    [alertVC addAction:action];
+    [self presentViewController:alertVC animated:YES completion:nil];
+}
+
 #pragma mark 拒绝按钮点击事件
 - (IBAction)refuseButtonAction:(UIButton *)sender {
     sender.enabled = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
     //直接挂断
     [self endCallPhone];
-    sender.enabled = YES;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        sender.enabled = YES;
+    });
 }
 
 #pragma mark 刷新界面

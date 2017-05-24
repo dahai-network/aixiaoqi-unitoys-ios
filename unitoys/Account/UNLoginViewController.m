@@ -93,7 +93,6 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     self.accountField.text = [userDefaults objectForKey:@"KEY_USER_NAME"];
     self.passWordField.text = [userDefaults objectForKey:@"KEY_PASS_WORD"];
-    
 }
 
 //- (NSAttributedString *)getUnderlineAttributeString:(NSString *)string
@@ -167,7 +166,6 @@
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
-        
     } headers:nil];
 }
 

@@ -18,14 +18,20 @@
 
 @interface MessageRecordController ()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) UITableView *tableView;
-
 @property (nonatomic, strong) AddTouchAreaButton *createMsgButton;
-
 @property (nonatomic, strong) UILabel *noDataLabel;
+
+@property (nonatomic, copy) NSString *currentSelectPhone;
 @end
 
 static NSString *strMessageRecordCell = @"MessageRecordCell";
 @implementation MessageRecordController
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    _currentSelectPhone = nil;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,7 +39,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [self initNoDataLabel];
     [self initRefresh];
     
-//    self.page = 1;
     self.page = 0;
     if (!_arrMessageRecord) {
         _arrMessageRecord = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:self.page];
@@ -43,22 +48,38 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         [self loadMessage];
     }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateSMSContentAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadMessage) name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"ReceiveNewSMSContentUpdate" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsInfoChange) name:@"ContactsInfoChange" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange) name:@"addressBookChanged" object:@"addressBookChanged"];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessgeList) name:@"UpdateMessageRecordLists" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"UpdateMessageRecordLists" object:nil];
     [self createButton];
 }
 
-- (void)updateMessgeList
+- (void)updateMessageStatu
 {
-//    self.page = 1;
-    self.page = 0;
     [self.tableView.mj_footer resetNoMoreData];
+    [self reloadDataFromDatabase];
     [self loadMessage];
 }
+
+- (void)reloadDataFromDatabase
+{
+    self.page = 0;
+    _arrMessageRecord = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:self.page];
+    if (_arrMessageRecord && _arrMessageRecord.count) {
+        [self.tableView reloadData];
+    }
+}
+
+//- (void)updateMessgeList
+//{
+////    self.page = 1;
+//    self.page = 0;
+//    [self.tableView.mj_footer resetNoMoreData];
+//    [self loadMessage];
+//}
 
 - (void)initTableView
 {
@@ -113,10 +134,10 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     _createMsgButton.un_bottom = self.view.un_height;
 }
 
-- (void)updateSMSContentAction
-{
-    [self loadMessage];
-}
+//- (void)updateSMSContentAction
+//{
+//    [self loadMessage];
+//}
 
 - (void)initRefresh
 {
@@ -188,12 +209,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
 
 - (void)loadMessage {
-//    if (_arrMessageRecord.count>=20) {
-//        self.tableView.mj_footer.hidden = NO;
-//    }else{
-//        self.tableView.mj_footer.hidden = YES;
-//    }
-
     NSString *lastTime = [[UNDatabaseTools sharedFMDBTools] getLastTimeWithMessageList];
     self.checkToken = YES;
     NSDictionary *params;
@@ -208,23 +223,37 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         [self.tableView.mj_header endRefreshing];
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
-                [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:responseObj[@"data"]];
-                _arrMessageRecord = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:self.page];
-                [self.tableView reloadData];
+                NSMutableArray *messageArray = [NSMutableArray arrayWithArray:responseObj[@"data"]];
+                for (NSDictionary *dicMessageRecord in responseObj[@"data"]) {
+                    if (_currentSelectPhone) {
+                        if (![dicMessageRecord[@"IsRead"] boolValue]) {
+                            NSString *currentPhone;
+                            if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+                                //己方发送
+                                currentPhone = [dicMessageRecord objectForKey:@"To"];
+                            }else{
+                                //对方发送
+                                currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+                            }
+                            if ([_currentSelectPhone isEqualToString:currentPhone]) {
+                                NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
+                                [mutableDict setObject:@(1) forKey:@"IsRead"];
+                                if ([messageArray containsObject:dicMessageRecord]) {
+                                    [messageArray removeObject:dicMessageRecord];
+                                }
+                                [messageArray addObject:mutableDict];
+                            }
+                        }
+                    }
+                }
+                [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:messageArray];
             }
+            [self reloadDataFromDatabase];
             if (_arrMessageRecord.count>=20) {
                 self.tableView.mj_footer.hidden = NO;
             }else{
                 self.tableView.mj_footer.hidden = YES;
             }
-            
-//            _arrMessageRecord = [responseObj objectForKey:@"data"];
-//            if (_arrMessageRecord.count>=20) {
-//                self.tableView.mj_footer.hidden = NO;
-//            }else{
-//                self.tableView.mj_footer.hidden = YES;
-//            }
-//            [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
@@ -234,12 +263,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     } failure:^(id dataObj, NSError *error) {
         [self.tableView.mj_header endRefreshing];
     } headers:self.headers];
-}
-
-- (NSString *)getTimeIntervalFromSqlite
-{
-    
-    return nil;
 }
 
 //短信加载更多数据
@@ -321,25 +344,36 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
     MessageRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:strMessageRecordCell];
     NSDictionary *dicMessageRecord = [self.arrMessageRecord objectAtIndex:indexPath.row];
+    NSString *currentPhone;
     if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
         //己方发送
-        cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
+        currentPhone = [dicMessageRecord objectForKey:@"To"];
     }else{
         //对方发送
-        cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
+        currentPhone = [dicMessageRecord objectForKey:@"Fm"];
     }
 //    NSString *textStr = [NSString stringWithFormat:@"%@", [self compareCurrentTime:[self convertDate:[dicMessageRecord objectForKey:@"SMSTime"]]]];
-    
+    if (currentPhone) {
+        cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
+    }
     NSString *textStr = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dicMessageRecord[@"SMSTime"]];
     cell.lblMessageDate.text = textStr;
     cell.lblContent.text = [dicMessageRecord objectForKey:@"SMSContent"];
-    
-    if (![dicMessageRecord[@"IsRead"] boolValue]) {
-        [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
-    }else{
+    if (_currentSelectPhone && [_currentSelectPhone isEqualToString:currentPhone]) {
         [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+        if (![dicMessageRecord[@"IsRead"] boolValue]) {
+            NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
+            [mutableDict setObject:@(1) forKey:@"IsRead"];
+            dicMessageRecord = mutableDict;
+            [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:@[dicMessageRecord]];
+        }
+    }else{
+        if (![dicMessageRecord[@"IsRead"] boolValue]) {
+            [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
+        }else{
+            [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+        }
     }
-    
     return cell;
 }
 
@@ -347,14 +381,18 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 //    return 80;
 //}
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     
     //消息记录，显示消息
     NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
-    
     if (![dicMessageRecord[@"IsRead"] boolValue]) {
+        NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
+        [mutableDict setObject:@(1) forKey:@"IsRead"];
+        dicMessageRecord = mutableDict;
         MessageRecordCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+        [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:@[dicMessageRecord]];
     }
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
@@ -362,21 +400,19 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         //            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
         MJViewController *mjViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
         if (mjViewController) {
-            
+            NSString *currentPhone;
             if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
                 //己方发送
-                NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
-                mjViewController.title = titleName;
-                mjViewController.titleName = titleName;
-                mjViewController.toTelephone = [dicMessageRecord objectForKey:@"To"];
+                currentPhone = [dicMessageRecord objectForKey:@"To"];
             }else{
                 //对方发送
-                NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
-                mjViewController.title = titleName;
-                mjViewController.titleName = titleName;
-                mjViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
+                currentPhone = [dicMessageRecord objectForKey:@"Fm"];
             }
-            
+            self.currentSelectPhone = currentPhone;
+            NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
+            mjViewController.title = titleName;
+            mjViewController.titleName = titleName;
+            mjViewController.toTelephone = currentPhone;
             mjViewController.hidesBottomBarWhenPushed = YES;
             [self.nav pushViewController:mjViewController animated:YES];
         }
@@ -416,6 +452,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiDeletesByTels params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] deteleMessageListWithPhoneLists:@[phoneNumber]];
             NSLog(@"删除单条短信成功");
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -429,9 +466,10 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceiveNewSMSContentUpdate" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBookChanged"];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceiveNewSMSContentUpdate" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBookChanged"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning {

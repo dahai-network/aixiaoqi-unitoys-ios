@@ -282,7 +282,11 @@
 //查询套餐组合
 #define apiPackageGetAttrsByID defaultHost@"api/Package/GetAttrsByID"
 
+//获取多条短信状态
+#define apiSMSGets defaultHost@"api/SMS/Gets"
 
+//获取本次订单可通话分钟数和到期日期
+#define apiUserGetMaximumPhoneCallTimeAndExpiredTime defaultHost@"api/User/GetMaximumPhoneCallTimeAndExpiredTime"
 
 
 

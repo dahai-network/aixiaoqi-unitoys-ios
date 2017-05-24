@@ -1765,16 +1765,21 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //        [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
         
     }else if ([contentType isEqualToString:@"SMSSendResult"]) {
+        //更新数据库
+        [[UNDatabaseTools sharedFMDBTools] updateMessageStatuWithSMSIDDictArray:@[extras]];
+        
         //发送短信成功
         if ([extras[@"Status"] isEqualToString:@"1"]) {
             [self addNotificationWithTitle:INTERNATIONALSTRING(@"短信发送提醒") body:content userInfo:userInfo];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuChange" object:@"MessageStatu" userInfo:userInfo];
+            
         } else if ([extras[@"Status"] isEqualToString:@"2"]) {
             [self addNotificationWithTitle:INTERNATIONALSTRING(@"短信发送提醒") body:INTERNATIONALSTRING(@"短信发送失败！") userInfo:userInfo];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuChange" object:@"MessageStatu" userInfo:userInfo];
         } else {
             NSLog(@"收到短信发送结果的推送，状态码有问题");
         }
+        
     }else if ([contentType isEqualToString:@"ProductNew"]){
         [UNDataTools sharedInstance].isHasMallMessage = YES;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"MallExtendMessage" object:nil userInfo:extras];
@@ -2614,6 +2619,13 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(dealyTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"已创建TCP");
+            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                if (![BlueToothDataManager shareManager].isConnected) {
+                    [UNCreatLocalNoti createLBECloseNoti];
+                    return;
+                }
+            }
+            
             if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected) {
                 self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"PushKitTCPPacketStr"];
             }

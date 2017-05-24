@@ -26,6 +26,18 @@
     self.btnMuteStatus.tag = 0;
     self.btnSpeakerStatus.tag = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sipRegisterFailed) name:@"NetWorkPhoneRegisterFailed" object:nil];
+}
+
+- (void)sipRegisterFailed
+{
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(@"错误提示") message:INTERNATIONALSTRING(@"通话异常,请检查网络或账号正常") preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
+        [self endCallPhone];
+    }];
+    [alertVC addAction:action];
+    [self presentViewController:alertVC animated:YES completion:nil];
 }
 
 - (void)getCallingMessage :(NSNotification *)notification {
@@ -151,7 +163,6 @@
     if (self.callTimer) {
         [self.callTimer setFireDate:[NSDate distantFuture]];
     }
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self dismissViewControllerAnimated:YES completion:^{
             self.isDismissing = NO;

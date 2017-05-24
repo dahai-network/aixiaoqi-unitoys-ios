@@ -117,6 +117,8 @@ typedef enum : NSUInteger {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkNotUse:) name:@"netWorkNotToUse" object:nil];//网络状态不可用
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCallInComing) name:@"NewCallInComing" object:nil];//有新呼叫
+    //更新本地通话时长
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhoneTime:) name:@"UpdateMaxPhoneCallTime" object:nil];
     
     self.selectedViewController = self.childViewControllers[0];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -125,6 +127,21 @@ typedef enum : NSUInteger {
     
     
     [self showPresentImageView];
+}
+
+- (void)updatePhoneTime:(NSNotification *)noti
+{
+    if (noti.userInfo[@"CallTime"]) {
+        //更新本地时长
+        
+    }
+    
+    [self updateCallTimeFromServer];
+}
+
+- (void)updateCallTimeFromServer
+{
+    aaaa
 }
 
 - (void)newCallInComing
@@ -161,16 +178,17 @@ typedef enum : NSUInteger {
     if (isPresent) {
         [SSNetworkRequest getRequest:apiPushContentGet params:nil success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                NSString *imageUrl = responseObj[@"data"][@"list"][0][@"Image"];
-                NSLog(@"imageUrl---%@",imageUrl);
-                 //需要判断当前是否正在通话,如果正在通话则不弹出
-                
-                if (imageUrl) {
-                    //如果有数据则出现
-                    weakSelf.presentImageView = [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
-                        [weakSelf presentConvenienceServiceVC];
-                    }];
-                [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+                if (responseObj[@"data"][@"list"] && [responseObj[@"data"][@"list"] count]) {
+                    NSString *imageUrl = responseObj[@"data"][@"list"][0][@"Image"];
+                    NSLog(@"imageUrl---%@",imageUrl);
+                    //需要判断当前是否正在通话,如果正在通话则不弹出
+                    if (imageUrl) {
+                        //如果有数据则出现
+                        weakSelf.presentImageView = [UNPresentImageView sharePresentImageViewWithImageUrl:imageUrl cancelImageName:@"btn_close" imageTap:^{
+                            [weakSelf presentConvenienceServiceVC];
+                        }];
+                        [[NSUserDefaults standardUserDefaults] setObject:currentDateStr forKey:@"PresentConvenienceTime"];
+                    }
                 }
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -335,6 +353,8 @@ typedef enum : NSUInteger {
 //        }
 //    }
     [[UNBlueToothTool shareBlueToothTool] clearInstance];
+    //清空数据库
+    [[UNDatabaseTools sharedFMDBTools] logoutClearDatabase];
     //注销极光推送
     [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
     }];

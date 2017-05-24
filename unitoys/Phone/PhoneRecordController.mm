@@ -1092,13 +1092,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             self.speakerStatus = NO;
             if(theSipEngine->InCalling())
                 theSipEngine->TerminateCall();
-//            [self.tabBarController.tabBar setNeedsLayout];
-//            [self.tabBarController.tabBar layoutIfNeeded];
-//            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                [self.tabBarController.tabBar setNeedsLayout];
-//                [self.tabBarController.tabBar layoutIfNeeded];
-//            });
-            
             //挂断系统的通话界面
             if (kSystemVersionValue >= 10.0 && isUseCallKit) {
                 [[UNCallKitCenter sharedInstance]  endCall:nil completion:^(NSError * _Nullable error) {
@@ -1254,11 +1247,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
     NSLog(@"新呼叫");
-    //    NSString *msg = @"";
     NSString *newcid;
-    
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    
     if (dir == CallIncoming){
         [[UNBlueToothTool shareBlueToothTool] checkNitifiCall];
         //        msg = [NSString stringWithFormat:@"新来电 %@",cid];
@@ -1318,33 +1308,31 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 -(void) OnCallProcessing{
-    //    NSLog(@"正在接续...");
-    //    [mStatus setText:@"正在接续..."];
+    NSLog(@"正在呼叫...============================");
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 
 /*对方振铃*/
 -(void) OnCallRinging{
-    //        NSLog(@"对方振铃...");
-    //    [mStatus setText:@"对方振铃..."];
+    NSLog(@"对方振铃...============================");
+    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+    theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
+    theSipEngine->MuteMic(self.muteStatus);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"对方振铃...")];
 }
 
 /*呼叫接通*/
 -(void) OnCallStreamsRunning:(bool)is_video_call{
-    NSLog(@"接通...");
-    //    [mStatus setText:@"呼叫接通"];
-    //在接通时更新扩音状态
-    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-    theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
-    theSipEngine->MuteMic(self.muteStatus);
+    NSLog(@"正在通话...============================");
+//    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+//    theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
+//    theSipEngine->MuteMic(self.muteStatus);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
 -(void) OnCallMediaStreamsConnected:(MediaTransMode)mode{
-    //    NSLog(@"接通...");
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
-    //    [mStatus setText:@"媒体接通"];
+    NSLog(@"呼叫连接类型...============================");
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 
 -(void) OnCallResume {
@@ -1370,13 +1358,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 /*呼叫接通知识*/
 -(void) OnCallConnected{
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
 /*话单*/
 -(void) OnCallReport:(void*)report{
-    
+//    char
 }
 
 /*呼叫结束*/
@@ -1528,9 +1515,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 /*帐号注册状态反馈, 失败返回错误代码 代码对应的含义，请参考common_types.h*/
 -(void) OnRegistrationState:(RegistrationState) code
               withErrorCode:(RegistrationErrorCode) e_errno{
-    
     NSString *msg=@"";
-    
     if(code == 1){
         msg = @"正在注册...";
         [SipEngineManager instance].resignStatue = 0;
@@ -1546,6 +1531,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }else if(code == 4){
         msg = [NSString stringWithFormat:@"注册失败，错误代码 %d",e_errno];
         [SipEngineManager instance].resignStatue = 0;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"NetWorkPhoneRegisterFailed" object:nil];
         //        [mBtnRegister setTitle:@"注册" forState:UIControlStateNormal];
     }
     

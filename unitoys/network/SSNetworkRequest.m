@@ -12,7 +12,7 @@
 
 @implementation SSNetworkRequest
 
-+ (void)getRequest:(NSString *)url params:(NSDictionary *)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers{
++ (void)getRequest:(NSString *)url params:(id)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers{
     
     //网络不可用
     if (![self checkNetworkStatus]) {
@@ -50,6 +50,43 @@
 //    //    [securityPolicy setPinnedCertificates:<#(NSArray * _Nullable)#>]
 //    
 //    manager.securityPolicy = securityPolicy;
+    /////////结束证书认证
+    [manager GET:url parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
+        //
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (![BlueToothDataManager shareManager].isShowHud) {
+            HUDStop;
+        }
+        successHandler(responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        //
+        if (![BlueToothDataManager shareManager].isShowHud) {
+            HUDStop;
+        }
+        failureHandler(task.response,error);
+    }];
+    
+}
+
++ (void)getJsonRequest:(NSString *)url params:(id)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers{
+    
+    //网络不可用
+    if (![self checkNetworkStatus]) {
+        successHandler(nil);
+        failureHandler(nil,nil);
+        return;
+    }
+    
+    AFHTTPSessionManager *manager = [self getRequstManager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    //开始加载头部
+    if (headers) {
+        NSEnumerator *enumerator = [headers keyEnumerator];
+        id key;
+        while ((key = [enumerator nextObject])) {
+            [manager.requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
+        }
+    }
     /////////结束证书认证
     [manager GET:url parameters:params progress:^(NSProgress * _Nonnull downloadProgress) {
         //

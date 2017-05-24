@@ -48,8 +48,9 @@ typedef void (^progressBlock)(int64_t bytesWritten, int64_t totalBytesWritten, i
 /**
  GET请求
  */
-+ (void)getRequest:(NSString *)url params:(NSDictionary *)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers;
++ (void)getRequest:(NSString *)url params:(id)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers;
 
++ (void)getJsonRequest:(NSString *)url params:(id)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers;
 /**
  POST请求
  */

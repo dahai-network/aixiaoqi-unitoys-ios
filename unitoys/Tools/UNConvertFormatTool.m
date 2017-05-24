@@ -64,4 +64,29 @@
     return [self dateStringFromDate:date];
 }
 
+
+#pragma mark ---- 字典转JSON
++ (NSString *)objectToJson:(id)object
+{
+    NSError *parseError = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:&parseError];
+    if (parseError) {
+        return @"";
+    }
+    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+}
+
+#pragma mark ---- JSON转字典
++ (id)jsonToObject:(NSString *)jsonStr
+{
+    NSError *parseError = nil;
+    NSData *jsonData1 = [jsonStr dataUsingEncoding:NSUTF8StringEncoding];
+    id dataDict=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingMutableContainers error:&parseError];
+    if (parseError) {
+        return nil;
+    }
+    return dataDict;
+}
+
 @end

@@ -181,12 +181,17 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                 NSLog(@"通讯录没有号码");
             }
         }
-        self.nickName = name;
-        self.phoneNumber = phone;
-        if (_contactsInfoUpdateBlock) {
-            _contactsInfoUpdateBlock(name, phone);
+        if (!phone || !phone.length) {
+            HUDNormal(@"联系人必须包含号码")
+//            return;
+        }else{
+            self.nickName = name;
+            self.phoneNumber = phone;
+            if (_contactsInfoUpdateBlock) {
+                _contactsInfoUpdateBlock(name, phone);
+            }
+            [self reloadTableView];
         }
-        [self reloadTableView];
     }
     [newPersonView dismissViewControllerAnimated:YES completion:nil];
     NSLog(@"newPersonView--%@---person---%@", newPersonView, person);
@@ -223,14 +228,20 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             nickName = phoneNumber;
         }
         phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        self.nickName = nickName;
-        self.phoneNumber = phoneNumber;
-        self.contactModel.contactId = contact.identifier;
-        if (_contactsInfoUpdateBlock) {
-            _contactsInfoUpdateBlock(nickName, phoneNumber);
+        
+        if (!phoneNumber || !phoneNumber.length) {
+            HUDNormal(@"联系人必须包含号码")
+            //            return;
+        }else{
+            self.nickName = nickName;
+            self.phoneNumber = phoneNumber;
+            self.contactModel.contactId = contact.identifier;
+            if (_contactsInfoUpdateBlock) {
+                _contactsInfoUpdateBlock(nickName, phoneNumber);
+            }
+            [self reloadTableView];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ContactsInfoChange" object:nil];
         }
-        [self reloadTableView];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"ContactsInfoChange" object:nil];
     }
     
     [viewController dismissViewControllerAnimated:YES completion:nil];
@@ -292,6 +303,9 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)reloadTableView
 {
+    if (!self.phoneNumber) {
+        return;
+    }
     if ([[UNDataTools sharedInstance].blackLists containsObject:self.phoneNumber]) {
         _isInBlackLists = YES;
     }else{

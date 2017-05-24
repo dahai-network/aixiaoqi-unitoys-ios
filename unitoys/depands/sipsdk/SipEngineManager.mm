@@ -208,9 +208,7 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
         theSipEngine->SetTransport(SIP_UDP);
         theSipEngine->SetEnCrypt(true, true);
         
-        theSipEngine->SetLoudspeakerStatus(false);
-        
-        
+//        theSipEngine->SetLoudspeakerStatus(false);
         first_run_ = NO;
     }
 }
