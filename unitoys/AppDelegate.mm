@@ -1474,7 +1474,7 @@
         }
     }
     self.sec++;
-    NSLog(@"心跳包的sec == %d", self.sec);
+//    NSLog(@"心跳包的sec == %d", self.sec);
 }
 
 - (void)receiveNewDataStr:(NSNotification *)sender {
