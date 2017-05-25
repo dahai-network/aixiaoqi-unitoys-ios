@@ -57,6 +57,7 @@
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
+//自动验证
 - (IBAction)verificationAction:(UIButton *)sender {
     self.veriButton.enabled = NO;
     //验证
@@ -130,7 +131,8 @@
                 HUDStop
                 HUDNormal(INTERNATIONALSTRING(@"验证成功"))
                 [BlueToothDataManager shareManager].isShowHud = NO;
-                
+                //重新注册网络电话
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"RegisterNetWorkCallPhone" object:nil];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [self dismissVc];
                 });

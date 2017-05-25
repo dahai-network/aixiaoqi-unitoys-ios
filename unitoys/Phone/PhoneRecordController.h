@@ -37,9 +37,9 @@ typedef void(^IsHideTitleViewBlock)(BOOL isHidden);
 
 @property (readwrite) BOOL muteStatus;
 
-@property (readwrite) NSDate *callStartTime;
+//@property (readwrite) NSDate *callStartTime;
 
-@property (readwrite) NSDate *callStopTime;
+//@property (readwrite) NSDate *callStopTime;
 
 @property (readwrite) NSString * hostHungup; //主动挂断 source,dest
 

@@ -33,5 +33,5 @@
 - (void)setUpSpeakerButtonStatus:(BOOL)isSpeaker;
 - (void)endCallPhone;
 
-- (void)showCenterView;
+//- (void)showCenterView;
 @end

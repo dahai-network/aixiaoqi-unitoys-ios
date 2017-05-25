@@ -106,7 +106,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)unregister {
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-    
     if (theSipEngine->AccountIsRegstered()) {
         theSipEngine->DeRegisterSipAccount();
     }
@@ -146,8 +145,17 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self showWindow];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tipStatuBarHeightChange:) name:@"TipStatuBarHeightChange" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registerSipServer) name:@"NetStatusIsWell" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registerNetWorkCallPhone) name:@"RegisterNetWorkCallPhone" object:nil];
     NSLog(@"statusBarHeight--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
+    
 }
+
+- (void)registerNetWorkCallPhone
+{
+    [self unregister];
+    [self registerSipServer];
+}
+
 
 - (void)initNoDataLabel
 {
@@ -206,7 +214,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     [self doRegister];
     
-    [self getMaxPhoneCall];
+//    [self getMaxPhoneCall];
 }
 
 
@@ -252,7 +260,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     }
                     weakSelf.callCominginVC.isPresentInCallKit = YES;
                     [weakSelf.nav presentViewController:weakSelf.callCominginVC animated:NO completion:^{
-                        [weakSelf.callCominginVC showCenterView];
+//                        [weakSelf.callCominginVC showCenterView];
                     }];
                     
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -274,7 +282,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
                     if(theSipEngine->InCalling())
                         theSipEngine->TerminateCall();
-                    weakSelf.callStopTime = [NSDate date];
+//                    weakSelf.callStopTime = [NSDate date];
                     weakSelf.hostHungup = @"source";
                 }
                     break;
@@ -1097,7 +1105,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [[UNCallKitCenter sharedInstance]  endCall:nil completion:^(NSError * _Nullable error) {
                 }];
             }
-            self.callStopTime = [NSDate date];
+//            self.callStopTime = [NSDate date];
             self.hostHungup = @"source";
             //            [self endingCallOut];
         }else if ([action isEqualToString:@"SwitchSound"]){
@@ -1302,7 +1310,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
         if(theSipEngine->InCalling())
             theSipEngine->TerminateCall();
-        self.callStopTime = [NSDate date];
+//        self.callStopTime = [NSDate date];
         self.hostHungup = @"source";
     });
 }
@@ -1374,6 +1382,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self loadPhoneRecord];
     self.speakerStatus = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"通话结束")];
+    
     /*
      //移除来电页面
      if (self.callCominginVC) {
@@ -1385,7 +1394,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnCallFailed:(CallErrorCode) error_code{
     NSLog([NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code],nil);
     [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"错误提示") message:[NSString stringWithFormat:@"%@", INTERNATIONALSTRING(@"呼叫异常,请确认网络或账号正常")] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
-    //    [mStatus setText:[NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code]];
     
 }
 
@@ -1573,7 +1581,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             self.phoneNumber = strNumber;
         }
         self.calledTelNum = [NSString stringWithFormat:@"981%@",self.phoneNumber];
-        
         //获取最大通话时长后再拨打
         [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
             //            NSLog(@"有数据：%@",responseObj);
@@ -1581,7 +1588,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
                 if (callingViewController) {
-                    self.callStartTime = [NSDate date];
+//                    self.callStartTime = [NSDate date];
                     callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
                     [self.nav presentViewController:callingViewController animated:YES completion:^{
                         self.maxPhoneCall = [[[responseObj objectForKey:@"data"]  objectForKey:@"maximumPhoneCallTime"] intValue];
@@ -1603,9 +1610,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             NSLog(@"有异常：%@",[error description]);
             HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         } headers:self.headers];
-        
     }
-    
 }
 
 
@@ -1614,16 +1619,37 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         return;
     }
+    self.maxPhoneCall = -1;
     __block NSString *currentDateStr;
     //是否直接拨打电话
     BOOL isCallPhone = NO;
     //是否有流量套餐
     BOOL isHasPackage = NO;
-//    isHasPackage = YES;
+    NSDictionary *phoneTimeDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"MaxPhoneCallTime"];
+    if ([phoneTimeDict[@"maximumPhoneCallTime"] floatValue] == -1) {
+        //无流量套餐
+        isHasPackage = NO;
+    }else{
+        if ([phoneTimeDict[@"expiredDate"] doubleValue] > [[NSDate date] timeIntervalSince1970]) {
+            //套餐在期限内
+            isHasPackage= YES;
+            if ([phoneTimeDict[@"maximumPhoneCallTime"] intValue] == 0) {
+                //无限通话
+                self.maxPhoneCall = 36000;
+            }else{
+                self.maxPhoneCall = [phoneTimeDict[@"maximumPhoneCallTime"] intValue];
+            }
+        }else{
+            //套餐已过期
+            isHasPackage= NO;
+        }
+    }
     
     if (isHasPackage) {
+        //有套餐
         isCallPhone = YES;
     }else{
+        //无套餐
         //判断是否忽略今天提示(查询是否存储过今天的时间)
         isCallPhone = [UNDataTools isSaveTodayDateWithKey:@"HiddenTodayTipWithCallPhone" TodayString:^(NSString *todayStr) {
             currentDateStr = todayStr;
@@ -1631,16 +1657,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
     
     //测试手动设置为NO
-    isCallPhone = NO;
     if (isCallPhone) {
-        [self showCallPhoneVc:strNumber];
+        [self showCallPhoneVc:strNumber IsNetWorkCallPhone:isHasPackage];
     }else{
-        [self showTipViewWithCurrentDate:currentDateStr StringNumber:strNumber];
+        [self showTipViewWithCurrentDate:currentDateStr StringNumber:strNumber IsNetWorkCallPhone:isHasPackage];
     }
 }
 
 //弹出提示
-- (void)showTipViewWithCurrentDate:(NSString *)currentDateStr StringNumber:(NSString *)phoneNumber
+- (void)showTipViewWithCurrentDate:(NSString *)currentDateStr StringNumber:(NSString *)phoneNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone
 {
     //如果点击按钮后不再提示为选中,存储今日时间
     kWeakSelf
@@ -1653,7 +1678,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         if (index == 1) {
             [weakSelf showConvenienceVc];
         }else{
-            [weakSelf showCallPhoneVc:phoneNumber];
+            [weakSelf showCallPhoneVc:phoneNumber IsNetWorkCallPhone:isNetCallPhone];
         }
     }];
 }
@@ -1669,64 +1694,69 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
-- (void)showCallPhoneVc:(NSString *)strNumber
+- (void)showCallPhoneVc:(NSString *)strNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone
 {
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     if (storyboard) {
         if (strNumber) {
             self.phoneNumber = strNumber;
         }
-        if (self.phoneNumber) {
-            self.calledTelNum = [NSString stringWithFormat:@"986%@",self.phoneNumber];
-        }
         CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
         if (callingViewController) {
-            self.callStartTime = [NSDate date];
-            callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
+//            callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
             [self.nav presentViewController:callingViewController animated:YES completion:^{
-                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
                 callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
-                if ([VSWManager shareManager].callPort) {
-                    theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
-                }else if([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]){
-                    [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
-                    theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
+                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+                if (isNetCallPhone) {
+                    //网络电话
+                    NSLog(@"网络电话");
+                    theSipEngine->MakeCall([[NSString stringWithFormat:@"981%@#%d",[self formatPhoneNum:self.phoneNumber],self.maxPhoneCall] UTF8String],false,NULL);
                 }else{
-                    HUDNormal(INTERNATIONALSTRING(@"呼叫失败"))
+                    //直接拨打
+                    NSLog(@"直接拨打电话");
+                    if ([VSWManager shareManager].callPort) {
+                        theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
+                    }else if([[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"]){
+                        [VSWManager shareManager].callPort = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWCallPort"];
+                        theSipEngine->MakeCall([[NSString stringWithFormat:@"986%@%@",[VSWManager shareManager].callPort, [self formatPhoneNum:self.phoneNumber]] UTF8String],false,NULL);
+                    }else{
+                        HUDNormal(INTERNATIONALSTRING(@"呼叫失败"))
+                    }
                 }
             }];
         }
     }
 }
 
+
 - (void)endingCallOut {
-    self.checkToken = YES;
-    int dat = [self.callStopTime timeIntervalSinceReferenceDate]-[self.callStartTime timeIntervalSinceReferenceDate];
+//    self.checkToken = YES;
+//    int dat = [self.callStopTime timeIntervalSinceReferenceDate]-[self.callStartTime timeIntervalSinceReferenceDate];
     
-    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[userdata objectForKey:@"Tel"],@"DeviceName",self.calledTelNum,@"calledTelNum",[self formatTime:self.callStartTime],@"callStartTime", [self formatTime:self.callStopTime],@"callStopTime",[NSString stringWithFormat:@"%d",dat],@"callSessionTime",self.outIP,@"callSourceIp",self.outIP,@"callServerIp",self.hostHungup,@"acctterminatedirection",nil];
-    
-    [self getBasicHeader];
-    //    NSLog(@"表演头：%@",self.headers);
-    [SSNetworkRequest postRequest:apiAddSpeakRecord params:params success:^(id responseObj) {
-        
-        
-        NSLog(@"查询到的记录添加：%@",responseObj);
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            
-            //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-            NSLog(@"通话记录添加成功");
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-        }
-    } failure:^(id dataObj, NSError *error) {
-        //
-        NSLog(@"啥都没：%@",[error description]);
-    } headers:self.headers];
+//    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[userdata objectForKey:@"Tel"],@"DeviceName",self.calledTelNum,@"calledTelNum",[self formatTime:self.callStartTime],@"callStartTime", [self formatTime:self.callStopTime],@"callStopTime",[NSString stringWithFormat:@"%d",dat],@"callSessionTime",self.outIP,@"callSourceIp",self.outIP,@"callServerIp",self.hostHungup,@"acctterminatedirection",nil];
+//    
+//    [self getBasicHeader];
+//    //    NSLog(@"表演头：%@",self.headers);
+//    [SSNetworkRequest postRequest:apiAddSpeakRecord params:params success:^(id responseObj) {
+//        
+//        
+//        NSLog(@"查询到的记录添加：%@",responseObj);
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            
+//            //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+//            NSLog(@"通话记录添加成功");
+//            
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//        }
+//    } failure:^(id dataObj, NSError *error) {
+//        //
+//        NSLog(@"啥都没：%@",[error description]);
+//    } headers:self.headers];
 }
 
 

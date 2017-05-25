@@ -82,25 +82,19 @@
     } completion:nil];
 }
 
-- (void)showCenterView
-{
-    self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
-    self.containerView.hidden = NO;
-    //开始计时
-    self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self refuseViewAnimations];
-        self.isNeedToRefresh = YES;
-    });
-}
-
 #pragma mark 接听按钮点击事件
 - (IBAction)answerButtonAction:(UIButton *)sender {
     self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
     self.containerView.hidden = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Answer"];
-    //开始计时
-    self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
+    if (!self.isPresentInCallKit) {
+        if (self.callTimer) {
+            [self.callTimer invalidate];
+            self.callTimer = nil;
+        }
+        //开始计时
+        self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
+    }
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self refuseViewAnimations];
         self.isNeedToRefresh = YES;
@@ -153,17 +147,34 @@
     self.lbName.text = self.currentNickName;
 }
 
-
+//- (void)showCenterView
+//{
+//    if (self.callTimer) {
+//        [self.callTimer invalidate];
+//        self.callTimer = nil;
+//    }
+//    self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
+//    self.containerView.hidden = NO;
+//    //开始计时
+//    self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self refuseViewAnimations];
+//        self.isNeedToRefresh = YES;
+//    });
+//}
 
 //从callKit弹出通话界面
 - (void)acceptCallFromCallKit
 {
+
     self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
-    self.muteOffButton.hidden = NO;
-    self.handfreeOffButton.hidden = NO;
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Answer"];
+    self.containerView.hidden = NO;
     //开始计时
-    self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
+//    if (self.callTimer) {
+//        [self.callTimer invalidate];
+//        self.callTimer = nil;
+//    }
+//    self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
     
 //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        [self refuseViewAnimations];
@@ -263,7 +274,10 @@
         if ([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"呼叫接通")]) {
             
         }else if ([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"正在通话")]) {
-       
+            NSLog(@"getCallingMessage--正在通话");
+            if (!self.callTimer) {
+                self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
+            }
         }else if([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"通话结束")]){
             //关掉当前
             [self endCallPhone];

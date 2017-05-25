@@ -118,7 +118,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkNotUse:) name:@"netWorkNotToUse" object:nil];//网络状态不可用
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCallInComing) name:@"NewCallInComing" object:nil];//有新呼叫
     //更新本地通话时长
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhoneTime:) name:@"UpdateMaxPhoneCallTime" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhoneTime:) name:@"UpdateMaximumPhoneCallTime" object:nil];
     
     self.selectedViewController = self.childViewControllers[0];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -127,21 +127,41 @@ typedef enum : NSUInteger {
     
     
     [self showPresentImageView];
+    [self updateCallTimeFromServer];
 }
 
 - (void)updatePhoneTime:(NSNotification *)noti
 {
-    if (noti.userInfo[@"CallTime"]) {
+    if (noti.userInfo && noti.userInfo[@"maximumPhoneCallTime"]) {
         //更新本地时长
-        
+        NSDictionary *phoneTimeDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"MaxPhoneCallTime"];
+        if (phoneTimeDict) {
+            CGFloat time = [phoneTimeDict[@"maximumPhoneCallTime"] floatValue] - [noti.userInfo[@"maximumPhoneCallTime"] floatValue];
+            NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:phoneTimeDict];
+            mutableDict[@"maximumPhoneCallTime"] = @(time);
+            [[NSUserDefaults standardUserDefaults] setObject:mutableDict forKey:@"MaxPhoneCallTime"];
+        }
     }
-    
-    [self updateCallTimeFromServer];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self updateCallTimeFromServer];
+    });
 }
 
 - (void)updateCallTimeFromServer
 {
-    
+    [SSNetworkRequest getRequest:apiUserGetMaximumPhoneCallTimeAndExpiredTime params:nil success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"通话时间---responseObj===%@", responseObj);
+//            expiredDate = 1497640553;
+//            maximumPhoneCallTime = 0; 0为无限通话,-1为无通话时间
+            [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"] forKey:@"MaxPhoneCallTime"];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:[UNDataTools sharedInstance].normalHeaders];
 }
 
 - (void)newCallInComing

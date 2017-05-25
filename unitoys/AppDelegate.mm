@@ -2350,6 +2350,15 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 [UNPushKitMessageManager shareManager].simDataDict = nil;
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
                 [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"SIM卡断开连接--"]];
+                
+                if (![BlueToothDataManager shareManager].isOpened) {
+                    [UNCreatLocalNoti createLBECloseNoti];
+                    return;
+                }
+                if (![BlueToothDataManager shareManager].isConnected) {
+                    NSLog(@"蓝牙未连接");
+                    return;
+                }
                 NSLog(@"已创建TCP");
                 if (!self.tcpPacketStr) {
                     self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"TCPPacketStr"];
@@ -2651,10 +2660,14 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(dealyTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"已创建TCP");
             if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                if (![BlueToothDataManager shareManager].isConnected) {
+                if (![BlueToothDataManager shareManager].isOpened) {
                     [UNCreatLocalNoti createLBECloseNoti];
                     return;
                 }
+            }
+            if (![BlueToothDataManager shareManager].isConnected) {
+                NSLog(@"蓝牙未连接");
+                return;
             }
             
             if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected) {
