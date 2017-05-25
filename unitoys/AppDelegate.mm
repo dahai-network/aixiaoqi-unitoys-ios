@@ -148,15 +148,6 @@
         }
     };
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
-            if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                self.isNeedToCheckSIMStatue = YES;
-                [self creatAsocketTcp];
-            }
-        }
-    });
-    
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
             NSLog(@"主程序无网络");
@@ -290,6 +281,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearTimeoutPushKitMessage) name:@"PushKitMessageDataTimeout" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendDataToCloseService) name:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginSuccessAndCreatTCP) name:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
     
     return YES;
 }
@@ -299,6 +291,8 @@
     NSString *sendStr = [NSString stringWithFormat:@"108a0d00%@00010003020100", self.communicateID];
     NSLog(@"发送关闭服务的数据 -- %@", sendStr);
     [self sendMsgWithMessage:sendStr];
+    [self.timer setFireDate:[NSDate distantFuture]];
+    self.tcpPacketStr = nil;
     // 关闭套接字
 //    [self.sendTcpSocket disconnect];
 //    self.sendTcpSocket = nil;
@@ -315,7 +309,7 @@
         if (userdata) {
             token = userdata[@"Token"];
         }
-        
+        NSLog(@"判断tcp是否在线的时候的token - %@", token);
         NSString *ascHex = [self hexStringFromString:token];
         //    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
         NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
@@ -586,7 +580,7 @@
     if (userdata) {
         token = userdata[@"Token"];
     }
-    
+    NSLog(@"发送tcp连接的时候的token - %@", token);
     NSString *ascHex = [self hexStringFromString:token];
 //    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
     NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
@@ -799,7 +793,7 @@
             [self sendPingPacketWithPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices[@"dataString"]];
         }
     }else if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect){
-            NSLog(@"tcp数据----%@", self.tcpPacketStr);
+            NSLog(@"2tcp数据----%@", self.tcpPacketStr);
             if (self.tcpPacketStr) {
                 self.communicateID = @"00000000";
                 NSLog(@"tcp连接成功");
@@ -871,7 +865,7 @@
         }else{
             [self sendDataToCheckRegistStatue];
             if (![BlueToothDataManager shareManager].isReseted) {
-                NSLog(@"tcp数据----%@", self.tcpPacketStr);
+                NSLog(@"1tcp数据----%@", self.tcpPacketStr);
                 if (self.tcpPacketStr) {
                     self.communicateID = @"00000000";
                     NSLog(@"tcp连接成功");
@@ -1244,9 +1238,12 @@
             if (!self.timer) {
                 //开始计时
                 self.sec = 0;
-                self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timerAction) userInfo:nil repeats:YES];
+                self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(jumpTimerAction) userInfo:nil repeats:YES];
                 //如果不添加下面这条语句，会阻塞定时器的调用
                 [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
+            } else {
+                self.sec = 0;
+                [self.timer setFireDate:[NSDate distantPast]];
             }
         });
     }else if ([classStr isEqualToString:@"05"]) {
@@ -1461,7 +1458,7 @@
     }
 }
 
-- (void)timerAction {
+- (void)jumpTimerAction {
 //    if (self.sec == 300) {
     if (self.sec == 300) {
         self.sec = 0;
@@ -1477,7 +1474,7 @@
         }
     }
     self.sec++;
-//    NSLog(@"sec == %d", self.sec);
+    NSLog(@"心跳包的sec == %d", self.sec);
 }
 
 - (void)receiveNewDataStr:(NSNotification *)sender {
@@ -1621,6 +1618,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                         NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
                     }];
 //                    NSLog(@"拿到数据：%@",resonseObj);
+                    [self loginSuccessAndCreatTCP];
                     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                     if (storyboard) {
                         UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
@@ -1655,6 +1653,18 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         } headers:nil];
 
     }
+}
+
+#pragma mark 登录成功之后创建tcp
+- (void)loginSuccessAndCreatTCP {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
+            if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                self.isNeedToCheckSIMStatue = YES;
+                [self creatAsocketTcp];
+            }
+        }
+    });
 }
 
 - (NSString *)md5:(NSString *)str
@@ -2766,6 +2776,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CreateTCPSocketToBLE" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PushKitMessageDataTimeout" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
 }
 
 @end

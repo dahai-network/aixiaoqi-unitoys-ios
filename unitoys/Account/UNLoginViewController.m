@@ -387,6 +387,7 @@
                 [userDefaults setObject:self.accountField.text forKey:@"KEY_USER_NAME"];
                 [userDefaults setObject:self.passWordField.text forKey:@"KEY_PASS_WORD"];
                 [userDefaults synchronize];
+                NSLog(@"登录成功之后时候的token - %@", userData[@"Token"]);
                 [UNPushKitMessageManager shareManager].iccidString = nil;
                 //从服务器获取黑名单列表
                 [weakSelf getBlackListsFromServer];
@@ -396,6 +397,7 @@
                 [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
                     NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
                 }];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 if (storyboard) {
                     UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
@@ -525,6 +527,7 @@
                 
                 [[NSUserDefaults standardUserDefaults] setObject:userData forKey:@"userData"];
                 NSLog(@"拿到数据：%@",resonseObj);
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 if (storyboard) {
                     UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];

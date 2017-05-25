@@ -269,6 +269,7 @@
                     [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
                         NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
                     }];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
 //                    NSLog(@"拿到数据：%@",resonseObj);
                     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                     if (storyboard) {
