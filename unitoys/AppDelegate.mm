@@ -77,6 +77,7 @@
 @property (nonatomic, strong)NSTimer *timer;
 @property (nonatomic, assign)int sec;
 @property (nonatomic, assign) int lessStep;
+@property (nonatomic, assign) BOOL isNeedToCheckSIMStatue;
 
 @end
 
@@ -146,6 +147,15 @@
             });
         }
     };
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
+            if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                self.isNeedToCheckSIMStatue = YES;
+                [self creatAsocketTcp];
+            }
+        }
+    });
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
@@ -257,6 +267,12 @@
     
 #warning 先不创建udp,获取imsi
 //    [self setUpUdpSocket];
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"iosSystemBit"]) {
+        if ([self is32bit]) {
+            [[NSUserDefaults standardUserDefaults] setObject:@"32" forKey:@"iosSystemBit"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendNewMessage:) name:@"receiveNewDtaaPacket" object:nil];//udp发包
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTcpPacket:) name:@"tcppacket" object:nil];//收到tcp部分数据包
@@ -290,24 +306,31 @@
 
 - (void)sendDataToCheckRegistStatue {
     //发送检查是否在线的数据
-    
-    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    NSString *token;
-    if (userdata) {
-        token = userdata[@"Token"];
+    if (self.isNeedToCheckSIMStatue) {
+        // 等待数据来啊
+        [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
+        
+        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+        NSString *token;
+        if (userdata) {
+            token = userdata[@"Token"];
+        }
+        
+        NSString *ascHex = [self hexStringFromString:token];
+        //    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
+        NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
+        //    NSLog(@"长度为 -- %@", lengthHex);
+        NSString *tokenHex = [NSString stringWithFormat:@"78%@%@", lengthHex, ascHex];
+        //正常状态TCP包
+        NSString *tempHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", tokenHex.length/2]];
+        
+        NSString *sendStr = [NSString stringWithFormat:@"108a0900000000000001%@%@", tempHex, tokenHex];
+        NSLog(@"发送检查是否在线的数据 -- %@", sendStr);
+        [self sendMsgWithMessage:sendStr];
+        self.isNeedToCheckSIMStatue = NO;
+    } else {
+        NSLog(@"状态不对 - 位置：%s%d", __func__, __LINE__);
     }
-    
-    NSString *ascHex = [self hexStringFromString:token];
-    //    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
-    NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
-    //    NSLog(@"长度为 -- %@", lengthHex);
-    NSString *tokenHex = [NSString stringWithFormat:@"78%@%@", lengthHex, ascHex];
-    //正常状态TCP包
-    NSString *tempHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", tokenHex.length/2]];
-    
-    NSString *sendStr = [NSString stringWithFormat:@"108a0900000000000001%@%@", tempHex, tokenHex];
-    NSLog(@"发送检查是否在线的数据 -- %@", sendStr);
-    [self sendMsgWithMessage:sendStr];
 }
 
 - (void)loadBasicConfig {
@@ -846,6 +869,7 @@
                 }
             }
         }else{
+            [self sendDataToCheckRegistStatue];
             if (![BlueToothDataManager shareManager].isReseted) {
                 NSLog(@"tcp数据----%@", self.tcpPacketStr);
                 if (self.tcpPacketStr) {
@@ -857,7 +881,6 @@
                     NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
                     //发送数据
                     [self sendMsgWithMessage:self.tcpPacketStr];
-                    [self sendDataToCheckRegistStatue];
                 }
             }
         }
@@ -1339,9 +1362,9 @@
                 NSRange iccidRange = [string rangeOfString:@"00be"];
                 NSRange imsiRange = [string rangeOfString:@"00bf"];
                 NSRange goipnsRange = [string rangeOfString:@"00a0"];
-                NSLog(@"iccidRange - %lu,%lu", iccidRange.location+4, imsiRange.location - (iccidRange.location+4));
-                NSLog(@"imsiRange - %lu,%lu", imsiRange.location+4, goipnsRange.location - (imsiRange.location+4));
-                NSLog(@"goipnsRange - %lu,%lu", goipnsRange.location+4, string.length-(goipnsRange.location+4));
+//                NSLog(@"iccidRange - %lu,%lu", iccidRange.location+4, imsiRange.location - (iccidRange.location+4));
+//                NSLog(@"imsiRange - %lu,%lu", imsiRange.location+4, goipnsRange.location - (imsiRange.location+4));
+//                NSLog(@"goipnsRange - %lu,%lu", goipnsRange.location+4, string.length-(goipnsRange.location+4));
                 NSString *iccidStr = [string substringWithRange:NSMakeRange(iccidRange.location+4, imsiRange.location - (iccidRange.location+4))];
                 NSString *newIccidString = [NSString stringFromHexString:iccidStr];
                 NSString *imsiStr = [string substringWithRange:NSMakeRange(imsiRange.location+4, goipnsRange.location - (imsiRange.location+4))];
@@ -1352,13 +1375,6 @@
             } else {
                 NSLog(@"接收到的数据有问题");
             }
-//            NSString *iccidStr = [string substringWithRange:NSMakeRange(36, 42)];
-//            NSString *newIccidString = [NSString stringFromHexString:iccidStr];
-//            NSString *imsiStr = [string substringWithRange:NSMakeRange(82, 32)];
-//            NSString *newImsiString = [NSString stringFromHexString:imsiStr];
-//            NSString *goipnsStr = [string substringWithRange:NSMakeRange(118, 28)];
-//            NSString *newGoipnsString = [NSString stringFromHexString:goipnsStr];
-//            NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@", communicateIdStr, newIccidString, newImsiString, newGoipnsString);
         } else {
             if ([errorStr isEqualToString:@"15"]) {
                 //用户不存在或token已过期
@@ -1938,7 +1954,12 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 - (void)checkRegistStatueEnterForeground {
     if ([BlueToothDataManager shareManager].isOpened) {
         if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
-            
+            self.isNeedToCheckSIMStatue = YES;
+            if ([BlueToothDataManager shareManager].isTcpConnected) {
+                [self sendDataToCheckRegistStatue];
+            } else {
+                [self creatAsocketTcp];
+            }
         } else {
             NSLog(@"进入前台--没网络");
         }
@@ -2708,6 +2729,23 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             NSLog(@"两位leng = %zd  需要传入的字符串 -- %@", leng, [UNPushKitMessageManager shareManager].simDataDict);
         }
     }
+}
+
+#pragma mark 判断系统是否是32位
+- (BOOL)is32bit
+
+{
+    
+#if defined(__LP64__) && __LP64__
+    
+    return NO;
+    
+#else
+    
+    return YES;
+    
+#endif
+    
 }
 
 - (void)dealloc {

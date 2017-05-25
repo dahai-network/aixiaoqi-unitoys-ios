@@ -141,7 +141,7 @@ typedef enum : NSUInteger {
 
 - (void)updateCallTimeFromServer
 {
-    aaaa
+    
 }
 
 - (void)newCallInComing
@@ -352,9 +352,13 @@ typedef enum : NSUInteger {
 //            [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
 //        }
 //    }
+    if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+    }
     [[UNBlueToothTool shareBlueToothTool] clearInstance];
     //清空数据库
     [[UNDatabaseTools sharedFMDBTools] logoutClearDatabase];
+    [BlueToothDataManager shareManager].stepNumber = @"0";
     //注销极光推送
     [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
     }];

@@ -430,6 +430,11 @@
                     HUDNormal(INTERNATIONALSTRING(@"已解除绑定"))
                 }
                 self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
+                
+                if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
+                }
+                
                 //发送解除绑定成功通知
                 [BlueToothDataManager shareManager].isConnected = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];
@@ -443,6 +448,7 @@
                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
                 [BlueToothDataManager shareManager].chargingState = 1;
                 [BlueToothDataManager shareManager].isNeedToCheckStatue = YES;
+                [BlueToothDataManager shareManager].stepNumber = @"0";
                 if (self.customView) {
                     self.customView.hidden = YES;
                 }

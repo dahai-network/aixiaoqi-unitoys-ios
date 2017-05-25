@@ -1151,9 +1151,8 @@ static UNBlueToothTool *instance = nil;
             appdenStr = [appdenStr stringByAppendingString:randomNumStr];
         }
     }
+//    appdenStr = @"0102030405060708";
     NSString *encryptStr = [NSString doEncryptBuffer:[self convenStrToCharWithString:appdenStr]];
-//    NSString *encryptStr = [NSString DES3StringFromText:@"0102030405060708"];
-//    NSString *hexStr = [NSString stringFromHexString:@"322966766D962BCE"];
     NSLog(@"转换之后的文字 -- %@", appdenStr);
     NSLog(@"加密之后的文字 -- %@", encryptStr);
     [BlueToothDataManager shareManager].checkStr = encryptStr;
@@ -1955,6 +1954,7 @@ static UNBlueToothTool *instance = nil;
                             if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
                             }
+                            [BlueToothDataManager shareManager].stepNumber = @"0";
                             [BlueToothDataManager shareManager].operatorType = @"5";
                             [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].operatorType forKey:@"operatorType"];
                             [UNPushKitMessageManager shareManager].isNeedRegister = NO;
@@ -3302,11 +3302,11 @@ static UNBlueToothTool *instance = nil;
         byte_chars[1] = [hexString characterAtIndex:i*2+1];
         
         *whole_byte = strtol(byte_chars, NULL, 16);
+//        *whole_byte = strtoul(byte_chars, NULL, 16);
         
         whole_byte++;
         
     }
-    
     return buf;
 }
 
