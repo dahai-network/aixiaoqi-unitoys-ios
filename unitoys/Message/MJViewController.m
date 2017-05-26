@@ -298,7 +298,7 @@
     NSDictionary *userInfo = noti.userInfo;
     NSDictionary *extras = [userInfo valueForKey:@"extras"];
     NSString *smsId = [extras valueForKey:@"SMSID"];
-    
+    NSLog(@"extras---%@", extras);
 //    [[UNDatabaseTools sharedFMDBTools] updateMessageStatuWithSMSIDDictArray:@[extras]];
 //    if (self.messageDict) {
 //        for (NSDictionary *dict in self.messageDict) {
@@ -427,7 +427,7 @@
                 
                 self.page = 0;
                 [self.tableView reloadData];
-                if (self.isFristSend) {
+                if (!self.isFristSend) {
                     //自动滚动到底部
                     [self scrollTableViewToBottomWithAnimated:NO];
                     [self.tableView reloadData];

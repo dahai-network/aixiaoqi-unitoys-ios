@@ -153,46 +153,6 @@ static UNBlueToothTool *instance = nil;
     _RSSIDict = nil;
     _simtype = nil;
     
-//    //sim卡类型
-//    @property (nonatomic, copy) NSString *simtype;
-//    /*蓝牙相关*/
-//    @property (nonatomic, strong) CBCentralManager *mgr;
-//    @property (nonatomic, strong) NSMutableArray *peripherals;
-//    //外设
-//    @property (nonatomic, strong) CBPeripheral *peripheral;
-//    //信号最强的外设
-//    @property (nonatomic, strong) CBPeripheral *strongestRssiPeripheral;
-//    //写属性特征
-//    @property (nonatomic, strong) CBCharacteristic *characteristic;
-//    //通知属性特征
-//    @property (nonatomic, strong) CBCharacteristic *notifyCharacteristic;
-//    @property (nonatomic, strong) CBCharacteristic *notifyCharacteristic2;
-//    @property (nonatomic, strong) CBCharacteristic *notifyCharacteristic3;
-//    //存储uuid的数组
-//    @property (nonatomic, strong) NSMutableArray *uuidArray;
-//    //存放mac地址的字典
-//    @property (nonatomic, strong) NSMutableDictionary *macAddressDict;
-//    //存放RSSI的字典
-//    @property (nonatomic, strong) NSMutableDictionary *RSSIDict;
-//    //存放数据包的数组
-//    @property (nonatomic, strong) NSMutableArray *dataPacketArray;
-//    //存放最终总数据的字符串
-//    @property (nonatomic, copy) NSString *totalString;
-//    //存放绑定的设备的信息
-//    @property (nonatomic, strong) NSDictionary *boundedDeviceInfo;
-//    //记录需要激活的大王卡的序列号(空卡序列号)
-//    @property (nonatomic, copy) NSString *bigKingCardNumber;
-//    //激活的订单id
-//    @property (nonatomic, copy) NSString *activityOrderId;
-//    //计时器相关
-//    @property (nonatomic, strong)NSTimer *timer;
-//    @property (nonatomic, assign)int time;
-//    //记录接收到包的类型
-//    @property (nonatomic, assign) int dataPackegType;
-//    //已连接的配对设备
-//    @property (nonatomic, strong) NSArray *pairedArr;
-//    //是否使能通知的数据数组
-//    @property (nonatomic, strong) NSMutableArray *dataArr;
     self.isInitInstance = NO;
 }
 
@@ -1176,12 +1136,10 @@ static UNBlueToothTool *instance = nil;
 {
     NSLog(@"sendLBEMessageWithPushKit");
     if ([BlueToothDataManager shareManager].isConnected) {
+        [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
+        [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
         [BlueToothDataManager shareManager].isRegisted = NO;
         [BlueToothDataManager shareManager].isBeingRegisting = YES;
-        //    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"1"];
-        //    [BlueToothDataManager shareManager].stepNumber = @"1";
-        
-//        [self sendLBEConnectData];
         
         [UNPushKitMessageManager shareManager].isQuickLoad = YES;
         //对卡上电
@@ -1966,9 +1924,9 @@ static UNBlueToothTool *instance = nil;
                             break;
                         case 1:
                             NSLog(@"卡状态改变 -- 有卡");
-                            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                                return;
-                            }
+//                            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+//                                return;
+//                            }
                             
                             int cardType = [self convertRangeStringToIntWithString:contentStr rangeLoc:2 rangeLen:2];
                             switch (cardType) {
@@ -2137,14 +2095,10 @@ static UNBlueToothTool *instance = nil;
 
 - (void)getboundPhoneWithIccid:(NSString *)iccidString
 {
-
-    NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", iccidString];
-//#if DEBUG
-//#warning 删除数据便于测试
-//    [[NSUserDefaults standardUserDefaults] removeObjectForKey:iccidKey];
-//#endif
-    NSString *phone = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
-    if (!phone || (phone.length == 0)) {
+//    NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", iccidString];
+    NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID"];
+    NSDictionary *iccidData = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
+    if (!iccidData || ![iccidData[@"ICCID"] isEqualToString:iccidString]) {
         self.checkToken = YES;
         NSDictionary *params = @{@"ICCID" : iccidString};
         [self getBasicHeader];
@@ -2152,7 +2106,13 @@ static UNBlueToothTool *instance = nil;
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if ([responseObj[@"data"][@"IsConfirmed"] boolValue]) {
                     if (responseObj[@"data"][@"Tel"] && [responseObj[@"data"][@"Tel"] length]) {
-                        [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"Tel"] forKey:iccidKey];
+                        [[NSUserDefaults standardUserDefaults] setObject:@{@"ICCID" : iccidString, @"TEL" : responseObj[@"data"][@"Tel"]} forKey:iccidKey];
+                        //重新注册网络电话
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"RegisterNetWorkCallPhone" object:nil];
+                    }
+                }else{
+                    if (iccidData) {
+                        [[NSUserDefaults standardUserDefaults] removeObjectForKey:iccidKey];
                     }
                 }
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -2168,6 +2128,9 @@ static UNBlueToothTool *instance = nil;
 }
 
 - (void)closeConnecting {
+    if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+        return;
+    }
     NSLog(@"关闭连接--closeConnecting");
 //    if ([BlueToothDataManager shareManager].isBounded) {
 //        [self u];

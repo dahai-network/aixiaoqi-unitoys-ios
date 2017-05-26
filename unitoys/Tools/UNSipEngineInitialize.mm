@@ -76,16 +76,16 @@
 }
 
 - (void)initEngine {
-    [[SipEngineManager instance] Init];
-    [[SipEngineManager instance] LoadConfig];
-    if ([SipEngineManager instance].callDelegate == nil) {
-        [[SipEngineManager instance] setCallDelegate:self];
-    }
-    if ([SipEngineManager instance].registrationDelegate == nil) {
-        [[SipEngineManager instance] setRegistrationDelegate:self];
-    }
-    [self doRegister];
     NSLog(@"UNSipEngineInitialize---initEngine");
+    
+    //获取状态,如果注册失败或注册成功才重新注册
+    BOOL isRegister = self.sipRegisterStatu == SipRegisterStatuCleared || self.sipRegisterStatu == SipRegisterStatuFailed;
+    BOOL isCallPhone = self.sipCallPhoneStatu != SipCallPhoneStatuNewCall && self.sipCallPhoneStatu != SipCallPhoneStatuCallProcessing && self.sipCallPhoneStatu != SipCallPhoneStatuCallRinging && self.sipCallPhoneStatu != SipCallPhoneStatuCallConnected && self.sipCallPhoneStatu != SipCallPhoneStatuCallStreamsRunning;
+    if (isRegister && isCallPhone) {
+        NSLog(@"sipRegisterStatu=%zd===sipCallPhoneStatu=%zd", self.sipRegisterStatu, self.sipCallPhoneStatu);
+        [self doRegister];
+    }
+    
 //    if (kSystemVersionValue < 9.0) {
 //        if (!self.isFristRegister) {
 //            [[SipEngineManager instance] Init];
@@ -100,59 +100,62 @@
 //            [self doRegister];
 //            self.isFristRegister = YES;
 //        }
+//    }else{
+//        [[SipEngineManager instance] Init];
+//        [[SipEngineManager instance] LoadConfig];
+//        if ([SipEngineManager instance].callDelegate == nil) {
+//            [[SipEngineManager instance] setCallDelegate:self];
+//        }
+//        if ([SipEngineManager instance].registrationDelegate == nil) {
+//            [[SipEngineManager instance] setRegistrationDelegate:self];
+//        }
+//        [self doRegister];
 //    }
 }
 
-
-
 -(void)doRegister{
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-    
+    NSLog(@"UNSipEngineInitialize--doRegister");
     if(theSipEngine->AccountIsRegstered())
     {
-        theSipEngine->RefreshRegisters();
-//        theSipEngine->DeRegisterSipAccount();
-//        __block SipEngine *callEngine = theSipEngine;
-//        
-//        self.checkToken = YES;
-//        [self getBasicHeader];
-//        [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-//            NSLog(@"获取软电话注册配置1--=有数据：%@",responseObj);
-//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//                if (responseObj[@"data"][@"VswServer"]) {
-//                    [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
-//                    [VSWManager shareManager].vswPort = [responseObj[@"data"][@"VswServer"][@"Port"] intValue];
-//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Ip"] forKey:@"VSWServerIp"];
-//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Port"] forKey:@"VSWServerPort"];
-//                }
-//                
-//                NSString *secpwd = [self md5:[[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"] stringByAppendingString:@"voipcc2015"]];
-//                
-//                NSString *thirdpwd = [self md5:secpwd];
-//                
-//                NSString *userName = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"] objectForKey:@"Tel"];
-//                
-//                
-////                self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
-//                
-//                callEngine->SetEnCrypt(NO, NO);
-//                //IP地址
-//                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-//                //域名
-//                //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [@"asterisk.unitoys.com" UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-//                
-//                
-//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//                
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//            }else{
-//                //数据请求失败
-//            }
-//            
-//            
-//        } failure:^(id dataObj, NSError *error) {
-//            NSLog(@"有异常：%@",[error description]);
-//        } headers:self.headers];
+        theSipEngine->DeRegisterSipAccount();
+        __block SipEngine *callEngine = theSipEngine;
+        
+        self.checkToken = YES;
+        [self getBasicHeader];
+        [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
+            //            NSLog(@"有数据：%@",responseObj);
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                if (responseObj[@"data"][@"VswServer"]) {
+                    [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
+                    [VSWManager shareManager].vswPort = [responseObj[@"data"][@"VswServer"][@"Port"] intValue];
+                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Ip"] forKey:@"VSWServerIp"];
+                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Port"] forKey:@"VSWServerPort"];
+                }
+                
+                NSString *secpwd = [self md5:[[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"] stringByAppendingString:@"voipcc2015"]];
+                
+                NSString *thirdpwd = [self md5:secpwd];
+                
+                NSString *userName = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"] objectForKey:@"Tel"];
+                
+                
+//                self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
+                NSLog(@"UNSipEngineInitialize--1doRegister--secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
+                callEngine->SetEnCrypt(NO, NO);
+                //IP地址
+                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+            }
+            
+            
+        } failure:^(id dataObj, NSError *error) {
+            NSLog(@"有异常：%@",[error description]);
+        } headers:self.headers];
         
     }else{
         
@@ -161,7 +164,6 @@
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            NSLog(@"获取软电话注册配置2--=有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
@@ -178,18 +180,9 @@
                 NSString *thirdpwd = [self md5:secpwd];
                 
                 NSString *userName = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"] objectForKey:@"Tel"];
-                //[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"]
-                
-                //callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String],"", "121.46.3.20", 65061,1800);
-                
-//                self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
-                
-                //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String],"", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue],1800);
+                NSLog(@"UNSipEngineInitialize--doRegister---secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
                 callEngine->SetEnCrypt(NO, NO);
-                //IP地址
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-                
-                
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -201,6 +194,7 @@
         } headers:self.headers];
     }
 }
+
 
 
 #pragma mark --- SipEngineUIDelegate
@@ -290,7 +284,6 @@
               withErrorCode:(RegistrationErrorCode) e_errno{
     
     NSString *msg=@"";
-    
     if(code == 1){
         msg = @"正在注册...";
         [SipEngineManager instance].resignStatue = 0;

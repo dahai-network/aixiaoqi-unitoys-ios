@@ -264,9 +264,10 @@ typedef enum : NSUInteger {
     
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
         if ([UNPushKitMessageManager shareManager].iccidString) {
-            NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", [UNPushKitMessageManager shareManager].iccidString];
-            NSString *phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
-            if (!phoneStr || (phoneStr.length == 0)) {
+//            NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", [UNPushKitMessageManager shareManager].iccidString];
+            NSString *iccidKey = @"ValidateICCID";
+            NSDictionary *iccidData = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
+            if (!iccidData || ![iccidData[@"ICCID"] isEqualToString:[UNPushKitMessageManager shareManager].iccidString]) {
                 if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
                     if (![UNDataTools sharedInstance].isShowVerificationVc) {
                         VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
@@ -360,6 +361,7 @@ typedef enum : NSUInteger {
     }
 }
 
+//退出登录
 - (void)reloginAction {
     NSLog(@"调用reloginAction方法");
 //    [UNBlueToothTool shareBlueToothTool].isKill = YES;
@@ -393,13 +395,15 @@ typedef enum : NSUInteger {
         [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
     }
     [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"ValidateICCID"]) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"ValidateICCID"];
+    }
     
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"]) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"offsetStatue"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    
+    [[NSUserDefaults standardUserDefaults] synchronize];
     //删除存储的绑定信息
 //    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
 //    [UNBlueToothTool shareBlueToothTool].isKill = YES;

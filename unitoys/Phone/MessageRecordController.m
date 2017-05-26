@@ -164,7 +164,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [_createMsgButton sizeToFit];
 //    _createMsgButton.un_right = kScreenWidthValue - 10;
 //    _createMsgButton.un_bottom = self.view.un_height - _createMsgButton.un_height - 49 - 24;
-    
     [self.view addSubview:_createMsgButton];
 }
 

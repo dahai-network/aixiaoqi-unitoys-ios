@@ -127,7 +127,11 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
     }else if ([dict[@"Category"] isEqualToString:@"5"]){
         NSString *phoneStr;
         if ([UNPushKitMessageManager shareManager].iccidString) {
-            phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
+//            phoneStr = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"ValidateICCID%@",[UNPushKitMessageManager shareManager].iccidString]];
+            NSDictionary *iccidData = [[NSUserDefaults standardUserDefaults] objectForKey:@"ValidateICCID"];
+            if (iccidData && [iccidData[@"ICCID"] isEqualToString:[UNPushKitMessageManager shareManager].iccidString]) {
+                phoneStr = iccidData[@"TEL"];
+            }
         }else{
             HUDNormal(@"需要SIM卡注册成功")
             return;

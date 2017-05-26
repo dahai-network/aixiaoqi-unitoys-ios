@@ -34,6 +34,7 @@
 #import "ServiceRecommendView.h"
 #import "ConvenienceServiceController.h"
 #import "MainViewController.h"
+#import "UNSipEngineInitialize.h"
 
 @interface PhoneRecordController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -152,7 +153,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)registerNetWorkCallPhone
 {
-    [self unregister];
+//    [self unregister];
     [self registerSipServer];
 }
 
@@ -222,13 +223,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSLog(@"PhoneRecordController---initEngine");
 //    [[SipEngineManager instance] Init];
 //    [[SipEngineManager instance] LoadConfig];
-//    
 //    [[SipEngineManager instance] setCallDelegate:self];
-//    
 //    [[SipEngineManager instance] setRegistrationDelegate:self];
-//    
 //    [self doRegister];
-//    
 //    [self getMaxPhoneCall];
     
     [self registerSipServer];
@@ -946,7 +943,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     db = [FMDatabase databaseWithPath:path];
     
     if (![db open]) {
-        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
+//        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
         return FALSE;
     }else{
         [self insertSqlData:dicPhoneRecord dataBase:db Calltime:timestemp];
@@ -970,7 +967,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if ([rs next]) {
         NSInteger count = [rs intForColumn:@"countNum"];
         NSLog(@"The table count: %zd", count);
-        if (count == 1) {
+        if (count == 0) {
+            [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
+        }
+//        if (count == 1) {
             NSLog(@"log_keepers table is existed.");
             //添加记录
             
@@ -1006,12 +1006,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //                NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
             //            }
             //return TRUE;
-        }
+//        }
         NSLog(@"log_keepers is not existed.");
         //创建表
         //[membersDB executeUpdate:@"CREATE TABLE PersonList (Name text, Age integer, Sex integer,Phone text, Address text, Photo blob)"];
         
-        [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
     }else{
         //添加记录
         //        NSInteger a=[calltime timeIntervalSince1970];
@@ -1216,10 +1215,16 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 -(void)OnSipEngineState:(SipEngineState)code {
-    if (code==0) {
-        //
-    } else {
-        //
+    if (code == EngineStarting) {
+        NSLog(@"SIP启动状态---EngineStarting");
+    }else if (code == EngineInitialized){
+        NSLog(@"SIP启动状态---EngineInitialized");
+    }else if (code == EngineInitializedFailed){
+        NSLog(@"SIP启动状态---EngineInitializedFailed");
+    }else if (code == EngineTerminated){
+        NSLog(@"SIP启动状态---EngineTerminated");
+    }else {
+        NSLog(@"未知启动状态");
     }
 }
 
@@ -1254,6 +1259,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnNewCall:(CallDir)dir
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
+    [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuNewCall;
     NSLog(@"新呼叫");
     NSString *newcid;
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
@@ -1317,12 +1323,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 -(void) OnCallProcessing{
     NSLog(@"正在呼叫...============================");
+    [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallProcessing;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 
 /*对方振铃*/
 -(void) OnCallRinging{
     NSLog(@"对方振铃...============================");
+    [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallRinging;
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
     theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
     theSipEngine->MuteMic(self.muteStatus);
@@ -1335,6 +1343,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
 //    theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
 //    theSipEngine->MuteMic(self.muteStatus);
+    
+    [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallStreamsRunning;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
@@ -1366,6 +1376,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 /*呼叫接通知识*/
 -(void) OnCallConnected{
+    NSLog(@"OnCallConnected...============================");
+    [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallConnected;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
@@ -1378,7 +1390,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnCallEnded{
     NSLog(@"结束通话");
     //    [mStatus setText:@"结束通话"];
-    
+    [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallEnded;
     [self loadPhoneRecord];
     self.speakerStatus = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"通话结束")];
@@ -1392,6 +1404,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 /*呼叫失败，并返回错误代码，代码对应的含义，请参考common_types.h*/
 -(void) OnCallFailed:(CallErrorCode) error_code{
+    [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallFailed;
     NSLog([NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code],nil);
     [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"错误提示") message:[NSString stringWithFormat:@"%@", INTERNATIONALSTRING(@"呼叫异常,请确认网络或账号正常")] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
     
@@ -1434,7 +1447,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 
                 self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
-                
+                NSLog(@"secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
                 callEngine->SetEnCrypt(NO, NO);
                 //IP地址
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
@@ -1461,9 +1474,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            //            NSLog(@"有数据：%@",responseObj);
-            
-            
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 if (responseObj[@"data"][@"VswServer"]) {
@@ -1487,14 +1497,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
                 
-                //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String],"", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue],1800);
                 callEngine->SetEnCrypt(NO, NO);
-                //IP地址
-//                virtual int RegisterSipAccount(const char *username, const char *password, const char *relam, const char *server, int port, int expire = 1800) = 0;
+                NSLog(@"secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
+
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-                //域名
-                //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [@"asterisk.unitoys.com" UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-                
                 
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 
@@ -1524,21 +1530,29 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnRegistrationState:(RegistrationState) code
               withErrorCode:(RegistrationErrorCode) e_errno{
     NSString *msg=@"";
-    if(code == 1){
+    if (code == 0) {
+        msg = @"未注册";
+        [SipEngineManager instance].resignStatue = 0;
+        [UNSipEngineInitialize sharedInstance].sipRegisterStatu = SipRegisterStatuNone;
+    }else if(code == 1){
         msg = @"正在注册...";
         [SipEngineManager instance].resignStatue = 0;
+        [UNSipEngineInitialize sharedInstance].sipRegisterStatu = SipRegisterStatuProgress;
         //        [mBtnRegister setTitle:@"注册中" forState:UIControlStateNormal];
     }else if(code == 2){
         msg = @"注册成功！";
         [SipEngineManager instance].resignStatue = 1;
+        [UNSipEngineInitialize sharedInstance].sipRegisterStatu = SipRegisterStatuSuccess;
         //        [mBtnRegister setTitle:@"注销" forState:UIControlStateNormal];
     }else if(code == 3){
         msg = @"您的账号已注销";
         [SipEngineManager instance].resignStatue = 0;
+        [UNSipEngineInitialize sharedInstance].sipRegisterStatu = SipRegisterStatuCleared;
         //        [mBtnRegister setTitle:@"注册" forState:UIControlStateNormal];
     }else if(code == 4){
         msg = [NSString stringWithFormat:@"注册失败，错误代码 %d",e_errno];
         [SipEngineManager instance].resignStatue = 0;
+        [UNSipEngineInitialize sharedInstance].sipRegisterStatu = SipRegisterStatuFailed;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"NetWorkPhoneRegisterFailed" object:nil];
         //        [mBtnRegister setTitle:@"注册" forState:UIControlStateNormal];
     }
@@ -2111,11 +2125,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBook"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallingAction" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeCallAction" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeUnitysCallAction" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallPhoneKeyBoard" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBook"];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallingAction" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeCallAction" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeUnitysCallAction" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallPhoneKeyBoard" object:nil];
 }
 
 @end

@@ -125,7 +125,8 @@
                 [self deleteVeriTimer];
                 //存储IccId
                 if(responseObj[@"data"][@"Tel"]){
-                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"Tel"] forKey:[NSString stringWithFormat:@"ValidateICCID%@", self.veriIccidString]];
+//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"Tel"] forKey:[NSString stringWithFormat:@"ValidateICCID%@", self.veriIccidString]];
+                    [[NSUserDefaults standardUserDefaults] setObject:@{@"ICCID" : responseObj[@"data"][@"ICCID"], @"TEL" : responseObj[@"data"][@"Tel"]} forKey:@"ValidateICCID"];
                 }
                 //提示验证成功
                 HUDStop
