@@ -2010,6 +2010,16 @@ static UNBlueToothTool *instance = nil;
                     if (contentStr && [[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
                         //判断本地是否存在ICCID
                         [UNPushKitMessageManager shareManager].iccidString = contentStr;
+                        [BlueToothDataManager shareManager].iccidFromBle = contentStr;
+                        if ([BlueToothDataManager shareManager].iccidFromTcp) {
+                            if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
+                                //在线
+                                NSLog(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__);
+                            } else {
+                                //不是同一张卡，需要重新注册
+                                NSLog(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
+                            }
+                        }
                         
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
                         //判断是否有指定套餐，并创建连接

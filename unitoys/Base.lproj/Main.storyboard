@@ -1747,7 +1747,7 @@
         <scene sceneID="IxB-7t-lsu">
             <objects>
                 <tableViewController id="wn9-cs-emF" customClass="AboutViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="vOA-v8-c1z">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="vOA-v8-c1z">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.0" green="0.62745098039215685" blue="0.9137254901960784" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -2505,16 +2505,19 @@
                 <tapGestureRecognizer id="SzA-0C-dkf">
                     <connections>
                         <action selector="tapToEditProfile:" destination="wn9-cs-emF" id="kQP-SJ-zc9"/>
+                        <outlet property="delegate" destination="wn9-cs-emF" id="WmA-JK-6aY"/>
                     </connections>
                 </tapGestureRecognizer>
                 <tapGestureRecognizer id="Vgr-jz-uN1">
                     <connections>
                         <action selector="tapToEditProfile:" destination="wn9-cs-emF" id="pPb-Tz-bcK"/>
+                        <outlet property="delegate" destination="wn9-cs-emF" id="IXL-Sz-xN5"/>
                     </connections>
                 </tapGestureRecognizer>
                 <tapGestureRecognizer id="m1v-Qp-wuf">
                     <connections>
                         <action selector="tapToJumpService:" destination="wn9-cs-emF" id="884-LO-ONV"/>
+                        <outlet property="delegate" destination="wn9-cs-emF" id="3mI-vY-0m4"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>

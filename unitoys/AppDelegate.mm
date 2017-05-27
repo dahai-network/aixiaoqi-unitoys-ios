@@ -1366,9 +1366,21 @@
                 NSString *newIccidString = [NSString stringFromHexString:iccidStr];
                 NSString *imsiStr = [string substringWithRange:NSMakeRange(imsiRange.location+4, goipnsRange.location - (imsiRange.location+4))];
                 NSString *newImsiString = [NSString stringFromHexString:imsiStr];
+                //去除数据中的特殊字符
+                newIccidString = [newIccidString stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
                 NSString *goipnsStr = [string substringWithRange:NSMakeRange(goipnsRange.location+4, string.length-(goipnsRange.location+4))];
                 NSString *newGoipnsString = [NSString stringFromHexString:goipnsStr];
                 NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@", communicateIdStr, newIccidString, newImsiString, newGoipnsString);
+                [BlueToothDataManager shareManager].iccidFromTcp = newIccidString;
+                if ([BlueToothDataManager shareManager].iccidFromBle) {
+                    if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
+                        //在线
+                        NSLog(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__);
+                    } else {
+                        //不是同一张卡，需要重新注册
+                        NSLog(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
+                    }
+                }
             } else {
                 NSLog(@"接收到的数据有问题");
             }

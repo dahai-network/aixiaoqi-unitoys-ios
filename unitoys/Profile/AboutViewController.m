@@ -25,9 +25,7 @@
 #import "ConvenienceServiceController.h"
 #import "ConvenienceOrderDetailController.h"
 
-#define CELLHEIGHT 44
-
-@interface AboutViewController ()
+@interface AboutViewController ()<UIGestureRecognizerDelegate>
 @property (nonatomic, strong) ChooseDeviceTypeViewController *chooseDeviceTypeVC;
 @property (weak, nonatomic) IBOutlet UILabel *commicateMin;//剩余通话时长
 @property (weak, nonatomic) IBOutlet UILabel *flowLbl;//剩余流量
@@ -43,7 +41,9 @@
 @property (nonatomic, strong)UILabel *statuesLabel;
 @property (nonatomic, strong)UIView *registProgressView;
 @property (nonatomic, copy)NSString *serviceOrderId;//服务的订单ID
+@property (nonatomic, strong)UIView *footView;
 //@property (nonatomic, assign) int servicePackageCategory;//服务的类型
+@property (nonatomic, assign)BOOL isAtend;//判断是否在底部
 
 @end
 
@@ -59,9 +59,13 @@
     
     //添加状态栏
     self.statuesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, STATUESVIEWHEIGHT)];
+    //不透明状态栏
+//    self.statuesView.backgroundColor = UIColorFromRGB(0x95d4f3);
+    //透明状态栏
     self.statuesView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
     //添加手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jumpToShowDetail)];
+    tap.delegate=self;
     [self.statuesView addGestureRecognizer:tap];
     //添加百分比
     if ([[BlueToothDataManager shareManager].stepNumber intValue] != 0 && [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
@@ -78,6 +82,9 @@
     } else {
         self.registProgressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, STATUESVIEWHEIGHT)];
     }
+    //不透明进度条
+//    self.registProgressView.backgroundColor = UIColorFromRGB(0xd1ecf7);
+    //透明进度条
     self.registProgressView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.6];
     [self.statuesView addSubview:self.registProgressView];
     //添加图片
@@ -97,6 +104,13 @@
         [self.tableView reloadData];
     }
     
+//    self.footView = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue-49, kScreenWidthValue, 0)];
+    self.footView = [[UIView alloc] init];
+    self.footView.backgroundColor = UIColorFromRGB(0xf5f5f5);
+//    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    self.tableView.tableFooterView = self.footView;
+//    [self.view addSubview:self.footView];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(needRefreshAmount) name:@"NeedRefreshAmount" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(queryAmount) name:@"NeedRefreshInfo" object:nil];
@@ -111,6 +125,18 @@
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aboutViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
+}
+
+- (void)changeFootViewHeight {
+//    CGFloat height = scrollView.frame.size.height;
+//    CGFloat contentYoffset = scrollView.contentOffset.y;
+//    CGFloat distance = scrollView.contentSize.height - height;
+//    if (distance - contentYoffset<=0) {
+//        self.footView.un_height = contentYoffset-distance;
+//    }
+    if (self.isAtend) {
+        self.tableView.frame = CGRectOffset(self.tableView.frame, 0, -kStatusBarHeight);
+    }
 }
 
 #pragma mark 手势点击事件
@@ -705,6 +731,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayFooterView:(UIView *)view forSection:(NSInteger)section{
     view.tintColor = UIColorFromRGB(0xf5f5f5);
+//    view.backgroundColor = UIColorFromRGB(0xf5f5f5);
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -806,6 +833,27 @@
         ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
         convenienceOrderVc.orderDetailId = self.serviceOrderId;
         [self.navigationController pushViewController:convenienceOrderVc animated:YES];
+    }
+}
+
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([NSStringFromClass([touch.view class]) isEqualToString:@"UITableViewCellContentView"]) {
+        return NO;
+    }
+    return YES;
+}
+
+#pragma mark - scrollView的代理方法
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGFloat height = scrollView.frame.size.height;
+    CGFloat contentYoffset = scrollView.contentOffset.y;
+    CGFloat distance = scrollView.contentSize.height - height;
+    if (distance - contentYoffset<=0) {
+        self.footView.un_height = contentYoffset-distance;
+        self.isAtend = YES;
+    } else {
+        self.isAtend = NO;
     }
 }
 
