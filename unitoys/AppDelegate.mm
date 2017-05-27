@@ -102,7 +102,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -282,6 +282,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearTimeoutPushKitMessage) name:@"PushKitMessageDataTimeout" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendDataToCloseService) name:@"closeServiceNotifi" object:@"closeServiceNotifi"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginSuccessAndCreatTCP) name:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(isAlreadOnlineAndSendJumpData) name:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
     
     return YES;
 }
@@ -325,6 +326,16 @@
     } else {
         NSLog(@"状态不对 - 位置：%s%d", __func__, __LINE__);
     }
+}
+
+- (void)isAlreadOnlineAndSendJumpData {
+    if (!self.tcpPacketStr) {
+        self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"TCPPacketStr"];
+    }
+    self.communicateID = [BlueToothDataManager shareManager].commicateIDFromTcp;
+    [VSWManager shareManager].callPort = [BlueToothDataManager shareManager].portFromTcp;
+    [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].portFromTcp forKey:@"VSWCallPort"];
+    [self startJumpDataTimer];
 }
 
 - (void)loadBasicConfig {
@@ -582,9 +593,9 @@
     }
     NSLog(@"发送tcp连接的时候的token - %@", token);
     NSString *ascHex = [self hexStringFromString:token];
-//    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
+    //    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
     NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
-//    NSLog(@"长度为 -- %@", lengthHex);
+    //    NSLog(@"长度为 -- %@", lengthHex);
     NSString *tokenHex = [NSString stringWithFormat:@"78%@%@", lengthHex, ascHex];
     NSString *tempString = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@", TCPGOIP, TCPLIFETIME, TCPCHECKPREREAD, tokenHex, TCPCONNECT, TCPUUWIFI, TCPSLOT, TCPIMEI, TCPMODTYPE, TCPMODVER, TCPSIMLOCAL, self.iccidTotalHex, self.imsiTotalHex, TCPSIMNUMBER, TCPSIMBALANCE, self.packetTotalLengthHex, self.packetFinalHex, TCPVERSIONTYPE, [UNPushKitMessageManager shareManager].pushKitTokenString];
     
@@ -610,7 +621,7 @@
     }else{
         self.tcpPacketStr = tcpPacket;
     }
-
+    
     //都存储
     [[NSUserDefaults standardUserDefaults] setObject:tcpPacket forKey:@"TCPPacketStr"];
     [[NSUserDefaults standardUserDefaults] setObject:pushKitTcpPacket forKey:@"PushKitTCPPacketStr"];
@@ -863,13 +874,13 @@
                 }
             }
         }else{
+            [BlueToothDataManager shareManager].isTcpConnected = YES;
             [self sendDataToCheckRegistStatue];
             if (![BlueToothDataManager shareManager].isReseted) {
                 NSLog(@"1tcp数据----%@", self.tcpPacketStr);
                 if (self.tcpPacketStr) {
                     self.communicateID = @"00000000";
                     NSLog(@"tcp连接成功");
-                    [BlueToothDataManager shareManager].isTcpConnected = YES;
                     // 等待数据来啊
                     [sock readDataWithTimeout:-1 tag:200];
                     NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
@@ -1222,30 +1233,9 @@
         NSLog(@"最终的电话端口 -- %@", cutStr);
         [VSWManager shareManager].callPort = cutStr;
         [[NSUserDefaults standardUserDefaults] setObject:cutStr forKey:@"VSWCallPort"];
-        //保存端口到本地
-//        NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-//        if (userData) {
-//            NSString *userPhone = userData[@"Tel"];
-//            if (userPhone) {
-//                NSString *portStr = [NSString stringWithFormat:@"%@%@", @"VSWCallPort", userPhone];
-//                NSString *isRegister = [NSString stringWithFormat:@"%@%@", @"IsRegisterPhoneCard", userPhone];
-//                [[NSUserDefaults standardUserDefaults] setObject:cutStr forKey:portStr];
-//                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:isRegister];
-//            }
-//        }
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (!self.timer) {
-                //开始计时
-                self.sec = 0;
-                self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(jumpTimerAction) userInfo:nil repeats:YES];
-                //如果不添加下面这条语句，会阻塞定时器的调用
-                [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
-            } else {
-                self.sec = 0;
-                [self.timer setFireDate:[NSDate distantPast]];
-            }
-        });
+        //开启定时器
+        [self startJumpDataTimer];
     }else if ([classStr isEqualToString:@"05"]) {
         NSLog(@"sim卡注册成功");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -1370,8 +1360,20 @@
                 newIccidString = [newIccidString stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
                 NSString *goipnsStr = [string substringWithRange:NSMakeRange(goipnsRange.location+4, string.length-(goipnsRange.location+4))];
                 NSString *newGoipnsString = [NSString stringFromHexString:goipnsStr];
-                NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@", communicateIdStr, newIccidString, newImsiString, newGoipnsString);
+                
+                if ([newGoipnsString isEqualToString:@"n Failed"]) {
+                    NSLog(@"截取电话端口出错 -- %@", newGoipnsString);
+                    return;
+                }else if ([newGoipnsString isEqualToString:@"Timeout"]) {
+                    NSLog(@"截取电话端口出错 -- %@", newGoipnsString);
+                    return;
+                }
+                NSString *cutStr = [newGoipnsString substringFromIndex:[newGoipnsString rangeOfString:@"_"].location+1];
+                cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
+                NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@ -- 电话端口号：%@", communicateIdStr, newIccidString, newImsiString, newGoipnsString, cutStr);
                 [BlueToothDataManager shareManager].iccidFromTcp = newIccidString;
+                [BlueToothDataManager shareManager].commicateIDFromTcp = communicateIdStr;
+                [BlueToothDataManager shareManager].portFromTcp = cutStr;
                 if ([BlueToothDataManager shareManager].iccidFromBle) {
                     if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
                         //在线
@@ -1408,6 +1410,21 @@
     } else {
         NSLog(@"这是什么鬼");
     }
+}
+
+- (void)startJumpDataTimer {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (!self.timer) {
+            //开始计时
+            self.sec = 0;
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(jumpTimerAction) userInfo:nil repeats:YES];
+            //如果不添加下面这条语句，会阻塞定时器的调用
+            [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
+        } else {
+            self.sec = 0;
+            [self.timer setFireDate:[NSDate distantPast]];
+        }
+    });
 }
 
 - (void)checkPacketDetailWithStringFromPushKit:(NSDictionary *)dictString
@@ -1981,6 +1998,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 [self sendDataToCheckRegistStatue];
             } else {
                 [self creatAsocketTcp];
+            }
+            if (![BlueToothDataManager shareManager].isConnected) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"scanToConnect"];
             }
         } else {
             NSLog(@"进入前台--没网络");

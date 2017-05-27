@@ -940,6 +940,8 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].boundedDeviceName = [BlueToothDataManager shareManager].connectedDeviceName;
     [BlueToothDataManager shareManager].connectedDeviceName = nil;
     [BlueToothDataManager shareManager].chargingState = 1;
+    [BlueToothDataManager shareManager].iccidFromTcp = nil;
+    [BlueToothDataManager shareManager].iccidFromBle = nil;
     
     if (self.isKill) {
         return;
@@ -2039,65 +2041,25 @@ static UNBlueToothTool *instance = nil;
                 
                 if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                     if (contentStr && [[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
-                        //判断本地是否存在ICCID
                         [UNPushKitMessageManager shareManager].iccidString = contentStr;
                         [BlueToothDataManager shareManager].iccidFromBle = contentStr;
                         if ([BlueToothDataManager shareManager].iccidFromTcp) {
                             if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
                                 //在线
                                 NSLog(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__);
+                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                [BlueToothDataManager shareManager].isRegisted = YES;
+                                [UNPushKitMessageManager shareManager].iccidString = [BlueToothDataManager shareManager].iccidFromTcp;
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
                             } else {
                                 //不是同一张卡，需要重新注册
                                 NSLog(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
+                                [self registSimCardStep];
                             }
-                        }
-                        
-                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
-                        //判断是否有指定套餐，并创建连接
-                        [BlueToothDataManager shareManager].bleStatueForCard = 2;
-                        [BlueToothDataManager shareManager].isCanSendAuthData = YES;
-                        if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue && ![BlueToothDataManager shareManager].isNeedToCheckStatue) {
-                            //查询tcp连接状态
-                            [self checkRegistStatue];
-                            [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                         } else {
-                            //注册卡
-                            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
-                                [BlueToothDataManager shareManager].isNeedToCheckStatue = NO;
-                                if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
-                                    
-                                    // ---取消延时查询套餐
-                                    //                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                                    [BlueToothDataManager shareManager].isRegisted = NO;
-                                    [BlueToothDataManager shareManager].isBeingRegisting = YES;
-                                    //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
-                                    NSLog(@"判断用户是否存在指定套餐");
-                                    [self checkUserIsExistAppointPackage];
-                                    //                                });
-                                    
-                                } else {
-                                    if ([BlueToothDataManager shareManager].isTcpConnected) {
-                                        if ([BlueToothDataManager shareManager].isRegisted) {
-                                            NSLog(@"注册卡---信号强");
-                                            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-                                        } else {
-                                            NSLog(@"注册卡---需要重新注册");
-                                            NSLog(@"判断用户是否存在指定套餐");
-                                            [BlueToothDataManager shareManager].isBeingRegisting = YES;
-                                            [self checkUserIsExistAppointPackage];
-                                        }
-                                    }else{
-                                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
-                                    }
-                                    
-                                }
-                            } else {
-                                NSLog(@"不注册");
-                                [self showHudNormalString:@"不注册"];
-                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
-                                [BlueToothDataManager shareManager].isBeingRegisting = NO;
-                                [BlueToothDataManager shareManager].isRegisted = NO;
-                            }
+                            //原先注册程序在这里
+                            NSLog(@"不在线，正常注册 - %s,%d", __FUNCTION__, __LINE__);
+                            [self registSimCardStep];
                         }
                     }
                 }else{
@@ -2130,6 +2092,56 @@ static UNBlueToothTool *instance = nil;
             default:
                 NSLog(@"不能识别的类别");
                 break;
+        }
+    }
+}
+
+- (void)registSimCardStep {
+    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
+    //判断是否有指定套餐，并创建连接
+    [BlueToothDataManager shareManager].bleStatueForCard = 2;
+    [BlueToothDataManager shareManager].isCanSendAuthData = YES;
+    if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue && ![BlueToothDataManager shareManager].isNeedToCheckStatue) {
+        //查询tcp连接状态
+        [self checkRegistStatue];
+        [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
+    } else {
+        //注册卡
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            [BlueToothDataManager shareManager].isNeedToCheckStatue = NO;
+            if ([BlueToothDataManager shareManager].isChangeSimCard || (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted)) {
+                
+                // ---取消延时查询套餐
+                //                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [BlueToothDataManager shareManager].isRegisted = NO;
+                [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
+                NSLog(@"判断用户是否存在指定套餐");
+                [self checkUserIsExistAppointPackage];
+                //                                });
+                
+            } else {
+                if ([BlueToothDataManager shareManager].isTcpConnected) {
+                    if ([BlueToothDataManager shareManager].isRegisted) {
+                        NSLog(@"注册卡---信号强");
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                    } else {
+                        NSLog(@"注册卡---需要重新注册");
+                        NSLog(@"判断用户是否存在指定套餐");
+                        [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                        [self checkUserIsExistAppointPackage];
+                    }
+                }else{
+                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
+                }
+                
+            }
+        } else {
+            NSLog(@"不注册");
+            [self showHudNormalString:@"不注册"];
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
+            [BlueToothDataManager shareManager].isBeingRegisting = NO;
+            [BlueToothDataManager shareManager].isRegisted = NO;
         }
     }
 }
