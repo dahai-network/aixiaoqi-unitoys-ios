@@ -1725,12 +1725,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         NSLog(@"三大运营商号码");
         return NO;
     }
-    if (phone.length >= 11) {
+    if (phone.length >= 9) {
         if ([self isTelPhone:phone]) {
             NSLog(@"号码为座机号");
             isVerification = YES;
         }else if ([self isMobilePhone:phone]) {
             NSLog(@"号码为手机号");
+            isVerification = YES;
+        }else if ([self isOtherPhone:phone]){
+            NSLog(@"号码为特殊号码");
             isVerification = YES;
         }
     }
@@ -1745,10 +1748,21 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         return NO;
     }
 }
+
 //判断是否为手机
 - (BOOL)isMobilePhone:(NSString *)phone
 {
     if ([[phone substringToIndex:1] isEqualToString:@"1"] && ![[phone substringWithRange:NSMakeRange(1, 1)] isEqualToString:@"0"] && (phone.length == 11)) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
+//判断是否为特殊号码
+- (BOOL)isOtherPhone:(NSString *)phone
+{
+    if ([[phone substringToIndex:3] isEqualToString:@"400"] && phone.length == 10) {
         return YES;
     }else{
         return NO;
