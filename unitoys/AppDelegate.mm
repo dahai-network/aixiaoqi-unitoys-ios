@@ -1371,8 +1371,8 @@
                 NSString *cutStr = [newGoipnsString substringFromIndex:[newGoipnsString rangeOfString:@"_"].location+1];
                 cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
                 NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@ -- 电话端口号：%@", communicateIdStr, newIccidString, newImsiString, newGoipnsString, cutStr);
-                [BlueToothDataManager shareManager].iccidFromTcp = newIccidString;
-                [BlueToothDataManager shareManager].commicateIDFromTcp = communicateIdStr;
+                [BlueToothDataManager shareManager].iccidFromTcp = newIccidString.lowercaseString;
+                [BlueToothDataManager shareManager].commicateIDFromTcp = communicateIdStr.lowercaseString;
                 [BlueToothDataManager shareManager].portFromTcp = cutStr;
                 if ([BlueToothDataManager shareManager].iccidFromBle) {
                     if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {

@@ -2041,8 +2041,8 @@ static UNBlueToothTool *instance = nil;
                 
                 if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                     if (contentStr && [[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
-                        [UNPushKitMessageManager shareManager].iccidString = contentStr;
-                        [BlueToothDataManager shareManager].iccidFromBle = contentStr;
+                        [UNPushKitMessageManager shareManager].iccidString = contentStr.lowercaseString;
+                        [BlueToothDataManager shareManager].iccidFromBle = contentStr.lowercaseString;
                         if ([BlueToothDataManager shareManager].iccidFromTcp) {
                             if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
                                 //在线
@@ -2054,6 +2054,7 @@ static UNBlueToothTool *instance = nil;
                             } else {
                                 //不是同一张卡，需要重新注册
                                 NSLog(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
+                                [BlueToothDataManager shareManager].isChangeSimCard = YES;
                                 [self registSimCardStep];
                             }
                         } else {
