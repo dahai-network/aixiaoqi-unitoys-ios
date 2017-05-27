@@ -54,7 +54,8 @@
                 self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
             }
         }else if([self.lblCallingHint.text isEqualToString:INTERNATIONALSTRING(@"通话结束")]){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMaximumPhoneCallTime" object:nil userInfo:@{@"CallTime" : @(self.callSeconds)}];
+            //通过sdk获取
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMaximumPhoneCallTime" object:nil userInfo:@{@"CallTime" : @(self.callSeconds)}];
             [self endCallPhone];
         }else{
             self.callingStatus = NO;

@@ -31,7 +31,8 @@
 /*网络延迟反馈*/
 -(void) OnNetworkQuality:(int) ms;
 /*话单*/
--(void) OnCallReport:(void*)report;
+//-(void) OnCallReport:(void*)report;
+-(void) OnCallReport:(CallReport *)cdr;
 @end
 
 /*帐号注册状态回调*/

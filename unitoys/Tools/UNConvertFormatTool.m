@@ -64,6 +64,23 @@
     return [self dateStringFromDate:date];
 }
 
+//判断字符串是否全为数字
++ (BOOL)isAllNumberWithString:(NSString *)str
+{
+    NSString * checkedNumString = [str stringByTrimmingCharactersInSet:[NSCharacterSet decimalDigitCharacterSet]];
+    if(checkedNumString.length > 0) {
+        return NO;
+    }
+    return YES;
+    
+//    NSString *regex = @"[0-9]*";
+//    NSPredicate *pred = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",regex];
+//    if ([pred evaluateWithObject:str]) {
+//        return YES;
+//    }
+//    return NO;
+}
+
 
 #pragma mark ---- 字典转JSON
 + (NSString *)objectToJson:(id)object

@@ -136,10 +136,16 @@ typedef enum : NSUInteger {
         //更新本地时长
         NSDictionary *phoneTimeDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"MaxPhoneCallTime"];
         if (phoneTimeDict) {
-            CGFloat time = [phoneTimeDict[@"maximumPhoneCallTime"] floatValue] - [noti.userInfo[@"maximumPhoneCallTime"] floatValue];
-            NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:phoneTimeDict];
-            mutableDict[@"maximumPhoneCallTime"] = @(time);
-            [[NSUserDefaults standardUserDefaults] setObject:mutableDict forKey:@"MaxPhoneCallTime"];
+            //如果时间为0则为无限通话,不扣除通话时间
+            if ([phoneTimeDict[@"maximumPhoneCallTime"] floatValue] != 0) {
+                CGFloat time = [phoneTimeDict[@"maximumPhoneCallTime"] floatValue] - [noti.userInfo[@"maximumPhoneCallTime"] floatValue];
+                if (time < -1 || time == 0) {
+                    time = -1;
+                }
+                NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:phoneTimeDict];
+                mutableDict[@"maximumPhoneCallTime"] = @(time);
+                [[NSUserDefaults standardUserDefaults] setObject:mutableDict forKey:@"MaxPhoneCallTime"];
+            }
         }
     }
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

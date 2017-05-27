@@ -35,6 +35,7 @@
 #import "ConvenienceServiceController.h"
 #import "MainViewController.h"
 #import "UNSipEngineInitialize.h"
+#import "UNConvertFormatTool.h"
 
 @interface PhoneRecordController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -1058,6 +1059,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     return phoneStr;
 }
 
+//已废弃
 - (void)makeCallAction :(NSNotification *)notification {
     NSString *phoneNumber = notification.object;
     if (phoneNumber) {
@@ -1381,9 +1383,32 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
+//typedef struct _CallReport{
+//    char calling[128];
+//    char called[128];
+//    CallStatus status;
+//    CallDir dir;
+//    int duration;
+//    bool is_video_call;
+//    char start_date[32];
+//    char record_file[2048];
+//    void *user_ptr;
+//}CallReport;
+
 /*话单*/
--(void) OnCallReport:(void*)report{
-//    char
+-(void) OnCallReport:(CallReport *)cdr
+{
+    if (cdr->status == CallSuccess && cdr->dir == CallOutgoing) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMaximumPhoneCallTime" object:nil userInfo:@{@"CallTime" : @(cdr->duration)}];
+    }
+    NSLog(@"话单=====时间:%zd", cdr->duration);
+//    typedef enum _CallStatus {
+//        CallSuccess, /**< The call was sucessful*/
+//        CallAborted, /**< The call was aborted */
+//        CallMissed, /**< The call was missed (unanswered)*/
+//        CallDeclined /**< The call was declined, either locally or by remote end*/
+//    } CallStatus;
+    NSLog(@"话单=====状态:%zd", cdr->status);
 }
 
 /*呼叫结束*/
@@ -1585,7 +1610,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     return phone;
 }
 
-
+//方法已废弃
 - (void)callNumber :(NSString *)strNumber {
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
@@ -1628,11 +1653,17 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 
-- (void)callUnitysNumber :(NSString *)strNumber {
+//拨打电话
+- (void)callUnitysNumber:(NSString *)strNumber {
     if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         return;
     }
+    if (![UNConvertFormatTool isAllNumberWithString:strNumber]) {
+        HUDNormal(INTERNATIONALSTRING(@"号码格式错误"))
+        return;
+    }
+    
     self.maxPhoneCall = -1;
     __block NSString *currentDateStr;
     //是否直接拨打电话
@@ -1640,7 +1671,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     //是否有流量套餐
     BOOL isHasPackage = NO;
     NSDictionary *phoneTimeDict = [[NSUserDefaults standardUserDefaults] objectForKey:@"MaxPhoneCallTime"];
-    if ([phoneTimeDict[@"maximumPhoneCallTime"] floatValue] == -1) {
+    if ([phoneTimeDict[@"maximumPhoneCallTime"] intValue] == -1) {
         //无流量套餐
         isHasPackage = NO;
     }else{
@@ -1670,11 +1701,57 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }];
     }
     
+    if (isHasPackage) {
+        //如果有套餐,还需判断号码是否符合座机或手机,如果不符合,则需要使用本机电话
+        if (![self phoneNumberIsVerification:strNumber]) {
+            NSLog(@"使用本机电话");
+            isHasPackage = NO;
+        }
+    }
+    
     //测试手动设置为NO
     if (isCallPhone) {
         [self showCallPhoneVc:strNumber IsNetWorkCallPhone:isHasPackage];
     }else{
         [self showTipViewWithCurrentDate:currentDateStr StringNumber:strNumber IsNetWorkCallPhone:isHasPackage];
+    }
+}
+
+//判断手机号码是否为座机或手机
+- (BOOL)phoneNumberIsVerification:(NSString *)phone
+{
+    BOOL isVerification = NO;
+    if (phone.length >= 5 && ([[phone substringToIndex:5] isEqualToString:@"10086"] || [[phone substringToIndex:5] isEqualToString:@"10010"] || [[phone substringToIndex:5] isEqualToString:@"10000"])) {
+        NSLog(@"三大运营商号码");
+        return NO;
+    }
+    if (phone.length >= 11) {
+        if ([self isTelPhone:phone]) {
+            NSLog(@"号码为座机号");
+            isVerification = YES;
+        }else if ([self isMobilePhone:phone]) {
+            NSLog(@"号码为手机号");
+            isVerification = YES;
+        }
+    }
+    return isVerification;
+}
+//判断是否为固话,仅判断前缀和位数
+- (BOOL)isTelPhone:(NSString *)phone
+{
+    if ([[phone substringToIndex:1] isEqualToString:@"0"] && (phone.length == 11 || phone.length == 12)) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+//判断是否为手机
+- (BOOL)isMobilePhone:(NSString *)phone
+{
+    if ([[phone substringToIndex:1] isEqualToString:@"1"] && ![[phone substringWithRange:NSMakeRange(1, 1)] isEqualToString:@"0"] && (phone.length == 11)) {
+        return YES;
+    }else{
+        return NO;
     }
 }
 

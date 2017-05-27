@@ -29,10 +29,15 @@
 //NSDateString转指定格式的NSString
 + (NSString *)stringFromDateString:(NSString *)dateString;
 
+//判断字符串是否全为数字
++ (BOOL)isAllNumberWithString:(NSString *)str;
+
 ////字典转JSON
 //+ (NSString *)dictionaryToJson:(NSDictionary *)dic;
 ////JSON转字典
 //+ (NSDictionary *)jsonToDictionary:(NSString *)jsonStr;
+
+
 
 //id转JSON
 + (NSString *)objectToJson:(id)object;

@@ -307,6 +307,15 @@ static UNBlueToothTool *instance = nil;
     [self sendMessageToBLEWithType:BLESystemReset validData:nil];
 }
 
+//第一次进入前台
+- (void)fristJumpForeground
+{
+    if (self.needSendDatas.count) {
+        [self.needSendDatas removeAllObjects];
+    }
+    self.currentSendIndex = 0;
+}
+
 #pragma mark 对卡断电指令
 - (void)phoneCardToOutageNew {
     [self sendMessageToBLEWithType:BLEDownElectricToCard validData:nil];
@@ -708,10 +717,15 @@ static UNBlueToothTool *instance = nil;
                                 NSLog(@"存在连接过的外围设备");
                                 [self.mgr connectPeripheral:self.peripheral options:nil];
                                 if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                             if (![BlueToothDataManager shareManager].isConnected) {
                                                 [UNCreatLocalNoti createLBEDisConnectNoti];
                                             }
+//                                            else{
+//                                                if (![BlueToothDataManager shareManager].isHaveCard) {
+//                                                    [UNCreatLocalNoti createLBEDisConnectNoti];
+//                                                }
+//                                            }
                                     });
                                 }
                             } else {
@@ -1132,12 +1146,29 @@ static UNBlueToothTool *instance = nil;
     [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
 }
 
+//请求系统基本信息
+- (void)checkSystemBaseInfo
+{
+    if ([BlueToothDataManager shareManager].isConnected) {
+        if (![BlueToothDataManager shareManager].isHaveCard) {
+            [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
+        }
+    }else{
+        if (![BlueToothDataManager shareManager].isLbeConnecting) {
+            [self checkBindedDeviceFromNet];
+        }
+    }
+}
+
 - (void)sendLBEMessageWithPushKit
 {
     NSLog(@"sendLBEMessageWithPushKit");
     if ([BlueToothDataManager shareManager].isConnected) {
+        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
         [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
         [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+        
+        
         [BlueToothDataManager shareManager].isRegisted = NO;
         [BlueToothDataManager shareManager].isBeingRegisting = YES;
         

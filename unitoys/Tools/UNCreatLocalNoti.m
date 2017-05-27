@@ -51,7 +51,7 @@
 //蓝牙断开连接通知
 + (void)createLBEDisConnectNoti
 {
-    [self createNotiWithNoteString:@"无法搜索到蓝牙,将可能无法接收到电话和短信" NotiTypeString:@"LBEDisConnectTime"];
+    [self createNotiWithNoteString:@"连接蓝牙异常,将可能无法接收到电话和短信" NotiTypeString:@"LBEDisConnectTime"];
 }
 //网络断开或较差通知
 + (void)createNETDisConnectNoti

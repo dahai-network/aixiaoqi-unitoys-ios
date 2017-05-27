@@ -1959,8 +1959,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             self.lessStep = 0;
             [BlueToothDataManager shareManager].isRegisted = NO;
             self.tcpPacketStr = nil;
+            [[UNBlueToothTool shareBlueToothTool] fristJumpForeground];
             //在pushkit里初始化蓝牙
-//            [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
         } else {
             [self checkRegistStatueEnterForeground];
@@ -2362,20 +2362,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 [UNPushKitMessageManager shareManager].simDataDict = nil;
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
                 [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"SIM卡断开连接--"]];
-                
-                if (![BlueToothDataManager shareManager].isOpened) {
-                    [UNCreatLocalNoti createLBECloseNoti];
-                    NSLog(@"蓝牙未开");
-                    return;
-                }
-                if (![BlueToothDataManager shareManager].isHaveCard) {
-                    NSLog(@"无电话卡");
-                    return;
-                }
-                if (![BlueToothDataManager shareManager].isConnected) {
-                    NSLog(@"蓝牙未连接");
-                    return;
-                }
 
                 NSLog(@"已创建TCP");
                 if (!self.tcpPacketStr) {
@@ -2685,6 +2671,10 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         if (![UNPushKitMessageManager shareManager].isAppAlreadyLoad || isDealyTime){
             dealyTime = 3;
         }
+        if (![BlueToothDataManager shareManager].isOpened) {
+            dealyTime = 5;
+        }
+        [[UNBlueToothTool shareBlueToothTool] checkSystemBaseInfo];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(dealyTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"已创建TCP");
             if (![BlueToothDataManager shareManager].isOpened) {
@@ -2692,15 +2682,17 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 NSLog(@"蓝牙未开");
                 return;
             }else{
-                if (![BlueToothDataManager shareManager].isConnected) {
-                    NSLog(@"蓝牙未连接");
+                if (![BlueToothDataManager shareManager].isHaveCard) {
+                    [UNCreatLocalNoti createLBEDisConnectNoti];
+                    NSLog(@"无电话卡");
                     return;
-                }else{
-                    if (![BlueToothDataManager shareManager].isHaveCard) {
-                        NSLog(@"无电话卡");
-                        return;
-                    }
                 }
+//                if (![BlueToothDataManager shareManager].isConnected) {
+//                    NSLog(@"蓝牙未连接");
+//                    return;
+//                }else{
+//                    
+//                }
             }
             
             if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected) {

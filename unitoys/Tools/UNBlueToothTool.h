@@ -113,12 +113,17 @@ typedef void(^PaySuccessBlock)();
 - (void)checkNitifiCall;
 //检测到有短信
 - (void)checkNotifiMessage;
-//请求蓝牙基本信息
+//请求卡类型和ICCID
 - (void)checkSystemInfo;
+//请求系统基本信息
+- (void)checkSystemBaseInfo;
 //解绑
 - (void)buttonToUnboundAction;
 //取消绑定
 - (void)cancelToBound;
+
+//第一次进入前台
+- (void)fristJumpForeground;
 
 - (void)clearInstance;
 @end
