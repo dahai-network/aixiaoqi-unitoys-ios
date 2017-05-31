@@ -42,7 +42,7 @@
 @property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic, strong)NSDictionary *userInfo;
-@property (nonatomic, strong)CallComingInViewController *callCominginVC;
+@property (nonatomic, weak)CallComingInViewController *callCominginVC;
 
 @property (nonatomic, strong) UNCallKitCenter *callCenter;
 
@@ -150,6 +150,16 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registerNetWorkCallPhone) name:@"RegisterNetWorkCallPhone" object:nil];
     NSLog(@"statusBarHeight--------%@", NSStringFromCGRect(self.tabBarController.tabBar.frame));
     
+    //app将要被杀死时调用
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillBeKilled) name:@"AppWillBeKilled" object:nil];
+}
+
+- (void)appWillBeKilled
+{
+    //app被杀死之前注销网络电话
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self unregister];
+    });
 }
 
 - (void)registerNetWorkCallPhone
@@ -252,7 +262,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             switch (actionType) {
                 case UNCallActionTypeAnswer:
                 {
-                    weakSelf.callCominginVC                    = [[CallComingInViewController alloc] init];
+                    CallComingInViewController *callCominginVC     = [[CallComingInViewController alloc] init];
+                    weakSelf.callCominginVC = callCominginVC;
                     if (weakSelf.callCenter.currentCallKitName) {
                         weakSelf.callCominginVC.nameStr            = [weakSelf checkLinkNameWithPhoneStr:weakSelf.callCenter.currentCallKitName];
                     }
@@ -1099,6 +1110,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
         if ([action isEqualToString:@"Hungup"]) {
             self.speakerStatus = NO;
+            //初始化扩音
+            theSipEngine->SetLoudspeakerStatus(NO);
+            
             if(theSipEngine->InCalling())
                 theSipEngine->TerminateCall();
             //挂断系统的通话界面
@@ -1126,7 +1140,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     self.muteStatus = [notification.userInfo[@"isMuteon"] boolValue];
                 }
             }
-            
             //对系统的通话界面进行无声
             if (kSystemVersionValue >= 10.0 && isUseCallKit) {
                 [[UNCallKitCenter sharedInstance]  mute:self.muteStatus callUUID:nil completion:^(NSError * _Nullable error) {
@@ -1185,10 +1198,19 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             [self loadPhoneRecord];
             [self.tableView reloadData];
             
+            //初始化扩音
+            theSipEngine->SetLoudspeakerStatus(NO);
+            
             theSipEngine->AnswerCall();
             theSipEngine->StopRinging();
         }else if ([action isEqualToString:@"Refuse"]){
             theSipEngine->TerminateCall();
+        }else if ([action isEqualToString:@"SoundValueChange"]){
+            NSLog(@"停止铃声");
+//            theSipEngine->StopRinging();
+            if (self.callCominginVC) {
+                [[SipEngineManager instance] stopCallRing];
+            }
         }
     }
 }
@@ -1294,7 +1316,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             if (kSystemVersionValue >= 10.0 && isUseCallKit) {
                 [self InComingCallWithCallKitName:[self checkLinkNameWithPhoneStr:cid] PhoneNumber:cid];
             }else{
-                self.callCominginVC = [[CallComingInViewController alloc] init];
+                //电话拨打进来设置扩音
+                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+                theSipEngine->SetLoudspeakerStatus(YES);
+                
+                CallComingInViewController *callCominginVC = [[CallComingInViewController alloc] init];
+                self.callCominginVC = callCominginVC;
                 self.callCominginVC.nameStr = [self checkLinkNameWithPhoneStr:cid];
                 [self.nav presentViewController:self.callCominginVC animated:YES completion:nil];
             }
@@ -1634,7 +1661,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
                         callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
                         theSipEngine->MakeCall([[NSString stringWithFormat:@"981%@#%d",[self formatPhoneNum:self.phoneNumber],self.maxPhoneCall] UTF8String],false,NULL);
-                        
                     }];
                 }
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -1693,6 +1719,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (isHasPackage) {
         //有套餐
         isCallPhone = YES;
+        
+        //如果有套餐,还需判断号码是否符合座机或手机,如果不符合,则需要使用本机电话
+        if (![self phoneNumberIsVerification:strNumber]) {
+            NSLog(@"使用本机电话");
+            isHasPackage = NO;
+        }
     }else{
         //无套餐
         //判断是否忽略今天提示(查询是否存储过今天的时间)
@@ -1701,13 +1733,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }];
     }
     
-    if (isHasPackage) {
-        //如果有套餐,还需判断号码是否符合座机或手机,如果不符合,则需要使用本机电话
-        if (![self phoneNumberIsVerification:strNumber]) {
-            NSLog(@"使用本机电话");
-            isHasPackage = NO;
-        }
-    }
+//    if (isHasPackage) {
+//        //如果有套餐,还需判断号码是否符合座机或手机,如果不符合,则需要使用本机电话
+//        if (![self phoneNumberIsVerification:strNumber]) {
+//            NSLog(@"使用本机电话");
+//            isHasPackage = NO;
+//        }
+//    }
     
     //测试手动设置为NO
     if (isCallPhone) {
@@ -1721,7 +1753,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (BOOL)phoneNumberIsVerification:(NSString *)phone
 {
     BOOL isVerification = NO;
-    if (phone.length >= 5 && ([[phone substringToIndex:5] isEqualToString:@"10086"] || [[phone substringToIndex:5] isEqualToString:@"10010"] || [[phone substringToIndex:5] isEqualToString:@"10000"])) {
+    if (phone.length >= 5 && ([self isSpecialPhoneNumber:[phone substringToIndex:5]])) {
         NSLog(@"三大运营商号码");
         return NO;
     }
@@ -1739,6 +1771,18 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
     return isVerification;
 }
+
+//是否为特定号码
+- (BOOL)isSpecialPhoneNumber:(NSString *)phone
+{
+    NSArray *specialNumbers = @[@"10086", @"10010", @"10011", @"10000", @"10060", @"10050", @"10070", @"10039"];
+    if ([specialNumbers containsObject:phone]) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
 //判断是否为固话,仅判断前缀和位数
 - (BOOL)isTelPhone:(NSString *)phone
 {

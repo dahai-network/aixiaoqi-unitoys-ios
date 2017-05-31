@@ -2023,6 +2023,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //    }
     //发送注销电话通知
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"appIsKilled" object:@"appIsKilled"];
+    //发送即将被杀死通知
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"AppWillBeKilled" object:nil];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 

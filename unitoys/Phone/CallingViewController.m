@@ -27,6 +27,8 @@
     self.btnSpeakerStatus.tag = 0;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sipRegisterFailed) name:@"NetWorkPhoneRegisterFailed" object:nil];
+    //app将要被杀死时调用
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillBeKilled) name:@"AppWillBeKilled" object:nil];
 }
 
 - (void)sipRegisterFailed
@@ -61,6 +63,13 @@
             self.callingStatus = NO;
         }
     }
+}
+
+- (void)appWillBeKilled
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
+    //直接挂断
+    [self endCallPhone];
 }
 
 - (void)displayTime {

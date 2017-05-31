@@ -9,6 +9,11 @@
 #import "CallComingInViewController.h"
 #import "UCallPhonePadView.h"
 #import "AddTouchAreaButton.h"
+#import <AVFoundation/AVFoundation.h>
+#import <notify.h>
+
+#define NotificationLock CFSTR("com.apple.springboard.lockcomplete")
+static CallComingInViewController *selfClass =nil;
 
 @interface CallComingInViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *refuseLabel;
@@ -23,12 +28,16 @@
 @property (nonatomic, strong) UCallPhonePadView *phonePadView;
 @property (nonatomic, copy) NSString *currentNickName;
 
+//是否已接听
+@property (nonatomic, assign) BOOL isCallAnswer;
 @end
 
 @implementation CallComingInViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    selfClass = self;
+    
     self.hideKeyboardButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.btnMuteStatus.tag = 0;
     self.btnSpeakerStatus.tag = 0;
@@ -37,6 +46,10 @@
     // Do any additional setup after loading the view from its nib.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getCallingMessage:) name:@"CallingMessage" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sipRegisterFailed) name:@"NetWorkPhoneRegisterFailed" object:nil];
+    //app将要被杀死时调用
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillBeKilled) name:@"AppWillBeKilled" object:nil];
+    
+    [self initAudioObserver];
     
     self.lbTime.text = INTERNATIONALSTRING(@"新来电");
     
@@ -48,6 +61,58 @@
         self.isNeedToRefresh = YES;
         [self acceptCallFromCallKit];
     }
+    
+    
+}
+
+- (void)initAudioObserver
+{
+//    NSError *error;
+//    [[AVAudioSession sharedInstance] setActive:YES error:&error];
+//    if (error) {
+//        NSLog(@"error==%@", error);
+//    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(systemSoundValueChange:) name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
+    
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, screenLockStateChanged, NotificationLock, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+}
+
+- (void)systemSoundValueChange:(NSNotification *)noti
+{
+    NSDictionary *userInfo = noti.userInfo;
+    NSLog(@"点击了音量按键====%@",userInfo);
+    if ([userInfo[@"AVSystemController_AudioVolumeChangeReasonNotificationParameter"] isEqualToString:@"ExplicitVolumeChange"]) {
+        //解决通话前设置扩音无效问题
+        if (!self.isCallAnswer) {
+            NSLog(@"点击了音量按键====%@",userInfo);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SoundValueChange"];
+        }
+    }
+}
+
+
+static void screenLockStateChanged(CFNotificationCenterRef center,void* observer,CFStringRef name,const void* object,CFDictionaryRef userInfo){
+    
+    NSString* lockstate = (__bridge NSString*)name;
+    if ([lockstate isEqualToString:(__bridge  NSString*)NotificationLock]) {
+        NSLog(@"screen Lock.");
+        screenLockFunction();
+    } else {
+        NSLog(@"lock state changed.");
+        // 此处监听到屏幕解锁事件（锁屏也会掉用此处一次，锁屏事件要在上面实现）
+    }
+}
+void screenLockFunction(){
+    [selfClass screenLockAction];
+}
+
+- (void)screenLockAction
+{
+    if (!self.isCallAnswer) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SoundValueChange"];
+    }
 }
 
 - (void)sipRegisterFailed
@@ -58,6 +123,13 @@
     }];
     [alertVC addAction:action];
     [self presentViewController:alertVC animated:YES completion:nil];
+}
+
+- (void)appWillBeKilled
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
+    //直接挂断
+    [self endCallPhone];
 }
 
 #pragma mark 拒绝按钮点击事件
@@ -84,6 +156,10 @@
 
 #pragma mark 接听按钮点击事件
 - (IBAction)answerButtonAction:(UIButton *)sender {
+    //是否已接听
+    if (!self.isCallAnswer) {
+        self.isCallAnswer = YES;
+    }
     self.refuseLabel.text = INTERNATIONALSTRING(@"挂断");
     self.containerView.hidden = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Answer"];
@@ -289,6 +365,8 @@
 
 - (void)dealloc
 {
+//    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, screenLockStateChanged, NotificationLock, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    CFNotificationCenterRemoveObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, NotificationLock, NULL);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

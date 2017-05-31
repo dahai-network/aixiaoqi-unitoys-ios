@@ -1502,9 +1502,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 /*话单*/
--(void) OnCallReport:(void*)report{
-    
-}
+//-(void) OnCallReport:(void*)report{
+//    
+//}
 
 /*呼叫结束*/
 -(void) OnCallEnded{

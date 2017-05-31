@@ -99,6 +99,8 @@ typedef enum ScheduleNotificationType{
 
 -(void)RefreshSipRegister;
 
+- (void)stopCallRing;
+
 @property (nonatomic, weak) id<SipEngineUICallDelegate> callDelegate;
 @property (nonatomic, weak) id<SipEngineUIRegistrationDelegate> registrationDelegate;  //ARC下，代理属性修改为weak，并使用__weak修饰私有成员
 @property (retain, nonatomic) NSTimer* vibrateTimer;

@@ -245,6 +245,13 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
     return theSipEngineManager;
 }
 
+- (void)stopCallRing
+{
+    if (theEventObserver) {
+        theEventObserver->stopRing();
+    }
+}
+
 +(SipEngine*) getSipEngine{
     return theSipEngine;
 }
