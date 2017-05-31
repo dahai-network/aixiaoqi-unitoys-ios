@@ -132,10 +132,22 @@ typedef enum : NSUInteger {
 }
 
 - (void)showAlertToUpload:(NSNotification *)sender {
+    if ([BlueToothDataManager shareManager].isBounded) {
+        [self alertToShow:sender.object];
+    } else {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            if ([BlueToothDataManager shareManager].isBounded) {
+                [self alertToShow:sender.object];
+            }
+        });
+    }
+}
+
+- (void)alertToShow:(NSString *)string {
     UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"系统提示" message:@"蓝牙设备需要升级到最新版本才能正常使用" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         //点击升级
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"OTAAction" object:sender.object];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"OTAAction" object:string];
     }];
     [alertVC addAction:certailAction];
     [self presentViewController:alertVC animated:YES completion:nil];

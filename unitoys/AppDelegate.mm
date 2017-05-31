@@ -1210,6 +1210,7 @@
         
         NSLog(@"建立连接");
         self.communicateID = [string substringWithRange:NSMakeRange(8, 8)];
+        [BlueToothDataManager shareManager].commicateIDFromTcp = [string substringWithRange:NSMakeRange(8, 8)];
         NSLog(@"会话id -- %@", self.communicateID);
         
         //获取电话端口号
@@ -1231,6 +1232,7 @@
         cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
         NSLog(@"最终的电话端口 -- %@", cutStr);
         [VSWManager shareManager].callPort = cutStr;
+        [BlueToothDataManager shareManager].portFromTcp = cutStr;
         [[NSUserDefaults standardUserDefaults] setObject:cutStr forKey:@"VSWCallPort"];
         
         //开启定时器
