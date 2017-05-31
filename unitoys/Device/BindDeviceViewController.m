@@ -326,6 +326,10 @@
 
 #pragma mark 点击手势连接设备
 - (IBAction)tapToConnectingDevices:(UITapGestureRecognizer *)sender {
+    [self tapToScanAndConnected];
+}
+
+- (void)tapToScanAndConnected {
     if ([BlueToothDataManager shareManager].isOpened) {
         if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBounded) {
             //点击绑定设备
@@ -606,13 +610,8 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
                 }
             }
-//            if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
-//                [self startAnimation];
-//                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshStatueToCard" object:@"refreshStatueToCard"];
-//            }
         } else {
-            HUDNormal(INTERNATIONALSTRING(@"未连接设备"))
+            [self tapToScanAndConnected];
         }
     }
     if (indexPath.section == 1) {

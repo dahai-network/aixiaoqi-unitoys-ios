@@ -2523,11 +2523,12 @@ static UNBlueToothTool *instance = nil;
                 dispatch_queue_t global = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
                 dispatch_async(global, ^{
                     if ([[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
-                        if ([BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isChangeSimCard) {
+                        if ([BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isChangeSimCard && ![BlueToothDataManager shareManager].isNeedToRegistAgain) {
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"connectingBLE" object:@"connectingBLE"];
                             NSLog(@"又走重新连接tcp的地方了");
                         } else {
                             //                            [[VSWManager shareManager] simActionWithSimType:self.simtype];
+                            [BlueToothDataManager shareManager].isNeedToRegistAgain = NO;
                             [BlueToothDataManager shareManager].isChangeSimCard = NO;
                             
                             NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
@@ -3448,7 +3449,7 @@ static UNBlueToothTool *instance = nil;
     if ([BlueToothDataManager shareManager].versionNumber) {
         versionStr= [BlueToothDataManager shareManager].versionNumber;
     } else {
-        versionStr = @"1.0.0";
+        versionStr = @"1.00";
     }
     if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
         typeStr = @"0";
@@ -3466,6 +3467,14 @@ static UNBlueToothTool *instance = nil;
 //                NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
                 [UNDataTools sharedInstance].isHasFirmwareUpdateTip = YES;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+                NSString *versionStr = [BlueToothDataManager shareManager].versionNumber;
+                NSRange pointLocation = [versionStr localizedStandardRangeOfString:@"."];
+                NSString *firstStr = [versionStr substringToIndex:pointLocation.location];
+                NSString *secondStr = [versionStr substringFromIndex:pointLocation.location+1];
+//                NSLog(@"拆分之后的固件版本号:%@,%@", firstStr, secondStr);
+                if ([firstStr isEqualToString:@"1"] && [secondStr intValue] < 18) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"showAlertToOta" object:responseObj[@"data"][@"Url"]];
+                }
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];

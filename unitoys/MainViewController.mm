@@ -119,6 +119,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newCallInComing) name:@"NewCallInComing" object:nil];//有新呼叫
     //更新本地通话时长
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhoneTime:) name:@"UpdateMaximumPhoneCallTime" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAlertToUpload:) name:@"showAlertToOta" object:nil];
     
     self.selectedViewController = self.childViewControllers[0];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -128,6 +129,16 @@ typedef enum : NSUInteger {
     
     [self showPresentImageView];
     [self updateCallTimeFromServer];
+}
+
+- (void)showAlertToUpload:(NSNotification *)sender {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"系统提示" message:@"蓝牙设备需要升级到最新版本才能正常使用" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        //点击升级
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"OTAAction" object:sender.object];
+    }];
+    [alertVC addAction:certailAction];
+    [self presentViewController:alertVC animated:YES completion:nil];
 }
 
 - (void)updatePhoneTime:(NSNotification *)noti
@@ -531,6 +542,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"reloginNotify" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"showAlertToOta" object:nil];
 }
 
 @end

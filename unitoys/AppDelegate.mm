@@ -288,15 +288,14 @@
 }
 
 - (void)sendDataToCloseService {
-    //发送关闭服务的数据
-    NSString *sendStr = [NSString stringWithFormat:@"108a0d00%@00010003020100", self.communicateID];
-    NSLog(@"发送关闭服务的数据 -- %@", sendStr);
-    [self sendMsgWithMessage:sendStr];
-    [self.timer setFireDate:[NSDate distantFuture]];
-    self.tcpPacketStr = nil;
-    // 关闭套接字
-//    [self.sendTcpSocket disconnect];
-//    self.sendTcpSocket = nil;
+    if (![self.communicateID isEqualToString:@"00000000"]) {
+        //发送关闭服务的数据
+        NSString *sendStr = [NSString stringWithFormat:@"108a0d00%@00010003020100", self.communicateID];
+        NSLog(@"发送关闭服务的数据 -- %@", sendStr);
+        [self sendMsgWithMessage:sendStr];
+        [self.timer setFireDate:[NSDate distantFuture]];
+        self.tcpPacketStr = nil;
+    }
 }
 
 - (void)sendDataToCheckRegistStatue {
@@ -1392,6 +1391,8 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             } else if ([errorStr isEqualToString:@"16"]) {
                 //需要重新注册
+                [BlueToothDataManager shareManager].isNeedToRegistAgain = YES;
+                self.communicateID = @"00000000";
                 NSLog(@"需要重新注册");
             } else if ([errorStr isEqualToString:@"29"]) {
                 //会话id错误

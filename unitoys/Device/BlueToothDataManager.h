@@ -70,6 +70,7 @@
 @property (nonatomic, copy) NSString *iccidFromBle;//从蓝牙拿到的iccid
 @property (nonatomic, copy) NSString *commicateIDFromTcp;//从tcp拿到的会话id
 @property (nonatomic, copy) NSString *portFromTcp;//从tcp拿到的电话端口号
+@property (nonatomic, assign) BOOL isNeedToRegistAgain;//是否需要重新注册
 
 
 @end
