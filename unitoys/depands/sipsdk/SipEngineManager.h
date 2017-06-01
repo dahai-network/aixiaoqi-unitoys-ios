@@ -69,7 +69,7 @@ typedef enum ScheduleNotificationType{
 
 	BOOL first_run_;
     
-
+    UILocalNotification *currentLocalNoti;
 @public
 	Connectivity connectivity;
 }
@@ -109,8 +109,9 @@ typedef enum ScheduleNotificationType{
 
 @property (nonatomic, strong) NSTimer *repeatScheNotiTimer;
 @property (nonatomic, assign) NSInteger repeatScheCount;
+@property (nonatomic, assign) NSInteger currentNotiIndex;
 
 - (void)repeatScheduleNotification:(NSString*)from types:(ScheduleNotificationType)type content:(NSString*)content;
 - (void)stopScheNotiTimer;
-
+- (void)cancelDesignatedNoti;
 @end

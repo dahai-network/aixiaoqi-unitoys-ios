@@ -66,43 +66,14 @@ void SipEventObserver::OnNewCall(CallDir dir, const char *peer_caller, bool is_v
             if ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)]
                 && [UIApplication sharedApplication].applicationState !=  UIApplicationStateActive) {
                 /*程序在后台使用通知中心提示来电*/
-//                [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
-//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                    if (!isStop) {
-//                          [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
-//                    }
-//                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                        if (!isStop) {
-//                              [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
-//                        }
-//                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                            if (!isStop) {
-//                                [SipEngineManager doScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
-//                            }
-//                        });
-//                    });
-//                });
                 [[SipEngineManager instance] repeatScheduleNotification:[NSString  stringWithFormat:NSLocalizedString(@"%s",nil),peer_caller] types:is_video_call? kNotifyVideoCall : kNotifyAudioCall content:nil];
             }else{
                 /*前台模式，播放声音或震动*/
                 //大于10.0通过系统调用
                 startRing();
-                if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
-                    startVibrate();
-                } else {
-                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-                }
-                
-                //            startRing();
-                //            if ([[UIDevice currentDevice].systemVersion floatValue] > 9.0) {
-                //                startVibrate();
-                //            } else {
-                //                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-                //            }
-                
-                //            [sip_engine_manager_ sound];//iOS 10会崩溃
-
+//                startVibrate();
             }
+            startVibrate();
         }
 	}
     
@@ -118,17 +89,26 @@ void SipEventObserver::OnNewCall(CallDir dir, const char *peer_caller, bool is_v
 
 
 void SipEventObserver::startVibrate() {
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {
+        startVibrateAfteriOS9();
+    } else {
+        startVibrateBeforeiOS9();
+    }
+}
+
+void SipEventObserver::startVibrateAfteriOS9() {
     AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-//    AudioServicesAddSystemSoundCompletion(kSystemSoundID_Vibrate, NULL, NULL, startVibrate(), NULL);
     AudioServicesPlayAlertSoundWithCompletion(kSystemSoundID_Vibrate, ^{
-//        startVibrate();
         if (!isStop) {
-            startVibrate();
-        }
-        if (isStop) {
+            startVibrateAfteriOS9();
+        }else{
             isStop = NO;
         }
     });
+}
+
+void SipEventObserver::startVibrateBeforeiOS9(){
+    [VibrateObject startBeforeiOS9];
 //    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
 }
 
@@ -230,14 +210,11 @@ void SipEventObserver::OnCallEnded(){
 			[sip_engine_manager_.callDelegate OnCallEnded];
         stopRing();
 	}
-    
     [SipEngineManager getSipEngine]->SetCallCap(CALL_CAP_AUDIO);
-    
-    // cancel local notif if needed
+
     NSLog(@"挂断电话");
     [[SipEngineManager instance] stopScheNotiTimer];
-    NSLog(@"取消全部通知");
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
 }
 
 
@@ -255,8 +232,7 @@ void SipEventObserver::OnCallFailed(CallErrorCode status){
 
     if ([UIApplication sharedApplication].applicationState ==  UIApplicationStateBackground) {
         [[SipEngineManager instance] stopScheNotiTimer];
-		// cancel local notif if needed
-		[[UIApplication sharedApplication] cancelAllLocalNotifications];
+//		[[UIApplication sharedApplication] cancelAllLocalNotifications];
 	}
 }
 
@@ -285,3 +261,24 @@ void SipEventObserver::OnCallReport(CallReport *cdr){
 void SipEventObserver::OnDebugMessage(int level, const char *message){
 	NSLog(@"SipEngine | [%d] %s",level,message);
 }
+
+@implementation VibrateObject
+
++ (void)startBeforeiOS9
+{
+    NSLog(@"ios9之前开始震动");
+    AudioServicesAddSystemSoundCompletion(kSystemSoundID_Vibrate, NULL, NULL, vibrateCompleteCallback, NULL);
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+}
+
++ (void)cancelBeforeiOS9
+{
+    NSLog(@"ios9之前取消震动");
+    AudioServicesRemoveSystemSoundCompletion(kSystemSoundID_Vibrate);
+}
+
+void vibrateCompleteCallback(SystemSoundID soundID,void* clientDate) {
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);  //震动
+}
+
+@end

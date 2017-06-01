@@ -129,7 +129,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     self.phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 64, kScreenWidthValue, 225)];
     [self.view addSubview:self.phonePadView];
     self.phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum){
-        if (btnText.length>0) {
+        if (btnText.length>0){
             //当前为搜索状态
             weakSelf.isSearchStatu = YES;
             weakSelf.phonePadView.hidden = NO;
@@ -157,7 +157,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)appWillBeKilled
 {
     //app被杀死之前注销网络电话
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self unregister];
     });
 }

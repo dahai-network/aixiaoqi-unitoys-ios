@@ -268,9 +268,8 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
     }
     
     [self stopScheNotiTimer];
-    
     _repeatScheCount = 0;
-    _repeatScheNotiTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(doScheduleNotification:) userInfo:@{@"from" : from, @"type" : [NSNumber numberWithInteger:typeValue], @"content" : content ? content : @""} repeats:YES];
+    _repeatScheNotiTimer = [NSTimer scheduledTimerWithTimeInterval:12 target:self selector:@selector(doScheduleNotification:) userInfo:@{@"from" : from, @"type" : [NSNumber numberWithInteger:typeValue], @"content" : content ? content : @""} repeats:YES];
     [_repeatScheNotiTimer fire];
     
 }
@@ -283,7 +282,10 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
         [_repeatScheNotiTimer invalidate];
         _repeatScheNotiTimer = nil;
     }
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [self cancelDesignatedNoti];
+    currentLocalNoti = nil;
+    _currentNotiIndex = 0;
 }
 
 - (void)doScheduleNotification:(NSTimer *)timer
@@ -293,87 +295,100 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
         _repeatScheCount = 0;
         [self stopScheNotiTimer];
     }else{
-        NSDictionary *userInfo = timer.userInfo;
-        [self doScheduleNotification:userInfo[@"from"] types:[userInfo[@"type"] integerValue] content:userInfo[@"content"]];
+        if (_repeatScheNotiTimer) {
+            NSDictionary *userInfo = _repeatScheNotiTimer.userInfo;
+            [self doScheduleNotification:userInfo[@"from"] types:[userInfo[@"type"] integerValue] content:userInfo[@"content"]];
+        }
     }
 }
 
 -(void)doScheduleNotification:(NSString*)from types:(NSInteger)type content:(NSString*)content
 {
-    UILocalNotification* alarm = [[UILocalNotification alloc] init];
-    
-    UIApplication* theApp = [UIApplication sharedApplication];
-    NSArray*    oldNotifications = [theApp scheduledLocalNotifications];
-    
-    if ([oldNotifications count] > 0)
-        [theApp cancelAllLocalNotifications];
+    UILocalNotification *localNoti = [[UILocalNotification alloc] init];
+    UIApplication *theApp = [UIApplication sharedApplication];
     
     NSDate *fireDate = [NSDate dateWithTimeInterval:0.1 sinceDate:[NSDate dateWithTimeIntervalSinceNow:0]];
-//    NSDate *fireDate = [NSDate dateWithTimeIntervalSinceNow:0];
-    if (alarm)
+    if (localNoti)
     {
-        alarm.fireDate = fireDate;
-        alarm.timeZone = [NSTimeZone defaultTimeZone];
-        alarm.repeatInterval = (NSCalendarUnit)0;
+        localNoti.fireDate = fireDate;
+        localNoti.timeZone = [NSTimeZone defaultTimeZone];
+        localNoti.repeatInterval = (NSCalendarUnit)0;
         NSString* alertBody = nil;
-        NSString *newFrom;
-        //去掉“+”
-        if ([from containsString:@"+"]) {
-            newFrom = [from stringByReplacingOccurrencesOfString:@"+" withString:@""];
-            from = newFrom;
-        }
-        //去掉86
-        if ([[from substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
-            newFrom = [from substringFromIndex:2];
-            from = newFrom;
-        }
-        //转换成备注
-        ContactModel *tempModel;
-        for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
-            tempModel = model;
-            if ([model.phoneNumber containsString:@"-"]) {
-                tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
-            }
-            if ([model.phoneNumber containsString:@" "]) {
-                tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
-            }
-            if ([model.phoneNumber containsString:@"+86"]) {
-                tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"+86" withString:@""];
-            }
-            if ([from isEqualToString:[NSString stringWithFormat:@"%@", tempModel.phoneNumber]]) {
-                newFrom = tempModel.name;
-                from = newFrom;
-            }
-            if ([from isEqualToString:@"anonymous"]) {
-                from = @"未知";
-            }
-        }
-        
+        from = [self changePhoneNumber:from];
         if (type == 0) {
-            //incoming call
 //            alertBody =[NSString  stringWithFormat:@"%@ %@", NSLocalizedString(@"Incoming Call",@""),from];
             alertBody =[NSString  stringWithFormat:@"%@ %@", NSLocalizedString(@"新来电",@""),from];
-            alarm.alertAction = NSLocalizedString(@"Answer",@"");
+            localNoti.alertAction = NSLocalizedString(@"Answer",@"");
         } else if (type == 1){
             alertBody =[NSString  stringWithFormat:NSLocalizedString(@"Incoming Video Call %@",@""),from];
-            alarm.alertAction = NSLocalizedString(@"Answer",@"");
+            localNoti.alertAction = NSLocalizedString(@"Answer",@"");
         }
-        alarm.alertBody = alertBody;
-        if (kSystemVersionValue >= 10.0 && isUseCallKit) {
-            
-        }else{
-            alarm.soundName = @"appleCallComing.wav";
+        localNoti.alertBody = alertBody;
+        if (kSystemVersionValue < 10.0) {
+            localNoti.soundName = @"appleCallComing.wav";
         }
-//        alarm.soundName = @"appleCallComing.wav";
-        alarm.hasAction = YES;
-//        alarm.soundName = @"default.wav";
-        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [NSNumber numberWithInteger:type],    @"type",
-                              from,                             @"from",
-                              nil];
-        [alarm setUserInfo:dict];
-        [theApp scheduleLocalNotification:alarm];
+        localNoti.hasAction = YES;
+        NSDictionary *dict = @{@"notiType" : @"ComingInCallPhone", @"type" : [NSNumber numberWithInteger:type], @"from" : from, @"currentIndex" : @(_currentNotiIndex)};
+        [localNoti setUserInfo:dict];
+//        if (currentLocalNoti && [currentLocalNoti.userInfo[@"from"] isEqualToString:from] && [currentLocalNoti.userInfo[@"currentIndex"] integerValue] != 0) {
+//            [theApp cancelLocalNotification:currentLocalNoti];
+//        }
+        if (currentLocalNoti && [currentLocalNoti.userInfo[@"from"] isEqualToString:from]) {
+            [theApp cancelLocalNotification:currentLocalNoti];
+        }
+        currentLocalNoti = localNoti;
+        [theApp scheduleLocalNotification:localNoti];
+        _currentNotiIndex++;
     }
+}
+
+- (void)cancelDesignatedNoti
+{
+//    if (currentLocalNoti && [currentLocalNoti.userInfo[@"currentIndex"] integerValue] != 0) {
+//        [[UIApplication sharedApplication] cancelLocalNotification:currentLocalNoti];
+//    }
+    if (currentLocalNoti) {
+        [[UIApplication sharedApplication] cancelLocalNotification:currentLocalNoti];
+        currentLocalNoti.soundName = nil;
+        [[UIApplication sharedApplication] scheduleLocalNotification:currentLocalNoti];
+    }
+}
+
+- (NSString *)changePhoneNumber:(NSString *)from
+{
+    NSString *newFrom;
+    //去掉“+”
+    if ([from containsString:@"+"]) {
+        newFrom = [from stringByReplacingOccurrencesOfString:@"+" withString:@""];
+        from = newFrom;
+    }
+    //去掉86
+    if ([[from substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"86"]) {
+        newFrom = [from substringFromIndex:2];
+        from = newFrom;
+    }
+    //转换成备注
+    ContactModel *tempModel;
+    for (ContactModel *model in [AddressBookManager shareManager].dataArr) {
+        tempModel = model;
+        if ([model.phoneNumber containsString:@"-"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        }
+        if ([model.phoneNumber containsString:@" "]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@" " withString:@""];
+        }
+        if ([model.phoneNumber containsString:@"+86"]) {
+            tempModel.phoneNumber = [model.phoneNumber stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+        }
+        if ([from isEqualToString:[NSString stringWithFormat:@"%@", tempModel.phoneNumber]]) {
+            newFrom = tempModel.name;
+            from = newFrom;
+        }
+        if ([from isEqualToString:@"anonymous"]) {
+            from = @"未知";
+        }
+    }
+    return from;
 }
 
 -(void)sound{

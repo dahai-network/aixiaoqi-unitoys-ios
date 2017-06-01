@@ -1,6 +1,6 @@
 #import "common_types.h"
 #import <AVFoundation/AVFoundation.h>
-#import <AudioToolbox/AudioToolbox.h>
+//#import <AudioToolbox/AudioToolbox.h>
 #import <Foundation/Foundation.h>
 
 #import "global.h"
@@ -42,7 +42,10 @@ public:/*通话事件回调*/
     virtual void stopRing();
     virtual void startRing();//播放音乐
     virtual void startVibrate();//振动
-
+    
+    virtual void startVibrateAfteriOS9();//ios9之后震动(包含ios9)
+    virtual void startVibrateBeforeiOS9();//ios9之前震动
+    
 public:
 	virtual void OnNetworkQuality(int ms,const char *unused);
 	
@@ -74,3 +77,13 @@ private:
 	SipEngineManager *sip_engine_manager_;
     
 };
+
+@interface VibrateObject : NSObject
+
+//+ (VibrateObject *)sharedInstance;
+
++ (void)startBeforeiOS9;
+
++ (void)cancelBeforeiOS9;
+
+@end
