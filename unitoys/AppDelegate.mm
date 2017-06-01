@@ -901,12 +901,22 @@
         [BlueToothDataManager shareManager].isRegisted = NO;
         return;
     }
-    if (![[BlueToothDataManager shareManager].cardType isEqualToString:@"2"] || ![BlueToothDataManager shareManager].isHaveCard) {
-        //不是电话卡，断开tcp连接
-        NSLog(@"不是电话卡，断开tcp");
-        [BlueToothDataManager shareManager].isTcpConnected = NO;
-        [BlueToothDataManager shareManager].isRegisted = NO;
-        return;
+    if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+        if (![BlueToothDataManager shareManager].isHaveCard) {
+            //不是电话卡，断开tcp连接
+            NSLog(@"没有电话卡，断开tcp");
+            [BlueToothDataManager shareManager].isTcpConnected = NO;
+            [BlueToothDataManager shareManager].isRegisted = NO;
+            return;
+        }
+    } else {
+        if (![[BlueToothDataManager shareManager].cardType isEqualToString:@"2"] || ![BlueToothDataManager shareManager].isHaveCard) {
+            //不是电话卡，断开tcp连接
+            NSLog(@"不是电话卡，断开tcp");
+            [BlueToothDataManager shareManager].isTcpConnected = NO;
+            [BlueToothDataManager shareManager].isRegisted = NO;
+            return;
+        }
     }
     
 //    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {

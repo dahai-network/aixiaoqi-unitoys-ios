@@ -1544,8 +1544,10 @@ static UNBlueToothTool *instance = nil;
                     NSString *isHaveCardStr = [contentStr substringWithRange:NSMakeRange(6, 2)];
                     if ([isHaveCardStr isEqualToString:@"00"]) {
                         NSLog(@"系统基本信息 -- 无卡");
+                        [BlueToothDataManager shareManager].isHaveCard = NO;
                     } else if ([isHaveCardStr isEqualToString:@"01"]) {
                         NSLog(@"系统基本信息 -- 有卡");
+                        [BlueToothDataManager shareManager].isHaveCard = YES;
                     } else {
                         NSLog(@"系统基本信息 -- 状态有问题");
                     }
@@ -3468,7 +3470,7 @@ static UNBlueToothTool *instance = nil;
                 [UNDataTools sharedInstance].isHasFirmwareUpdateTip = YES;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
                 NSString *versionStr = [BlueToothDataManager shareManager].versionNumber;
-                NSRange pointLocation = [versionStr localizedStandardRangeOfString:@"."];
+                NSRange pointLocation = [versionStr rangeOfString:@"."];
                 NSString *firstStr = [versionStr substringToIndex:pointLocation.location];
                 NSString *secondStr = [versionStr substringFromIndex:pointLocation.location+1];
 //                NSLog(@"拆分之后的固件版本号:%@,%@", firstStr, secondStr);
