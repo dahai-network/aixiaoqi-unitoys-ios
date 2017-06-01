@@ -203,7 +203,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 }
 
 - (void)contactsViewChangeStatuesView:(NSNotification *)sender {
-    NSLog(@"状态栏文字 --> %@", sender.object);
+    NSLog(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
 //    self.statuesLabel.text = sender.object;
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {

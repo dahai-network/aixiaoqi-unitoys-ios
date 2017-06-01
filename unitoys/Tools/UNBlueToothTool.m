@@ -1370,7 +1370,7 @@ static UNBlueToothTool *instance = nil;
         } else {
             NSLog(@"蓝牙未开");
         }
-        [self.scanAndConnectingTimer setFireDate:[NSDate distantFuture]];
+        [self stopScanBluetooth];
     }
     NSLog(@"扫描计时器 -- %d", self.scanAndConnectingTimeValue);
     self.scanAndConnectingTimeValue++;
@@ -2008,7 +2008,7 @@ static UNBlueToothTool *instance = nil;
                                 [BlueToothDataManager shareManager].bleStatueForCard = 1;
                                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_AIXIAOQICARD];
                                 [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
-                            } else {
+                            } else if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"5"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"0"]) {
                                 [BlueToothDataManager shareManager].cardType = @"0";
                                 [UNPushKitMessageManager shareManager].isNeedRegister = NO;
                                 [BlueToothDataManager shareManager].isHaveCard = NO;
@@ -2019,6 +2019,15 @@ static UNBlueToothTool *instance = nil;
                                 } else {
                                     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
                                 }
+                            } else {
+                                NSLog(@"卡类型有问题 - %s,%d", __FUNCTION__, __LINE__);
+                                [BlueToothDataManager shareManager].cardType = @"0";
+                                [UNPushKitMessageManager shareManager].isNeedRegister = NO;
+                                [BlueToothDataManager shareManager].isHaveCard = NO;
+                                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                                [BlueToothDataManager shareManager].isChangeSimCard = YES;
+                                [self showHudNormalString:@"您插入的卡不是常规卡，请更换"];
+                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_READCARDFAIL];
                             }
                             break;
                         default:

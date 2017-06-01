@@ -435,10 +435,6 @@
                 }
                 self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
                 
-                if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
-                }
-                
                 //发送解除绑定成功通知
                 [BlueToothDataManager shareManager].isConnected = NO;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];

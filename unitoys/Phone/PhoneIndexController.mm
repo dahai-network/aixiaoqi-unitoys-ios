@@ -162,7 +162,7 @@
 
 - (void)showRegistProgress:(NSNotification *)sender {
     NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
-    NSLog(@"接收到传过来的通知 -- %@", senderStr);
+    NSLog(@"状态栏文字 --> %@, %s, %d", senderStr, __FUNCTION__, __LINE__);
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
         [self countAndShowRegistPercentage:senderStr];
     } else {

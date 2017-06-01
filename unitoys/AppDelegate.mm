@@ -462,15 +462,17 @@
 - (void)closeTCP {
     // 关闭套接字
     NSLog(@"关闭TCP");
-    if (self.sendTcpSocket) {
-//        self.sendTcpSocket.userData = SocketCloseByUser;
-        [self.sendTcpSocket disconnect];
-    }
-    self.sendTcpSocket = nil;
-    [BlueToothDataManager shareManager].isTcpConnected = NO;
-    [BlueToothDataManager shareManager].isBeingRegisting = NO;
-    [BlueToothDataManager shareManager].isRegisted = NO;
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOTCONNECTED];
+    [self sendDataToCloseService];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (self.sendTcpSocket) {
+            //        self.sendTcpSocket.userData = SocketCloseByUser;
+            [self.sendTcpSocket disconnect];
+        }
+        self.sendTcpSocket = nil;
+        [BlueToothDataManager shareManager].isTcpConnected = NO;
+        [BlueToothDataManager shareManager].isBeingRegisting = NO;
+        [BlueToothDataManager shareManager].isRegisted = NO;
+    });
 }
 
 - (void)connectingBLEAction {
