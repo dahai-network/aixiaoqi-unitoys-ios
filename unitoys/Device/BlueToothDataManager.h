@@ -71,6 +71,7 @@
 @property (nonatomic, copy) NSString *commicateIDFromTcp;//从tcp拿到的会话id
 @property (nonatomic, copy) NSString *portFromTcp;//从tcp拿到的电话端口号
 @property (nonatomic, assign) BOOL isNeedToRegistAgain;//是否需要重新注册
+@property (nonatomic, assign) BOOL isShowStatuesView;//是否显示状态栏(用于判断tcp连接的那段时间)
 
 
 @end

@@ -107,6 +107,7 @@
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
     [BlueToothDataManager shareManager].isOpened = YES;
+    [BlueToothDataManager shareManager].isShowStatuesView = NO;
     self.lessStep = 0;
     [[UNNetWorkStatuManager shareManager] initNetWorkStatuManager];
     
@@ -1506,15 +1507,19 @@
 //    if (self.sec == 300) {
     if (self.sec == 300) {
         self.sec = 0;
-        NSString *num = [NSString stringWithFormat:@"%d", self.currentNumber];
-        NSString *str = [self hexFinalTLVLength:num];
-        //108a 0500 20fd ef90 0008 0006 0101006501b4
-        //发送心跳包
-        NSString *sendStr = [NSString stringWithFormat:@"108a0500%@%@00060101006501b4", self.communicateID, str];
-        if ([BlueToothDataManager shareManager].isTcpConnected) {
-            NSLog(@"发送心跳包 -- %@", sendStr);
-            [self sendMsgWithMessage:sendStr];
-            self.currentNumber++;
+        if (![self.communicateID isEqualToString:@"00000000"]) {
+            NSString *num = [NSString stringWithFormat:@"%d", self.currentNumber];
+            NSString *str = [self hexFinalTLVLength:num];
+            //108a 0500 20fd ef90 0008 0006 0101006501b4
+            //发送心跳包
+            NSString *sendStr = [NSString stringWithFormat:@"108a0500%@%@00060101006501b4", self.communicateID, str];
+            if ([BlueToothDataManager shareManager].isTcpConnected) {
+                NSLog(@"发送心跳包 -- %@", sendStr);
+                [self sendMsgWithMessage:sendStr];
+                self.currentNumber++;
+            }
+        } else {
+            NSLog(@"会话id为0，不发送心跳包,%s,%d", __FUNCTION__, __LINE__);
         }
     }
     self.sec++;

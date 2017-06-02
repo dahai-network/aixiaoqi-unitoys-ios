@@ -2051,6 +2051,7 @@ static UNBlueToothTool *instance = nil;
                 
                 if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                     if (contentStr && [[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
+                        [BlueToothDataManager shareManager].isShowStatuesView = YES;
                         [UNPushKitMessageManager shareManager].iccidString = contentStr.lowercaseString;
                         [BlueToothDataManager shareManager].iccidFromBle = contentStr.lowercaseString;
                         if ([BlueToothDataManager shareManager].iccidFromTcp) {

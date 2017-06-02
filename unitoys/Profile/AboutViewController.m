@@ -98,7 +98,7 @@
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
-    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
         [self.tableView reloadData];
@@ -162,7 +162,7 @@
     NSLog(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
 //    self.statuesLabel.text = sender.object;
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
-    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
     } else {

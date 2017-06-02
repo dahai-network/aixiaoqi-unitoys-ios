@@ -117,7 +117,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
     [self.view addSubview:self.statuesView];
-    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
         self.statuesView.hidden = YES;
@@ -206,7 +206,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     NSLog(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
 //    self.statuesLabel.text = sender.object;
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
-    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
         if (self.statuesView.un_height == STATUESVIEWHEIGHT) {
             _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -STATUESVIEWHEIGHT);
             _tableView.frame = CGRectOffset(_tableView.frame, 0, -STATUESVIEWHEIGHT);
