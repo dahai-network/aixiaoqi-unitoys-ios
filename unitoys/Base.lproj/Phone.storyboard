@@ -206,8 +206,8 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="lAv-ZC-4co" firstAttribute="height" secondItem="0G3-60-sJx" secondAttribute="height" id="1RX-ww-6Cj"/>
                             <constraint firstItem="lAv-ZC-4co" firstAttribute="leading" secondItem="0G3-60-sJx" secondAttribute="leading" id="7dm-UI-rkk"/>
-                            <constraint firstItem="lAv-ZC-4co" firstAttribute="top" secondItem="0G3-60-sJx" secondAttribute="top" id="Uji-Ah-o5D"/>
                             <constraint firstAttribute="trailing" secondItem="lAv-ZC-4co" secondAttribute="trailing" id="a0o-3Z-U0b"/>
                             <constraint firstAttribute="bottom" secondItem="lAv-ZC-4co" secondAttribute="bottom" id="gIH-7x-4py"/>
                         </constraints>

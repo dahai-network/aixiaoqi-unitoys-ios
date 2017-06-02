@@ -49,6 +49,8 @@
 
 - (void)setup
 {
+    [self findHeightConstraint];
+    self.layoutManager.allowsNonContiguousLayout = NO;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTextDidChange:) name:UITextViewTextDidChangeNotification object:self];
 }
 
@@ -138,40 +140,32 @@
     {
         if (_layoutFinished) // 更新约束或者大小
         {
+            CGFloat maxHeight = 120;
+            
             CGFloat fitHeight = [self sizeThatFits:CGSizeMake(self.bounds.size.width, CGFLOAT_MAX)].height;
-            if (fabs(fitHeight - self.bounds.size.height) < self.font.lineHeight * 0.5) // 变化量小于一个行距的0.5倍
+            if (fabs(fitHeight - self.bounds.size.height) < self.font.lineHeight * 0.5)
             {
-                [self findHeightConstraint];
+                // 变化量小于一个行距的0.5倍
                 return;
             }
-//            if (self.heightConstraint)
-//            {
-//                self.heightConstraint.constant = fitHeight;
-//                [self layoutIfNeeded];
-//            }
-//            else
-//            {
-//                CGRect bounds = self.bounds;
-//                bounds.size.height = fitHeight;
-//                self.bounds = bounds;
-//            }
-            
-            if (!self.heightConstraint)
-            {
-                [self findHeightConstraint];
+            if (fitHeight > maxHeight) {
+                fitHeight = maxHeight;
+            }
+            if (self.heightConstraint.constant == fitHeight ) {
+                return;
             }
             self.heightConstraint.constant = fitHeight;
-            
             //ios10需要调用
             [self setNeedsLayout];
             [self layoutIfNeeded];
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"KTAutoHeightTextViewFontChange" object:nil];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"KTAutoHeightTextViewFontChange" object:nil];
         }
-        else // 查找height约束，记录初值
-        {
-            [self findHeightConstraint];
-        }
+//        else
+//        {
+//            // 查找height约束，记录初值
+//            [self findHeightConstraint];
+//        }
     }
 }
 

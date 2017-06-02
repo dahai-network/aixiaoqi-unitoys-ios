@@ -669,8 +669,10 @@
  */
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    // 退出键盘
-    [self.view endEditing:YES];
+    if (scrollView == self.tableView) {
+        // 退出键盘
+        [self.view endEditing:YES];
+    }
 }
 
 - (void)repeatSendMessage:(MJMessageFrame *)messageFrame

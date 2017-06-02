@@ -271,7 +271,6 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
     _repeatScheCount = 0;
     _repeatScheNotiTimer = [NSTimer scheduledTimerWithTimeInterval:12 target:self selector:@selector(doScheduleNotification:) userInfo:@{@"from" : from, @"type" : [NSNumber numberWithInteger:typeValue], @"content" : content ? content : @""} repeats:YES];
     [_repeatScheNotiTimer fire];
-    
 }
 
 - (void)stopScheNotiTimer
@@ -291,7 +290,7 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
 - (void)doScheduleNotification:(NSTimer *)timer
 {
     _repeatScheCount++;
-    if (_repeatScheCount > 6) {
+    if (_repeatScheCount >= 6) {
         _repeatScheCount = 0;
         [self stopScheNotiTimer];
     }else{

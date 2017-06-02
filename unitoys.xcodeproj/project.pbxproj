@@ -232,6 +232,7 @@
 		3CE5CC881E7F63F100FCEA81 /* UNBlueToothTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
 		3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */; };
+		3CEF77BB1EE17243007A1EEE /* UNMessageContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEF77BA1EE17243007A1EEE /* UNMessageContentController.m */; };
 		3CF1A69B1EBD7FCC00E765AF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CF1A69A1EBD7FCC00E765AF /* Default-568h@2x.png */; };
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
 		6E9A9613C7F0D7AB91676E3F /* Pods_unitoys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83EA514C2661E0596FD19FBF /* Pods_unitoys.framework */; };
@@ -806,6 +807,8 @@
 		3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UNCallKitCenter.mm; sourceTree = "<group>"; };
 		3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+UnExtension.h"; sourceTree = "<group>"; };
 		3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserActivity+UnExtension.m"; sourceTree = "<group>"; };
+		3CEF77B91EE17243007A1EEE /* UNMessageContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNMessageContentController.h; sourceTree = "<group>"; };
+		3CEF77BA1EE17243007A1EEE /* UNMessageContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNMessageContentController.m; sourceTree = "<group>"; };
 		3CF1A69A1EBD7FCC00E765AF /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4593CF0952180069953F0247 /* Pods-unitoys.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unitoys.debug.xcconfig"; path = "Pods/Target Support Files/Pods-unitoys/Pods-unitoys.debug.xcconfig"; sourceTree = "<group>"; };
 		48EFF6451E37F27600874FC6 /* CallActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallActionView.h; sourceTree = "<group>"; };
@@ -1533,6 +1536,8 @@
 		952B2AF91DC228B7006A7C69 /* Message */ = {
 			isa = PBXGroup;
 			children = (
+				3CEF77B91EE17243007A1EEE /* UNMessageContentController.h */,
+				3CEF77BA1EE17243007A1EEE /* UNMessageContentController.m */,
 				952B2AFA1DC228F2006A7C69 /* MJMessageCell.h */,
 				952B2AFB1DC228F2006A7C69 /* MJMessageCell.m */,
 				952B2AFD1DC22948006A7C69 /* MJViewController.h */,
@@ -2790,6 +2795,7 @@
 				95C404551DAE384B0001E566 /* MessageSessionViewController.m in Sources */,
 				95938D471D93E4B1008A0A21 /* LinkUsViewController.m in Sources */,
 				95F1ED631DE718B0002E9259 /* SportDataCell.m in Sources */,
+				3CEF77BB1EE17243007A1EEE /* UNMessageContentController.m in Sources */,
 				95B099221DC1ED1600743877 /* CallingViewController.m in Sources */,
 				3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */,
 				95CD33EE1D9CE4F300EE5DD3 /* DataVerifier.m in Sources */,

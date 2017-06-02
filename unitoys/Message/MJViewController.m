@@ -275,7 +275,7 @@
     NSLog(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
 //    [self.tableView setNeedsLayout];
 //    [self.tableView layoutIfNeeded];
-    [self scrollTableViewToBottomWithAnimated:YES];
+//    [self scrollTableViewToBottomWithAnimated:YES];
 }
 
 - (void)textViewFontChange
@@ -887,8 +887,10 @@
  */
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    // 退出键盘
-    [self.view endEditing:YES];
+    if (scrollView == self.tableView) {
+        // 退出键盘
+        [self.view endEditing:YES];
+    }
 }
 
 
