@@ -124,6 +124,20 @@
 		04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 04F727951E641CE4002EB54C /* ReadMe.txt */; };
 		04F727B71E641CE4002EB54C /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 04F727961E641CE4002EB54C /* Release.xcconfig */; };
 		04F727DB1E642BED002EB54C /* CertificateFiles in Resources */ = {isa = PBXBuildFile; fileRef = 04F727DA1E642BED002EB54C /* CertificateFiles */; };
+		3C07E22C1EE2577F001AB21D /* MessagePhoneDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2171EE2577F001AB21D /* MessagePhoneDetailController.m */; };
+		3C07E22D1EE2577F001AB21D /* MJViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2191EE2577F001AB21D /* MJViewController.m */; };
+		3C07E22E1EE2577F001AB21D /* NewMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E21B1EE2577F001AB21D /* NewMessageViewController.m */; };
+		3C07E22F1EE2577F001AB21D /* UNMessageContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E21D1EE2577F001AB21D /* UNMessageContentController.m */; };
+		3C07E2301EE2577F001AB21D /* MJMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2201EE2577F001AB21D /* MJMessage.m */; };
+		3C07E2311EE2577F001AB21D /* MJMessageFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2221EE2577F001AB21D /* MJMessageFrame.m */; };
+		3C07E2321EE2577F001AB21D /* MessagePhoneDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2251EE2577F001AB21D /* MessagePhoneDetailCell.m */; };
+		3C07E2331EE2577F001AB21D /* MessagePhoneDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C07E2261EE2577F001AB21D /* MessagePhoneDetailCell.xib */; };
+		3C07E2341EE2577F001AB21D /* MessagePhoneDetailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2281EE2577F001AB21D /* MessagePhoneDetailHeaderCell.m */; };
+		3C07E2351EE2577F001AB21D /* MessagePhoneDetailHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C07E2291EE2577F001AB21D /* MessagePhoneDetailHeaderCell.xib */; };
+		3C07E2361EE2577F001AB21D /* MJMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E22B1EE2577F001AB21D /* MJMessageCell.m */; };
+		3C07E2391EE2582B001AB21D /* UNMessageInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2381EE2582B001AB21D /* UNMessageInputView.m */; };
+		3C07E23C1EE25993001AB21D /* UNPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E23B1EE25993001AB21D /* UNPlaceHolderTextView.m */; };
+		3C07E23F1EE25C5A001AB21D /* UNLeftModeTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E23E1EE25C5A001AB21D /* UNLeftModeTextField.m */; };
 		3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */; };
 		3C15135B1E796CBD00AF48B6 /* AlarmListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */; };
 		3C20C20D1E6CF3CC008078BB /* UNDataTransformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C20A1E6CF3CC008078BB /* UNDataTransformation.m */; };
@@ -215,11 +229,6 @@
 		3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0CE1E64346700A62F8C /* AbroadPackageDescView.m */; };
 		3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */; };
 		3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */; };
-		3CCA72D51E65716200931B20 /* MessagePhoneDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72D41E65716200931B20 /* MessagePhoneDetailController.m */; };
-		3CCA72D91E65754000931B20 /* MessagePhoneDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72D71E65754000931B20 /* MessagePhoneDetailCell.m */; };
-		3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72D81E65754000931B20 /* MessagePhoneDetailCell.xib */; };
-		3CCA72DE1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */; };
-		3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */; };
 		3CD0C8A01E864BDB00ABD21B /* UNPushKitMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */; };
 		3CD76A8E1EA45E55001E6466 /* HLDragView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD76A8D1EA45E55001E6466 /* HLDragView.m */; };
 		3CD76AA21EA73394001E6466 /* UNLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CD76AA01EA73394001E6466 /* UNLoginViewController.m */; };
@@ -232,7 +241,6 @@
 		3CE5CC881E7F63F100FCEA81 /* UNBlueToothTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
 		3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */; };
-		3CEF77BB1EE17243007A1EEE /* UNMessageContentController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEF77BA1EE17243007A1EEE /* UNMessageContentController.m */; };
 		3CF1A69B1EBD7FCC00E765AF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CF1A69A1EBD7FCC00E765AF /* Default-568h@2x.png */; };
 		48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48EFF6461E37F27600874FC6 /* CallActionView.m */; };
 		6E9A9613C7F0D7AB91676E3F /* Pods_unitoys.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83EA514C2661E0596FD19FBF /* Pods_unitoys.framework */; };
@@ -257,10 +265,6 @@
 		952AB0091DF8DA8900C5A927 /* PhoneOperationPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 952AB0081DF8DA8900C5A927 /* PhoneOperationPad.m */; };
 		952B2AEE1DC224F4006A7C69 /* UIImage+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 952B2AED1DC224F4006A7C69 /* UIImage+Extension.m */; };
 		952B2AF81DC22773006A7C69 /* NSString+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 952B2AF71DC22773006A7C69 /* NSString+Extension.m */; };
-		952B2AFC1DC228F2006A7C69 /* MJMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 952B2AFB1DC228F2006A7C69 /* MJMessageCell.m */; };
-		952B2AFF1DC22948006A7C69 /* MJViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 952B2AFE1DC22948006A7C69 /* MJViewController.m */; };
-		952B2B021DC229E0006A7C69 /* MJMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 952B2B011DC229E0006A7C69 /* MJMessage.m */; };
-		952B2B051DC22A3C006A7C69 /* MJMessageFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 952B2B041DC22A3C006A7C69 /* MJMessageFrame.m */; };
 		952B2B071DC22D75006A7C69 /* messages.plist in Resources */ = {isa = PBXBuildFile; fileRef = 952B2B061DC22D75006A7C69 /* messages.plist */; };
 		952EA1141DD6F02A004738A5 /* QuickSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 952EA1131DD6F02A004738A5 /* QuickSettingViewController.m */; };
 		95334A621D8A83DD002C1CFB /* BaseTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95334A611D8A83DD002C1CFB /* BaseTableController.m */; };
@@ -297,7 +301,6 @@
 		9562EE9C1DD31B7B00E10C98 /* AlipaySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9562EE9A1DD31B7B00E10C98 /* AlipaySDK.framework */; };
 		9562EE9F1DD31BA100E10C98 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9562EE9D1DD31BA100E10C98 /* libcrypto.a */; };
 		9562EEA01DD31BA100E10C98 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9562EE9E1DD31BA100E10C98 /* libssl.a */; };
-		9562EEA31DD3672F00E10C98 /* NewMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9562EEA21DD3672F00E10C98 /* NewMessageViewController.m */; };
 		9581594A1DCB7DB8004474FF /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 958159491DCB7DB7004474FF /* ProfileViewController.m */; };
 		9581594D1DCC1409004474FF /* VPImageCropperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9581594C1DCC1409004474FF /* VPImageCropperViewController.m */; };
 		958159501DCCC31D004474FF /* SetValueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9581594F1DCCC31D004474FF /* SetValueViewController.m */; };
@@ -620,6 +623,32 @@
 		04F727951E641CE4002EB54C /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		04F727961E641CE4002EB54C /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		04F727DA1E642BED002EB54C /* CertificateFiles */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CertificateFiles; sourceTree = "<group>"; };
+		3C07E2161EE2577F001AB21D /* MessagePhoneDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailController.h; sourceTree = "<group>"; };
+		3C07E2171EE2577F001AB21D /* MessagePhoneDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailController.m; sourceTree = "<group>"; };
+		3C07E2181EE2577F001AB21D /* MJViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJViewController.h; sourceTree = "<group>"; };
+		3C07E2191EE2577F001AB21D /* MJViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJViewController.m; sourceTree = "<group>"; };
+		3C07E21A1EE2577F001AB21D /* NewMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewMessageViewController.h; sourceTree = "<group>"; };
+		3C07E21B1EE2577F001AB21D /* NewMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewMessageViewController.m; sourceTree = "<group>"; };
+		3C07E21C1EE2577F001AB21D /* UNMessageContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNMessageContentController.h; sourceTree = "<group>"; };
+		3C07E21D1EE2577F001AB21D /* UNMessageContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNMessageContentController.m; sourceTree = "<group>"; };
+		3C07E21F1EE2577F001AB21D /* MJMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJMessage.h; sourceTree = "<group>"; };
+		3C07E2201EE2577F001AB21D /* MJMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJMessage.m; sourceTree = "<group>"; };
+		3C07E2211EE2577F001AB21D /* MJMessageFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJMessageFrame.h; sourceTree = "<group>"; };
+		3C07E2221EE2577F001AB21D /* MJMessageFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJMessageFrame.m; sourceTree = "<group>"; };
+		3C07E2241EE2577F001AB21D /* MessagePhoneDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailCell.h; sourceTree = "<group>"; };
+		3C07E2251EE2577F001AB21D /* MessagePhoneDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailCell.m; sourceTree = "<group>"; };
+		3C07E2261EE2577F001AB21D /* MessagePhoneDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessagePhoneDetailCell.xib; sourceTree = "<group>"; };
+		3C07E2271EE2577F001AB21D /* MessagePhoneDetailHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailHeaderCell.h; sourceTree = "<group>"; };
+		3C07E2281EE2577F001AB21D /* MessagePhoneDetailHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailHeaderCell.m; sourceTree = "<group>"; };
+		3C07E2291EE2577F001AB21D /* MessagePhoneDetailHeaderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessagePhoneDetailHeaderCell.xib; sourceTree = "<group>"; };
+		3C07E22A1EE2577F001AB21D /* MJMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJMessageCell.h; sourceTree = "<group>"; };
+		3C07E22B1EE2577F001AB21D /* MJMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJMessageCell.m; sourceTree = "<group>"; };
+		3C07E2371EE2582B001AB21D /* UNMessageInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNMessageInputView.h; sourceTree = "<group>"; };
+		3C07E2381EE2582B001AB21D /* UNMessageInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNMessageInputView.m; sourceTree = "<group>"; };
+		3C07E23A1EE25993001AB21D /* UNPlaceHolderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPlaceHolderTextView.h; sourceTree = "<group>"; };
+		3C07E23B1EE25993001AB21D /* UNPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPlaceHolderTextView.m; sourceTree = "<group>"; };
+		3C07E23D1EE25C5A001AB21D /* UNLeftModeTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNLeftModeTextField.h; sourceTree = "<group>"; };
+		3C07E23E1EE25C5A001AB21D /* UNLeftModeTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNLeftModeTextField.m; sourceTree = "<group>"; };
 		3C116DF61E56CD90006C0641 /* CustomRefreshMessageHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomRefreshMessageHeader.h; sourceTree = "<group>"; };
 		3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshMessageHeader.m; sourceTree = "<group>"; };
 		3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlarmListViewController.xib; sourceTree = "<group>"; };
@@ -775,14 +804,6 @@
 		3CCA72CE1E65458900931B20 /* AbroadPackageExplainCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadPackageExplainCell.h; sourceTree = "<group>"; };
 		3CCA72CF1E65458900931B20 /* AbroadPackageExplainCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadPackageExplainCell.m; sourceTree = "<group>"; };
 		3CCA72D01E65458900931B20 /* AbroadPackageExplainCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AbroadPackageExplainCell.xib; sourceTree = "<group>"; };
-		3CCA72D31E65716200931B20 /* MessagePhoneDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailController.h; sourceTree = "<group>"; };
-		3CCA72D41E65716200931B20 /* MessagePhoneDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailController.m; sourceTree = "<group>"; };
-		3CCA72D61E65754000931B20 /* MessagePhoneDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailCell.h; sourceTree = "<group>"; };
-		3CCA72D71E65754000931B20 /* MessagePhoneDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailCell.m; sourceTree = "<group>"; };
-		3CCA72D81E65754000931B20 /* MessagePhoneDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessagePhoneDetailCell.xib; sourceTree = "<group>"; };
-		3CCA72DB1E6576E300931B20 /* MessagePhoneDetailHeaderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessagePhoneDetailHeaderCell.h; sourceTree = "<group>"; };
-		3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagePhoneDetailHeaderCell.m; sourceTree = "<group>"; };
-		3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MessagePhoneDetailHeaderCell.xib; sourceTree = "<group>"; };
 		3CD0C89E1E864BDB00ABD21B /* UNPushKitMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPushKitMessageManager.h; sourceTree = "<group>"; };
 		3CD0C89F1E864BDB00ABD21B /* UNPushKitMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPushKitMessageManager.m; sourceTree = "<group>"; };
 		3CD76A8C1EA45E55001E6466 /* HLDragView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLDragView.h; sourceTree = "<group>"; };
@@ -807,8 +828,6 @@
 		3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UNCallKitCenter.mm; sourceTree = "<group>"; };
 		3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+UnExtension.h"; sourceTree = "<group>"; };
 		3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserActivity+UnExtension.m"; sourceTree = "<group>"; };
-		3CEF77B91EE17243007A1EEE /* UNMessageContentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNMessageContentController.h; sourceTree = "<group>"; };
-		3CEF77BA1EE17243007A1EEE /* UNMessageContentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNMessageContentController.m; sourceTree = "<group>"; };
 		3CF1A69A1EBD7FCC00E765AF /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4593CF0952180069953F0247 /* Pods-unitoys.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unitoys.debug.xcconfig"; path = "Pods/Target Support Files/Pods-unitoys/Pods-unitoys.debug.xcconfig"; sourceTree = "<group>"; };
 		48EFF6451E37F27600874FC6 /* CallActionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallActionView.h; sourceTree = "<group>"; };
@@ -854,14 +873,6 @@
 		952B2AED1DC224F4006A7C69 /* UIImage+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Extension.m"; sourceTree = "<group>"; };
 		952B2AF61DC22773006A7C69 /* NSString+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Extension.h"; sourceTree = "<group>"; };
 		952B2AF71DC22773006A7C69 /* NSString+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Extension.m"; sourceTree = "<group>"; };
-		952B2AFA1DC228F2006A7C69 /* MJMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJMessageCell.h; sourceTree = "<group>"; };
-		952B2AFB1DC228F2006A7C69 /* MJMessageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJMessageCell.m; sourceTree = "<group>"; };
-		952B2AFD1DC22948006A7C69 /* MJViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJViewController.h; sourceTree = "<group>"; };
-		952B2AFE1DC22948006A7C69 /* MJViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJViewController.m; sourceTree = "<group>"; };
-		952B2B001DC229E0006A7C69 /* MJMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJMessage.h; sourceTree = "<group>"; };
-		952B2B011DC229E0006A7C69 /* MJMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJMessage.m; sourceTree = "<group>"; };
-		952B2B031DC22A3C006A7C69 /* MJMessageFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MJMessageFrame.h; sourceTree = "<group>"; };
-		952B2B041DC22A3C006A7C69 /* MJMessageFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MJMessageFrame.m; sourceTree = "<group>"; };
 		952B2B061DC22D75006A7C69 /* messages.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = messages.plist; sourceTree = "<group>"; };
 		952EA1121DD6F02A004738A5 /* QuickSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuickSettingViewController.h; sourceTree = "<group>"; };
 		952EA1131DD6F02A004738A5 /* QuickSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QuickSettingViewController.m; sourceTree = "<group>"; };
@@ -929,8 +940,6 @@
 		9562EE9A1DD31B7B00E10C98 /* AlipaySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AlipaySDK.framework; sourceTree = "<group>"; };
 		9562EE9D1DD31BA100E10C98 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		9562EE9E1DD31BA100E10C98 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
-		9562EEA11DD3672F00E10C98 /* NewMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewMessageViewController.h; sourceTree = "<group>"; };
-		9562EEA21DD3672F00E10C98 /* NewMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewMessageViewController.m; sourceTree = "<group>"; };
 		958159481DCB7DB7004474FF /* ProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
 		958159491DCB7DB7004474FF /* ProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		9581594B1DCC1409004474FF /* VPImageCropperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VPImageCropperViewController.h; sourceTree = "<group>"; };
@@ -1356,6 +1365,53 @@
 			path = "Xcode-Configurations";
 			sourceTree = "<group>";
 		};
+		3C07E2151EE2577F001AB21D /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				3C07E2161EE2577F001AB21D /* MessagePhoneDetailController.h */,
+				3C07E2171EE2577F001AB21D /* MessagePhoneDetailController.m */,
+				3C07E2181EE2577F001AB21D /* MJViewController.h */,
+				3C07E2191EE2577F001AB21D /* MJViewController.m */,
+				3C07E21A1EE2577F001AB21D /* NewMessageViewController.h */,
+				3C07E21B1EE2577F001AB21D /* NewMessageViewController.m */,
+				3C07E21C1EE2577F001AB21D /* UNMessageContentController.h */,
+				3C07E21D1EE2577F001AB21D /* UNMessageContentController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		3C07E21E1EE2577F001AB21D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				3C07E21F1EE2577F001AB21D /* MJMessage.h */,
+				3C07E2201EE2577F001AB21D /* MJMessage.m */,
+				3C07E2211EE2577F001AB21D /* MJMessageFrame.h */,
+				3C07E2221EE2577F001AB21D /* MJMessageFrame.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		3C07E2231EE2577F001AB21D /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3C07E2241EE2577F001AB21D /* MessagePhoneDetailCell.h */,
+				3C07E2251EE2577F001AB21D /* MessagePhoneDetailCell.m */,
+				3C07E2261EE2577F001AB21D /* MessagePhoneDetailCell.xib */,
+				3C07E2271EE2577F001AB21D /* MessagePhoneDetailHeaderCell.h */,
+				3C07E2281EE2577F001AB21D /* MessagePhoneDetailHeaderCell.m */,
+				3C07E2291EE2577F001AB21D /* MessagePhoneDetailHeaderCell.xib */,
+				3C07E22A1EE2577F001AB21D /* MJMessageCell.h */,
+				3C07E22B1EE2577F001AB21D /* MJMessageCell.m */,
+				3C07E2371EE2582B001AB21D /* UNMessageInputView.h */,
+				3C07E2381EE2582B001AB21D /* UNMessageInputView.m */,
+				3C07E23A1EE25993001AB21D /* UNPlaceHolderTextView.h */,
+				3C07E23B1EE25993001AB21D /* UNPlaceHolderTextView.m */,
+				3C07E23D1EE25C5A001AB21D /* UNLeftModeTextField.h */,
+				3C07E23E1EE25C5A001AB21D /* UNLeftModeTextField.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		3C4A077D1E9CCED200A6DDA9 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -1536,26 +1592,9 @@
 		952B2AF91DC228B7006A7C69 /* Message */ = {
 			isa = PBXGroup;
 			children = (
-				3CEF77B91EE17243007A1EEE /* UNMessageContentController.h */,
-				3CEF77BA1EE17243007A1EEE /* UNMessageContentController.m */,
-				952B2AFA1DC228F2006A7C69 /* MJMessageCell.h */,
-				952B2AFB1DC228F2006A7C69 /* MJMessageCell.m */,
-				952B2AFD1DC22948006A7C69 /* MJViewController.h */,
-				952B2AFE1DC22948006A7C69 /* MJViewController.m */,
-				952B2B001DC229E0006A7C69 /* MJMessage.h */,
-				952B2B011DC229E0006A7C69 /* MJMessage.m */,
-				952B2B031DC22A3C006A7C69 /* MJMessageFrame.h */,
-				952B2B041DC22A3C006A7C69 /* MJMessageFrame.m */,
-				9562EEA11DD3672F00E10C98 /* NewMessageViewController.h */,
-				9562EEA21DD3672F00E10C98 /* NewMessageViewController.m */,
-				3CCA72D31E65716200931B20 /* MessagePhoneDetailController.h */,
-				3CCA72D41E65716200931B20 /* MessagePhoneDetailController.m */,
-				3CCA72D61E65754000931B20 /* MessagePhoneDetailCell.h */,
-				3CCA72D71E65754000931B20 /* MessagePhoneDetailCell.m */,
-				3CCA72D81E65754000931B20 /* MessagePhoneDetailCell.xib */,
-				3CCA72DB1E6576E300931B20 /* MessagePhoneDetailHeaderCell.h */,
-				3CCA72DC1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m */,
-				3CCA72DD1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib */,
+				3C07E2151EE2577F001AB21D /* Controller */,
+				3C07E21E1EE2577F001AB21D /* Model */,
+				3C07E2231EE2577F001AB21D /* View */,
 			);
 			path = Message;
 			sourceTree = "<group>";
@@ -2427,6 +2466,7 @@
 				043638DC1EB1A4AF0064207E /* StatuesViewDetailViewController.xib in Resources */,
 				0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */,
 				04F727DB1E642BED002EB54C /* CertificateFiles in Resources */,
+				3C07E2331EE2577F001AB21D /* MessagePhoneDetailCell.xib in Resources */,
 				04440CEE1E77887000206877 /* InfoPlist.strings in Resources */,
 				3C4A07871E9CD85800A6DDA9 /* CallDetailsNameCell.xib in Resources */,
 				3C4A07961E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib in Resources */,
@@ -2462,18 +2502,17 @@
 				04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
 				3CF1A69B1EBD7FCC00E765AF /* Default-568h@2x.png in Resources */,
-				3CCA72DF1E6576E300931B20 /* MessagePhoneDetailHeaderCell.xib in Resources */,
 				04440D141E779CF900206877 /* Device.storyboard in Resources */,
 				3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */,
 				3C388A8C1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib in Resources */,
 				952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */,
 				043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */,
-				3CCA72DA1E65754000931B20 /* MessagePhoneDetailCell.xib in Resources */,
 				3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */,
 				04F727971E641CE4002EB54C /* About.txt in Resources */,
 				954A87E21D9A0DA400570843 /* PhonePadView.xib in Resources */,
 				04127F631EA5F3BD00C18201 /* OrderListViewController.xib in Resources */,
 				04F727991E641CE4002EB54C /* About.txt in Resources */,
+				3C07E2351EE2577F001AB21D /* MessagePhoneDetailHeaderCell.xib in Resources */,
 				3C388A911EC4624B00A04BA8 /* VerificationPhoneController.xib in Resources */,
 				95C575FD1DA77C1000F459DF /* MessageRecordCell.xib in Resources */,
 				04F727B71E641CE4002EB54C /* Release.xcconfig in Resources */,
@@ -2568,7 +2607,6 @@
 				954A87D31D98BBA700570843 /* JSONHTTPClient.m in Sources */,
 				95E918691DDCAB9C005DABC0 /* RoundLable.m in Sources */,
 				7402B32E1E55967600DC73B9 /* UIBarButtonItem+Extension.m in Sources */,
-				952B2B051DC22A3C006A7C69 /* MJMessageFrame.m in Sources */,
 				950BC6171DBCE0640048CEAB /* OrderActivationViewController.m in Sources */,
 				954A87D01D98BBA700570843 /* JSONModelError.m in Sources */,
 				3CC3E0B31E63F75200A62F8C /* AbroadPackageExplainController.m in Sources */,
@@ -2592,14 +2630,12 @@
 				3C9035561E9B344700FF95C0 /* PhoneIndexController.mm in Sources */,
 				040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */,
 				95E596601DC478A700B3F4F8 /* ContactPhoneCell.m in Sources */,
-				9562EEA31DD3672F00E10C98 /* NewMessageViewController.m in Sources */,
 				953CF9D01DCCF16A0001CE8E /* PaySuccessViewController.m in Sources */,
+				3C07E23F1EE25C5A001AB21D /* UNLeftModeTextField.m in Sources */,
 				0480E1671E7BD88900FCC33B /* ShowPathViewController.m in Sources */,
 				954A87DC1D99136300570843 /* BrowserViewController.m in Sources */,
 				3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */,
-				3CCA72DE1E6576E300931B20 /* MessagePhoneDetailHeaderCell.m in Sources */,
 				3C6668C51EA078860050FA66 /* UNDataTools.m in Sources */,
-				952B2B021DC229E0006A7C69 /* MJMessage.m in Sources */,
 				3C388A901EC4624B00A04BA8 /* VerificationPhoneController.m in Sources */,
 				95938D411D93ABF0008A0A21 /* PackageDetailViewController.m in Sources */,
 				95BAED651D87A5D4005A6402 /* BaseViewController.m in Sources */,
@@ -2610,6 +2646,7 @@
 				04F7279B1E641CE4002EB54C /* DDASLLogger.m in Sources */,
 				954A87D21D98BBA700570843 /* JSONAPI.m in Sources */,
 				04AFE6621EC435C800B3BC8F /* HavePackageDetailTableViewCell.m in Sources */,
+				3C07E22F1EE2577F001AB21D /* UNMessageContentController.m in Sources */,
 				041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */,
 				48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */,
 				95CD33EF1D9CE4F300EE5DD3 /* MD5DataSigner.m in Sources */,
@@ -2623,6 +2660,7 @@
 				9554C9ED1DE7E44400162624 /* FDCalendarItem.m in Sources */,
 				954A87D11D98BBA700570843 /* NSArray+JSONModel.m in Sources */,
 				95D0004F1E0ACBB600283ADC /* NotifyTextField.m in Sources */,
+				3C07E2321EE2577F001AB21D /* MessagePhoneDetailCell.m in Sources */,
 				95B099181DC0DA6A00743877 /* SipEngineManager.mm in Sources */,
 				0436F95A1E1E3DDC00A57E67 /* BGLogation.m in Sources */,
 				3C20C20D1E6CF3CC008078BB /* UNDataTransformation.m in Sources */,
@@ -2630,6 +2668,7 @@
 				95938D441D93DF87008A0A21 /* AgreementViewController.m in Sources */,
 				3C99A8A41EA9E4DC00C96BE7 /* UNTestViewController.m in Sources */,
 				04AFE65D1EC4359F00B3BC8F /* HavePackageDetailViewController.m in Sources */,
+				3C07E22C1EE2577F001AB21D /* MessagePhoneDetailController.m in Sources */,
 				3C9035591E9B52C100FF95C0 /* HLTitlesView.m in Sources */,
 				95938D3E1D93ABCC008A0A21 /* PackageCell.m in Sources */,
 				04F727A71E641CE4002EB54C /* HTTPMessage.m in Sources */,
@@ -2685,9 +2724,9 @@
 				3CD9134D1E70E59F00434465 /* UNGetSimData.m in Sources */,
 				95DD7FED1DAA5748006E1B0D /* KTKeyboardAvoidingView.m in Sources */,
 				3CC3E0B61E63FA1800A62F8C /* AbroadExplainController.m in Sources */,
+				3C07E22D1EE2577F001AB21D /* MJViewController.m in Sources */,
 				04472ABE1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m in Sources */,
 				3CD9134E1E70E59F00434465 /* UNSimCardAuthenticationModel.m in Sources */,
-				952B2AFF1DC22948006A7C69 /* MJViewController.m in Sources */,
 				3C8CFA681E5597D10035A460 /* UCallPhonePadView.m in Sources */,
 				95C575F01DA7750000F459DF /* ConerSegment.m in Sources */,
 				3C4A07991E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m in Sources */,
@@ -2704,7 +2743,6 @@
 				04F727A41E641CE4002EB54C /* DDRange.m in Sources */,
 				3C7DECF01EC31ED700CDCE34 /* OpenServiceBottomView.m in Sources */,
 				3C85E1BE1E9DBF28006459F9 /* CustomButtonInset.m in Sources */,
-				952B2AFC1DC228F2006A7C69 /* MJMessageCell.m in Sources */,
 				04F727AC1E641CE4002EB54C /* HTTPAsyncFileResponse.m in Sources */,
 				3CE5CC881E7F63F100FCEA81 /* UNBlueToothTool.m in Sources */,
 				3C7DECEC1EC30B0B00CDCE34 /* SelectPayTypeCell.m in Sources */,
@@ -2718,6 +2756,7 @@
 				954A87CE1D98BBA700570843 /* JSONModelArray.m in Sources */,
 				9536B9741D8FC16600CD6B78 /* UnderlineField.m in Sources */,
 				04F7279D1E641CE4002EB54C /* DDLog.m in Sources */,
+				3C07E22E1EE2577F001AB21D /* NewMessageViewController.m in Sources */,
 				95CD33EC1D9CE4F300EE5DD3 /* base64.m in Sources */,
 				3C7DECDE1EC2F86800CDCE34 /* OpenConvenienceServiceController.m in Sources */,
 				3CD76AA21EA73394001E6466 /* UNLoginViewController.m in Sources */,
@@ -2727,9 +2766,11 @@
 				3C7DECDA1EC2EF3F00CDCE34 /* ConvenienceServiceDetailController.m in Sources */,
 				955CCC3C1D90D55C00BC8110 /* AboutViewController.m in Sources */,
 				3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */,
+				3C07E2341EE2577F001AB21D /* MessagePhoneDetailHeaderCell.m in Sources */,
 				3C90356B1E9B6A5C00FF95C0 /* PhoneRecordController.mm in Sources */,
 				3CD76A8E1EA45E55001E6466 /* HLDragView.m in Sources */,
 				043965C91E07E18C00B67989 /* BindChargeCardViewController.m in Sources */,
+				3C07E2391EE2582B001AB21D /* UNMessageInputView.m in Sources */,
 				04F727A61E641CE4002EB54C /* HTTPConnection.m in Sources */,
 				95E918561DDC7AA8005DABC0 /* BindDeviceViewController.m in Sources */,
 				3C4A07951E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m in Sources */,
@@ -2750,6 +2791,7 @@
 				048051711E86686700E8AB55 /* PurviewSettingTableViewCell.m in Sources */,
 				95938D4A1D93E522008A0A21 /* FeedbackViewController.m in Sources */,
 				3CD9134C1E70E59F00434465 /* UNBLEDataManager.m in Sources */,
+				3C07E2311EE2577F001AB21D /* MJMessageFrame.m in Sources */,
 				3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */,
 				04F727A31E641CE4002EB54C /* DDNumber.m in Sources */,
 				95DD7FE61DAA4C1F006E1B0D /* KTAutoHeightTextView.m in Sources */,
@@ -2770,9 +2812,10 @@
 				04F727AE1E641CE4002EB54C /* HTTPDynamicFileResponse.m in Sources */,
 				04F727B01E641CE4002EB54C /* HTTPFileResponse.m in Sources */,
 				04B416511EB35365005E31C9 /* 3des.c in Sources */,
-				3CCA72D91E65754000931B20 /* MessagePhoneDetailCell.m in Sources */,
 				95CD34151D9D1D3B00EE5DD3 /* OrderCell.m in Sources */,
+				3C07E2301EE2577F001AB21D /* MJMessage.m in Sources */,
 				95938D501D93F093008A0A21 /* UIPlaceHolderTextView.m in Sources */,
+				3C07E23C1EE25993001AB21D /* UNPlaceHolderTextView.m in Sources */,
 				95C575F41DA77AB200F459DF /* PhoneRecordCell.m in Sources */,
 				3C7DECE71EC300A100CDCE34 /* OpenServiceMonthCell.m in Sources */,
 				95F1ED5C1DE6BC6A002E9259 /* LineProgressView.m in Sources */,
@@ -2781,7 +2824,6 @@
 				04F727AD1E641CE4002EB54C /* HTTPDataResponse.m in Sources */,
 				3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */,
 				95938D4D1D93EBF1008A0A21 /* ConerView.m in Sources */,
-				3CCA72D51E65716200931B20 /* MessagePhoneDetailController.m in Sources */,
 				953B01F51D8BDA6C00EDF5ED /* SSNetworkRequest.m in Sources */,
 				04F727A81E641CE4002EB54C /* HTTPServer.m in Sources */,
 				3C99A8981EA9B02000C96BE7 /* UITabBar+UNRedTip.m in Sources */,
@@ -2795,13 +2837,13 @@
 				95C404551DAE384B0001E566 /* MessageSessionViewController.m in Sources */,
 				95938D471D93E4B1008A0A21 /* LinkUsViewController.m in Sources */,
 				95F1ED631DE718B0002E9259 /* SportDataCell.m in Sources */,
-				3CEF77BB1EE17243007A1EEE /* UNMessageContentController.m in Sources */,
 				95B099221DC1ED1600743877 /* CallingViewController.m in Sources */,
 				3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */,
 				95CD33EE1D9CE4F300EE5DD3 /* DataVerifier.m in Sources */,
 				958159501DCCC31D004474FF /* SetValueViewController.m in Sources */,
 				3C4A07791E9CC56400A6DDA9 /* ContactsCallDetailsController.m in Sources */,
 				04226B2E1EBC8D8B004B8365 /* UILabel+Extension.m in Sources */,
+				3C07E2361EE2577F001AB21D /* MJMessageCell.m in Sources */,
 				954A87E61D9A151500570843 /* OrderCommitViewController.m in Sources */,
 				955CCC401D91758400BC8110 /* HomeViewController.m in Sources */,
 				954A87CD1D98BBA700570843 /* JSONModel.m in Sources */,
