@@ -272,9 +272,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTcpLength:) name:@"packetLength" object:nil];//收到tcp的数据包压缩前长度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewDataStr:) name:@"receiveNewDataStr" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectingBLEAction) name:@"connectingBLE" object:@"connectingBLE"];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeTCP) name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];//解绑之后关闭tcp
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeTCPAndService) name:@"noConnectedAndUnbind" object:@"noConnectedAndUnbind"];//解绑之后关闭tcp
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dicConnectedBLE) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];//蓝牙断开连接
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeTCP) name:@"disconnectTCP" object:@"disconnectTCP"];//关闭tcp
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeTCPAndService) name:@"disconnectTCP" object:@"disconnectTCP"];//关闭tcp
     // Override point for customization after application launch.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveTcpDataFromPushKit:) name:@"SendTcpDataFromPushKit" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createUDPSocketToBLE:) name:@"CreateUDPSocketToBLE" object:nil];
@@ -463,6 +463,18 @@
 - (void)closeTCP {
     // 关闭套接字
     NSLog(@"关闭TCP");
+    if (self.sendTcpSocket) {
+        //        self.sendTcpSocket.userData = SocketCloseByUser;
+        [self.sendTcpSocket disconnect];
+    }
+    self.sendTcpSocket = nil;
+    [BlueToothDataManager shareManager].isTcpConnected = NO;
+    [BlueToothDataManager shareManager].isBeingRegisting = NO;
+    [BlueToothDataManager shareManager].isRegisted = NO;
+}
+
+- (void)closeTCPAndService {
+    NSLog(@"关闭TCP和服务");
     [self sendDataToCloseService];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (self.sendTcpSocket) {
@@ -1432,11 +1444,13 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (!self.timer) {
             //开始计时
+            NSLog(@"开始计时 %s,%d", __FUNCTION__, __LINE__);
             self.sec = 0;
             self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(jumpTimerAction) userInfo:nil repeats:YES];
             //如果不添加下面这条语句，会阻塞定时器的调用
             [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
         } else {
+            NSLog(@"继续计时 %s,%d", __FUNCTION__, __LINE__);
             self.sec = 0;
             [self.timer setFireDate:[NSDate distantPast]];
         }
@@ -1517,6 +1531,8 @@
                 NSLog(@"发送心跳包 -- %@", sendStr);
                 [self sendMsgWithMessage:sendStr];
                 self.currentNumber++;
+            } else {
+                NSLog(@"tcp断了，不发送心跳包,%s,%d", __FUNCTION__, __LINE__);
             }
         } else {
             NSLog(@"会话id为0，不发送心跳包,%s,%d", __FUNCTION__, __LINE__);
@@ -2857,6 +2873,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PushKitMessageDataTimeout" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"closeServiceNotifi" object:@"closeServiceNotifi"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
 }
 
 @end
