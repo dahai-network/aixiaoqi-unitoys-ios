@@ -273,12 +273,11 @@
 
 #pragma mark 加载电量图形
 - (void)addElectricQue {
-    if ([BlueToothDataManager shareManager].isBounded) {
+    if ([BlueToothDataManager shareManager].isConnected) {
         self.versionNumber.hidden = NO;
         self.macAddress.hidden = NO;
         self.versionNumber.text = [BlueToothDataManager shareManager].versionNumber;
         self.macAddress.text = [BlueToothDataManager shareManager].deviceMacAddress;
-        [self checkChargeStatue];
         if (!self.customView) {
             self.customView = [[LXWaveProgressView alloc]initWithFrame:CGRectMake(([UIScreen mainScreen].bounds.size.width/2), self.disconnectedImageView.frame.origin.y, 105, 105)];
             CGFloat flox = [UIScreen mainScreen].bounds.size.width/2;
@@ -313,6 +312,7 @@
         }
     }
     self.disconnectedImageView.image = [UIImage imageNamed:@"pic_zy_pre"];
+    [self checkChargeStatue];
     [self.tableView reloadData];
 }
 
@@ -333,6 +333,7 @@
     if ([BlueToothDataManager shareManager].isOpened) {
         if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBounded) {
             //点击绑定设备
+            NSLog(@"扫描，%s%d", __FUNCTION__, __LINE__);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
             [self addScanView];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -342,6 +343,7 @@
             });
         } else if (![BlueToothDataManager shareManager].isConnected) {
             //未连接设备，先扫描连接
+            NSLog(@"扫描，%s%d", __FUNCTION__, __LINE__);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
             [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
             [self addScanView];
@@ -352,6 +354,7 @@
             });
         } else {
             //已经绑定了
+            NSLog(@"扫描，%s%d", __FUNCTION__, __LINE__);
         }
     } else {
         HUDNormal(INTERNATIONALSTRING(@"请开启蓝牙"))
@@ -484,7 +487,7 @@
     if ([BlueToothDataManager shareManager].versionNumber) {
         versionStr= [BlueToothDataManager shareManager].versionNumber;
     } else {
-        versionStr = @"1.0.0";
+        versionStr = @"1.00";
     }
     if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
         typeStr = @"0";
@@ -527,7 +530,7 @@
     if ([BlueToothDataManager shareManager].versionNumber) {
         versionStr= [BlueToothDataManager shareManager].versionNumber;
     } else {
-        versionStr = @"1.0.0";
+        versionStr = @"1.00";
     }
     if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
         typeStr = @"0";

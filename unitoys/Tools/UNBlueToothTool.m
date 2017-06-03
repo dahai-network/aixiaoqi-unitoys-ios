@@ -904,7 +904,7 @@ static UNBlueToothTool *instance = nil;
         NSLog(@"连接的是什么设备");
     }
     
-    [BlueToothDataManager shareManager].isBounded = YES;
+//    [BlueToothDataManager shareManager].isBounded = YES;
     //发送绑定成功通知
     [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
     
@@ -925,6 +925,7 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].isCanSendAuthData = NO;
     [UNPushKitMessageManager shareManager].isNeedRegister = NO;
     [BlueToothDataManager shareManager].isLbeConnecting = NO;
+    [BlueToothDataManager shareManager].isAlreadyShowElectyAlert = NO;
     NSLog(@"跟外设失去连接");
     //    [BlueToothDataManager shareManager].isRegisted = NO;
     [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
@@ -1539,6 +1540,9 @@ static UNBlueToothTool *instance = nil;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshVersionNumber" object:@"refreshVersionNumber"];
                 //电量
                 int electricQuantity = [self convertRangeStringToIntWithString:contentStr rangeLoc:4 rangeLen:2];
+                if (electricQuantity <= LOWELECTYNUM && ![BlueToothDataManager shareManager].isAlreadyShowElectyAlert && [BlueToothDataManager shareManager].chargingState != 2) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"showLowElectyAlert" object:@"showLowElectyAlert"];
+                }
                 NSLog(@"当前电量为：%d%%", electricQuantity);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantity];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
@@ -1562,6 +1566,9 @@ static UNBlueToothTool *instance = nil;
                 //电量
                 NSLog(@"接收到电量数据");
                 int electricQuantityNew = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
+                if (electricQuantityNew <= LOWELECTYNUM && ![BlueToothDataManager shareManager].isAlreadyShowElectyAlert && [BlueToothDataManager shareManager].chargingState != 2) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"showLowElectyAlert" object:@"showLowElectyAlert"];
+                }
                 NSLog(@"当前电量为：%d%%", electricQuantityNew);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantityNew];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];

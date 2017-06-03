@@ -120,6 +120,7 @@ typedef enum : NSUInteger {
     //更新本地通话时长
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhoneTime:) name:@"UpdateMaximumPhoneCallTime" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showAlertToUpload:) name:@"showAlertToOta" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showLowElectyAlert) name:@"showLowElectyAlert" object:@"showLowElectyAlert"];//显示低电量提醒
     
     self.selectedViewController = self.childViewControllers[0];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -129,6 +130,16 @@ typedef enum : NSUInteger {
     
     [self showPresentImageView];
     [self updateCallTimeFromServer];
+}
+
+- (void)showLowElectyAlert {
+    if (![BlueToothDataManager shareManager].isAlreadyShowElectyAlert) {
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"系统提示" message:@"蓝牙设备电量过低，请及时充电" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleCancel handler:nil];
+        [alertVC addAction:certailAction];
+        [self presentViewController:alertVC animated:YES completion:nil];
+        [BlueToothDataManager shareManager].isAlreadyShowElectyAlert = YES;
+    }
 }
 
 - (void)showAlertToUpload:(NSNotification *)sender {
@@ -403,13 +414,11 @@ typedef enum : NSUInteger {
 //            [[UNBlueToothTool shareBlueToothTool].mgr cancelPeripheralConnection:[UNBlueToothTool shareBlueToothTool].peripheral];
 //        }
 //    }
-    if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
-    }
     [[UNBlueToothTool shareBlueToothTool] clearInstance];
     //清空数据库
     [[UNDatabaseTools sharedFMDBTools] logoutClearDatabase];
     [BlueToothDataManager shareManager].stepNumber = @"0";
+    [BlueToothDataManager shareManager].isAlreadyShowElectyAlert = NO;
     //注销极光推送
     [JPUSHService setTags:nil alias:nil fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
     }];
@@ -555,6 +564,7 @@ typedef enum : NSUInteger {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"reloginNotify" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"showAlertToOta" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"showLowElectyAlert" object:@"showLowElectyAlert"];
 }
 
 @end

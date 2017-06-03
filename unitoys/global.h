@@ -51,6 +51,9 @@
 //状态栏中图片高度
 #define STATUESVIEWIMAGEHEIGHT 20
 
+//显示低电量提示框的电量标准
+#define LOWELECTYNUM 20
+
 #define apiAlipayNotify  defaultHost@"/api/AliPay/NotifyAsync";
 
 #define kScreenWidthValue  [UIScreen mainScreen].bounds.size.width
