@@ -55,7 +55,7 @@
 }
 
 - (void)viewDidLoad {
-    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]   || ![BlueToothDataManager shareManager].isShowStatuesView) {
         [UNDataTools sharedInstance].tipStatusHeight = 0;
     }else{
         [UNDataTools sharedInstance].tipStatusHeight = STATUESVIEWHEIGHT;

@@ -142,6 +142,7 @@
             }
         } else {
             NSLog(@"无网络");
+            [BlueToothDataManager shareManager].isShowStatuesView = YES;
             [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NETWORKCANNOTUSE;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"0"];
@@ -152,6 +153,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
             NSLog(@"主程序无网络");
+            [BlueToothDataManager shareManager].isShowStatuesView = YES;
             [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NETWORKCANNOTUSE;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"0"];
         }else{

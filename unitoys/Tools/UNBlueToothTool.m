@@ -602,6 +602,7 @@ static UNBlueToothTool *instance = nil;
             [BlueToothDataManager shareManager].isCanSendAuthData = NO;
             [self.peripherals removeAllObjects];
             [self.mgr stopScan];
+            [BlueToothDataManager shareManager].isShowStatuesView = YES;
             //蓝牙未开
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_BLNOTOPEN];
             if (![BlueToothDataManager shareManager].isOpened) {
@@ -1107,6 +1108,7 @@ static UNBlueToothTool *instance = nil;
                 [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
             }
         } else {
+            [BlueToothDataManager shareManager].isShowStatuesView = YES;
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
         }
     }
@@ -1306,6 +1308,9 @@ static UNBlueToothTool *instance = nil;
                 NSLog(@"没有搜索到可连接的设备");
                 //未连接
                 if ([BlueToothDataManager shareManager].isOpened) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [BlueToothDataManager shareManager].isShowStatuesView = YES;
+                    });
                     if (!self.boundedDeviceInfo) {
                         //更新状态
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
@@ -1939,6 +1944,7 @@ static UNBlueToothTool *instance = nil;
                         case 0:
                         {
                             NSLog(@"卡状态改变 -- 无卡");
+                            [BlueToothDataManager shareManager].isShowStatuesView = YES;
                             if (![BlueToothDataManager shareManager].isBeingShowAlert && [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
                                 [BlueToothDataManager shareManager].isBeingShowAlert = YES;
                                 [self checkBLEAndReset];
@@ -1967,6 +1973,7 @@ static UNBlueToothTool *instance = nil;
                                 case 0:
                                 {
                                     NSLog(@"插卡，上电失败");
+                                    [BlueToothDataManager shareManager].isShowStatuesView = YES;
                                     if (![BlueToothDataManager shareManager].isBeingShowAlert && [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
                                         [BlueToothDataManager shareManager].isBeingShowAlert = YES;
                                         [self checkBLEAndReset];
@@ -1984,11 +1991,13 @@ static UNBlueToothTool *instance = nil;
                                     break;
                                 case 4:
                                     NSLog(@"插卡，爱小器");
+                                    [BlueToothDataManager shareManager].isShowStatuesView = YES;
                                     if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
                                     }
                                     break;
                                 default:
+                                    [BlueToothDataManager shareManager].isShowStatuesView = YES;
                                     NSLog(@"插卡，无法识别");
                                     break;
                             }
@@ -2061,9 +2070,7 @@ static UNBlueToothTool *instance = nil;
                                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
                                 [BlueToothDataManager shareManager].isRegisted = YES;
                                 [UNPushKitMessageManager shareManager].iccidString = [BlueToothDataManager shareManager].iccidFromTcp;
-                                dispatch_sync(dispatch_get_main_queue(), ^{
-                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
-                                });
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
                             } else {
                                 //不是同一张卡，需要重新注册
                                 NSLog(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
@@ -2627,6 +2634,7 @@ static UNBlueToothTool *instance = nil;
     if (responseObj[@"data"][@"IMEI"]) {
         self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
         if (!responseObj[@"data"]) {
+            [BlueToothDataManager shareManager].isShowStatuesView = YES;
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
             [BlueToothDataManager shareManager].isBounded = NO;
         } else {
@@ -2647,6 +2655,7 @@ static UNBlueToothTool *instance = nil;
                     NSLog(@"查询绑定设备 -- %@", responseObj);
                     self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
                     if (!responseObj[@"data"][@"IMEI"]) {
+                        [BlueToothDataManager shareManager].isShowStatuesView = YES;
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
                         [BlueToothDataManager shareManager].isBounded = NO;
                     } else {
@@ -2662,6 +2671,7 @@ static UNBlueToothTool *instance = nil;
                 }else if ([[responseObj objectForKey:@"status"] intValue]==0){
                     //数据请求失败
                     NSLog(@"没有设备");
+                    [BlueToothDataManager shareManager].isShowStatuesView = YES;
                     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
                     //扫描蓝牙设备
                     [self scanAndConnectDevice];
