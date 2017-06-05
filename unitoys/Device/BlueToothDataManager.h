@@ -73,6 +73,7 @@
 @property (nonatomic, assign) BOOL isNeedToRegistAgain;//是否需要重新注册
 @property (nonatomic, assign) BOOL isShowStatuesView;//是否显示状态栏(用于判断tcp连接的那段时间)
 @property (nonatomic, assign) BOOL isAlreadyShowElectyAlert;//是否已经显示过低电量提示
+@property (nonatomic, assign) BOOL isDoneRegist;//是否已经走了正常注册流程
 
 
 @end

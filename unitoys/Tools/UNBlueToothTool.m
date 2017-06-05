@@ -944,6 +944,7 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].chargingState = 1;
     [BlueToothDataManager shareManager].iccidFromTcp = nil;
     [BlueToothDataManager shareManager].iccidFromBle = nil;
+    [BlueToothDataManager shareManager].isDoneRegist = NO;
     
     if (self.isKill) {
         return;
@@ -2087,6 +2088,7 @@ static UNBlueToothTool *instance = nil;
                         } else {
                             //原先注册程序在这里
                             NSLog(@"不在线，正常注册 - %s,%d", __FUNCTION__, __LINE__);
+                            [BlueToothDataManager shareManager].isDoneRegist = YES;
                             [self registSimCardStep];
                         }
                     }

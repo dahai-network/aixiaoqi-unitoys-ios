@@ -1370,68 +1370,72 @@
 //            [[VSWManager shareManager] sendMessageToDev:[NSString stringWithFormat:@"%zd", leng] pdata:TLVdetail];
         }
     }else if ([classStr isEqualToString:@"89"]) {
-        NSLog(@"接收到卡的注册状态数据 -- %@", string);
-        if ([errorStr isEqualToString:@"00"]) {
-            NSString *communicateIdStr = [string substringWithRange:NSMakeRange(8, 8)];
-            if ([string containsString:@"00be"] && [string containsString:@"00bf"] && [string containsString:@"00a0"]) {
-                NSRange iccidRange = [string rangeOfString:@"00be"];
-                NSRange imsiRange = [string rangeOfString:@"00bf"];
-                NSRange goipnsRange = [string rangeOfString:@"00a0"];
-//                NSLog(@"iccidRange - %lu,%lu", iccidRange.location+4, imsiRange.location - (iccidRange.location+4));
-//                NSLog(@"imsiRange - %lu,%lu", imsiRange.location+4, goipnsRange.location - (imsiRange.location+4));
-//                NSLog(@"goipnsRange - %lu,%lu", goipnsRange.location+4, string.length-(goipnsRange.location+4));
-                NSString *iccidStr = [string substringWithRange:NSMakeRange(iccidRange.location+4, imsiRange.location - (iccidRange.location+4))];
-                NSString *newIccidString = [NSString stringFromHexString:iccidStr];
-                NSString *imsiStr = [string substringWithRange:NSMakeRange(imsiRange.location+4, goipnsRange.location - (imsiRange.location+4))];
-                NSString *newImsiString = [NSString stringFromHexString:imsiStr];
-                //去除数据中的特殊字符
-                newIccidString = [newIccidString stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
-                NSString *goipnsStr = [string substringWithRange:NSMakeRange(goipnsRange.location+4, string.length-(goipnsRange.location+4))];
-                NSString *newGoipnsString = [NSString stringFromHexString:goipnsStr];
-                
-                if ([newGoipnsString isEqualToString:@"n Failed"]) {
-                    NSLog(@"截取电话端口出错 -- %@", newGoipnsString);
-                    return;
-                }else if ([newGoipnsString isEqualToString:@"Timeout"]) {
-                    NSLog(@"截取电话端口出错 -- %@", newGoipnsString);
-                    return;
-                }
-                NSString *cutStr = [newGoipnsString substringFromIndex:[newGoipnsString rangeOfString:@"_"].location+1];
-                cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
-                NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@ -- 电话端口号：%@", communicateIdStr, newIccidString, newImsiString, newGoipnsString, cutStr);
-                [BlueToothDataManager shareManager].iccidFromTcp = newIccidString.lowercaseString;
-                [BlueToothDataManager shareManager].commicateIDFromTcp = communicateIdStr.lowercaseString;
-                [BlueToothDataManager shareManager].portFromTcp = cutStr;
-                if ([BlueToothDataManager shareManager].iccidFromBle) {
-                    if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
-                        //在线
-                        NSLog(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__);
-                    } else {
-                        //不是同一张卡，需要重新注册
-                        NSLog(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
+        if (![BlueToothDataManager shareManager].isDoneRegist) {
+            NSLog(@"接收到卡的注册状态数据 -- %@", string);
+            if ([errorStr isEqualToString:@"00"]) {
+                NSString *communicateIdStr = [string substringWithRange:NSMakeRange(8, 8)];
+                if ([string containsString:@"00be"] && [string containsString:@"00bf"] && [string containsString:@"00a0"]) {
+                    NSRange iccidRange = [string rangeOfString:@"00be"];
+                    NSRange imsiRange = [string rangeOfString:@"00bf"];
+                    NSRange goipnsRange = [string rangeOfString:@"00a0"];
+                    //                NSLog(@"iccidRange - %lu,%lu", iccidRange.location+4, imsiRange.location - (iccidRange.location+4));
+                    //                NSLog(@"imsiRange - %lu,%lu", imsiRange.location+4, goipnsRange.location - (imsiRange.location+4));
+                    //                NSLog(@"goipnsRange - %lu,%lu", goipnsRange.location+4, string.length-(goipnsRange.location+4));
+                    NSString *iccidStr = [string substringWithRange:NSMakeRange(iccidRange.location+4, imsiRange.location - (iccidRange.location+4))];
+                    NSString *newIccidString = [NSString stringFromHexString:iccidStr];
+                    NSString *imsiStr = [string substringWithRange:NSMakeRange(imsiRange.location+4, goipnsRange.location - (imsiRange.location+4))];
+                    NSString *newImsiString = [NSString stringFromHexString:imsiStr];
+                    //去除数据中的特殊字符
+                    newIccidString = [newIccidString stringByTrimmingCharactersInSet:[NSCharacterSet controlCharacterSet]];
+                    NSString *goipnsStr = [string substringWithRange:NSMakeRange(goipnsRange.location+4, string.length-(goipnsRange.location+4))];
+                    NSString *newGoipnsString = [NSString stringFromHexString:goipnsStr];
+                    
+                    if ([newGoipnsString isEqualToString:@"n Failed"]) {
+                        NSLog(@"截取电话端口出错 -- %@", newGoipnsString);
+                        return;
+                    }else if ([newGoipnsString isEqualToString:@"Timeout"]) {
+                        NSLog(@"截取电话端口出错 -- %@", newGoipnsString);
+                        return;
                     }
+                    NSString *cutStr = [newGoipnsString substringFromIndex:[newGoipnsString rangeOfString:@"_"].location+1];
+                    cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
+                    NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@ -- 电话端口号：%@", communicateIdStr, newIccidString, newImsiString, newGoipnsString, cutStr);
+                    [BlueToothDataManager shareManager].iccidFromTcp = newIccidString.lowercaseString;
+                    [BlueToothDataManager shareManager].commicateIDFromTcp = communicateIdStr.lowercaseString;
+                    [BlueToothDataManager shareManager].portFromTcp = cutStr;
+                    if ([BlueToothDataManager shareManager].iccidFromBle) {
+                        if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
+                            //在线
+                            NSLog(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__);
+                        } else {
+                            //不是同一张卡，需要重新注册
+                            NSLog(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
+                        }
+                    }
+                } else {
+                    NSLog(@"接收到的数据有问题");
                 }
             } else {
-                NSLog(@"接收到的数据有问题");
+                if ([errorStr isEqualToString:@"15"]) {
+                    //用户不存在或token已过期
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+                } else if ([errorStr isEqualToString:@"16"]) {
+                    //需要重新注册
+                    [BlueToothDataManager shareManager].isNeedToRegistAgain = YES;
+                    self.communicateID = @"00000000";
+                    NSLog(@"需要重新注册");
+                } else if ([errorStr isEqualToString:@"29"]) {
+                    //会话id错误
+                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"身份验证失败，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                } else if ([errorStr isEqualToString:@"35"]) {
+                    //服务端暂时不可用
+                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"服务端暂时开小差啦，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                } else {
+                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                }
             }
         } else {
-            if ([errorStr isEqualToString:@"15"]) {
-                //用户不存在或token已过期
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-            } else if ([errorStr isEqualToString:@"16"]) {
-                //需要重新注册
-                [BlueToothDataManager shareManager].isNeedToRegistAgain = YES;
-                self.communicateID = @"00000000";
-                NSLog(@"需要重新注册");
-            } else if ([errorStr isEqualToString:@"29"]) {
-                //会话id错误
-                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"身份验证失败，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
-            } else if ([errorStr isEqualToString:@"35"]) {
-                //服务端暂时不可用
-                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"服务端暂时开小差啦，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
-            } else {
-                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
-            }
+            NSLog(@"已经走过正常注册流程 %s,%d", __FUNCTION__, __LINE__);
         }
     } else if ([classStr isEqualToString:@"8d"]) {
         NSLog(@"关闭tcp成功");
