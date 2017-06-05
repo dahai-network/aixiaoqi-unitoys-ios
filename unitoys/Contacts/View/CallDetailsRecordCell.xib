@@ -26,7 +26,7 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QaC-bN-dM7">
-                        <rect key="frame" x="35" y="16.5" width="35.5" height="17"/>
+                        <rect key="frame" x="35" y="16.5" width="230" height="17"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
@@ -38,18 +38,31 @@
                             <constraint firstAttribute="height" constant="1" id="VfC-gw-y8O"/>
                         </constraints>
                     </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GHq-pa-szM">
+                        <rect key="frame" x="295" y="18" width="50" height="16"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="jhd-6k-hzA"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="QaC-bN-dM7" firstAttribute="centerY" secondItem="Nuu-yT-vkL" secondAttribute="centerY" id="33u-Ll-eh7"/>
                     <constraint firstAttribute="trailing" secondItem="HTg-j6-Yi8" secondAttribute="trailing" id="A1c-Vc-19S"/>
+                    <constraint firstAttribute="trailing" secondItem="GHq-pa-szM" secondAttribute="trailing" constant="30" id="B1k-cF-bbV"/>
                     <constraint firstItem="HTg-j6-Yi8" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="RkL-6m-t5G"/>
                     <constraint firstItem="Nuu-yT-vkL" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="U7H-cQ-4Xn"/>
                     <constraint firstItem="Nuu-yT-vkL" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="UFZ-UG-uRl"/>
                     <constraint firstItem="QaC-bN-dM7" firstAttribute="leading" secondItem="Nuu-yT-vkL" secondAttribute="trailing" constant="8" id="UaH-rx-zKc"/>
                     <constraint firstAttribute="bottom" secondItem="HTg-j6-Yi8" secondAttribute="bottom" id="eAQ-lt-Xe0"/>
+                    <constraint firstItem="GHq-pa-szM" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="rPb-4b-J8q"/>
+                    <constraint firstItem="GHq-pa-szM" firstAttribute="leading" secondItem="QaC-bN-dM7" secondAttribute="trailing" constant="30" id="wFW-Dx-w9i"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="callDuration" destination="GHq-pa-szM" id="jvi-0t-9QL"/>
                 <outlet property="iconImageView" destination="Nuu-yT-vkL" id="6NS-A7-hiW"/>
                 <outlet property="timelabel" destination="QaC-bN-dM7" id="ZHW-MI-NfY"/>
             </connections>

@@ -66,6 +66,8 @@
 @property (nonatomic, copy) NSString *currentCallPhone;
 
 @property (nonatomic, strong) UILabel *noDataLabel;
+
+@property (nonatomic, copy) NSString *currentCid;
 @end
 
 static NSString *searchContactsCellID = @"SearchContactsCell";
@@ -833,13 +835,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self.tableView reloadData];
 }
 
-- (BOOL)addPhoneRecordWithHostcid:(NSString *)hostcid Destcid:(NSString *)destcid Calltime:(NSDate *)calltime Calltype:(NSString *)calltype {
+- (BOOL)addPhoneRecordWithHostcid:(NSString *)hostcid Destcid:(NSString *)destcid Calltime:(NSDate *)calltime Calltype:(NSString *)calltype CallDuration:(int)duration CallStatus:(NSInteger)callStatu{
     //status,来电是否接听
     NSTimeInterval a = [calltime timeIntervalSince1970];
     NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
     //    NSTimeInterval callTimeNumber = [calltime timeIntervalSince1970];
     
-    NSMutableDictionary *dicPhoneRecord = [[NSMutableDictionary alloc] initWithObjectsAndKeys:timestemp,@"calltime",calltype,@"calltype",[self numberFromCid:hostcid],@"hostnumber",[self numberFromCid:destcid],@"destnumber",@0,@"status", nil];  //时间写入记录时不需要转成字符
+    NSMutableDictionary *dicPhoneRecord = [[NSMutableDictionary alloc] initWithObjectsAndKeys:timestemp,@"calltime",calltype,@"calltype",[self numberFromCid:hostcid],@"hostnumber",[self numberFromCid:destcid],@"destnumber",@(callStatu),@"status", @(duration),@"callduration", nil];  //时间写入记录时不需要转成字符
     [dicPhoneRecord setObject:@"未知" forKey:@"location"];
     
     NSString *localPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
@@ -1012,22 +1014,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
                 }
             }
-            
-            //            BOOL success = [db executeUpdate:@"INSERT INTO CallRecord (hostnumber, destnumber, calltime, calltype, location, status) VALUES (?, ?, ?, ?, ?, ?)", [dicPhoneRecord objectForKey:@"hostnumber"], [dicPhoneRecord objectForKey:@"destnumber"], timestemp,[dicPhoneRecord objectForKey:@"calltype"],[dicPhoneRecord objectForKey:@"location"],[dicPhoneRecord objectForKey:@"status"]];
-            //            if (!success) {
-            //                NSLog(@"添加通话记录失败！%@",dicPhoneRecord);
-            //            }
-            //return TRUE;
-//        }
         NSLog(@"log_keepers is not existed.");
         //创建表
         //[membersDB executeUpdate:@"CREATE TABLE PersonList (Name text, Age integer, Sex integer,Phone text, Address text, Photo blob)"];
         
     }else{
         //添加记录
-        //        NSInteger a=[calltime timeIntervalSince1970];
-        //        NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
-        //        BOOL success = [db executeUpdate:@"INSERT INTO CallRecord (datas, calltime, dataid) VALUES (?, ?, ?)", [dicPhoneRecord objectForKey:@"hostnumber"], [dicPhoneRecord objectForKey:@"destnumber"], timestemp,[dicPhoneRecord objectForKey:@"calltype"],[dicPhoneRecord objectForKey:@"location"],[dicPhoneRecord objectForKey:@"status"]];
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
         NSString *jsonStr = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         BOOL isSuccess = [db executeUpdate:@"INSERT INTO CallRecord (datas, calltime, dataid) VALUES (?, ?, ?)", jsonStr, calltime, dataId];
@@ -1151,52 +1143,52 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //            self.muteStatus = !self.muteStatus;
             //            theSipEngine->MuteMic(self.muteStatus);
         }else if ([action isEqualToString:@"Answer"]){
-            //选择最后一条，更新为
-            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-            NSString *path = [paths objectAtIndex:0];
-            
-            //            path = [path stringByAppendingPathComponent:@"callrecord.db"];
-            path = [path stringByAppendingPathComponent:@"callrecord2.db"];
-            
-            FMDatabase *db = [FMDatabase databaseWithPath:path];
-            if (![db open]) {
-                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
-            }else{
-                //查找出错
-                //                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
-                //降序,更新最后一条数据
-                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime desc limit 0,1"];
-                if ([rs next]) {
-                    //如果能打开说明已存在,获取数据
-                    NSString *jsonStr1 = [rs stringForColumn:@"datas"];
-                    NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
-                    NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
-                    NSMutableArray *muteArray = [NSMutableArray arrayWithArray:dataArray];
-                    NSMutableDictionary *dictRecord;
-                    if (dataArray.count) {
-                        dictRecord = [NSMutableDictionary dictionaryWithDictionary:dataArray.firstObject];
-                    }
-                    [dictRecord setObject:@1 forKey:@"status"];
-                    [muteArray replaceObjectAtIndex:0 withObject:dictRecord];
-                    
-                    NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
-                    NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
-                    BOOL isUpdate = [db executeUpdate:[NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]];
-                    if (!isUpdate) {
-                        NSLog(@"更新通话记录接通状态失败");
-                    }
-                    //                    BOOL isSuccess = [db executeUpdate:@"UPDATE CallRecord set datas='%@' calltime='%@' where dataid ='%@'", jsonStr2, timestemp, dataId];
-                    //                    if (!isSuccess) {
-                    //                        NSLog(@"更新通话记录失败！%@",dicPhoneRecord);
-                    //                    }
-                    //                    [db executeUpdate:@"update CallRecord set status=1 where calltime=?",[rs stringForColumn:@"calltime"]];
-                    [rs close];
-                    [db close];
-                }
-                
-            }
-            [self loadPhoneRecord];
-            [self.tableView reloadData];
+//            //选择最后一条，更新为
+//            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//            NSString *path = [paths objectAtIndex:0];
+//            
+//            //            path = [path stringByAppendingPathComponent:@"callrecord.db"];
+//            path = [path stringByAppendingPathComponent:@"callrecord2.db"];
+//            
+//            FMDatabase *db = [FMDatabase databaseWithPath:path];
+//            if (![db open]) {
+//                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
+//            }else{
+//                //查找出错
+//                //                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
+//                //降序,更新最后一条数据
+//                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime desc limit 0,1"];
+//                if ([rs next]) {
+//                    //如果能打开说明已存在,获取数据
+//                    NSString *jsonStr1 = [rs stringForColumn:@"datas"];
+//                    NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
+//                    NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
+//                    NSMutableArray *muteArray = [NSMutableArray arrayWithArray:dataArray];
+//                    NSMutableDictionary *dictRecord;
+//                    if (dataArray.count) {
+//                        dictRecord = [NSMutableDictionary dictionaryWithDictionary:dataArray.firstObject];
+//                    }
+//                    [dictRecord setObject:@1 forKey:@"status"];
+//                    [muteArray replaceObjectAtIndex:0 withObject:dictRecord];
+//                    
+//                    NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
+//                    NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
+//                    BOOL isUpdate = [db executeUpdate:[NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]];
+//                    if (!isUpdate) {
+//                        NSLog(@"更新通话记录接通状态失败");
+//                    }
+//                    //                    BOOL isSuccess = [db executeUpdate:@"UPDATE CallRecord set datas='%@' calltime='%@' where dataid ='%@'", jsonStr2, timestemp, dataId];
+//                    //                    if (!isSuccess) {
+//                    //                        NSLog(@"更新通话记录失败！%@",dicPhoneRecord);
+//                    //                    }
+//                    //                    [db executeUpdate:@"update CallRecord set status=1 where calltime=?",[rs stringForColumn:@"calltime"]];
+//                    [rs close];
+//                    [db close];
+//                }
+//                
+//            }
+//            [self loadPhoneRecord];
+//            [self.tableView reloadData];
             
             //初始化扩音
             theSipEngine->SetLoudspeakerStatus(NO);
@@ -1286,7 +1278,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuNewCall;
     NSLog(@"新呼叫");
     NSString *newcid;
-    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+//    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     if (dir == CallIncoming){
         [[UNBlueToothTool shareBlueToothTool] checkNitifiCall];
         //        msg = [NSString stringWithFormat:@"新来电 %@",cid];
@@ -1300,8 +1292,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             newcid = [cid substringFromIndex:2];
             cid = newcid;
         }
-        
-        [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电"];
+        self.currentCid = cid;
+//        [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电" CallDuration:0 CallStatus:0];
         
         if ([[UNDataTools sharedInstance].blackLists containsObject:cid]) {
             NSLog(@"在黑名单内,挂断电话");
@@ -1333,7 +1325,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         //[mBtnDial setTitle:@"接听" forState:UIControlStateNormal];
     }else{
         //        msg = [NSString stringWithFormat:@"新去电 %@",cid];
-        [self addPhoneRecordWithHostcid:[userdata objectForKey:@"Tel"] Destcid:cid Calltime:[NSDate date] Calltype:@"去电"];
+        self.currentCid = cid;
+//        [self addPhoneRecordWithHostcid:[userdata objectForKey:@"Tel"] Destcid:cid Calltime:[NSDate date] Calltype:@"去电" CallDuration:0 CallStatus:0];
     }
     //    [mStatus setText:msg];
 }
@@ -1422,20 +1415,39 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //    void *user_ptr;
 //}CallReport;
 
-/*话单*/
--(void) OnCallReport:(CallReport *)cdr
-{
-    if (cdr->status == CallSuccess && cdr->dir == CallOutgoing) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMaximumPhoneCallTime" object:nil userInfo:@{@"CallTime" : @(cdr->duration)}];
-    }
-    NSLog(@"话单=====时间:%zd", cdr->duration);
 //    typedef enum _CallStatus {
 //        CallSuccess, /**< The call was sucessful*/
 //        CallAborted, /**< The call was aborted */
 //        CallMissed, /**< The call was missed (unanswered)*/
 //        CallDeclined /**< The call was declined, either locally or by remote end*/
 //    } CallStatus;
-    NSLog(@"话单=====状态:%zd", cdr->status);
+/*话单*/
+-(void) OnCallReport:(CallReport *)cdr
+{
+    if (cdr->status == CallSuccess && cdr->dir == CallOutgoing) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMaximumPhoneCallTime" object:nil userInfo:@{@"CallTime" : @(cdr->duration)}];
+    }
+    NSLog(@"话单=====时间:%zd=====状态:%zd", cdr->duration,cdr->status);
+//    NSLog(@"话单=====状态:%zd", cdr->status);
+    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+    NSString *destcid, *hostcid, *callType;
+    NSInteger callStatu = 1;
+//    callin和called不准确,里面包含了端口,分钟数等信息
+    if (cdr->dir == CallOutgoing) {
+        //呼出(不存在未接)
+        hostcid = [userdata objectForKey:@"Tel"];
+        destcid = self.currentCid;
+        callType = @"去电";
+    }else{
+        hostcid = self.currentCid;
+        destcid = [userdata objectForKey:@"Tel"];
+        callType = @"来电";
+        //呼入(当时间为0且通话状态为miss时为未接)
+        if (cdr->duration == 0 && cdr->status == CallMissed) {
+            callStatu = 0;
+        }
+    }
+    [self addPhoneRecordWithHostcid:hostcid Destcid:destcid Calltime:[NSDate date] Calltype:callType CallDuration:cdr->duration CallStatus:callStatu];
 }
 
 /*呼叫结束*/
@@ -2094,6 +2106,23 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
         [bottomStr appendString:[dicPhoneRecord objectForKey:@"location"]];
         cell.lblPhoneType.text = bottomStr;
+        
+//        //通话时长
+//        NSString *callduration = @"00:00";
+//        if (dicPhoneRecord[@"callduration"]) {
+//            int seconds = [dicPhoneRecord[@"callduration"] intValue];
+//            if (seconds > 0) {
+//                int min = (int)seconds / 60;
+//                int sec = (int)seconds % 60;
+//                NSString *minStr;
+//                if (min < 10) {
+//                    minStr = [NSString stringWithFormat:@"0%d",min];
+//                }else{
+//                    minStr = [NSString stringWithFormat:@"%d",min];
+//                }
+//                callduration = [NSString stringWithFormat:@"%@:%02d", minStr, sec];
+//            }
+//        }
         return cell;
     }
 }

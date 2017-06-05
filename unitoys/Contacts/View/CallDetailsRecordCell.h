@@ -11,6 +11,7 @@
 @interface CallDetailsRecordCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UIImageView *iconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *timelabel;
+@property (weak, nonatomic) IBOutlet UILabel *callDuration;
 
 @property (nonatomic, copy) NSDictionary *cellDatas;
 

@@ -40,6 +40,26 @@
         }
     }
     
+    //通话时长
+    NSString *callduration = @"00:00";
+    if (cellDatas[@"callduration"]) {
+        int seconds = [cellDatas[@"callduration"] intValue];
+        if (seconds > 0) {
+            int min = (int)seconds / 60;
+            int sec = (int)seconds % 60;
+            NSString *minStr;
+            if (min < 10) {
+                minStr = [NSString stringWithFormat:@"0%d",min];
+            }else{
+                minStr = [NSString stringWithFormat:@"%d",min];
+            }
+            callduration = [NSString stringWithFormat:@"%@:%02d", minStr, sec];
+        }
+    }
+    NSLog(@"callduration===%@", callduration);
+
+//    self.callDuration.text = callduration;
+    
     self.timelabel.text = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:cellDatas[@"calltime"]];
 }
 

@@ -21,6 +21,9 @@
 #import "UNDatabaseTools.h"
 #import "UNDataTools.h"
 
+#import "UnMessageLinkManModel.h"
+#import "UNConvertFormatTool.h"
+
 @interface NewMessageViewController ()<UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -49,7 +52,14 @@
 
 @property (nonatomic, strong) UNEditMessageView *bottomView;
 
+@property (nonatomic, copy) NSString *linkManTele;
 @property (nonatomic, copy) NSString *toTelephone;
+
+//短信接收人列表(存储model)
+@property (nonatomic, strong) NSMutableArray *arrLinkmans;
+//当前textfield显示文字
+@property (nonatomic, copy) NSString *currentTextFieldStr;
+
 @end
 
 @implementation NewMessageViewController
@@ -89,7 +99,7 @@
     [self initAllItems];
      _selectRemoveData = [NSMutableArray array];
     
-    self.arrLinkman = [[NSMutableArray alloc] init];
+    self.arrLinkmans = [[NSMutableArray alloc] init];
     
     // 1.表格的设置
     // 去除分割线
@@ -106,17 +116,15 @@
     self.txtSendText.delegate = self;
     
     self.page = 0;
-    self.tableView.mj_header = [CustomRefreshMessageHeader headerWithRefreshingBlock:^{
-        if (self.toTelephone && self.toTelephone.length) {
-            [self cancelEdit];
-            [self loadMoreMessage];
-        }else{
-            [self.tableView.mj_header endRefreshing];
-        }
-    }];
     
     self.txtLinkman.notifyTextFieldDelegate = self;
-    [self.txtLinkman addTarget:self action:@selector(textFieldValueChange:) forControlEvents:UIControlEventEditingChanged];
+    self.txtLinkman.textColor = [UIColor blackColor];
+    
+//    [self.txtLinkman addTarget:self action:@selector(txtLinkmanEditingChanged:) forControlEvents:UIControlEventEditingChanged];
+//    [self.txtLinkman addTarget:self action:@selector(txtLinkmanEditingDidBegin:) forControlEvents:UIControlEventEditingDidBegin];
+//    [self.txtLinkman addTarget:self action:@selector(txtLinkmanEditingDidEnd:) forControlEvents:UIControlEventEditingDidEnd];
+//    [self.txtLinkman addTarget:self action:@selector(txtLinkmanEditingDidEnd:) forControlEvents:UIControlEventEditingDidEndOnExit];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KTAutoHeightTextViewFontChange" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow) name:@"KeyboardWillShowFinished" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
@@ -220,9 +228,6 @@
 - (void)rightBarButtonAction
 {
     if ([self.toTelephone containsString:@","]) {
-//        MessagePhoneDetailController *detailVc = [[MessagePhoneDetailController alloc] init];
-//        detailVc.toPhoneStr = self.toTelephone;
-//        [self.navigationController pushViewController:detailVc animated:YES];
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
         if (!storyboard) {
             return;
@@ -231,34 +236,32 @@
         if (!contactsDetailViewController) {
             return;
         }
-        kWeakSelf
         contactsDetailViewController.contactMan = self.linkManTele;
-        contactsDetailViewController.phoneNumbers = self.linkManTele;
-        //不更新
-        contactsDetailViewController.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
-            if (nickName) {
-                weakSelf.title = nickName;
-            }else{
-                weakSelf.title = phoneNumber;
-            }
-//            self.linkManTele = weakSelf.title;
-            self.linkManTele = phoneNumber;
-        };
+        contactsDetailViewController.phoneNumbers = self.toTelephone;
+//        //不更新
+//        contactsDetailViewController.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
+//            if (nickName) {
+//                weakSelf.title = nickName;
+//            }else{
+//                weakSelf.title = phoneNumber;
+//            }
+////            self.linkManTele = weakSelf.title;
+//            self.linkManTele = nickName;
+//        };
         //        contactsDetailViewController.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         contactsDetailViewController.isMessagePush = YES;
         [self.navigationController pushViewController:contactsDetailViewController animated:YES];
     }else{
-        kWeakSelf
         ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
-        callDetailsVc.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
-            if (nickName) {
-                weakSelf.title = nickName;
-            }else{
-                weakSelf.title = phoneNumber;
-            }
-            //号码不可更改
-//            weakSelf.toTelephone = phoneNumber;
-        };
+//        callDetailsVc.contactsInfoUpdateBlock = ^(NSString *nickName, NSString *phoneNumber) {
+//            if (nickName) {
+//                weakSelf.title = nickName;
+//            }else{
+//                weakSelf.title = phoneNumber;
+//            }
+//            //号码不可更改
+////            weakSelf.toTelephone = phoneNumber;
+//        };
         callDetailsVc.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         callDetailsVc.nickName = self.title;
         callDetailsVc.phoneNumber = self.toTelephone;
@@ -285,7 +288,6 @@
 //    [self.tableView layoutIfNeeded];
     [self scrollTableViewToBottomWithAnimated:NO];
 }
-
 
 - (void)dealloc
 {
@@ -316,19 +318,12 @@
 
 - (void)loadMessages{
     if (_messageFrames == nil || !_messageFrames.count) {
-        if (self.linkManTele) {
-            NSString *name = [self getLinkmans];
-            self.title = name;
-        }else {
-            self.title = INTERNATIONALSTRING(@"新信息");
-        }
-        
-        NSString *lastTime = [[UNDatabaseTools sharedFMDBTools] getLastTimeMessageContentWithPhone:self.linkManTele];
+        NSString *lastTime = [[UNDatabaseTools sharedFMDBTools] getLastTimeMessageContentWithPhone:self.toTelephone];
         NSDictionary *params;
         if (lastTime) {
-            params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber",lastTime,@"beginSMSTime", self.linkManTele,@"Tel",nil];
+            params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber",lastTime,@"beginSMSTime", self.toTelephone,@"Tel",nil];
         }else{
-            params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber", self.linkManTele,@"Tel", nil];
+            params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber", self.toTelephone,@"Tel", nil];
         }
         
         self.checkToken = YES;
@@ -337,13 +332,13 @@
         [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //                NSArray *arrMessages = [responseObj objectForKey:@"data"];
-                weakSelf.toTelephone = weakSelf.linkManTele;
+//                weakSelf.toTelephone = weakSelf.linkManTele;
                 weakSelf.navigationItem.rightBarButtonItem = weakSelf.defaultRightItem;
 
                 if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
-                    [[UNDatabaseTools sharedFMDBTools] insertMessageContentWithMessageContent:responseObj[@"data"] Phone:self.linkManTele];
+                    [[UNDatabaseTools sharedFMDBTools] insertMessageContentWithMessageContent:responseObj[@"data"] Phone:self.toTelephone];
                 }
-                NSArray *arrMessages = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:0 Phone:self.linkManTele];
+                NSArray *arrMessages = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:0 Phone:self.toTelephone];
                 _messageDict = [NSMutableArray arrayWithArray:[[arrMessages reverseObjectEnumerator] allObjects]];
                 _messageFrames = [self changeDictToMessage:arrMessages];
                 //                self.page = 1;
@@ -476,7 +471,7 @@
 //加载更多数据
 - (void)loadMoreMessage
 {
-    NSArray *pageArray = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:(self.page + 1) Phone:self.linkManTele];
+    NSArray *pageArray = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:(self.page + 1) Phone:self.toTelephone];
     if (pageArray.count) {
         NSIndexSet *dictIndexs = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, pageArray.count)];
         [_messageDict insertObjects:[[pageArray reverseObjectEnumerator] allObjects] atIndexes:dictIndexs];
@@ -633,7 +628,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"didSelectRowAtIndexPath---%ld", indexPath.row);
+    NSLog(@"didSelectRowAtIndexPath---%zd", indexPath.row);
     if (self.tableView.isEditing) {
         [self.selectRemoveData addObject:self.messageFrames[indexPath.row]];
     }
@@ -641,7 +636,7 @@
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"didDeselectRowAtIndexPath---%ld", indexPath.row);
+    NSLog(@"didDeselectRowAtIndexPath---%zd", indexPath.row);
     if (self.tableView.isEditing) {
         if ([self.selectRemoveData containsObject:self.messageFrames[indexPath.row]]) {
             [self.selectRemoveData removeObject:self.messageFrames[indexPath.row]];
@@ -718,7 +713,7 @@
 }
 
 
-
+//添加联系人
 - (IBAction)addLinkman:(id)sender {
     [self.txtLinkman endEditing:YES];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -742,30 +737,56 @@
 //    }
 //}
 
+
+
 - (IBAction)sendMessage:(id)sender {
     NSString *receiveNumbers;
      if ([self.txtSendText.text length]>0) {
-         self.btnSend.enabled = NO;
-         self.checkToken = YES;
-         if (![self.txtLinkman.text isValidateMobile]) {
-             receiveNumbers = [self getNumbers];
-         } else {
-             receiveNumbers = self.txtLinkman.text;
+         if (!self.toTelephone || !self.toTelephone.length) {
+             //只有第一次才会获取
+             if (self.arrLinkmans.count) {
+                 //先判断号码是否符合规则,拼接号码
+                 NSMutableString *phoneNumbers = [NSMutableString string];
+                 NSMutableString *linkManName = [NSMutableString string];
+                 for (int i = 0; i < self.arrLinkmans.count; i++) {
+                     UnMessageLinkManModel *model = self.arrLinkmans[i];
+                     [phoneNumbers appendString:model.phoneNumber];
+                     [linkManName appendString:model.linkManName];
+                     if (i != self.arrLinkmans.count - 1) {
+                         [phoneNumbers appendString:@","];
+                         [linkManName appendString:@","];
+                     }
+                 }
+                 //获取短信联系人
+                 self.toTelephone = phoneNumbers;
+                 self.linkManTele = linkManName;
+             }else{
+                 return;
+             }
          }
-//         if ([receiveNumbers containsString:@","]) {
-//             NSString *firstStr = [receiveNumbers substringWithRange:NSMakeRange(0, 11)];
-//             self.linkManTele = firstStr;
-//         } else {
-//             self.linkManTele = receiveNumbers;
-//         }
-         self.linkManTele = receiveNumbers;
+         receiveNumbers = self.toTelephone;
          NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
-         
+         self.checkToken = YES;
          [self getBasicHeader];
+         self.btnSend.enabled = NO;
          [SSNetworkRequest postRequest:apiSMSSend params:info success:^(id responseObj) {
              NSLog(@"查询到的用户数据：%@",responseObj);
              
              if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                 if (!self.tableView.mj_header) {
+                     self.tableView.mj_header = [CustomRefreshMessageHeader headerWithRefreshingBlock:^{
+                         if (self.toTelephone && self.toTelephone.length) {
+                             [self cancelEdit];
+                             [self loadMoreMessage];
+                         }else{
+                             [self.tableView.mj_header endRefreshing];
+                         }
+                     }];
+                 }
+                 
+                 if (self.linkManTele) {
+                     self.title = self.linkManTele;
+                 }
                  //隐藏发送textfield
                  self.topEditMessageViewHeight.constant = 0;
                  self.topEditMessageView.hidden = YES;
@@ -777,7 +798,7 @@
                  [self loadMessages];
                  self.btnSend.enabled = YES;
                  [self updateMessageList];
-
+                 
 //                 NSArray *messages = [NSMutableArray arrayWithArray:[[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:self.page Phone:self.toTelephone]];
 //                 if (messages && messages.count) {
 //                     _messageFrames = [self changeDictToMessage:messages];
@@ -806,185 +827,377 @@
      }
 }
 
-- (IBAction)editedLinkman:(id)sender {
-    
-    NSLog(@"编辑结束");
-    //开始验证文本框中的联系人与数据是否匹配，不匹配则更新
-    [self pairLinkman];
-    
-    //更新联系人列表并修改颜色
-//    self.txtLinkman.text = [self getLinkmans];
-    self.txtLinkman.text = [self checkLinkmans];
-    self.txtLinkman.textColor = [UIColor colorWithRed:43/255.0 green:182/255.0 blue:35/255.0 alpha:1];
-    [self.txtLinkman resignFirstResponder];
-}
+//- (IBAction)editedLinkman:(id)sender {
+//    
+//    NSLog(@"编辑结束");
+//    //开始验证文本框中的联系人与数据是否匹配，不匹配则更新
+//    [self pairLinkman];
+//    
+//    //更新联系人列表并修改颜色
+////    self.txtLinkman.text = [self getLinkmans];
+//    self.txtLinkman.text = [self checkLinkmans];
+//    self.txtLinkman.textColor = [UIColor colorWithRed:43/255.0 green:182/255.0 blue:35/255.0 alpha:1];
+//    [self.txtLinkman resignFirstResponder];
+//}
 
-//- (void)checkInputNumber
-//{
-//    if (self.txtLinkman.text.length) {
-//        if ([self.txtLinkman.text containsString:@" "]) {
-//            NSMutableString *linkName = [NSMutableString string];
-//            NSArray *strArray = [self.txtLinkman.text componentsSeparatedByString:@" "];
-//            for (NSString *string in strArray) {
-//                if (string.length) {
-//                    
-//                }
+
+//- (IBAction)beginEditLinkman:(id)sender {
+//    NSLog(@"开始编辑");
+//    self.txtLinkman.textColor = [UIColor blackColor];
+//    if (self.txtLinkman.text.length && ![self.txtLinkman.text isEqualToString:@" "]) {
+//       self.txtLinkman.text = [self.txtLinkman.text stringByAppendingString:@" "];
+//    }
+//}
+
+
+//- (void)deleteBackward {  //删除响应
+//    //如果是名字则删除联系人，如果是号码则可以部份删除
+//    NSLog(@"删除号码");
+//    
+//    if (self.txtLinkman.selectedRange.location==self.txtLinkman.text.length) {
+//        //删除最后一个人
+//        NSString *initLinkman = self.txtLinkman.text;
+//        
+//        NSMutableArray *mans = [[NSMutableArray alloc] initWithArray:[initLinkman componentsSeparatedByString:@" "]];
+//        
+//        
+//        if ([self isPureInt:[mans lastObject]]) {
+//            //删除号位，更新数据
+//            [self.arrLinkmans removeLastObject];
+//            [self pairLinkman];
+//        }else
+//        if (self.txtLinkman.text.length>0) {
+//            [self.arrLinkman removeLastObject];
+//            self.txtLinkman.text = [self getLinkmans];
+//        }
+//    }else if ([[self.txtLinkman.text substringWithRange:NSMakeRange(self.txtLinkman.selectedRange.location, 1)] isEqualToString:@" "]){
+//        //检查前一个人是不是号码，如果是号码则仅删除数字，否则删除联系人和文本修改设定光标
+//        if (self.txtLinkman.text.length>0) {
+//            //            NSString *prevLinkman = [self.txtLinkman.text substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location)];
+//            
+//            NSString *initLinkman = [[self getLinkmans] substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location)];
+//            
+//            NSMutableArray *mans = [[NSMutableArray alloc] initWithArray:[initLinkman componentsSeparatedByString:@" "]];
+//            
+//            
+//            if ([self isPureInt:[mans lastObject]]) {
+//                //删除号位，更新数据
+//                [self pairLinkman];
+//            }else{
+//                //删除这个联系人..要好看就处理下光标
+//                [self.arrLinkman removeObjectAtIndex:mans.count-1];
+//                self.txtLinkman.text = [self getLinkmans];
+//
+//                [mans removeLastObject];
+//                
+//                [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
 //            }
-//        }else{
+//            
+//            
+//        }
+//    }else if ([[self.txtLinkman.text substringWithRange:NSMakeRange(self.txtLinkman.selectedRange.location-1, 1)] isEqualToString:@" "]){
+//        //检查前一个人是不是号码，如果是号码则仅删除数字，否则删除联系人和文本修改设定光标
+//        if (self.txtLinkman.text.length>0) {
+//            //NSString *prevLinkman = [self.txtLinkman.text substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location)];
+//            
+//            NSString *initLinkman = [[self getLinkmans] substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location-1)];
+//            NSMutableArray *mans = [[NSMutableArray alloc] initWithArray:[initLinkman componentsSeparatedByString:@" "]];
+//            
+//            if ([self isPureInt:[mans lastObject]]) {
+//                //删除号位，更新数据
+//                //[self pairLinkman];
+//                self.txtLinkman.text = [self getLinkmans];
+//                [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
+//            }else{
+//                //删除这个联系人..要好看就处理下光标
+//                [self.arrLinkman removeObjectAtIndex:mans.count-1];
+//                self.txtLinkman.text = [self getLinkmans];
+//                //
+//                [mans removeLastObject];
+//                
+//                [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
+//            }
 //            
 //        }
 //    }
 //}
 
-- (IBAction)beginEditLinkman:(id)sender {
-    NSLog(@"开始编辑");
-    self.txtLinkman.textColor = [UIColor blackColor];
-    if (self.txtLinkman.text.length && ![self.txtLinkman.text isEqualToString:@" "]) {
-       self.txtLinkman.text = [self.txtLinkman.text stringByAppendingString:@" "];
-    }
-}
-
-- (void)deleteBackward {  //删除响应
-    //如果是名字则删除联系人，如果是号码则可以部份删除
-    NSLog(@"删除号码");
-    
-    if (self.txtLinkman.selectedRange.location==self.txtLinkman.text.length) {
-        //删除最后一个人
-        NSString *initLinkman = self.txtLinkman.text;
-        
-        NSMutableArray *mans = [[NSMutableArray alloc] initWithArray:[initLinkman componentsSeparatedByString:@" "]];
-        
-        
-        if ([self isPureInt:[mans lastObject]]) {
-            //删除号位，更新数据
-            [self.arrLinkman removeLastObject];
-            [self pairLinkman];
-        }else
-        if (self.txtLinkman.text.length>0) {
-            [self.arrLinkman removeLastObject];
-            self.txtLinkman.text = [self getLinkmans];
-        }
-    }else if ([[self.txtLinkman.text substringWithRange:NSMakeRange(self.txtLinkman.selectedRange.location, 1)] isEqualToString:@" "]){
-        //检查前一个人是不是号码，如果是号码则仅删除数字，否则删除联系人和文本修改设定光标
-        if (self.txtLinkman.text.length>0) {
-            //            NSString *prevLinkman = [self.txtLinkman.text substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location)];
-            
-            NSString *initLinkman = [[self getLinkmans] substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location)];
-            
-            NSMutableArray *mans = [[NSMutableArray alloc] initWithArray:[initLinkman componentsSeparatedByString:@" "]];
-            
-            
-            if ([self isPureInt:[mans lastObject]]) {
-                //删除号位，更新数据
-                [self pairLinkman];
-            }else{
-                //删除这个联系人..要好看就处理下光标
-                [self.arrLinkman removeObjectAtIndex:mans.count-1];
-                self.txtLinkman.text = [self getLinkmans];
-
-                [mans removeLastObject];
-                
-                [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
-            }
-            
-            
-        }
-    }else if ([[self.txtLinkman.text substringWithRange:NSMakeRange(self.txtLinkman.selectedRange.location-1, 1)] isEqualToString:@" "]){
-        //检查前一个人是不是号码，如果是号码则仅删除数字，否则删除联系人和文本修改设定光标
-        if (self.txtLinkman.text.length>0) {
-            //NSString *prevLinkman = [self.txtLinkman.text substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location)];
-            
-            NSString *initLinkman = [[self getLinkmans] substringWithRange:NSMakeRange(0, self.txtLinkman.selectedRange.location-1)];
-            NSMutableArray *mans = [[NSMutableArray alloc] initWithArray:[initLinkman componentsSeparatedByString:@" "]];
-            
-            if ([self isPureInt:[mans lastObject]]) {
-                //删除号位，更新数据
-                //[self pairLinkman];
-                self.txtLinkman.text = [self getLinkmans];
-                [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
-            }else{
-                //删除这个联系人..要好看就处理下光标
-                [self.arrLinkman removeObjectAtIndex:mans.count-1];
-                self.txtLinkman.text = [self getLinkmans];
-                //
-                [mans removeLastObject];
-                
-                [self.txtLinkman setSelectedRange:NSMakeRange([[mans componentsJoinedByString:@" "] length], 0)];
-            }
-            
-        }
-    }
-}
-
-- (void)updateLinkmanWithDelete
+#pragma mark ======== NotifyTextFieldDelegate ========
+//删除文字
+- (BOOL)unTextFieldDeleteBackward:(UITextField *)textField ChangeRange:(NSRange)range
 {
-    [self.arrLinkman removeAllObjects];
-    [self pairLinkman];
+    NSLog(@"unTextFieldDeleteBackward--text%@---range%@", textField.text, NSStringFromRange(range));
+    BOOL isDelete = NO;
+    if (!self.currentTextFieldStr) {
+        return YES;
+    }
+    if (range.length > 1) {
+        return NO;
+    }
+    if ([textField.text containsString:self.currentTextFieldStr]) {
+        //数据正常
+        //判断截取字符串的位置
+        if (range.location + range.length >= self.currentTextFieldStr.length) {
+            //截取字符串是否包含了之前字符和之后输入的字符
+            if (range.location + range.length == self.currentTextFieldStr.length) {
+                if ([textField.text isEqualToString:self.currentTextFieldStr]) {
+//                    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:[textField.text componentsSeparatedByString:@"、"]];
+//                    NSString *sureString;
+//                    if (mutableArray.count >= 2) {
+//                        if ([mutableArray.lastObject isEqualToString:@""]) {
+//                            NSLog(@"最后一个为空");
+//                            NSString *lastString = [mutableArray objectAtIndex:(mutableArray.count - 2)];
+//                            if ([textField.text containsString:[NSString stringWithFormat:@"%@、", lastString]]) {
+//                                sureString = [textField.text stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@、", lastString] withString:@""];
+//                            }
+//                        }else{
+//                            NSLog(@"最后一个为空");
+//                            NSString *lastString = mutableArray.lastObject;
+//                            if ([textField.text containsString:[NSString stringWithFormat:@"%@、", lastString]]) {
+//                                sureString = [textField.text stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@、", lastString] withString:@""];
+//                            }
+//                        }
+//                    }else{
+//                        sureString = @"";
+//                    }
+//                    textField.text = sureString;
+                    NSLog(@"从最后面删除");
+                    [self.arrLinkmans removeLastObject];
+                    [self updateEditLinkManData];
+                }
+                isDelete = NO;
+                NSLog(@"光标位置在符号后面");
+            }else{
+                isDelete = YES;
+            }
+//            if (!self.currentTextFieldStr || range.location > self.currentTextFieldStr.length) {
+//                //位置在后面
+//                isDelete = YES;
+//            }else{
+//                //分别删除
+//                //先不做分别删除,直接不允许删除
+//                isDelete = NO;
+//            }
+        }else{
+            //暂时只允许从最后面删除
+            return NO;
+//            //当前截取字符串
+//            NSString *currentDeleteStr = [textField.text substringWithRange:range];
+//            if ([self.currentTextFieldStr containsString:currentDeleteStr]) {
+//                if ([currentDeleteStr containsString:@"、"]) {
+//                    //删除多个
+//                    isDelete = NO;
+//                }else{
+//                    //删除单个
+//                    NSArray *currentArray = [self.currentTextFieldStr componentsSeparatedByString:@"、"];
+//                    if (currentArray.count) {
+//                        //查找当前
+//                    }
+//                }
+//            }else{
+//                NSLog(@"数据错误");
+//                isDelete = NO;
+//            }
+        }
+    }else{
+        //数据异常
+        [self resetLinkManData:textField.text];
+        isDelete = NO;
+    }
+    return isDelete;
 }
 
-- (void)pairLinkman {  //配对联系人
-    NSLog(@"配对联系");
-    if (![[self getLinkmans] isEqualToString:self.txtLinkman.text]) {
-        NSArray *numbers = [self.txtLinkman.text componentsSeparatedByString:@" "];
-//        if (self.arrLinkman.count==0) {
-        if (numbers.count==1) {
-            //添加所有
-            NSMutableDictionary *dicNumber = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[numbers firstObject],@"linkman",[numbers firstObject],@"number", nil];
-            [self.arrLinkman addObject:dicNumber];
-            //            self.txtLinkman.text = [self getLinkmans];
-        }else if (numbers.count==self.arrLinkman.count){
-            //更新即可
-//            for (int i=0; i<self.arrLinkman.count; i++) {
-//                NSMutableDictionary *dicNumber = [self.arrLinkman objectAtIndex:i];
-//                
-//                if ([[dicNumber objectForKey:@"linkman"] isEqualToString:[dicNumber objectForKey:@"number"]]) {
-//                    [dicNumber setObject:[numbers objectAtIndex:i] forKey:@"number"];
-//                    [dicNumber setObject:[numbers objectAtIndex:i] forKey:@"linkman"]; //如果是相同说明是号码，则更新两项，否则只更新号码
-//                }else{
-//                    [dicNumber setObject:[numbers objectAtIndex:i] forKey:@"number"];
-//                }
-//                
-//                [self.arrLinkman replaceObjectAtIndex:i withObject:dicNumber];
-//                //                NSLog(@"更新后的数据：%@",[self getLinkmans]);
-//            }
-        }else if (numbers.count > self.arrLinkman.count){
+//结束编辑
+- (void)unTextFieldDidEndEditing:(UITextField *)textField
+{
+    self.txtLinkman.textColor = [UIColor greenColor];
+    if (textField.text && textField.text.length && ![textField.text isEqualToString:self.currentTextFieldStr]) {
+        if (!self.currentTextFieldStr || [textField.text containsString:self.currentTextFieldStr]) {
+            //数据正常
+            NSString *currentText;
+            if (self.currentTextFieldStr) {
+                currentText = [textField.text stringByReplacingOccurrencesOfString:self.currentTextFieldStr withString:@""];
+            }else{
+                currentText = textField.text;
+            }
             
-            NSMutableArray *tempArray = [NSMutableArray array];
-            
-            for (NSInteger i = self.arrLinkman.count; i < numbers.count; i++) {
-                //联系人数量有变化？
-                NSString *phoneNum = [numbers objectAtIndex:i];
-                if (phoneNum.length && ![phoneNum isEqualToString:@" "]) {
-                    BOOL isRepeat = NO;
-                    for (NSDictionary *dict in self.arrLinkman) {
-                        if ([[dict objectForKey:@"number"] isEqualToString:phoneNum]) {
-                            isRepeat = YES;
-                            break;
-                        }
-                    }
-                    if (!isRepeat) {
-                        NSMutableDictionary *dicNumber = [[NSMutableDictionary alloc] initWithObjectsAndKeys:phoneNum,@"linkman",phoneNum,@"number", nil];
-                        [tempArray addObject:dicNumber];
+            if ([currentText containsString:@","] || [currentText containsString:@"，"]) {
+                NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:[currentText componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@",，"]]];
+                for (NSString *phone in mutableArray) {
+                    if (![phone isEqualToString:@""]) {
+                        [self addLinkManWithPhoneStr:phone];
                     }
                 }
+            }else{
+                if (![currentText isEqualToString:@""]) {
+                    [self addLinkManWithPhoneStr:currentText];
+                }
             }
-            if (tempArray.count) {
-               [self.arrLinkman addObjectsFromArray:tempArray];
+        }else{
+            NSLog(@"数据出现异常===text:%@====currentTextFieldStr:%@", textField.text, self.currentTextFieldStr);
+            //数据异常
+            [self resetLinkManData:textField.text];
+        }
+        [self updateEditLinkManData];
+    }
+}
+
+- (void)addLinkManWithPhoneStr:(NSString *)phone
+{
+    if (!phone || !phone.length) {
+        return;
+    }
+    NSString *phoneNum = [self getCheckNumberWithPhone:phone];
+    //判断是否为重复联系人
+    if (self.arrLinkmans.count) {
+        for (UnMessageLinkManModel *model in self.arrLinkmans) {
+            if ([model.phoneNumber isEqualToString:phoneNum]) {
+                HUDNormal(INTERNATIONALSTRING(@"请勿输入重复的号码"))
+                return;
             }
+        }
+    }
+    //验证是否为号码
+    if (![UNConvertFormatTool isAllNumberWithString:phoneNum]) {
+        HUDNormal(INTERNATIONALSTRING(@"请输入正确的号码"))
+        return;
+    }
+    UnMessageLinkManModel *model = [[UnMessageLinkManModel alloc] initWithPhone:phoneNum];
+    [self.arrLinkmans addObject:model];
+}
+
+
+//开始编辑
+- (void)unTextFieldDidBeginEditing:(UITextField *)textField
+{
+    self.txtLinkman.textColor = [UIColor blackColor];
+}
+
+//、
+//根据模型数组更新联系人数据
+- (void)updateEditLinkManData
+{
+    if (self.arrLinkmans.count) {
+        NSMutableString *mutableString = [[NSMutableString alloc] init];
+        for (UnMessageLinkManModel *model in self.arrLinkmans) {
+            //        [mutableString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@、",model.linkManName] attributes:attri]];
+            [mutableString appendString:[NSString stringWithFormat:@"%@、",model.linkManName]];
+        }
+        if (mutableString && mutableString.length) {
+            self.currentTextFieldStr = mutableString;
+        }
+        self.txtLinkman.text = mutableString;
+    }else{
+        self.currentTextFieldStr = nil;
+        self.txtLinkman.text = @"";
+    }
+    NSLog(@"updateEditLinkManData--arrLinkmans%@", self.arrLinkmans);
+}
+//、
+- (void)resetLinkManData:(NSString *)text
+{
+    if ([text containsString:@"、"]) {
+        NSArray *array = [text componentsSeparatedByString:@"、"];
+        NSMutableArray *tempArray = [NSMutableArray array];
+        for (NSString *phoneStr in array) {
+            NSString *surePhone = [self getCheckNumberWithPhone:phoneStr];
+            if (surePhone && surePhone.length && [UNConvertFormatTool isAllNumberWithString:surePhone]) {
+                UnMessageLinkManModel *model = [[UnMessageLinkManModel alloc] initWithPhone:surePhone];
+                [tempArray addObject:model];
+            }
+        }
+        if (tempArray.count) {
+            self.arrLinkmans = tempArray;
+        }
+    }else{
+        NSString *surePhone = [self getCheckNumberWithPhone:text];
+        UnMessageLinkManModel *model;
+        if (surePhone && surePhone.length && [UNConvertFormatTool isAllNumberWithString:surePhone]) {
+            model = [[UnMessageLinkManModel alloc] initWithPhone:surePhone];
+        }
+        if (model) {
+            [self.arrLinkmans removeAllObjects];
+            [self.arrLinkmans addObject:model];
         }
     }
 }
 
-- (void)textFieldValueChange:(UITextField *)textField
+//删除字符串中的特殊符号("、"除外)
+- (NSString *)getCheckNumberWithPhone:(NSString *)phone
 {
-    NSLog(@"%@", textField.text);
+    if ([phone containsString:@"-"]) {
+        phone = [phone stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    }
+    if ([phone containsString:@" "]) {
+        phone = [phone stringByReplacingOccurrencesOfString:@" " withString:@""];
+    }
+    if ([phone containsString:@"+86"]) {
+        phone = [phone stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+    }
+    if ([phone containsString:@"#"]) {
+        phone = [phone stringByReplacingOccurrencesOfString:@"," withString:@""];
+    }
+    if ([phone containsString:@","]) {
+        phone = [phone stringByReplacingOccurrencesOfString:@"," withString:@""];
+    }
+    if ([phone containsString:@"+"]) {
+        phone = [phone stringByReplacingOccurrencesOfString:@"+" withString:@""];
+    }
+    return phone;
 }
 
-- (BOOL)isPureInt:(NSString*)string{
-    NSScanner* scan = [NSScanner scannerWithString:string];
-    int val;
-    return[scan scanInt:&val] && [scan isAtEnd];
-}
+//- (void)updateLinkmanWithDelete
+//{
+//    [self.arrLinkman removeAllObjects];
+//    [self pairLinkman];
+//}
+
+//- (void)pairLinkman {  //配对联系人
+//    NSLog(@"配对联系");
+//    if (![[self getLinkmans] isEqualToString:self.txtLinkman.text]) {
+//        NSArray *numbers = [self.txtLinkman.text componentsSeparatedByString:@" "];
+////        if (self.arrLinkman.count==0) {
+//        if (numbers.count==1) {
+//            //添加所有
+//            NSMutableDictionary *dicNumber = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[numbers firstObject],@"linkman",[numbers firstObject],@"number", nil];
+//            [self.arrLinkman addObject:dicNumber];
+//            //            self.txtLinkman.text = [self getLinkmans];
+//        }else if (numbers.count==self.arrLinkman.count){
+//            
+//        }else if (numbers.count > self.arrLinkman.count){
+//            
+//            NSMutableArray *tempArray = [NSMutableArray array];
+//            
+//            for (NSInteger i = self.arrLinkman.count; i < numbers.count; i++) {
+//                //联系人数量有变化？
+//                NSString *phoneNum = [numbers objectAtIndex:i];
+//                if (phoneNum.length && ![phoneNum isEqualToString:@" "]) {
+//                    BOOL isRepeat = NO;
+//                    for (NSDictionary *dict in self.arrLinkman) {
+//                        if ([[dict objectForKey:@"number"] isEqualToString:phoneNum]) {
+//                            isRepeat = YES;
+//                            break;
+//                        }
+//                    }
+//                    if (!isRepeat) {
+//                        NSMutableDictionary *dicNumber = [[NSMutableDictionary alloc] initWithObjectsAndKeys:phoneNum,@"linkman",phoneNum,@"number", nil];
+//                        [tempArray addObject:dicNumber];
+//                    }
+//                }
+//            }
+//            if (tempArray.count) {
+//               [self.arrLinkman addObjectsFromArray:tempArray];
+//            }
+//        }
+//    }
+//}
+
+
+//- (BOOL)isPureInt:(NSString*)string{
+//    NSScanner* scan = [NSScanner scannerWithString:string];
+//    int val;
+//    return[scan scanInt:&val] && [scan isAtEnd];
+//}
 
 
 
@@ -992,89 +1205,107 @@
 - (void)didSelectPhoneNumber:(NSString *)phoneNumber {
     NSLog(@"选择号码");
     //    NSLog(@"添加联系人：%@",phoneNumber);
+    //phoneNumber:name|phone
     NSArray * arrNumberInfo = [phoneNumber componentsSeparatedByString:@"|"];
     if ([arrNumberInfo count]==2) {
+        if (![UNConvertFormatTool isAllNumberWithString:arrNumberInfo.lastObject]) {HUDNormal(INTERNATIONALSTRING(@"号码格式错误"))
+            return;
+        }
         //判断号码是否重复
-        for (NSDictionary *dict in self.arrLinkman) {
-            if ([[arrNumberInfo objectAtIndex:1] isEqualToString:[dict objectForKey:@"number"]]) {
-                HUDNormal(INTERNATIONALSTRING(@"请勿选择重复的联系人"))
-                return;
+        if (self.arrLinkmans.count) {
+            for (UnMessageLinkManModel *model in self.arrLinkmans) {
+                if ([model.phoneNumber isEqualToString:arrNumberInfo.lastObject]) {
+                    HUDNormal(INTERNATIONALSTRING(@"请勿选择重复的联系人"))
+                    return;
+                }
             }
         }
+//        for (NSDictionary *dict in self.arrLinkmans) {
+//            if ([[arrNumberInfo objectAtIndex:1] isEqualToString:[dict objectForKey:@"number"]]) {
+//                HUDNormal(INTERNATIONALSTRING(@"请勿选择重复的联系人"))
+//                return;
+//            }
+//        }
+//        NSMutableDictionary *dicNumber = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[arrNumberInfo objectAtIndex:0],@"linkman",[arrNumberInfo objectAtIndex:1],@"number", nil];
         
-        NSMutableDictionary *dicNumber = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[arrNumberInfo objectAtIndex:0],@"linkman",[arrNumberInfo objectAtIndex:1],@"number", nil];
-        [self.arrLinkman addObject:dicNumber];
+        UnMessageLinkManModel *linkModel = [[UnMessageLinkManModel alloc] initWithPhone:arrNumberInfo.lastObject LinkMan:arrNumberInfo.firstObject];
+        [self.arrLinkmans addObject:linkModel];
+    }else{
+        if ([UNConvertFormatTool isAllNumberWithString:phoneNumber]) {
+            UnMessageLinkManModel *linkModel = [[UnMessageLinkManModel alloc] initWithPhone:phoneNumber];
+            [self.arrLinkmans addObject:linkModel];
+        }
     }
     
-//    self.txtLinkman.text = [self getLinkmans];
-    self.txtLinkman.text = [self checkLinkmans];
-    [self editedLinkman:self];
+//    self.txtLinkman.text = [self checkLinkmans];
+//    [self editedLinkman:self];
+    [self updateEditLinkManData];
 }
 
-- (NSString *)getLinkmans {
-    NSString *linkmans = @"";
-    for (NSDictionary *dicNumber in self.arrLinkman) {
-        if ([linkmans isEqualToString:@""]) {
-            linkmans = [dicNumber objectForKey:@"linkman"];
-        }else {
-            linkmans = [NSString stringWithFormat:@"%@ %@",linkmans,[dicNumber objectForKey:@"linkman"]];
-        }
-    }
-    return linkmans;
-}
+//- (NSString *)getLinkmans {
+//    NSString *linkmans = @"";
+//    for (NSDictionary *dicNumber in self.arrLinkman) {
+//        if ([linkmans isEqualToString:@""]) {
+//            linkmans = [dicNumber objectForKey:@"linkman"];
+//        }else {
+//            linkmans = [NSString stringWithFormat:@"%@ %@",linkmans,[dicNumber objectForKey:@"linkman"]];
+//        }
+//    }
+//    return linkmans;
+//}
 
-- (NSString *)checkLinkmans
-{
-    NSString *linkmans = @"";
-    for (NSMutableDictionary *dicNumber in self.arrLinkman) {
-        if ([[dicNumber objectForKey:@"linkman"] isEqualToString:[dicNumber objectForKey:@"number"]]) {
-            NSString *matchingName = [self getMatchingName:[dicNumber objectForKey:@"number"]];
-            if (![[dicNumber objectForKey:@"number"] isEqualToString:matchingName]) {
-                [dicNumber setObject:matchingName forKey:@"linkman"];
-            }
-        }
-        
-        if ([linkmans isEqualToString:@""]) {
-            linkmans = [dicNumber objectForKey:@"linkman"];
-        }else {
-            linkmans = [NSString stringWithFormat:@"%@ %@",linkmans,[dicNumber objectForKey:@"linkman"]];
-        }
-    }
-    return linkmans;
-}
+//- (NSString *)checkLinkmans
+//{
+//    NSString *linkmans = @"";
+//    for (NSMutableDictionary *dicNumber in self.arrLinkman) {
+//        if ([[dicNumber objectForKey:@"linkman"] isEqualToString:[dicNumber objectForKey:@"number"]]) {
+//            NSString *matchingName = [self getMatchingName:[dicNumber objectForKey:@"number"]];
+//            if (![[dicNumber objectForKey:@"number"] isEqualToString:matchingName]) {
+//                [dicNumber setObject:matchingName forKey:@"linkman"];
+//            }
+//        }
+//        
+//        if ([linkmans isEqualToString:@""]) {
+//            linkmans = [dicNumber objectForKey:@"linkman"];
+//        }else {
+//            linkmans = [NSString stringWithFormat:@"%@ %@",linkmans,[dicNumber objectForKey:@"linkman"]];
+//        }
+//    }
+//    return linkmans;
+//}
 
-- (NSString *)getMatchingName:(NSString *)phoneNumber
-{
-    return [self checkLinkNameWithPhoneStr:phoneNumber];
-}
+//- (NSString *)getMatchingName:(NSString *)phoneNumber
+//{
+//    return [self checkLinkNameWithPhoneStr:phoneNumber];
+//}
 
-- (NSString *)getNumbers {
-    NSString *numbers = @"";
-    for (NSDictionary *dicNumber in self.arrLinkman) {
-        if ([numbers isEqualToString:@""]) {
-            numbers = [dicNumber objectForKey:@"number"];
-            if ([numbers containsString:@"-"]) {
-                NSString *newNumber = [numbers stringByReplacingOccurrencesOfString:@"-" withString:@""];
-                numbers = newNumber;
-            }
-            if ([numbers containsString:@" "]) {
-                NSString *newNumber = [numbers stringByReplacingOccurrencesOfString:@" " withString:@""];
-                numbers = newNumber;
-            }
-            if ([numbers containsString:@"+86"]) {
-                NSString *newNumber = [numbers stringByReplacingOccurrencesOfString:@"+86" withString:@""];
-                numbers = newNumber;
-            }
-        }else {
-            numbers = [NSString stringWithFormat:@"%@,%@",numbers,[dicNumber objectForKey:@"number"]];
-            
-        }
-    }
-    return numbers;
-}
-
+//- (NSString *)getNumbers {
+//    NSString *numbers = @"";
+//    for (NSDictionary *dicNumber in self.arrLinkman) {
+//        if ([numbers isEqualToString:@""]) {
+//            numbers = [dicNumber objectForKey:@"number"];
+//            if ([numbers containsString:@"-"]) {
+//                NSString *newNumber = [numbers stringByReplacingOccurrencesOfString:@"-" withString:@""];
+//                numbers = newNumber;
+//            }
+//            if ([numbers containsString:@" "]) {
+//                NSString *newNumber = [numbers stringByReplacingOccurrencesOfString:@" " withString:@""];
+//                numbers = newNumber;
+//            }
+//            if ([numbers containsString:@"+86"]) {
+//                NSString *newNumber = [numbers stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+//                numbers = newNumber;
+//            }
+//        }else {
+//            numbers = [NSString stringWithFormat:@"%@,%@",numbers,[dicNumber objectForKey:@"number"]];
+//        }
+//    }
+//    return numbers;
+//}
 
 
+
+#pragma mark ======== UITextViewDelegate ========
 - (void)textViewDidChange:(UITextView *)textView {
     if ([self.txtSendText.text length]) {
         [_btnSend setTitleColor:[UIColor colorWithRed:43/255.0 green:182/255.0 blue:35/255.0 alpha:1] forState:UIControlStateNormal];
@@ -1083,6 +1314,7 @@
     }
 }
 
+#pragma mark ======== Cell长按菜单 ========
 //设置响应
 -(BOOL)canBecomeFirstResponder
 {
@@ -1150,6 +1382,7 @@
     [self beComeEditMode];
 }
 
+#pragma mark ======== 删除短信 ========
 - (void)deleteMessageWithSMSId:(NSString *)smsId Index:(NSInteger)index
 {
     kWeakSelf

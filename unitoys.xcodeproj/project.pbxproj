@@ -138,6 +138,8 @@
 		3C07E2391EE2582B001AB21D /* UNMessageInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2381EE2582B001AB21D /* UNMessageInputView.m */; };
 		3C07E23C1EE25993001AB21D /* UNPlaceHolderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E23B1EE25993001AB21D /* UNPlaceHolderTextView.m */; };
 		3C07E23F1EE25C5A001AB21D /* UNLeftModeTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E23E1EE25C5A001AB21D /* UNLeftModeTextField.m */; };
+		3C07E2421EE2931C001AB21D /* BaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2411EE2931C001AB21D /* BaseModel.m */; };
+		3C07E2451EE29383001AB21D /* UnMessageLinkManModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2441EE29383001AB21D /* UnMessageLinkManModel.m */; };
 		3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */; };
 		3C15135B1E796CBD00AF48B6 /* AlarmListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */; };
 		3C20C20D1E6CF3CC008078BB /* UNDataTransformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C20A1E6CF3CC008078BB /* UNDataTransformation.m */; };
@@ -649,6 +651,10 @@
 		3C07E23B1EE25993001AB21D /* UNPlaceHolderTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPlaceHolderTextView.m; sourceTree = "<group>"; };
 		3C07E23D1EE25C5A001AB21D /* UNLeftModeTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNLeftModeTextField.h; sourceTree = "<group>"; };
 		3C07E23E1EE25C5A001AB21D /* UNLeftModeTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNLeftModeTextField.m; sourceTree = "<group>"; };
+		3C07E2401EE2931C001AB21D /* BaseModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseModel.h; sourceTree = "<group>"; };
+		3C07E2411EE2931C001AB21D /* BaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseModel.m; sourceTree = "<group>"; };
+		3C07E2431EE29383001AB21D /* UnMessageLinkManModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnMessageLinkManModel.h; sourceTree = "<group>"; };
+		3C07E2441EE29383001AB21D /* UnMessageLinkManModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnMessageLinkManModel.m; sourceTree = "<group>"; };
 		3C116DF61E56CD90006C0641 /* CustomRefreshMessageHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomRefreshMessageHeader.h; sourceTree = "<group>"; };
 		3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshMessageHeader.m; sourceTree = "<group>"; };
 		3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlarmListViewController.xib; sourceTree = "<group>"; };
@@ -1387,6 +1393,8 @@
 				3C07E2201EE2577F001AB21D /* MJMessage.m */,
 				3C07E2211EE2577F001AB21D /* MJMessageFrame.h */,
 				3C07E2221EE2577F001AB21D /* MJMessageFrame.m */,
+				3C07E2431EE29383001AB21D /* UnMessageLinkManModel.h */,
+				3C07E2441EE29383001AB21D /* UnMessageLinkManModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1711,6 +1719,8 @@
 				3C3C0A1F1EC2A1FC000D2F59 /* UNPresentImageView.m */,
 				3C388A921EC588E000A04BA8 /* ServiceRecommendView.h */,
 				3C388A931EC588E000A04BA8 /* ServiceRecommendView.m */,
+				3C07E2401EE2931C001AB21D /* BaseModel.h */,
+				3C07E2411EE2931C001AB21D /* BaseModel.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -2616,6 +2626,7 @@
 				95F1ED601DE70CCE002E9259 /* SportDataViewController.m in Sources */,
 				95DD7FEA1DAA4CED006E1B0D /* WriteMessageViewController.m in Sources */,
 				954A87E11D9A0DA400570843 /* PhonePadView.m in Sources */,
+				3C07E2421EE2931C001AB21D /* BaseModel.m in Sources */,
 				048AD0011E0A576800421F67 /* NSString+Addition.m in Sources */,
 				95CD34121D9D1C5800EE5DD3 /* OrderDetailViewController.m in Sources */,
 				740FD3911E287F9E009413F1 /* Provider.c in Sources */,
@@ -2786,6 +2797,7 @@
 				04F727981E641CE4002EB54C /* GCDAsyncSocket.m in Sources */,
 				0436C36A1E1FA2D60033A8F1 /* CommunicateDetailViewController.m in Sources */,
 				95CD340C1D9D015900EE5DD3 /* Order.m in Sources */,
+				3C07E2451EE29383001AB21D /* UnMessageLinkManModel.m in Sources */,
 				95CD33F11D9CE4F300EE5DD3 /* openssl_wrapper.m in Sources */,
 				740FD39F1E28B674009413F1 /* VSWManager.m in Sources */,
 				048051711E86686700E8AB55 /* PurviewSettingTableViewCell.m in Sources */,

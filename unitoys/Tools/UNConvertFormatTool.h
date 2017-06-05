@@ -37,7 +37,7 @@
 ////JSON转字典
 //+ (NSDictionary *)jsonToDictionary:(NSString *)jsonStr;
 
-
++ (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr;
 
 //id转JSON
 + (NSString *)objectToJson:(id)object;

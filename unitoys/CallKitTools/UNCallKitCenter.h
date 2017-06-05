@@ -55,9 +55,11 @@ typedef void(^UNCallKitActionNotificationBlock)(CXCallAction *action, UNCallActi
 
 - (void)configurationCallProvider;
 
+//来电
 - (NSUUID *)reportIncomingCallWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion;
-
+//通过callkit呼出
 - (NSUUID *)startRequestCalllWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion;
+
 
 -(void)requestTransaction:(CXTransaction *)transaction;
 

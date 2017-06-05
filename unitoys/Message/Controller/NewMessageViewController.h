@@ -16,19 +16,18 @@
 @property (weak, nonatomic) IBOutlet UIView *topEditMessageView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topEditMessageViewHeight;
 
+//输入联系人号码
 @property (weak, nonatomic) IBOutlet NotifyTextField *txtLinkman;
 
 @property (weak, nonatomic) IBOutlet KTAutoHeightTextView *txtSendText;
 @property (weak, nonatomic) IBOutlet UIButton *btnSend;
-@property (nonatomic, copy) NSString *linkManTele;
+
 
 - (IBAction)addLinkman:(id)sender;
 - (IBAction)sendMessage:(id)sender;
 
-- (IBAction)editedLinkman:(id)sender;
-- (IBAction)beginEditLinkman:(id)sender;
-
-@property (strong,nonatomic) NSMutableArray *arrLinkman;//短信接收人列表
+//- (IBAction)editedLinkman:(id)sender;
+//- (IBAction)beginEditLinkman:(id)sender;
 
 
 @end

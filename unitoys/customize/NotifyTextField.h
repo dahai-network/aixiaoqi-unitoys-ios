@@ -11,7 +11,9 @@
 @protocol  NotifyTextFieldDelegate<NSObject>
 
 @optional
-- (void)deleteBackward;
+- (BOOL)unTextFieldDeleteBackward:(UITextField *)textField ChangeRange:(NSRange)range;
+- (void)unTextFieldDidEndEditing:(UITextField *)textField;
+- (void)unTextFieldDidBeginEditing:(UITextField *)textField;
 
 @end
 
@@ -19,7 +21,7 @@
 
 @property (nonatomic, assign)id<NotifyTextFieldDelegate>notifyTextFieldDelegate;
 
-- (NSRange) selectedRange;
-- (void) setSelectedRange:(NSRange) range;
+//- (NSRange) selectedRange;
+//- (void) setSelectedRange:(NSRange) range;
 
 @end

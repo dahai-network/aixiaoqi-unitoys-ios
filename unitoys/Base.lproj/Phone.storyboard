@@ -75,7 +75,7 @@
                                 <rect key="frame" x="0.0" y="71" width="375" height="74"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="7XR-YU-FDm" id="wKP-DK-XJq">
-                                    <rect key="frame" x="0.0" y="0.0" width="342" height="73"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="342" height="74"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="电话" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Kf-a9-bQ5">
@@ -438,11 +438,6 @@
                                                 <nil key="textColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
-                                                <connections>
-                                                    <action selector="beginEditLinkman:" destination="hmv-SC-xl2" eventType="editingDidBegin" id="Yiy-bx-Sc7"/>
-                                                    <action selector="editedLinkman:" destination="hmv-SC-xl2" eventType="editingDidEnd" id="FNQ-nc-Ce1"/>
-                                                    <action selector="editedLinkman:" destination="hmv-SC-xl2" eventType="editingDidEndOnExit" id="yRq-en-5Sr"/>
-                                                </connections>
                                             </textField>
                                         </subviews>
                                         <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
@@ -465,7 +460,7 @@
                                                 <rect key="frame" x="0.0" y="28" width="375" height="70"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gDY-IF-d4o" id="i6v-Od-kbe">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="69"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </tableViewCellContentView>
                                             </tableViewCell>
