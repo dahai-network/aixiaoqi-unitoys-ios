@@ -73,6 +73,7 @@
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
     self.deviceDataArr = sender.object;
     if (sender) {
+        [self.cancelButton setTitle:@"首选连接" forState:UIControlStateNormal];
         [self changeFrame];
         NSLog(@"传过来的设备数组:%@", self.deviceDataArr);
     } else {
@@ -160,15 +161,28 @@
 
 #pragma mark 取消扫描
 - (IBAction)cancelScanAction:(UIButton *)sender {
-    if (![BlueToothDataManager shareManager].isConnected) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
-        [BlueToothDataManager shareManager].isShowAlert = YES;
-        self.time = 0;
-        [self.timer setFireDate:[NSDate distantPast]];
+    if (![sender.titleLabel.text isEqualToString:@"首选连接"]) {
+        if (![BlueToothDataManager shareManager].isConnected) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
+            [BlueToothDataManager shareManager].isShowAlert = YES;
+            self.time = 0;
+            [self.timer setFireDate:[NSDate distantPast]];
+        } else {
+            [[UNBlueToothTool shareBlueToothTool] cancelToBound];
+        }
+        [self.navigationController popToRootViewControllerAnimated:YES];
     } else {
-        [[UNBlueToothTool shareBlueToothTool] cancelToBound];
+        //首选连接
+        for (int i = 0; i < self.deviceDataArr.count; i++) {
+            NSDictionary *info = self.deviceDataArr[i];
+            if ([info[@"isAlreadyBind"] isEqualToString:@"0"]) {
+                NSString *indexRow = [NSString stringWithFormat:@"%d", i];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"clickAndConnectingPer" object:indexRow];
+                NSLog(@"发送过去连接的是第几个：%@", indexRow);
+                return;
+            }
+        }
     }
-    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 
