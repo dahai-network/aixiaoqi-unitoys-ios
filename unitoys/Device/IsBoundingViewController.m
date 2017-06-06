@@ -15,6 +15,8 @@
 #import "UNBlueToothTool.h"
 #import "IsBoundingTableViewCell.h"
 
+#define ANIMATIONTIME 0.6
+
 @interface IsBoundingViewController ()
 @property (nonatomic, strong)NSTimer *clickAnimationTimer;
 @property (nonatomic, strong)NSTimer *timer;
@@ -118,22 +120,30 @@
 }
 
 - (void)changeFrame {
-    self.tableViewHeight.constant = kScreenHeightValue*0.46;
-    self.searchViewWidth.constant = 160*(kScreenWidthValue/320);
-    self.searchViewCenter.constant = -((40+40*0.46)/2);
-    self.searchButtonBottom.constant = 40*0.46;
     self.topView.hidden = YES;
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:ANIMATIONTIME animations:^{
+        self.tableViewHeight.constant = kScreenHeightValue*0.46;
+        self.searchViewWidth.constant = 160*(kScreenWidthValue/320);
+        self.searchViewCenter.constant = -((40+40*0.46)/2);
+        self.searchButtonBottom.constant = 40*0.46;
+        [self.view layoutIfNeeded];
+    }];
 }
 
 - (void)returnFrame {
-    self.isShowBackButton = NO;
     [self setLeftButton:@""];
     self.title = @"";
-    self.tableViewHeight.constant = 0;
-    self.searchViewWidth.constant = 220;
-    self.searchViewCenter.constant = 0;
-    self.searchButtonBottom.constant = 40;
     self.topView.hidden = NO;
+    self.isShowBackButton = NO;
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:ANIMATIONTIME animations:^{
+        self.tableViewHeight.constant = 0;
+        self.searchViewWidth.constant = 220;
+        self.searchViewCenter.constant = 0;
+        self.searchButtonBottom.constant = 40;
+        [self.view layoutIfNeeded];
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -164,13 +174,15 @@
 
 - (void)connectedSuccess {
     [self returnFrame];
-    self.time = 0;
-    [self.timer setFireDate:[NSDate distantFuture]];
-    self.firstTitle.text = @"请按一下双待王按键";
-    self.subTitleLbl.text = [NSString stringWithFormat:@"已找到双待王%@，请连接", [BlueToothDataManager shareManager].deviceMacAddress];
-    [self.cancelButton setTitle:@"暂不绑定" forState:UIControlStateNormal];
-    self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
-    [self startToShowClickAnimation];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(ANIMATIONTIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.time = 0;
+        [self.timer setFireDate:[NSDate distantFuture]];
+        self.firstTitle.text = @"请按一下双待王按键";
+        self.subTitleLbl.text = [NSString stringWithFormat:@"已找到双待王%@，请连接", [BlueToothDataManager shareManager].deviceMacAddress];
+        [self.cancelButton setTitle:@"暂不绑定" forState:UIControlStateNormal];
+        self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
+        [self startToShowClickAnimation];
+    });
 }
 
 - (void)startToShowClickAnimation {
