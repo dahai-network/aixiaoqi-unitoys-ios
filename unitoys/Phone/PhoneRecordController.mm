@@ -467,17 +467,26 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if ([BlueToothDataManager shareManager].isRegisted) {
         //电话记录，拨打电话
         if (self.currentCallPhone) {
-            
             [self.phonePadView hideCallView];
             [self switchNumberPad:YES];
-            
             //        weakSelf.callView.hidden = YES;
             //清空搜索状态
             self.isSearchStatu = NO;
             [self.searchLists removeAllObjects];
             [self.tableView reloadData];
             
-            [self callUnitysNumber:self.currentCallPhone];
+            if (kSystemVersionValue >= 10.0) {
+                UNContact * contact = [[UNContact alloc] init];
+                contact.phoneNumber= self.currentCallPhone;
+                contact.uniqueIdentifier=@"";
+                [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
+                    if (error) {
+                        [self callUnitysNumber:self.currentCallPhone];
+                    }
+                }];
+            }else{
+                [self callUnitysNumber:self.currentCallPhone];
+            }
         }else{
             NSLog(@"当前拨打号码为空");
         }
@@ -886,12 +895,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     prefix = number;
                 }
                 
-                
                 NSString *cityid;
                 NSString *provinceid;
                 NSString *provinceName = @"";
                 NSString *cityName = @"";
-                
                 FMResultSet *rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM Number_0 where number='%@'",prefix]];
                 if ([rs next]) {
                     cityid = [NSString stringWithFormat:@"%zd",[rs longLongIntForColumn:@"city_id"]];
@@ -1661,9 +1668,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         self.calledTelNum = [NSString stringWithFormat:@"981%@",self.phoneNumber];
         //获取最大通话时长后再拨打
         [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
-            //            NSLog(@"有数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                
                 CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
                 if (callingViewController) {
 //                    self.callStartTime = [NSDate date];
@@ -1731,7 +1736,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     if (isHasPackage) {
         //有套餐
         isCallPhone = YES;
-        
         //如果有套餐,还需判断号码是否符合座机或手机,如果不符合,则需要使用本机电话
         if (![self phoneNumberIsVerification:strNumber]) {
             NSLog(@"使用本机电话");
@@ -1744,7 +1748,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             currentDateStr = todayStr;
         }];
     }
-    
 //    if (isHasPackage) {
 //        //如果有套餐,还需判断号码是否符合座机或手机,如果不符合,则需要使用本机电话
 //        if (![self phoneNumberIsVerification:strNumber]) {
@@ -1752,7 +1755,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //            isHasPackage = NO;
 //        }
 //    }
-    
     //测试手动设置为NO
     if (isCallPhone) {
         [self showCallPhoneVc:strNumber IsNetWorkCallPhone:isHasPackage];
@@ -1961,7 +1963,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             
             kWeakSelf
             cell.lookDetailsBlock = ^(NSInteger index, NSString *phoneNumber, NSString *nickName) {
-                NSLog(@"当前index---%ld", index);
+                NSLog(@"当前index---%zd", index);
                 [weakSelf.phonePadView hideCallView];
                 //开始加载谁
                 [weakSelf switchNumberPad:YES];
@@ -2041,7 +2043,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //开始加载谁
             [weakSelf switchNumberPad:YES];
             
-            NSLog(@"当前index---%ld", index);
+            NSLog(@"当前index---%zd", index);
             ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
             callDetailsVc.contactModel = [weakSelf checkContactModelWithPhoneStr:phoneNumber];
             callDetailsVc.nickName = nickName;
@@ -2092,7 +2094,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             NSString *phoneStr = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
             cell.nickName = phoneStr;
             cell.phoneNumber = [dicPhoneRecord objectForKey:@"destnumber"];
-            
             if (phoneCount) {
                 phoneStr = [phoneStr stringByAppendingString:[NSString stringWithFormat:@"%@", phoneCount]];
             }
@@ -2106,23 +2107,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
         [bottomStr appendString:[dicPhoneRecord objectForKey:@"location"]];
         cell.lblPhoneType.text = bottomStr;
-        
-//        //通话时长
-//        NSString *callduration = @"00:00";
-//        if (dicPhoneRecord[@"callduration"]) {
-//            int seconds = [dicPhoneRecord[@"callduration"] intValue];
-//            if (seconds > 0) {
-//                int min = (int)seconds / 60;
-//                int sec = (int)seconds % 60;
-//                NSString *minStr;
-//                if (min < 10) {
-//                    minStr = [NSString stringWithFormat:@"0%d",min];
-//                }else{
-//                    minStr = [NSString stringWithFormat:@"%d",min];
-//                }
-//                callduration = [NSString stringWithFormat:@"%@:%02d", minStr, sec];
-//            }
-//        }
         return cell;
     }
 }

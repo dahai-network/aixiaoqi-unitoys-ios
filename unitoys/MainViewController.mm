@@ -503,6 +503,12 @@ typedef enum : NSUInteger {
 
 #pragma mark - UITabBarControllerDelegate
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController{
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"PhoneTabbarDoubleClick" object:nil];
+
+    NSLog(@"viewController:%@=====selectedViewController:%@", viewController.childViewControllers.firstObject, self.selectedViewController.childViewControllers.firstObject);
+    if (viewController.childViewControllers.firstObject == self.selectedViewController.childViewControllers.firstObject && [viewController.childViewControllers.firstObject isKindOfClass:[PhoneIndexController class]]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PhoneTabbarDoubleClick" object:nil];
+    }
     
     if ([UNDataTools sharedInstance].isHasMallMessage) {
         UIViewController *nextViewController = [viewController.childViewControllers objectAtIndex:0];

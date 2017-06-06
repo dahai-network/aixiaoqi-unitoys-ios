@@ -939,10 +939,6 @@
 //    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
 //        return;
 //    }
-    if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-        [UNCreatLocalNoti createNETDisConnectNoti];
-        return;
-    }
     
     [BlueToothDataManager shareManager].isTcpConnected = NO;
     
@@ -953,6 +949,10 @@
         NSLog(@"无网络");
     }else{
         if (err) {
+            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                [UNCreatLocalNoti createNETDisConnectNoti];
+                return;
+            }
             NSLog(@"连接失败");
             
             [self closeTCP];

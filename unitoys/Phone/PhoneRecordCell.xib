@@ -45,10 +45,10 @@
                         </constraints>
                     </view>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4CC-p3-blT" customClass="AddTouchAreaButton">
-                        <rect key="frame" x="340" y="20" width="25" height="25"/>
+                        <rect key="frame" x="325" y="12.5" width="40" height="40"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="25" id="1dm-az-DoT"/>
-                            <constraint firstAttribute="width" constant="25" id="rNA-qj-arr"/>
+                            <constraint firstAttribute="height" constant="40" id="1dm-az-DoT"/>
+                            <constraint firstAttribute="width" constant="40" id="rNA-qj-arr"/>
                         </constraints>
                         <state key="normal" image="icon_xq_nor"/>
                         <state key="highlighted" image="icon_xq_pre"/>
@@ -84,7 +84,7 @@
                 <outlet property="lblPhoneNumber" destination="8oi-Bi-erw" id="ss3-HK-wOa"/>
                 <outlet property="lblPhoneType" destination="QUg-Vf-jGn" id="gKX-c2-DVF"/>
             </connections>
-            <point key="canvasLocation" x="-128" y="41"/>
+            <point key="canvasLocation" x="-144" y="38"/>
         </tableViewCell>
     </objects>
     <resources>

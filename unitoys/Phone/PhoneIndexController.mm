@@ -115,6 +115,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statuBarHeightChange:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(phoneTabbarDoubleClick:) name:@"PhoneTabbarDoubleClick" object:nil];
 }
 
 #pragma mark 手势点击事件
@@ -227,21 +228,34 @@
     kWeakSelf
     HLTitlesView *titlesView = [HLTitlesView titlesViewWithTitles:@[@"通话历史", @"短信记录"]  Margin:15];
     titlesView.titlesButtonAction = ^(UIButton *button){
-        NSLog(@"%ld", button.tag);
-//        if (button.tag == 0) {
-//            self.navigationItem.rightBarButtonItem = nil;
-//        }else{
-//            [self initRightButton];
-//        }
-        NSArray *startController = @[weakSelf.viewControllers[button.tag]];
-        [weakSelf.pageViewController setViewControllers:startController
-                                              direction: UIPageViewControllerNavigationDirectionReverse
-                                               animated:NO
-                                             completion:nil];
+        NSLog(@"%zd", button.tag);
+        [weakSelf setCurrentShowView:button.tag];
     };
     self.titleView = titlesView;
     self.navigationItem.titleView = titlesView;
-//    [self.navigationController.navigationBar addSubview:titlesView];
+}
+
+- (void)setCurrentShowView:(NSInteger)tag
+{
+    if (self.viewControllers.count > tag) {
+        NSArray *startController = @[self.viewControllers[tag]];
+        [self.pageViewController setViewControllers:startController
+                                          direction: UIPageViewControllerNavigationDirectionReverse
+                                           animated:NO
+                                         completion:nil];
+    }else{
+        NSArray *startController = @[self.viewControllers.lastObject];
+        [self.pageViewController setViewControllers:startController
+                                          direction: UIPageViewControllerNavigationDirectionReverse
+                                           animated:NO
+                                         completion:nil];
+    }
+}
+
+- (void)phoneTabbarDoubleClick:(NSNotification *)noti
+{
+//    [self.titleView setSelectButtonWithTag:1];
+    [self.titleView changeCurrentSelectButton];
 }
 
 - (void)initRightButton

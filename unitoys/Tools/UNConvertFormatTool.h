@@ -37,7 +37,11 @@
 ////JSON转字典
 //+ (NSDictionary *)jsonToDictionary:(NSString *)jsonStr;
 
+//通过号码获取昵称
 + (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr;
+
+//seconds->@"00:00"
++ (NSString *)minSecWithSeconds:(int)seconds;
 
 //id转JSON
 + (NSString *)objectToJson:(id)object;

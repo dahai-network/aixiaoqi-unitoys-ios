@@ -160,6 +160,23 @@
     return linkName;
 }
 
+//seconds->@"00:00"
++ (NSString *)minSecWithSeconds:(int)seconds
+{
+    NSString *callduration = @"00:00";
+    if (seconds > 0) {
+        int min = (int)seconds / 60;
+        int sec = (int)seconds % 60;
+        NSString *minStr;
+        if (min < 10) {
+            minStr = [NSString stringWithFormat:@"0%d",min];
+        }else{
+            minStr = [NSString stringWithFormat:@"%d",min];
+        }
+        callduration = [NSString stringWithFormat:@"%@:%02d", minStr, sec];
+    }
+    return callduration;
+}
 
 
 #pragma mark ---- 字典转JSON

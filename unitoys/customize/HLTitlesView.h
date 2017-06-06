@@ -8,15 +8,26 @@
 
 #import <UIKit/UIKit.h>
 
+@class AddTouchAreaButton;
 typedef void(^TitlesButtonAction)(UIButton *);
 @interface HLTitlesView : UIView
+
+@property (nonatomic, weak) UIImageView *titleBottomView;
+@property (nonatomic, weak) AddTouchAreaButton *selectButton;
+@property (nonatomic, assign) NSInteger titleCount;
 
 - (instancetype)initTitlesViewWithTitles:(NSArray *)titlesArray Margin:(CGFloat)margin;
 + (instancetype)titlesViewWithTitles:(NSArray *)titlesArray Margin:(CGFloat)margin;
 
 - (void)topButtonClick:(UIButton *)button;
-//- (void)topButtonSelect:(UIButton *)button;
 - (void)topButtonSelect:(UIButton *)button isAnimate:(BOOL)animate;
+
+//改变挡墙选中Button
+- (void)changeCurrentSelectButton;
+
+//手动选择选中Button
+- (void)setSelectButtonWithTag:(NSInteger)tag;
+
 
 @property (nonatomic, copy) TitlesButtonAction titlesButtonAction;
 

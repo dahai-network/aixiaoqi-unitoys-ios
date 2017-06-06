@@ -15,9 +15,6 @@
 
 @interface HLTitlesView ()
 
-@property (nonatomic, weak) UIImageView *titleBottomView;
-@property (nonatomic, weak) AddTouchAreaButton *selectButton;
-
 //@property (nonatomic, assign) CGFloat margin;
 @end
 
@@ -43,7 +40,7 @@
     if (margin == 0) {
         margin = 10;
     }
-    
+    self.titleCount = titlesArray.count;
     UIImageView *titleBottomView = [[UIImageView alloc] init];
 //    titleBottomView.backgroundColor = UIColorFromHex_hl(0x42a5f5);
 //    titleBottomView.layer.cornerRadius = 1;
@@ -87,7 +84,6 @@
     titleBottomView.center = titleBottomCenter;
 }
 
-
 - (void)topButtonSelect:(AddTouchAreaButton *)button isAnimate:(BOOL)animate
 {
     if (button.isSelected) return;
@@ -113,6 +109,35 @@
     [self topButtonSelect:button isAnimate:YES];
     if (_titlesButtonAction) {
         _titlesButtonAction(button);
+    }
+}
+
+- (void)changeCurrentSelectButton
+{
+    if (self.selectButton) {
+        NSInteger nextTag;
+        if (self.selectButton.tag == self.titleCount - 1) {
+            nextTag = 0;
+        }else{
+            nextTag = self.selectButton.tag + 1;
+        }
+        [self setSelectButtonWithTag:nextTag];
+    }else{
+        [self setSelectButtonWithTag:0];
+    }
+}
+
+- (void)setSelectButtonWithTag:(NSInteger)tag
+{
+    AddTouchAreaButton *button;
+    for (UIView *view in self.subviews) {
+        if ([view isKindOfClass:[AddTouchAreaButton class]] && view.tag == tag) {
+            button = (AddTouchAreaButton *)view;
+            break;
+        }
+    }
+    if (button) {
+        [self topButtonClick:button];
     }
 }
 

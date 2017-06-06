@@ -210,28 +210,28 @@
 }
 
 
-- (void)updateCall:(NSUUID *)callUUID state:(UNCallState)state
-{
-    switch (state) {
-        case UNCallStateConnecting:
-            [self.provider reportOutgoingCallWithUUID:callUUID startedConnectingAtDate:nil];
-            break;
-        case UNCallStateConnected:
-            [self.provider reportOutgoingCallWithUUID:callUUID connectedAtDate:nil];
-            break;
-        case UNCallStateEnded:
-            [self.provider reportCallWithUUID:callUUID endedAtDate:nil reason:CXCallEndedReasonRemoteEnded];
-            break;
-        case UNCallStateEndedWithFailure:
-            [self.provider reportCallWithUUID:callUUID endedAtDate:nil reason:CXCallEndedReasonFailed];
-            break;
-        case UNCallStateEndedUnanswered:
-            [self.provider reportCallWithUUID:callUUID endedAtDate:nil reason:CXCallEndedReasonUnanswered];
-            break;
-        default:
-            break;
-    }
-}
+//- (void)updateCall:(NSUUID *)callUUID state:(UNCallState)state
+//{
+//    switch (state) {
+//        case UNCallStateConnecting:
+//            [self.provider reportOutgoingCallWithUUID:callUUID startedConnectingAtDate:nil];
+//            break;
+//        case UNCallStateConnected:
+//            [self.provider reportOutgoingCallWithUUID:callUUID connectedAtDate:nil];
+//            break;
+//        case UNCallStateEnded:
+//            [self.provider reportCallWithUUID:callUUID endedAtDate:nil reason:CXCallEndedReasonRemoteEnded];
+//            break;
+//        case UNCallStateEndedWithFailure:
+//            [self.provider reportCallWithUUID:callUUID endedAtDate:nil reason:CXCallEndedReasonFailed];
+//            break;
+//        case UNCallStateEndedUnanswered:
+//            [self.provider reportCallWithUUID:callUUID endedAtDate:nil reason:CXCallEndedReasonUnanswered];
+//            break;
+//        default:
+//            break;
+//    }
+//}
 
 
 #pragma mark - CXProviderDelegate

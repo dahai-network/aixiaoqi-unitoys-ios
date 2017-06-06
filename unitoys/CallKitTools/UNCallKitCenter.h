@@ -57,13 +57,13 @@ typedef void(^UNCallKitActionNotificationBlock)(CXCallAction *action, UNCallActi
 
 //来电
 - (NSUUID *)reportIncomingCallWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion;
-//通过callkit呼出
+//通过callkit呼出(在APP内拨打时也会调用此方法)
 - (NSUUID *)startRequestCalllWithContact:(UNContact *)contact completion:(UNCallKitCenterCompletion)completion;
 
 
 -(void)requestTransaction:(CXTransaction *)transaction;
 
-- (void)updateCall:(NSUUID * _Nullable)callUUID state:(UNCallState)state;
+//- (void)updateCall:(NSUUID * _Nullable)callUUID state:(UNCallState)state;
 
 - (void)mute:(BOOL)mute callUUID:(NSUUID * _Nullable)callUUID completion:(UNCallKitCenterCompletion)completion;
 - (void)hold:(BOOL)hold callUUID:(NSUUID * _Nullable)callUUID completion:(UNCallKitCenterCompletion)completion;
