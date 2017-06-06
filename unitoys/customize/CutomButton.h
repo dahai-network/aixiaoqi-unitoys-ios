@@ -13,5 +13,6 @@
     UIColor *lineColor;
 }
 @property (nonatomic, strong) NSIndexPath *indexPath;
+@property (nonatomic, assign) BOOL isHiddenLine;
 -(void)setColor:(UIColor*)color;
 @end

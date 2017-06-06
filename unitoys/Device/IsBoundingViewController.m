@@ -13,6 +13,7 @@
 #import "BlueToothDataManager.h"
 #import "BindDeviceViewController.h"
 #import "UNBlueToothTool.h"
+#import "IsBoundingTableViewCell.h"
 
 @interface IsBoundingViewController ()
 @property (nonatomic, strong)NSTimer *clickAnimationTimer;
@@ -27,14 +28,29 @@
 @property (weak, nonatomic) IBOutlet UILabel *firstTitle;
 @property (weak, nonatomic) IBOutlet UILabel *subTitleLbl;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+@property (weak, nonatomic) IBOutlet UIView *searchView;
+@property (weak, nonatomic) IBOutlet UITableView *showDeviceTableView;
+@property (nonatomic, strong) NSMutableArray *deviceDataArr;
+@property (nonatomic, assign)BOOL isShowBackButton;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *tableViewHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *searchViewWidth;
+@property (weak, nonatomic) IBOutlet UIView *topView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *searchViewCenter;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *searchButtonBottom;
 
 @end
 
 @implementation IsBoundingViewController
 
+- (NSMutableArray *)deviceDataArr {
+    if (!_deviceDataArr) {
+        self.deviceDataArr = [NSMutableArray array];
+    }
+    return _deviceDataArr;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"";
     
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectedSuccess) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
@@ -43,8 +59,31 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(searchNoDevice) name:@"needToIgnore" object:@"needToIgnore"];//需要先忽略
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(boundFail) name:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];//绑定失败
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(boundSuccess) name:@"secondCkeckBoundSuccess" object:@"secondCkeckBoundSuccess"];//二次确认绑定成功
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshBoundDeviceInfo:) name:@"checkBoundDeviceInfo" object:nil];//接收传过来的绑定信息
     
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)refreshBoundDeviceInfo:(NSNotification *)sender {
+    self.isShowBackButton = YES;
+    [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
+    self.title = @"搜索设备";
+    self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
+    self.deviceDataArr = sender.object;
+    if (sender) {
+        [self changeFrame];
+        NSLog(@"传过来的设备数组:%@", self.deviceDataArr);
+    } else {
+        NSLog(@"传过来的设备数组是空的");
+        HUDNormal(@"未搜索到设备")
+    }
+    [self.showDeviceTableView reloadData];
+}
+
+- (void)leftButtonClick {
+    if (self.isShowBackButton) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)searchNoDevice {
@@ -53,10 +92,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     self.handupImg.hidden = YES;
+    [self returnFrame];
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_by_z"];
     [self.cancelButton setTitle:@"暂不搜索" forState:UIControlStateNormal];
     self.cancelButton.hidden = NO;
-    [self setLeftButton:@""];
     [BlueToothDataManager shareManager].isShowAlert = YES;
     self.isback = YES;
     //倒计时
@@ -78,8 +117,28 @@
     }
 }
 
+- (void)changeFrame {
+    self.tableViewHeight.constant = kScreenHeightValue*0.46;
+    self.searchViewWidth.constant = 160*(kScreenWidthValue/320);
+    self.searchViewCenter.constant = -((40+40*0.46)/2);
+    self.searchButtonBottom.constant = 40*0.46;
+    self.topView.hidden = YES;
+}
+
+- (void)returnFrame {
+    self.isShowBackButton = NO;
+    [self setLeftButton:@""];
+    self.title = @"";
+    self.tableViewHeight.constant = 0;
+    self.searchViewWidth.constant = 220;
+    self.searchViewCenter.constant = 0;
+    self.searchButtonBottom.constant = 40;
+    self.topView.hidden = NO;
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.deviceDataArr removeAllObjects];
     [BlueToothDataManager shareManager].isShowAlert = NO;
     [self.timer setFireDate:[NSDate distantFuture]];
 //    [self.clickAnimationTimer setFireDate:[NSDate distantFuture]];
@@ -104,6 +163,7 @@
 
 
 - (void)connectedSuccess {
+    [self returnFrame];
     self.time = 0;
     [self.timer setFireDate:[NSDate distantFuture]];
     self.firstTitle.text = @"请按一下双待王按键";
@@ -200,12 +260,13 @@
     if (self.time == BLESCANTIME) {
         [self.timer setFireDate:[NSDate distantFuture]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
-        [self dj_alertAction:self alertTitle:nil actionTitle:@"重试" message:@"未能搜索到爱小器设备" alertAction:^{
-            self.time = 0;
-            [self.timer setFireDate:[NSDate distantPast]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
-            [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
-        }];
+        
+//        [self dj_alertAction:self alertTitle:nil actionTitle:@"重试" message:@"未能搜索到爱小器设备" alertAction:^{
+//            self.time = 0;
+//            [self.timer setFireDate:[NSDate distantPast]];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
+//            [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
+//        }];
     }
     
     self.time++;
@@ -224,6 +285,54 @@
     [controller presentViewController:alertVC animated:YES completion:nil];
 }
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.deviceDataArr.count;
+//    return 5;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
+    return 65;
+}
+
+//0流量/1通话/2大王卡/3双卡双待
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    static NSString *identifier = @"IsBoundingTableViewCell";
+    IsBoundingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!cell) {
+        cell=[[[NSBundle mainBundle] loadNibNamed:@"IsBoundingTableViewCell" owner:nil options:nil] firstObject];
+        [cell.btnConnect addTarget:self action:@selector(connectingAction:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    if (self.deviceDataArr.count) {
+        NSDictionary *info = self.deviceDataArr[indexPath.row];
+        cell.btnConnect.indexPath = indexPath;
+//        cell.lblDeviceName.text = [NSString stringWithFormat:@"Unibox-%@", info[@"mac"]];
+        cell.lblDeviceName.text = info[@"mac"];
+        if ([info[@"isAlreadyBind"] isEqualToString:@"0"]) {
+            cell.lblDeviceStatue.text = @"未绑定";
+            cell.lblDeviceName.textColor = UIColorFromRGB(0x333333);
+            cell.lblDeviceStatue.hidden = YES;
+            cell.btnConnect.hidden = NO;
+        } else if ([info[@"isAlreadyBind"] isEqualToString:@"1"]) {
+            cell.lblDeviceStatue.text = @"已绑定";
+            cell.lblDeviceName.textColor = UIColorFromRGB(0xe5e5e5);
+            cell.lblDeviceStatue.hidden = NO;
+            cell.btnConnect.hidden = YES;
+        } else {
+            NSLog(@"状态有问题，%s;%d", __FUNCTION__, __LINE__);
+        }
+    }
+    return cell;
+}
+
+- (void)connectingAction:(CutomButton *)sender {
+//    NSDictionary *info = self.deviceDataArr[sender.indexPath.row];
+//    NSString *showStr = [NSString stringWithFormat:@"要连接的设备是\n%@", info[@"mac"]];
+    NSString *indexRow = [NSString stringWithFormat:@"%ld", (long)sender.indexPath.row];
+    //发送IMEI过去连接
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"clickAndConnectingPer" object:indexRow];
+//    HUDNormal(showStr)
+}
+
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
@@ -232,6 +341,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"needToIgnore" object:@"needToIgnore"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"secondCkeckBoundSuccess" object:@"secondCkeckBoundSuccess"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"checkBoundDeviceInfo" object:nil];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

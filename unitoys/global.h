@@ -291,6 +291,9 @@
 //获取本次订单可通话分钟数和到期日期
 #define apiUserGetMaximumPhoneCallTimeAndExpiredTime defaultHost@"api/User/GetMaximumPhoneCallTimeAndExpiredTime"
 
+//获取已被绑定的IMEI设备地址
+#define apiGetBindsIMEI defaultHost@"api/DeviceBracelet/GetBindsIMEI"
+
 
 
 

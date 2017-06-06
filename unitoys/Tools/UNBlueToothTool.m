@@ -199,6 +199,16 @@ static UNBlueToothTool *instance = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downElectToCard) name:@"downElectic" object:@"downElectic"];//对卡断电
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];//接收PushKit消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveIMEIToConnecting:) name:@"clickAndConnectingPer" object:nil];//接收到消息之后连接指定外设
+}
+
+- (void)receiveIMEIToConnecting:(NSNotification *)sender {
+    int index = [sender.object intValue];
+    self.strongestRssiPeripheral = self.peripherals[index];
+    if (self.strongestRssiPeripheral) {
+        self.peripheral = self.strongestRssiPeripheral;
+        [self.mgr connectPeripheral:self.peripheral options:nil];
+    }
 }
 
 - (void)receivePushKitMessage
@@ -562,11 +572,14 @@ static UNBlueToothTool *instance = nil;
                 //新版本带mac地址的
                 if (peripheral.name.length > nameStr.length+1 && [allDeviceStr containsString:nameStr.lowercaseString]) {
                     NSString *macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1]];
-                    
-                    [self.peripherals addObject:peripheral];
-                    NSLog(@"带mac地址 -- uuid = %@ name = %@ 信号强度是：%@ mac地址是：%@", peripheral.identifier, peripheral.name, RSSI, macStr.lowercaseString);
-                    [self.macAddressDict setObject:macStr.lowercaseString forKey:peripheral.identifier];
-                    [self.RSSIDict setObject:RSSI forKey:peripheral.identifier];
+                    if ([RSSI intValue] < 0) {
+                        [self.peripherals addObject:peripheral];
+                        NSLog(@"带mac地址 -- uuid = %@ name = %@ 信号强度是：%@ mac地址是：%@", peripheral.identifier, peripheral.name, RSSI, macStr.lowercaseString);
+                        [self.macAddressDict setObject:macStr.lowercaseString forKey:peripheral.identifier];
+                        [self.RSSIDict setObject:RSSI forKey:peripheral.identifier];
+                    } else {
+                        NSLog(@"rssi大于0");
+                    }
                 }
                 //mac地址没有广播
                 if (!advertisementData[@"kCBAdvDataManufacturerData"]) {
@@ -1301,6 +1314,8 @@ static UNBlueToothTool *instance = nil;
     }
 }
 
+//旧方法，没有列表
+/*
 - (void)actionToScanAndConnecting {
     if (self.scanAndConnectingTimeValue == 4) {
         CBPeripheral *temPer;
@@ -1381,6 +1396,139 @@ static UNBlueToothTool *instance = nil;
     }
     NSLog(@"扫描计时器 -- %d", self.scanAndConnectingTimeValue);
     self.scanAndConnectingTimeValue++;
+}
+ */
+
+- (void)actionToScanAndConnecting {
+    if (self.scanAndConnectingTimeValue == 4) {
+        switch (self.peripherals.count) {
+            case 0:
+                NSLog(@"没有搜索到可连接的设备");
+                //未连接
+                if ([BlueToothDataManager shareManager].isOpened) {
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        [BlueToothDataManager shareManager].isShowStatuesView = YES;
+                    });
+                    if (!self.boundedDeviceInfo) {
+                        //更新状态
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
+                    }
+                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(BLESCANTIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                        if (![BlueToothDataManager shareManager].isConnected) {
+                            //更新状态
+                            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTCONNECTED];
+                            [self.mgr stopScan];
+                        }
+                    });
+                } else {
+                    //更新状态
+                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_BLNOTOPEN];
+                }
+                break;
+            default:
+                
+                for (int i = 0; i < self.peripherals.count; i++) {
+                    for (int j = 0; j < self.peripherals.count-i-1; j++) {
+                        CBPeripheral *perj = self.peripherals[j];
+                        CBPeripheral *perjj = self.peripherals[j+1];
+                        NSNumber *rssij = [self.RSSIDict objectForKey:perj.identifier];
+                        NSNumber *rssijj = [self.RSSIDict objectForKey:perjj.identifier];
+                        if ([rssij intValue] < [rssijj intValue]) {
+                            //降序排列
+                            [self.peripherals exchangeObjectAtIndex:j withObjectAtIndex:j+1];
+                        }
+                    }
+                }
+                break;
+        }
+        
+        //获取mac地址
+        if (!self.boundedDeviceInfo[@"IMEI"]) {
+            [BlueToothDataManager shareManager].deviceMacAddress = [self checkDerviceMacAddress];
+        }
+        [BlueToothDataManager shareManager].isAccordBreak = NO;
+        //绑定设备
+        if ([BlueToothDataManager shareManager].isOpened) {
+            if (!self.boundedDeviceInfo[@"IMEI"]) {
+                //扫描蓝牙设备
+                if ([BlueToothDataManager shareManager].isNeedToBoundDevice) {
+                    //更新状态
+                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
+                    //调用绑定设备接口
+//                    [self checkDeviceIsBound];
+                    [self cehckDeviceBound];
+                    [BlueToothDataManager shareManager].isNeedToBoundDevice = NO;
+                }
+            } else {
+                NSLog(@"已经绑定过了%@", self.boundedDeviceInfo[@"IMEI"]);
+                //已经绑定过
+            }
+        } else {
+            NSLog(@"蓝牙未开");
+        }
+        [self stopScanBluetooth];
+    }
+    NSLog(@"扫描计时器 -- %d", self.scanAndConnectingTimeValue);
+    self.scanAndConnectingTimeValue++;
+}
+
+#pragma mark 查询绑定的设备imei
+- (void)cehckDeviceBound {
+    if (self.peripherals.count) {
+        NSMutableArray *imeiArr = [NSMutableArray array];
+        if (self.peripherals.count <= 20) {
+            NSLog(@"外设不足20个,%s,%d", __FUNCTION__, __LINE__);
+            for (CBPeripheral *per in self.peripherals) {
+                NSString *imeiStr = [self.macAddressDict objectForKey:per.identifier];
+                [imeiArr addObject:imeiStr];
+            }
+        } else {
+            NSLog(@"外设多于20个,%s,%d", __FUNCTION__, __LINE__);
+            for (int i = 0; i < 20; i++) {
+                CBPeripheral *per = self.peripherals[i];
+                NSString *imeiStr = [self.macAddressDict objectForKey:per.identifier];
+                [imeiArr addObject:imeiStr];
+            }
+        }
+        
+        //从服务器更新
+        self.checkToken = YES;
+        [self getBasicHeader];
+        NSDictionary *params = @{@"IMEIs" : imeiArr};
+        [SSNetworkRequest getJsonRequest:apiGetBindsIMEI params:params success:^(id responseObj) {
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                NSMutableArray *deviceInfoArr = [NSMutableArray array];
+                for (NSString *imei in imeiArr) {
+                    NSMutableDictionary *deviceDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:imei.lowercaseString, @"mac", @"0", @"isAlreadyBind", nil];
+                    [deviceInfoArr addObject:deviceDict];
+                }
+                NSArray *listArr = responseObj[@"data"][@"list"];
+                if (listArr.count) {
+                    for (NSString *imeiReturn in listArr) {
+                        for (int i = 0; i < imeiArr.count; i++) {
+                            NSString *imerStr = imeiArr[i];
+                            if ([imeiReturn.lowercaseString isEqualToString:imerStr.lowercaseString]) {
+                                NSMutableDictionary *deviceDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:imerStr.lowercaseString, @"mac", @"1", @"isAlreadyBind", nil];
+                                [deviceInfoArr replaceObjectAtIndex:i withObject:deviceDict];
+                            }
+                        }
+                    }
+                }
+                NSLog(@"处理之后的绑定信息：%@", deviceInfoArr);
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBoundDeviceInfo" object:deviceInfoArr];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                NSLog(@"返回的状态码异常,%s,%d", __FUNCTION__, __LINE__);
+            }
+            NSLog(@"返回的绑定的设备的结果：%@",responseObj);
+        } failure:^(id dataObj, NSError *error) {
+            NSLog(@"啥都没：%@",[error description]);
+        } headers:self.headers];
+    } else {
+        NSLog(@"没有搜索到适配的设备,%s%d", __FUNCTION__, __LINE__);
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBoundDeviceInfo" object:nil];
+    }
 }
 
 - (void)startBoundTimer {

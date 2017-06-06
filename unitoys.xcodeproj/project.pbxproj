@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04001D3B1EE50C820084BF67 /* IsBoundingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04001D391EE50C820084BF67 /* IsBoundingTableViewCell.m */; };
+		04001D3C1EE50C820084BF67 /* IsBoundingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04001D3A1EE50C820084BF67 /* IsBoundingTableViewCell.xib */; };
 		0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0404BB901E7FCDE6009DEA1D /* DJPageControl.m */; };
 		040FC5161E7F81EE0056745D /* CutomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FC5151E7F81EE0056745D /* CutomButton.m */; };
 		040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FC51A1E7FB0A50056745D /* HWNewfeatureViewController.m */; };
@@ -387,6 +389,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04001D381EE50C820084BF67 /* IsBoundingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IsBoundingTableViewCell.h; sourceTree = "<group>"; };
+		04001D391EE50C820084BF67 /* IsBoundingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IsBoundingTableViewCell.m; sourceTree = "<group>"; };
+		04001D3A1EE50C820084BF67 /* IsBoundingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IsBoundingTableViewCell.xib; sourceTree = "<group>"; };
 		0404BB8F1E7FCDE6009DEA1D /* DJPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPageControl.h; sourceTree = "<group>"; };
 		0404BB901E7FCDE6009DEA1D /* DJPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPageControl.m; sourceTree = "<group>"; };
 		040FC5141E7F81EE0056745D /* CutomButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CutomButton.h; sourceTree = "<group>"; };
@@ -2249,6 +2254,9 @@
 				043965C11E07DF9D00B67989 /* IsBoundingViewController.h */,
 				043965C21E07DF9D00B67989 /* IsBoundingViewController.m */,
 				04440D4E1E77D15900206877 /* IsBoundingViewController.xib */,
+				04001D381EE50C820084BF67 /* IsBoundingTableViewCell.h */,
+				04001D391EE50C820084BF67 /* IsBoundingTableViewCell.m */,
+				04001D3A1EE50C820084BF67 /* IsBoundingTableViewCell.xib */,
 				95E918541DDC7AA8005DABC0 /* BindDeviceViewController.h */,
 				95E918551DDC7AA8005DABC0 /* BindDeviceViewController.m */,
 				04553F2D1E70EE980025CA34 /* ChooseDeviceTypeViewController.h */,
@@ -2533,6 +2541,7 @@
 				04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */,
 				95C575F51DA77AB200F459DF /* PhoneRecordCell.xib in Resources */,
 				04440D1B1E77BBF000206877 /* Profile.storyboard in Resources */,
+				04001D3C1EE50C820084BF67 /* IsBoundingTableViewCell.xib in Resources */,
 				04553F381E73FB840025CA34 /* scan.gif in Resources */,
 				04440CF41E778A2E00206877 /* Localizable.strings in Resources */,
 				04440D301E77C98F00206877 /* CallComingInViewController.xib in Resources */,
@@ -2831,6 +2840,7 @@
 				95C575F41DA77AB200F459DF /* PhoneRecordCell.m in Sources */,
 				3C7DECE71EC300A100CDCE34 /* OpenServiceMonthCell.m in Sources */,
 				95F1ED5C1DE6BC6A002E9259 /* LineProgressView.m in Sources */,
+				04001D3B1EE50C820084BF67 /* IsBoundingTableViewCell.m in Sources */,
 				3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */,
 				040FC5161E7F81EE0056745D /* CutomButton.m in Sources */,
 				04F727AD1E641CE4002EB54C /* HTTPDataResponse.m in Sources */,

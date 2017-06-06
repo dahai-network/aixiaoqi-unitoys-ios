@@ -13,7 +13,9 @@
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    lineColor = [UIColor whiteColor];
+    if (!lineColor) {
+        lineColor = [UIColor whiteColor];
+    }
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -33,20 +35,21 @@
 
 - (void) drawRect:(CGRect)rect {
     [super drawRect:rect];
-    
-    CGRect textRect = self.titleLabel.frame;
-    CGContextRef contextRef = UIGraphicsGetCurrentContext();
-    
-    CGFloat descender = self.titleLabel.font.descender;
-    if([lineColor isKindOfClass:[UIColor class]]){
-        CGContextSetStrokeColorWithColor(contextRef, lineColor.CGColor);
+    if (!self.isHiddenLine) {
+        CGRect textRect = self.titleLabel.frame;
+        CGContextRef contextRef = UIGraphicsGetCurrentContext();
+        
+        CGFloat descender = self.titleLabel.font.descender;
+        if([lineColor isKindOfClass:[UIColor class]]){
+            CGContextSetStrokeColorWithColor(contextRef, lineColor.CGColor);
+        }
+        
+        CGContextMoveToPoint(contextRef, textRect.origin.x, textRect.origin.y + textRect.size.height + descender+3);
+        CGContextAddLineToPoint(contextRef, textRect.origin.x + textRect.size.width, textRect.origin.y + textRect.size.height + descender+3);
+        
+        CGContextClosePath(contextRef);
+        CGContextDrawPath(contextRef, kCGPathStroke);
     }
-    
-    CGContextMoveToPoint(contextRef, textRect.origin.x, textRect.origin.y + textRect.size.height + descender+3);
-    CGContextAddLineToPoint(contextRef, textRect.origin.x + textRect.size.width, textRect.origin.y + textRect.size.height + descender+3);
-    
-    CGContextClosePath(contextRef);
-    CGContextDrawPath(contextRef, kCGPathStroke);
 }
 
 
