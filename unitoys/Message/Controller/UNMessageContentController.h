@@ -12,4 +12,7 @@
 
 @property (nonatomic, assign) BOOL isNewMessage;
 
+@property (nonatomic, copy) NSString *toTelephone;
+@property (nonatomic, copy) NSString *toPhoneName;
+
 @end

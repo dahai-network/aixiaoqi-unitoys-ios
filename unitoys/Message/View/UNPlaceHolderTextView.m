@@ -84,6 +84,14 @@
     [self setNeedsDisplay];
 }
 
+- (void)setContentSize:(CGSize)contentSize
+{
+    [super setContentSize:contentSize];
+    if (_placeHolderTextViewDelegate && [_placeHolderTextViewDelegate respondsToSelector:@selector(placeHolderTextViewContentSizeChange:)]) {
+        [self.placeHolderTextViewDelegate placeHolderTextViewContentSizeChange:contentSize];
+    }
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

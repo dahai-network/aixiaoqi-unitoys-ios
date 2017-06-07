@@ -476,10 +476,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             [self.tableView reloadData];
             
             if (kSystemVersionValue >= 10.0) {
-                UNContact * contact = [[UNContact alloc] init];
-                contact.phoneNumber= self.currentCallPhone;
-                contact.uniqueIdentifier=@"";
+                UNContact *contact = [[UNContact alloc] init];
+                contact.phoneNumber = self.currentCallPhone;
+                contact.uniqueIdentifier = @"";
                 [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
+                    //如果CallKit出错,直接调用正常流程
                     if (error) {
                         [self callUnitysNumber:self.currentCallPhone];
                     }

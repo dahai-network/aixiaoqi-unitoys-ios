@@ -42,6 +42,7 @@
 //分隔线
 #define DefualtSeparatorColor [UIColor colorWithRed:(229 / 255.0) green:(229 / 255.0) blue:(229 / 255.0) alpha:1.0]
 
+#define kKeyWindow [UIApplication sharedApplication].keyWindow
 
 #define X(x) (x/375.0)*[UIScreen mainScreen].bounds.size.width;
 #define Y(y) (y/667.0)*[UIScreen mainScreen].bounds.size.height;
@@ -59,6 +60,12 @@
 #define kScreenWidthValue  [UIScreen mainScreen].bounds.size.width
 #define kScreenHeightValue  [UIScreen mainScreen].bounds.size.height
 #define kStatusBarHeight [UIApplication sharedApplication].statusBarFrame.size.height
+
+#define kDevice_Is_iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+#define kDevice_Is_iPhone6 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(750, 1334), [[UIScreen mainScreen] currentMode].size) : NO)
+#define kDevice_Is_iPhone6Plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1242, 2208), [[UIScreen mainScreen] currentMode].size) : NO)
+
+#define DebugUNLog(s, ...) NSLog(@"%s(%d): %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__])
 
 #define kWeakSelf __weak typeof(self) weakSelf = self;
 

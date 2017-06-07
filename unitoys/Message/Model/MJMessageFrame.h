@@ -11,8 +11,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
-@class MJMessage;
+#import "MJMessage.h"
+//@class MJMessage;
 
 @interface MJMessageFrame : NSObject
 /**

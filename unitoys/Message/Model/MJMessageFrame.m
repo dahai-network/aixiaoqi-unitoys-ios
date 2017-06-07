@@ -7,7 +7,7 @@
 //
 
 #import "MJMessageFrame.h"
-#import "MJMessage.h"
+
 
 @implementation MJMessageFrame
 /**

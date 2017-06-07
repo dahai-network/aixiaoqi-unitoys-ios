@@ -25,7 +25,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @property (nonatomic, strong) NSMutableArray *messageFrames;
-@property (nonatomic, strong) NSMutableArray *messageDict;
+//@property (nonatomic, strong) NSMutableArray *messageDict;
 
 @property (nonatomic, copy) NSString *cellContent;
 
@@ -92,7 +92,7 @@
         NSArray *messages = [NSMutableArray arrayWithArray:[[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:self.page Phone:self.toTelephone]];
         if (messages && messages.count) {
             _messageFrames = [self changeDictToMessage:messages];
-            _messageDict = [NSMutableArray arrayWithArray:[[messages reverseObjectEnumerator] allObjects]];
+//            _messageDict = [NSMutableArray arrayWithArray:[[messages reverseObjectEnumerator] allObjects]];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [self.tableView reloadData];
                 [self scrollTableViewToBottomWithAnimated:NO];
@@ -422,7 +422,7 @@
 //                    [self.tableView reloadData];
                 }
                 NSArray *arrMessages = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:0 Phone:self.toTelephone];
-                _messageDict = [NSMutableArray arrayWithArray:[[arrMessages reverseObjectEnumerator] allObjects]];
+//                _messageDict = [NSMutableArray arrayWithArray:[[arrMessages reverseObjectEnumerator] allObjects]];
                 _messageFrames = [self changeDictToMessage:arrMessages];
                 
                 self.page = 0;
@@ -670,8 +670,8 @@
 //                // 添加模型
 //                [mfArray addObject:mf];
 //            }
-        NSIndexSet *dictIndexs = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, pageArray.count)];
-        [_messageDict insertObjects:[[pageArray reverseObjectEnumerator] allObjects] atIndexes:dictIndexs];
+//        NSIndexSet *dictIndexs = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, pageArray.count)];
+//        [_messageDict insertObjects:[[pageArray reverseObjectEnumerator] allObjects] atIndexes:dictIndexs];
         
         NSArray *mfArray = [self changeDictToMessage:pageArray];
         if (mfArray.count>0) {

@@ -2387,7 +2387,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     UIBackgroundTaskIdentifier backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:nil];
     dispatch_async(dispatch_get_main_queue(), ^{
         NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
-            
         }];
         NSLog(@"callUUID==%@", callUUID);
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
