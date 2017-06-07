@@ -69,7 +69,6 @@
 - (void)refreshBoundDeviceInfo:(NSNotification *)sender {
     self.isShowBackButton = YES;
     [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
-    self.title = @"搜索设备";
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
     self.deviceDataArr = sender.object;
     if (sender) {
@@ -161,17 +160,7 @@
 
 #pragma mark 取消扫描
 - (IBAction)cancelScanAction:(UIButton *)sender {
-    if (![sender.titleLabel.text isEqualToString:@"首选连接"]) {
-        if (![BlueToothDataManager shareManager].isConnected) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
-            [BlueToothDataManager shareManager].isShowAlert = YES;
-            self.time = 0;
-            [self.timer setFireDate:[NSDate distantPast]];
-        } else {
-            [[UNBlueToothTool shareBlueToothTool] cancelToBound];
-        }
-        [self.navigationController popToRootViewControllerAnimated:YES];
-    } else {
+    if ([sender.titleLabel.text isEqualToString:@"首选连接"]) {
         //首选连接
         for (int i = 0; i < self.deviceDataArr.count; i++) {
             NSDictionary *info = self.deviceDataArr[i];
@@ -182,6 +171,23 @@
                 return;
             }
         }
+    } else if ([sender.titleLabel.text isEqualToString:@"暂不绑定"]) {
+        self.handupImg.hidden = YES;
+        [self.handupImg stopAnimating];
+        [[UNBlueToothTool shareBlueToothTool] cancelToBound];
+        self.isShowBackButton = YES;
+        [self.cancelButton setTitle:@"首选连接" forState:UIControlStateNormal];
+        [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
+        //            self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
+        [self changeFrame];
+    } else if ([sender.titleLabel.text isEqualToString:@"暂不搜索"]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
+        [BlueToothDataManager shareManager].isShowAlert = YES;
+        self.time = 0;
+        [self.timer setFireDate:[NSDate distantPast]];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    } else {
+        NSLog(@"按钮有问题:%s,%d", __FUNCTION__, __LINE__);
     }
 }
 
@@ -200,6 +206,7 @@
 }
 
 - (void)startToShowClickAnimation {
+    NSLog(@"走了启动动画的方法：%s,%d", __FUNCTION__, __LINE__);
     self.handupImg.hidden = NO;
     [self showClickAnimation];
 //    if (!self.clickAnimationTimer) {

@@ -118,6 +118,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(chargeConfrim) name:@"ChargeConfrim" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBLEStatue) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBLEStatue) name:@"boundSuccess" object:@"boundSuccess"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBLEStatue) name:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statueChanged:) name:@"homeStatueChanged" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkCannotUse:) name:@"netWorkNotToUse" object:nil];//网络状态改变
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkChangeStatuesAll:) name:@"changeStatueAll" object:nil];//状态改变
@@ -864,6 +865,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ChargeConfrim" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"homeStatueChanged" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"netWorkNotToUse" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];

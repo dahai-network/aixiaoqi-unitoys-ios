@@ -38,6 +38,7 @@
     
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addElectricQue) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addElectricQue) name:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(disConnectToDevice) name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];//断开连接
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeStatueAction:) name:@"changeStatue" object:nil];//改变状态和百分比
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bleStatueChanged:) name:@"homeStatueChanged" object:nil];//连接成功或者失败
@@ -651,6 +652,7 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccess" object:@"boundSuccess"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"deviceIsDisconnect" object:@"deviceIsDisconnect"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"homeStatueChanged" object:nil];

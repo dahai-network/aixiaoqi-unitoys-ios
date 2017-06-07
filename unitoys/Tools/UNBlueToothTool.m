@@ -1028,6 +1028,10 @@ static UNBlueToothTool *instance = nil;
 #pragma mark 外设已经查找到服务
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
+    if (error) {
+        NSLog(@"Error didDiscoverServices: %@", [error localizedDescription]);
+        return;
+    }
     // 遍历所有的服务
     for (CBService *service in peripheral.services) {
         // 过滤掉不想要的服务
@@ -1694,7 +1698,7 @@ static UNBlueToothTool *instance = nil;
                 }
                 NSLog(@"当前电量为：%d%%", electricQuantity);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantity];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
                 [self refreshBLEInfo];
                 //是否有卡
                 if (contentStr.length >= 8) {
@@ -1720,7 +1724,7 @@ static UNBlueToothTool *instance = nil;
                 }
                 NSLog(@"当前电量为：%d%%", electricQuantityNew);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantityNew];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccess" object:@"boundSuccess"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
                 break;
             case 3:
                 //充电状态
