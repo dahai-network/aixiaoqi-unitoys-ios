@@ -68,6 +68,7 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 @property (strong,nonatomic) NSMutableDictionary *headers;
 
 @property (readwrite) BOOL checkToken;
+@property (nonatomic, strong)UIWindow *chooseAlertWindow;//弹框window
 
 - (NSString *)md5:(NSString *)str;
 
@@ -121,5 +122,13 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 - (NSString *)convertDateWithString:(NSString *)dateString;
 
 - (void)setStatuesLabelTextWithLabel:(UILabel *)label String:(NSString *)string;
+
+- (void)showChooseAlert;
+
+- (void)hiddenWindow;
+
+- (void)cardInIphone;
+
+- (void)cardInDevice;
 
 @end

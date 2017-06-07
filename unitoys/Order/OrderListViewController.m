@@ -29,6 +29,7 @@
 @property (strong, nonatomic) IBOutlet UIView *footView;
 @property (weak, nonatomic) IBOutlet UILabel *noDataLabel;
 @property (nonatomic, copy) NSString *statueStr;//记录当前状态
+@property (nonatomic ,strong)NSDictionary *currentInfo;
 
 @end
 
@@ -237,17 +238,28 @@
 }
 
 - (void)activityActionNow:(CutomButton *)sender {
+    self.currentInfo = self.dataSourceArray[sender.indexPath.row];
+    [self showChooseAlert];
+}
+
+#pragma mark 在手机里
+- (void)cardInIphone {
+    [super cardInIphone];
+    NSLog(@"爱小器卡已放入手机");
+}
+
+- (void)cardInDevice {
+    [super cardInDevice];
     if (self.dataSourceArray.count) {
-        NSDictionary *dicOrder = self.dataSourceArray[sender.indexPath.row];
-        if ([dicOrder[@"OrderStatus"] intValue] == 4) {
+        if ([self.currentInfo[@"OrderStatus"] intValue] == 4) {
             //激活失败
-            [self activityOrderActivitedWithID:dicOrder[@"OrderID"]];
+            [self activityOrderActivitedWithID:self.currentInfo[@"OrderID"]];
         } else {
             //未激活
             UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
             OrderActivationViewController *orderActivationViewController = [mainStory instantiateViewControllerWithIdentifier:@"orderActivationViewController"];
             if (orderActivationViewController) {
-                orderActivationViewController.dicOrderDetail = dicOrder;
+                orderActivationViewController.dicOrderDetail = self.currentInfo;
                 [self.navigationController pushViewController:orderActivationViewController animated:YES];
             }
         }

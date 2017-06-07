@@ -351,6 +351,8 @@
             [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"dualSimStandbyTutorialUrl"] forKey:@"dualSimStandbyTutorialUrl"];
             //出国前教程
             [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"beforeGoingAbroadTutorialUrl"] forKey:@"beforeGoingAbroadTutorialUrl"];
+            //什么是爱小器卡
+            [[NSUserDefaults standardUserDefaults] setObject:[[responseObj objectForKey:@"data"] objectForKey:@"aixiaoqiDescrUrl"] forKey:@"aixiaoqiDescrUrl"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){

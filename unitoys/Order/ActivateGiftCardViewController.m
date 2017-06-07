@@ -77,6 +77,16 @@
     // Do any additional setup after loading the view from its nib.
 }
 
+- (void)cardInIphone {
+    [super cardInIphone];
+    NSLog(@"爱小器卡已放入手机");
+}
+
+- (void)cardInDevice {
+    [super cardInDevice];
+    [self startToActiviteCard];
+}
+
 - (void)leftButtonAction {
     if (self.isPaySuccess) {
         [self.navigationController popToRootViewControllerAnimated:YES];
@@ -501,6 +511,10 @@
 
 #pragma mark 激活按钮点击事件 //0流量/1通话/2大王卡/3双卡双待
 - (IBAction)avtivateAction:(UIButton *)sender {
+    [self showChooseAlert];
+}
+
+- (void)startToActiviteCard {
     self.isPaySuccess = NO;
     if (self.packageCategory == 2) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"UnitPrice"]] message:INTERNATIONALSTRING(@"领取大王卡礼包") preferredStyle:UIAlertControllerStyleAlert];
