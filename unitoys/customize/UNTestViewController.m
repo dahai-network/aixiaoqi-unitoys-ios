@@ -9,8 +9,8 @@
 #import "UNTestViewController.h"
 #import "global.h"
 #import "UNPresentTool.h"
-
 #import "UNPopTipMsgView.h"
+#import "UNMobileActivateController.h"
 
 @interface UNTestViewController ()
 @property (nonatomic, strong) UNPresentTool *presentTool;
@@ -27,7 +27,17 @@
 
 - (void)presentVc
 {
-    [self initPopView];
+    //present动画
+//    [self initPopView];
+    
+    //手机激活引导
+    [self pushActive];
+}
+
+- (void)pushActive
+{
+    UNMobileActivateController *activeVc = [[UNMobileActivateController alloc] init];
+    [self.navigationController pushViewController:activeVc animated:YES];
 }
 
 - (void)initPopView

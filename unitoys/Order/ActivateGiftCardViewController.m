@@ -18,6 +18,7 @@
 #import "ExplainDetailsChildController.h"
 
 #import "HTTPServer.h"
+#import "UNReadyActivateController.h"
 
 @interface ActivateGiftCardViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *footView;
@@ -80,6 +81,10 @@
 - (void)cardInIphone {
     [super cardInIphone];
     NSLog(@"爱小器卡已放入手机");
+    UNReadyActivateController *activate = [[UNReadyActivateController alloc] init];
+    activate.defaultDate = @"";
+    activate.defaultDay = @"";
+    [self.navigationController pushViewController:activate animated:YES];
 }
 
 - (void)cardInDevice {

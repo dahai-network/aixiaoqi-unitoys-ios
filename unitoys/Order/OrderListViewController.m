@@ -19,6 +19,7 @@
 #import "OrderActivationViewController.h"
 #import "ConvenienceOrderDetailController.h"
 #import "BlueToothDataManager.h"
+#import "UNReadyActivateController.h"
 
 @interface OrderListViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -246,6 +247,11 @@
 - (void)cardInIphone {
     [super cardInIphone];
     NSLog(@"爱小器卡已放入手机");
+    
+    UNReadyActivateController *activate = [[UNReadyActivateController alloc] init];
+    activate.defaultDate = @"";
+    activate.defaultDay = @"";
+    [self.navigationController pushViewController:activate animated:YES];
 }
 
 - (void)cardInDevice {
