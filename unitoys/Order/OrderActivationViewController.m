@@ -246,7 +246,7 @@
                         [self.activityOrderButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
                     } headers:self.headers];
                 } else {
-                    HUDNormal(@"请选择激活时间")
+                    HUDNormal(@"请选择生效日期")
                 }
             } else {
                 [self showNotBoundAlertWindow];
