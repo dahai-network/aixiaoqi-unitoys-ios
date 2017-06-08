@@ -11,6 +11,9 @@
 //转换格式工具类
 @interface UNConvertFormatTool : NSObject
 
+//时间戳转NSString(年月日)
++ (NSString *)dateStringYMDFromTimeInterval:(NSString *)timeString;
+
 //NSDate转NSString(年月日)
 + (NSString *)dateStringYMDFromDate:(NSDate *)date;
 
@@ -42,6 +45,9 @@
 
 //seconds->@"00:00"
 + (NSString *)minSecWithSeconds:(int)seconds;
+
+//16进制字符串转普通字符串
++ (NSString *)stringFromHexString:(NSString *)hexString;
 
 //id转JSON
 + (NSString *)objectToJson:(id)object;

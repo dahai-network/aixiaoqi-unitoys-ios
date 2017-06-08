@@ -20,6 +20,7 @@
 #import "ConvenienceOrderDetailController.h"
 #import "BlueToothDataManager.h"
 #import "UNReadyActivateController.h"
+#import "UNConvertFormatTool.h"
 
 @interface OrderListViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -249,8 +250,14 @@
     NSLog(@"爱小器卡已放入手机");
     
     UNReadyActivateController *activate = [[UNReadyActivateController alloc] init];
-//    activate.defaultDate = @"";
-    activate.defaultDay = @"";
+    activate.defaultDay = self.currentInfo[@"ExpireDaysInt"];
+    activate.orderID = self.currentInfo[@"OrderID"];
+    //状态有5种,只有为1才不需要激活
+    activate.isAlreadyActivate = [[self.currentInfo objectForKey:@"OrderStatus"] intValue] == 1 ? YES : NO;
+    if ([self.currentInfo[@"OrderStatus"] intValue] != 0) {
+        //只有状态为0才没有时间
+        activate.defaultDate = [UNConvertFormatTool dateStringYMDFromTimeInterval:self.currentInfo[@"ActivationDate"]];
+    }
     [self.navigationController pushViewController:activate animated:YES];
 }
 

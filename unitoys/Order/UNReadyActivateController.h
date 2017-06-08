@@ -10,9 +10,11 @@
 
 @interface UNReadyActivateController : BaseViewController
 
-//@property (nonatomic, copy) NSString *defaultDate;
+@property (nonatomic, copy) NSString *defaultDate;
 @property (nonatomic, copy) NSString *defaultDay;
 
 @property (nonatomic, copy) NSString *orderID;
+
+@property (nonatomic, assign) BOOL isAlreadyActivate;
 
 @end

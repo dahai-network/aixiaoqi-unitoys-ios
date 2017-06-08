@@ -10,6 +10,7 @@
 #import "UITableView+RegisterNib.h"
 #import "UNReadyActivateCell.h"
 #import "UNMobileActivateController.h"
+#import "UNConvertFormatTool.h"
 
 @interface UNReadyActivateController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -21,6 +22,7 @@
 //@property (nonatomic, weak) UILabel *titleLabel;
 
 @property (nonatomic, weak) UIDatePicker *datePicker;
+@property (nonatomic, weak) UIButton *activeButton;
 @end
 
 static NSString *activateCellID = @"UNReadyActivateCell";
@@ -30,7 +32,11 @@ static NSString *activateCellID = @"UNReadyActivateCell";
     [super viewDidLoad];
     self.title = @"在手机内激活";
     [self initTableView];
-    [self initPickerView];
+    if (!self.defaultDate) {
+        [self initPickerView];
+    }else{
+        self.selectDate = self.defaultDate;
+    }
 }
 
 //初始化tableView
@@ -48,6 +54,7 @@ static NSString *activateCellID = @"UNReadyActivateCell";
     self.tableView.tableHeaderView = topView;
     UIView *bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, 100)];
     UIButton *activeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.activeButton = activeButton;
     activeButton.backgroundColor = DefultColor;
     activeButton.layer.cornerRadius = 25;
     activeButton.layer.masksToBounds = YES;
@@ -132,7 +139,11 @@ static NSString *activateCellID = @"UNReadyActivateCell";
     UNReadyActivateCell *cell = [tableView dequeueReusableCellWithIdentifier:activateCellID];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     if (indexPath.row == 0) {
-        cell.nameLabel.text = @"选择生效时间";
+        if (self.defaultDate) {
+            cell.nameLabel.text = @"生效时间";
+        }else{
+            cell.nameLabel.text = @"选择生效时间";
+        }
         cell.dateLabel.hidden = NO;
         cell.iconImageView.hidden = NO;
         cell.dayLabel.hidden = YES;
@@ -156,8 +167,11 @@ static NSString *activateCellID = @"UNReadyActivateCell";
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     if (indexPath.row == 0) {
         //弹出选择日期控件
-//        [self initPickerView];
-        self.valueView.hidden = NO;
+        if (!self.defaultDate) {
+            if (self.valueView) {
+                self.valueView.hidden = NO;
+            }
+        }
     }
 }
 
@@ -167,47 +181,112 @@ static NSString *activateCellID = @"UNReadyActivateCell";
         HUDNormal(@"请选择生效时间");
         return;
     }
-//    button.enabled = NO;
-    NSLog(@"激活");
-//    HUDNoStop1(INTERNATIONALSTRING(@"正在激活..."))
-//    self.checkToken = YES;
-//    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.dicOrderDetail[@"OrderID"],@"OrderID", self.selectedDateString,@"BeginTime", nil];
-//    
-//    [self getBasicHeader];
-//    //            NSLog(@"表演头：%@",self.headers);
-//    [SSNetworkRequest postRequest:apiOrderActivation params:info success:^(id responseObj) {
-//        NSLog(@"查询到的用户数据：%@",responseObj);
-//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//            //2.套餐激活完成之后获取蓝牙发送的序列号
-//            [BlueToothDataManager shareManager].bleStatueForCard = 1;
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBLESerialNumber" object:self.dicOrderDetail[@"OrderID"]];
-    //获取激活码
-//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//            [BlueToothDataManager shareManager].isShowHud = NO;
-//            HUDStop
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//            [self.activityOrderButton setTitle:@"重新激活" forState:UIControlStateNormal];
-//        }else{
-//            //数据请求失败
-//            HUDStop
-//            [BlueToothDataManager shareManager].isShowHud = NO;
-//            //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-//            HUDNormal(responseObj[@"msg"])
-//            [self.activityOrderButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
-//        }
-//        
-//    } failure:^(id dataObj, NSError *error) {
-//        //
-//        NSLog(@"啥都没：%@",[error description]);
-//        HUDNormal(@"激活失败")
-//        [BlueToothDataManager shareManager].isShowHud = NO;
-//        [self.activityOrderButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
-//    } headers:self.headers];
-    
-    //网络请求激活
-    
-    UNMobileActivateController * activateVc = [[UNMobileActivateController alloc] init];
-    [self.navigationController pushViewController:activateVc animated:YES];
+    if (!self.isAlreadyActivate) {
+        //直接获取卡数据
+        NSLog(@"激活");
+        HUDNoStop1(@"")
+        self.checkToken = YES;
+        NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderID,@"OrderID", self.selectDate,@"BeginDateTime", nil];
+        
+        [self getBasicHeader];
+        //            NSLog(@"表演头：%@",self.headers);
+        [SSNetworkRequest postRequest:apiOrderActivation params:info success:^(id responseObj) {
+            NSLog(@"查询到的用户数据：%@",responseObj);
+            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [self activitySuccess];
+            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+                HUDStop
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            }else{
+                //数据请求失败
+                HUDStop
+                HUDNormal(responseObj[@"msg"])
+                [self.activeButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
+            }
+            
+        } failure:^(id dataObj, NSError *error) {
+            //
+            NSLog(@"啥都没：%@",[error description]);
+            HUDNormal(@"激活失败")
+            [self.activeButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
+        } headers:self.headers];
+    }else{
+        //获取激活码
+        [self getActivateCode];
+    }
+}
+
+#pragma mark 激活成功
+- (void)activitySuccess {
+    HUDNoStop1(@"")
+    self.checkToken = YES;
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderID, @"OrderID", nil];
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiActivationLocalCompleted params:params success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            HUDStop
+            //获取激活码
+            [self getActivateCode];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            HUDStop
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            HUDStop
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDStop
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
+#pragma mark 查询订单卡数据
+- (void)getActivateCode
+{
+    HUDNoStop1(@"")
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderID, @"OrderID", nil];
+    self.checkToken = YES;
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiQueryOrderData params:params success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            NSLog(@"%@", responseObj);
+            HUDStop
+            //粘贴激活码
+            NSString *code = [self convertActivationCode:responseObj[@"data"][@"Data"]];
+            [self pasteCode:code];
+            
+            UNMobileActivateController * activateVc = [[UNMobileActivateController alloc] init];
+            [self.navigationController pushViewController:activateVc animated:YES];
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            HUDStop
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            HUDStop
+            //数据请求失败
+            NSLog(@"请求失败：%@", responseObj[@"msg"]);
+        }
+    } failure:^(id dataObj, NSError *error) {
+        HUDNormal(@"网络貌似有问题")
+        NSLog(@"啥都没：%@",[error description]);
+    } headers:self.headers];
+}
+
+//转换激活码
+//76372b2f6c35546856465972786a71686e6c43457a704f61367973624263776736717549544238424d3363784a476547304664674b726b465a716c3943556873336578693862337254476f3673686758424a6553383548754c6d737838504149532b3973
+- (NSString *)convertActivationCode:(NSString *)code
+{
+    if (!code || [code isEqualToString:@""]) {
+        return nil;
+    }
+    return [UNConvertFormatTool stringFromHexString:code];
+}
+
+//粘贴激活码
+- (void)pasteCode:(NSString *)code
+{
+    if (code) {
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        [pasteboard setString:code];
+    }
 }
 
 - (void)didReceiveMemoryWarning {

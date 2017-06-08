@@ -13,6 +13,17 @@
 
 @implementation UNConvertFormatTool
 
+//时间戳转NSString(年月日)
++ (NSString *)dateStringYMDFromTimeInterval:(NSString *)timeString
+{
+    NSTimeInterval time= [timeString doubleValue];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:time];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *currentDateString = [dateFormatter stringFromDate:date];
+    return currentDateString;
+}
+
 //NSDate转NSString(年月日)
 + (NSString *)dateStringYMDFromDate:(NSDate *)date
 {
@@ -178,6 +189,21 @@
     return callduration;
 }
 
++ (NSString *)stringFromHexString:(NSString *)hexString
+{
+    char *myBuffer = (char *)malloc((int)[hexString length] / 2 + 1);
+    bzero(myBuffer, [hexString length] / 2 + 1);
+    for (int i = 0; i < [hexString length] - 1; i += 2) {
+        unsigned int anInt;
+        NSString * hexCharStr = [hexString substringWithRange:NSMakeRange(i, 2)];
+        NSScanner * scanner = [[NSScanner alloc] initWithString:hexCharStr];
+        [scanner scanHexInt:&anInt];
+        myBuffer[i / 2] = (char)anInt;
+    }
+    NSString *unicodeString = [NSString stringWithCString:myBuffer encoding:4];
+    NSLog(@"------字符串=======%@",unicodeString);
+    return unicodeString;
+}
 
 #pragma mark ---- 字典转JSON
 + (NSString *)objectToJson:(id)object

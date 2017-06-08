@@ -45,9 +45,7 @@
     if (cellDatas[@"callduration"]) {
         callduration = [UNConvertFormatTool minSecWithSeconds:[cellDatas[@"callduration"] intValue]];
     }
-    NSLog(@"callduration===%@", callduration);
     self.callDuration.text = callduration;
-    
     self.timelabel.text = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:cellDatas[@"calltime"]];
 }
 

@@ -79,6 +79,9 @@
 @property (nonatomic, assign) int lessStep;
 @property (nonatomic, assign) BOOL isNeedToCheckSIMStatue;
 
+//重连定时器,收到0f数据后,每过几秒检查条件是否符合,符合才重连,并关闭定时器
+@property (nonatomic, strong) NSTimer *reconnectTimer;
+@property (nonatomic, assign) NSInteger reconnectTimeCount;
 @end
 
 @implementation AppDelegate
@@ -500,15 +503,18 @@
 #pragma mark - tcp相关
 - (void)creatAsocketTcp {
     // 1. 创建一个 udp socket用来和服务端进行通讯
+    NSLog(@"creatAsocketTcp");
     if (!self.sendTcpSocket) {
         NSLog(@"首次创建tcpSocket");
         dispatch_queue_t dQueue = dispatch_queue_create("client tdp socket", NULL);
         [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
         self.sendTcpSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:dQueue socketQueue:nil];
         [self.sendTcpSocket setPreferIPv4OverIPv6:NO];
+        [UNPushKitMessageManager shareManager].isSendTcpString = NO;
         [self reConnectTcp];
     }else{
         if (!self.sendTcpSocket.isConnected) {
+            NSLog(@"tcp未连接");
             [BlueToothDataManager shareManager].isTcpConnected = NO;
             [UNPushKitMessageManager shareManager].isSendTcpString = NO;
             [self reConnectTcp];
@@ -847,7 +853,7 @@
             [self checkPacketDetailWithStringFromPushKit:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
         }else if([UNPushKitMessageManager shareManager].PushKitAuthDataType == 2){
             NSLog(@"PushKitAuthDataType2");
-            if (![UNPushKitMessageManager shareManager].isSendTcpString) {
+//            if (![UNPushKitMessageManager shareManager].isSendTcpString) {
                 NSLog(@"pushkit--tcp数据----%@", [UNPushKitMessageManager shareManager].tcpStringWithPushKit);
                 if ([UNPushKitMessageManager shareManager].tcpStringWithPushKit) {
                     self.communicateID = @"00000000";
@@ -857,12 +863,12 @@
                     //发送数据
                     [self setUpTcppacketFromPushKit];
                     NSLog(@"PushKit--最终发送给tcp的数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
-                    [UNPushKitMessageManager shareManager].isSendTcpString = YES;
+//                    [UNPushKitMessageManager shareManager].isSendTcpString = YES;
                 }
-            }
+//            }
         }else{
             NSLog(@"PushKitAuthDataTypeNone");
-            if (![UNPushKitMessageManager shareManager].isSendTcpString) {
+//            if (![UNPushKitMessageManager shareManager].isSendTcpString) {
                 NSLog(@"pushkit--tcp数据----%@", [UNPushKitMessageManager shareManager].tcpStringWithPushKit);
                 if ([UNPushKitMessageManager shareManager].tcpStringWithPushKit) {
                     self.communicateID = @"00000000";
@@ -874,11 +880,11 @@
                     NSLog(@"PushKit--最终发送给tcp的数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
                     [UNPushKitMessageManager shareManager].isSendTcpString = YES;
                 }
-            }
+//            }
         }
     }else{
         if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-            if (![UNPushKitMessageManager shareManager].isSendTcpString) {
+//            if (![UNPushKitMessageManager shareManager].isSendTcpString) {
                 NSLog(@"pushkit--tcp数据----%@", [UNPushKitMessageManager shareManager].tcpStringWithPushKit);
                 if ([UNPushKitMessageManager shareManager].tcpStringWithPushKit) {
                     self.communicateID = @"00000000";
@@ -890,7 +896,7 @@
                     NSLog(@"PushKit--最终发送给tcp的数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
                     [UNPushKitMessageManager shareManager].isSendTcpString = YES;
                 }
-            }
+//            }
         }else{
             [BlueToothDataManager shareManager].isTcpConnected = YES;
             [self sendDataToCheckRegistStatue];
@@ -913,6 +919,7 @@
 
 // 如果对象关闭了 这里也会调用
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
+    [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
     NSLog(@"tcp连接失败 %@", err);
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"off"]) {
         NSLog(@"关闭开关，断开tcp");
@@ -944,20 +951,27 @@
     
     [BlueToothDataManager shareManager].isTcpConnected = NO;
     
-    [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
     if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
 //        self.sendTcpSocket.userData = SocketCloseByNet;
         [self closeTCP];
         NSLog(@"无网络");
     }else{
         if (err) {
-            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                [UNCreatLocalNoti createNETDisConnectNoti];
-                return;
-            }
+//            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+//                [UNCreatLocalNoti createNETDisConnectNoti];
+//                return;
+//            }
             NSLog(@"连接失败");
             
             [self closeTCP];
+            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
+                    [[UNPushKitMessageManager shareManager].tcpReconnectTimer invalidate];
+                    [UNPushKitMessageManager shareManager].tcpReconnectTimer = nil;
+                }
+                return;
+            }
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
                     [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
@@ -1046,6 +1060,7 @@
             [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
             [BlueToothDataManager shareManager].isTcpConnected = NO;
             if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                NSLog(@"不在PushKit下");
                 if (self.sendTcpSocket) {
                     [self reConnectTcp];
                 }else{
@@ -2551,8 +2566,11 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (void)reConnectTcp
 {
+    DebugUNLog(@"reConnectTcp");
     if (self.sendTcpSocket && !self.sendTcpSocket.isConnected) {
+        DebugUNLog(@"tcp存在");
         if (![UNPushKitMessageManager shareManager].isTcpConnecting) {
+            DebugUNLog(@"tcp没有正在重连");
             [UNPushKitMessageManager shareManager].isTcpConnecting = YES;
             NSString *host = [VSWManager shareManager].vswIp;
             uint16_t port = [VSWManager shareManager].vswPort;
@@ -2734,78 +2752,116 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             isDealyTime = NO;
         }
         if (![UNPushKitMessageManager shareManager].isAppAlreadyLoad || isDealyTime){
-            dealyTime = 3;
+            dealyTime = 5;
         }
         if (![BlueToothDataManager shareManager].isOpened) {
             dealyTime = 5;
         }
         [[UNBlueToothTool shareBlueToothTool] checkSystemBaseInfo];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(dealyTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSLog(@"已创建TCP");
-            if (![BlueToothDataManager shareManager].isOpened) {
-                [UNCreatLocalNoti createLBECloseNoti];
-                NSLog(@"蓝牙未开");
-                return;
-            }else{
-                if (![BlueToothDataManager shareManager].isHaveCard) {
-                    [UNCreatLocalNoti createLBEDisConnectNoti];
-                    NSLog(@"无电话卡");
-                    return;
-                }
-//                if (![BlueToothDataManager shareManager].isConnected) {
-//                    NSLog(@"蓝牙未连接");
-//                    return;
-//                }else{
-//                    
-//                }
-            }
-            
-            if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected) {
-                self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"PushKitTCPPacketStr"];
-            }
-            if (self.sendTcpSocket) {
-                NSLog(@"注册过,重新发送注册信息");
-                [BlueToothDataManager shareManager].isBeingRegisting = NO;
-                [BlueToothDataManager shareManager].stepNumber = @"0";
-                self.lessStep = 0;
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [BlueToothDataManager shareManager].isRegisted = NO;
-                    if (!self.sendTcpSocket.isConnected) {
-                        [self reConnectTcp];
-                    }else{
-                        //                        if ([BlueToothDataManager shareManager].isConnected) {
-                        //                            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
-                        [BlueToothDataManager shareManager].isBeingRegisting = YES;
-                        self.communicateID = @"00000000";
-                        [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送重连信息--%@", self.tcpPacketStr]];
-                        //发送数据
-                        [self sendMsgWithMessage:self.tcpPacketStr];
-                        
-                        [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
-                        [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
-                    }
-                });
-                
-            }else{
-                NSLog(@"当前没有注册过,需要重新注册");
-                [BlueToothDataManager shareManager].isReseted = NO;
-                [self creatAsocketTcp];
-//                [self closeTCP];
-//                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
-//                [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
-//                [BlueToothDataManager shareManager].bleStatueForCard = 0;
-//                [BlueToothDataManager shareManager].isBeingRegisting = NO;
-//                [BlueToothDataManager shareManager].stepNumber = @"0";
-//                [BlueToothDataManager shareManager].isRegisted = NO;
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
-            }
-        });
+        
+        if (dealyTime) {
+            [self.reconnectTimer fire];
+        }else{
+            //直接重连服务器
+            [self removeReconnectTimer];
+            [self reconnectToServer];
+        }
         
     }else{
         NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
         NSLog(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices);
         [UNPushKitMessageManager shareManager].receivePushKitDataFormServices = servicePushKitData;
         [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
+    }
+}
+
+- (NSTimer *)reconnectTimer
+{
+    if (!_reconnectTimer) {
+        _reconnectTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(reconnectToServer) userInfo:nil repeats:YES];
+    }
+    return _reconnectTimer;
+}
+
+- (void)removeReconnectTimer
+{
+    if (_reconnectTimer) {
+        _reconnectTimeCount = 0;
+        [_reconnectTimer invalidate];
+        _reconnectTimer = nil;
+    }
+}
+
+- (void)reconnectToServer
+{
+    _reconnectTimeCount++;
+    NSLog(@"已创建TCP");
+    if (![BlueToothDataManager shareManager].isOpened) {
+        if (_reconnectTimeCount == 3) {
+            [UNCreatLocalNoti createLBECloseNoti];
+            [self removeReconnectTimer];
+        }
+        NSLog(@"蓝牙未开");
+        return;
+    }else{
+        if (![BlueToothDataManager shareManager].isHaveCard) {
+            if (_reconnectTimeCount == 3) {
+                [UNCreatLocalNoti createLBEDisConnectNoti];
+                [self removeReconnectTimer];
+            }
+            NSLog(@"无电话卡");
+            return;
+        }
+        //                if (![BlueToothDataManager shareManager].isConnected) {
+        //                    NSLog(@"蓝牙未连接");
+        //                    return;
+        //                }else{
+        //
+        //                }
+    }
+    
+
+    
+    [self removeReconnectTimer];
+    
+    if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected) {
+        self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"PushKitTCPPacketStr"];
+    }
+    if (self.sendTcpSocket) {
+        NSLog(@"注册过,重新发送注册信息");
+        [BlueToothDataManager shareManager].isBeingRegisting = NO;
+        [BlueToothDataManager shareManager].stepNumber = @"0";
+        self.lessStep = 0;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [BlueToothDataManager shareManager].isRegisted = NO;
+            if (!self.sendTcpSocket.isConnected) {
+                [self reConnectTcp];
+            }else{
+                //                        if ([BlueToothDataManager shareManager].isConnected) {
+                //                            [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
+                [BlueToothDataManager shareManager].isBeingRegisting = YES;
+                self.communicateID = @"00000000";
+                [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送重连信息--%@", self.tcpPacketStr]];
+                //发送数据
+                [self sendMsgWithMessage:self.tcpPacketStr];
+                
+                [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
+                [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
+            }
+        });
+        
+    }else{
+        NSLog(@"当前没有注册过,需要重新注册");
+        [BlueToothDataManager shareManager].isReseted = NO;
+        [self creatAsocketTcp];
+        //                [self closeTCP];
+        //                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = YES;
+        //                [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
+        //                [BlueToothDataManager shareManager].bleStatueForCard = 0;
+        //                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+        //                [BlueToothDataManager shareManager].stepNumber = @"0";
+        //                [BlueToothDataManager shareManager].isRegisted = NO;
+        //                [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
     }
 }
 

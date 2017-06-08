@@ -19,6 +19,7 @@
 
 #import "HTTPServer.h"
 #import "UNReadyActivateController.h"
+#import "UNConvertFormatTool.h"
 
 @interface ActivateGiftCardViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (strong, nonatomic) IBOutlet UIView *footView;
@@ -81,9 +82,17 @@
 - (void)cardInIphone {
     [super cardInIphone];
     NSLog(@"爱小器卡已放入手机");
+    self.isPaySuccess = NO;
     UNReadyActivateController *activate = [[UNReadyActivateController alloc] init];
-//    activate.defaultDate = @"";
-    activate.defaultDay = @"";
+    activate.defaultDay = self.dicOrderDetail[@"ExpireDaysInt"];
+    activate.orderID = self.dicOrderDetail[@"OrderID"];
+    //状态有5种,只有为1才不需要激活
+    activate.isAlreadyActivate = [[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 1 ? YES : NO;
+    if ([self.dicOrderDetail[@"OrderStatus"] intValue] != 0) {
+        //只有状态为0才没有时间
+//        activate.defaultDate = self.dicOrderDetail[@"ActivationDate"];
+         activate.defaultDate = [UNConvertFormatTool dateStringYMDFromTimeInterval:self.dicOrderDetail[@"ActivationDate"]];
+    }
     [self.navigationController pushViewController:activate animated:YES];
 }
 
