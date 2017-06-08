@@ -101,6 +101,11 @@
     [self startToActiviteCard];
 }
 
+- (void)whatIsAixiaoqiCard {
+    self.isPaySuccess = NO;
+    [super whatIsAixiaoqiCard];
+}
+
 - (void)leftButtonAction {
     if (self.isPaySuccess) {
         [self.navigationController popToRootViewControllerAnimated:YES];
@@ -138,7 +143,7 @@
             self.IsSupport4G = responseObj[@"data"][@"list"][@"PackageIsSupport4G"];
             self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
             if (self.packageCategory != 2 && [responseObj[@"data"][@"list"][@"OrderStatus"] intValue] == 0 && ![self.navigationItem.rightBarButtonItem.title isEqualToString:@"取消订单"]) {
-                [self setRightButton:INTERNATIONALSTRING(@"取消订单")];
+//                [self setRightButton:INTERNATIONALSTRING(@"取消订单")];
             }
             
             if ([responseObj[@"data"][@"list"][@"PackageIsApn"] boolValue]) {

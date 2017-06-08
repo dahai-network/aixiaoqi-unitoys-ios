@@ -13,11 +13,13 @@
 #import "WXApi.h"
 
 #import "PaySuccessViewController.h"
+#import "ActivateGiftCardViewController.h"
 
 @interface OrderCommitViewController ()
 @property (nonatomic, copy)NSString *orderID;
 @property (nonatomic, assign)int packageCategory;
 @property (weak, nonatomic) IBOutlet UIButton *paymentButton;
+@property (nonatomic, strong)UIWindow *paySuccessWindow;
 
 @end
 
@@ -136,26 +138,27 @@
     }else{
         /*
         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"X当前订单已支付完成！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-        if (storyboard) {
-            PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
-            
-            if (paySuccessViewController) {
-                /*
-                [paySuccessViewController.btnHintInfo setTitle:@"购买成功" forState:UIControlStateNormal];
-                
-                paySuccessViewController.lblPayMethod.text = @"支付宝";
-                paySuccessViewController.lblPayAmount.text = [NSString stringWithFormat:@"￥%@",self.lblFactPayment.text];*/
-                paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
-                paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"支付宝");
-                paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.lblOrderAmount.text];
-                paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
-                paySuccessViewController.orderID = self.orderID;
-                paySuccessViewController.packageCategory = self.packageCategory;
-                [self.navigationController pushViewController:paySuccessViewController animated:YES];
-                
-            }
-        }
+        [self showPaySuccessWindow];
+//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+//        if (storyboard) {
+//            PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
+//            
+//            if (paySuccessViewController) {
+//                /*
+//                [paySuccessViewController.btnHintInfo setTitle:@"购买成功" forState:UIControlStateNormal];
+//                
+//                paySuccessViewController.lblPayMethod.text = @"支付宝";
+//                paySuccessViewController.lblPayAmount.text = [NSString stringWithFormat:@"￥%@",self.lblFactPayment.text];*/
+//                paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+//                paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"支付宝");
+//                paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.lblOrderAmount.text];
+//                paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
+//                paySuccessViewController.orderID = self.orderID;
+//                paySuccessViewController.packageCategory = self.packageCategory;
+//                [self.navigationController pushViewController:paySuccessViewController animated:YES];
+//                
+//            }
+//        }
     }
 }
 
@@ -170,27 +173,29 @@
             //
             /*
             [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"X当前订单已支付完成！" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-            if (storyboard) {
-                PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
-                
-                if (paySuccessViewController) {
-                    /*
-                    [paySuccessViewController.btnHintInfo setTitle:@"购买成功" forState:UIControlStateNormal];
-                    
-                    paySuccessViewController.lblPayMethod.text = @"微信支付";
-                    paySuccessViewController.lblPayAmount.text = [NSString stringWithFormat:@"￥%@",_lblOrderAmount.text];*/
-                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
-                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"微信支付");
-                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.lblOrderAmount.text];
-                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
-                    paySuccessViewController.orderID = self.orderID;
-                    paySuccessViewController.packageCategory = self.packageCategory;
-                    
-                    [self.navigationController pushViewController:paySuccessViewController animated:YES];
-                    
-                }
-            }
+            [self showPaySuccessWindow];
+            
+//            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+//            if (storyboard) {
+//                PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
+//                
+//                if (paySuccessViewController) {
+//                    /*
+//                    [paySuccessViewController.btnHintInfo setTitle:@"购买成功" forState:UIControlStateNormal];
+//                    
+//                    paySuccessViewController.lblPayMethod.text = @"微信支付";
+//                    paySuccessViewController.lblPayAmount.text = [NSString stringWithFormat:@"￥%@",_lblOrderAmount.text];*/
+//                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+//                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"微信支付");
+//                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"￥%@",self.lblOrderAmount.text];
+//                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
+//                    paySuccessViewController.orderID = self.orderID;
+//                    paySuccessViewController.packageCategory = self.packageCategory;
+//                    
+//                    [self.navigationController pushViewController:paySuccessViewController animated:YES];
+//                    
+//                }
+//            }
 
         }else{
             if (payResult) {
@@ -203,6 +208,83 @@
     
     
 }
+
+- (void)showPaySuccessWindow {
+    if (!self.paySuccessWindow) {
+        self.paySuccessWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.paySuccessWindow.windowLevel = UIWindowLevelStatusBar;
+        self.paySuccessWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
+//        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenWindow)];
+//        [self.paySuccessWindow addGestureRecognizer:tap];
+        
+        UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+        littleView.un_width = kScreenWidthValue-70;
+        littleView.un_height = littleView.un_width*223.00/305.00;
+        littleView.un_left = 35;
+        littleView.un_top = kScreenHeightValue/2-littleView.un_height/2;
+        littleView.backgroundColor = [UIColor whiteColor];
+        littleView.layer.masksToBounds = YES;
+        littleView.layer.cornerRadius = 10;
+        [self.paySuccessWindow addSubview:littleView];
+        
+        UIButton *checkButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        checkButton.frame = CGRectMake(0, 0, 0, 0);
+        checkButton.un_left = 0;
+        checkButton.un_width = littleView.un_width;
+        checkButton.un_height = littleView.un_height*0.21973;
+        checkButton.un_top = littleView.un_height-checkButton.un_height;
+        [checkButton setTitle:@"确定" forState:UIControlStateNormal];
+        checkButton.titleLabel.font = [UIFont systemFontOfSize:21];
+        [checkButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
+        [checkButton addTarget:self action:@selector(checkAction) forControlEvents:UIControlEventTouchUpInside];
+        [littleView addSubview:checkButton];
+        
+        UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, checkButton.un_top-1, littleView.un_width, 1)];
+        lineView.backgroundColor = UIColorFromRGB(0xe5e5e5);
+        [littleView addSubview:lineView];
+        
+        UIImageView *paySuccessImg = [[UIImageView alloc] init];
+        paySuccessImg.un_top = littleView.un_height*0.15695;
+        paySuccessImg.un_width = littleView.un_width*100.00/446.00;
+        paySuccessImg.un_height = paySuccessImg.un_width;
+        paySuccessImg.un_left = (littleView.un_width-paySuccessImg.un_width)/2;
+        paySuccessImg.image = [UIImage imageNamed:@"icon_success"];
+        [littleView addSubview:paySuccessImg];
+        
+        UILabel *upLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, paySuccessImg.un_bottom+littleView.un_height*0.04, littleView.un_width, 21)];
+        upLabel.text = @"套餐购买成功";
+        upLabel.textAlignment = NSTextAlignmentCenter;
+        upLabel.textColor = UIColorFromRGB(0x333333);
+        upLabel.font = [UIFont systemFontOfSize:14];
+        [littleView addSubview:upLabel];
+        
+        UILabel *downLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, lineView.un_top-littleView.un_height*0.07-upLabel.un_height, littleView.un_width, upLabel.un_height)];
+        downLabel.text = @"您必须激活才能使用";
+        downLabel.textAlignment = NSTextAlignmentCenter;
+        downLabel.textColor = UIColorFromRGB(0x333333);
+        downLabel.font = [UIFont systemFontOfSize:14];
+        [littleView addSubview:downLabel];
+        
+        [self.paySuccessWindow makeKeyAndVisible];
+    }
+}
+
+- (void)hiddenWindow {
+    self.paySuccessWindow.hidden = YES;
+    self.paySuccessWindow = nil;
+    [self.paySuccessWindow makeKeyAndVisible];
+}
+
+- (void)checkAction {
+    [self hiddenWindow];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"BuyConfrim" object:nil];
+    ActivateGiftCardViewController *giftCardVC = [[ActivateGiftCardViewController alloc] init];
+    giftCardVC.packageCategory = self.packageCategory;
+    giftCardVC.idOrder = self.orderID;
+    giftCardVC.isPaySuccess = YES;
+    [self.navigationController pushViewController:giftCardVC animated:YES];
+}
+
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ([alertView.message isEqualToString:@"你当前订单已支付完成！"]) {
@@ -439,26 +521,28 @@
         
         NSLog(@"查询到的用户数据：%@",responseObj);
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
-            if (storyboard) {
-                PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
-                
-                if (paySuccessViewController) {
-                    
-                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
-                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
-                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%@",self.lblOrderAmount.text];
-                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
-                    paySuccessViewController.orderID = self.orderID;
-                    paySuccessViewController.packageCategory = self.packageCategory;
-                    
-                    
-                    
-                    
-                    [self.navigationController pushViewController:paySuccessViewController animated:YES];
-                    
-                }
-            }
+            [self showPaySuccessWindow];
+            
+//            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
+//            if (storyboard) {
+//                PaySuccessViewController *paySuccessViewController = [storyboard instantiateViewControllerWithIdentifier:@"paySuccessViewController"];
+//                
+//                if (paySuccessViewController) {
+//                    
+//                    paySuccessViewController.strHintInfo = INTERNATIONALSTRING(@"充值成功");
+//                    paySuccessViewController.strPayMethod = INTERNATIONALSTRING(@"余额支付");
+//                    paySuccessViewController.strPayAmount = [NSString stringWithFormat:@"%@",self.lblOrderAmount.text];
+//                    paySuccessViewController.title = INTERNATIONALSTRING(@"购买成功");
+//                    paySuccessViewController.orderID = self.orderID;
+//                    paySuccessViewController.packageCategory = self.packageCategory;
+//                    
+//                    
+//                    
+//                    
+//                    [self.navigationController pushViewController:paySuccessViewController animated:YES];
+//                    
+//                }
+//            }
             
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             

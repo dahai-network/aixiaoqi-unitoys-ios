@@ -657,7 +657,7 @@
     if (!self.chooseAlertWindow) {
         self.chooseAlertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.chooseAlertWindow.windowLevel = UIWindowLevelStatusBar;
-        self.chooseAlertWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6];
+        self.chooseAlertWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenWindow)];
         [self.chooseAlertWindow addGestureRecognizer:tap];
         

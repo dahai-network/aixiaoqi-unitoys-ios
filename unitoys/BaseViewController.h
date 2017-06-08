@@ -131,4 +131,6 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 - (void)cardInDevice;
 
+- (void)whatIsAixiaoqiCard;
+
 @end
