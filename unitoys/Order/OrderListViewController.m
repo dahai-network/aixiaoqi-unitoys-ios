@@ -249,7 +249,7 @@
     NSLog(@"爱小器卡已放入手机");
     
     UNReadyActivateController *activate = [[UNReadyActivateController alloc] init];
-    activate.defaultDate = @"";
+//    activate.defaultDate = @"";
     activate.defaultDay = @"";
     [self.navigationController pushViewController:activate animated:YES];
 }

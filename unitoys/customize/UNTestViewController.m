@@ -10,7 +10,7 @@
 #import "global.h"
 #import "UNPresentTool.h"
 #import "UNPopTipMsgView.h"
-#import "UNMobileActivateController.h"
+#import "UNReadyActivateController.h"
 
 @interface UNTestViewController ()
 @property (nonatomic, strong) UNPresentTool *presentTool;
@@ -36,7 +36,8 @@
 
 - (void)pushActive
 {
-    UNMobileActivateController *activeVc = [[UNMobileActivateController alloc] init];
+    UNReadyActivateController *activeVc = [[UNReadyActivateController alloc] init];
+    activeVc.defaultDay = @"1";
     [self.navigationController pushViewController:activeVc animated:YES];
 }
 
