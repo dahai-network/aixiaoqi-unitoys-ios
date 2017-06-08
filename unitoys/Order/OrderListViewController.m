@@ -257,6 +257,8 @@
     if ([self.currentInfo[@"OrderStatus"] intValue] != 0) {
         //只有状态为0才没有时间
         activate.defaultDate = [UNConvertFormatTool dateStringYMDFromTimeInterval:self.currentInfo[@"ActivationDate"]];
+    }else{
+        activate.lastActivateDate = [self.currentInfo[@"LastCanActivationDate"] doubleValue];
     }
     [self.navigationController pushViewController:activate animated:YES];
 }

@@ -84,19 +84,18 @@ static NSString *activateCellID = @"UNReadyActivateCell";
     [btnOK addTarget:self action:@selector(selectValue) forControlEvents:UIControlEventTouchUpInside];
     [valueView addSubview:btnOK];
     
-    //创建一个UIPickView对象
+
     UIDatePicker *datePicker = [[UIDatePicker alloc]init];
     self.datePicker = datePicker;
-    //自定义位置
     datePicker.frame = CGRectMake(0, valueView.un_height - 180 - 40, kScreenWidthValue, 180);
-    //设置背景颜色
     datePicker.backgroundColor = [UIColor whiteColor];
-    //datePicker.center = self.center;
-    //设置本地化支持的语言（在此是中文)
     datePicker.locale = [NSLocale localeWithLocaleIdentifier:@"zh"];
-    //显示方式是只显示年月日
     datePicker.datePickerMode = UIDatePickerModeDate;
-    //放在盖板上
+    datePicker.minimumDate = [NSDate date];
+    if (self.lastActivateDate) {
+        //最晚激活日期
+        datePicker.maximumDate = [NSDate dateWithTimeIntervalSince1970:self.lastActivateDate];
+    }
     [valueView addSubview:datePicker];
     
     [self.view addSubview:valueView];

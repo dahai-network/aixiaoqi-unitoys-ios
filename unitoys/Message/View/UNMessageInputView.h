@@ -27,7 +27,7 @@
 @protocol UIMessageInputViewDelegate <NSObject>
 @optional
 //发送文字
-- (void)messageInputView:(UNMessageInputView *)inputView sendText:(NSString *)text;
+- (BOOL)messageInputView:(UNMessageInputView *)inputView sendText:(NSString *)text;
 //底部高度改变
 - (void)messageInputView:(UNMessageInputView *)inputView BottomViewHeightChanged:(CGFloat)BottomViewHeight;
 @end

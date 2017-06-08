@@ -91,7 +91,9 @@
     if ([self.dicOrderDetail[@"OrderStatus"] intValue] != 0) {
         //只有状态为0才没有时间
 //        activate.defaultDate = self.dicOrderDetail[@"ActivationDate"];
-         activate.defaultDate = [UNConvertFormatTool dateStringYMDFromTimeInterval:self.dicOrderDetail[@"ActivationDate"]];
+        activate.defaultDate = [UNConvertFormatTool dateStringYMDFromTimeInterval:self.dicOrderDetail[@"ActivationDate"]];
+    }else{
+        activate.lastActivateDate = [self.dicOrderDetail[@"LastCanActivationDate"] doubleValue];
     }
     [self.navigationController pushViewController:activate animated:YES];
 }

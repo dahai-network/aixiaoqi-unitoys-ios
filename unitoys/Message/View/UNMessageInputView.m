@@ -48,7 +48,6 @@
 + (instancetype)messageInputViewWithPlaceHolder:(NSString *)placeHolder
 {
     UNMessageInputView *messageInputView = [[UNMessageInputView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue, kScreenWidthValue, kMessageInputView_Height)];
-    
     return messageInputView;
 }
 
@@ -206,11 +205,14 @@
 - (void)sendTextStr{
     NSMutableString *sendStr = [NSMutableString stringWithString:self.inputTextView.text];
     if (sendStr && ![sendStr isEqualToString:@""] && _delegate && [_delegate respondsToSelector:@selector(messageInputView:sendText:)]) {
-        [self.delegate messageInputView:self sendText:sendStr];
+        BOOL isSend = [self.delegate messageInputView:self sendText:sendStr];
+        if (isSend) {
+            _inputTextView.selectedRange = NSMakeRange(0, _inputTextView.text.length);
+            [_inputTextView insertText:@""];
+            [self updateContentView];
+        }
     }
-    _inputTextView.selectedRange = NSMakeRange(0, _inputTextView.text.length);
-    [_inputTextView insertText:@""];
-    [self updateContentView];
+//    [self updateContentView];
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
@@ -226,10 +228,10 @@
 }
 - (BOOL)textViewShouldEndEditing:(UITextView *)textView{
 
-    [UIView animateWithDuration:0.25 delay:0.0f options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
-        [self setUn_top:kScreenHeightValue- CGRectGetHeight(self.frame)];
-    } completion:^(BOOL finished) {
-    }];
+//    [UIView animateWithDuration:0.25 delay:0.0f options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
+//        [self setUn_top:kScreenHeightValue- CGRectGetHeight(self.frame)];
+//    } completion:^(BOOL finished) {
+//    }];
     return YES;
 }
 #pragma mark - KeyBoard Notification Handlers
@@ -237,7 +239,7 @@
     if ([aNotification name] == UIKeyboardDidChangeFrameNotification) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidChangeFrameNotification object:nil];
     }
-    if ([self.inputTextView isFirstResponder]) {
+//    if ([self.inputTextView isFirstResponder]) {
         NSDictionary* userInfo = [aNotification userInfo];
         CGRect keyboardEndFrame = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
         CGFloat keyboardY =  keyboardEndFrame.origin.y;
@@ -264,7 +266,7 @@
         }else{
             endFrameBlock();
         }
-    }
+//    }
 }
 
 
@@ -291,4 +293,38 @@
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+
+- (UIView *)findKeyboard
+{
+    UIView *keyboardView = nil;
+    NSArray *windows = [[UIApplication sharedApplication] windows];
+    for (UIWindow *window in [windows reverseObjectEnumerator])//逆序效率更高，因为键盘总在上方
+    {
+        keyboardView = [self findKeyboardInView:window];
+        if (keyboardView)
+        {
+            return keyboardView;
+        }
+    }
+    return nil;
+}
+- (UIView *)findKeyboardInView:(UIView *)view
+{
+    for (UIView *subView in [view subviews])
+    {
+        if (strstr(object_getClassName(subView), "UIKeyboard"))
+        {
+            return subView;
+        }else{
+            UIView *tempView = [self findKeyboardInView:subView];
+            if (tempView)
+            {
+                return tempView;
+            }
+        }
+    }
+    return nil;
+}
+
 @end

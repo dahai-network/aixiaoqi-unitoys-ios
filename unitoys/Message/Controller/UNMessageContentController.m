@@ -19,8 +19,10 @@
 #import "MJMessageCell.h"
 #import "UnMessageLinkManModel.h"
 #import "UNConvertFormatTool.h"
+#import "ContactsViewController.h"
+#import "AddTouchAreaButton.h"
 
-@interface UNMessageContentController ()<UITableViewDataSource, UITableViewDelegate, NotifyTextFieldDelegate, UIMessageInputViewDelegate>
+@interface UNMessageContentController ()<UITableViewDataSource, UITableViewDelegate, NotifyTextFieldDelegate, UIMessageInputViewDelegate,PhoneNumberSelectDelegate>
 
 @property (nonatomic, strong) UIBarButtonItem *defaultLeftItem;
 @property (nonatomic, strong) UIBarButtonItem *defaultRightItem;
@@ -52,8 +54,11 @@
 @property (nonatomic, strong) NSMutableArray *arrLinkmans;
 //当前textfield显示文字
 @property (nonatomic, copy) NSString *currentTextFieldStr;
+//顶部控件
+@property (nonatomic, strong) UIView *topEditLinkManView;
 //输入联系人号码
-@property (nonatomic, strong) NotifyTextField *txtLinkman;
+@property (nonatomic, weak) NotifyTextField *txtLinkman;
+
 @end
 
 @implementation UNMessageContentController
@@ -83,6 +88,24 @@
     [self initMessageData];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if (_myMsgInputView) {
+        _myMsgInputView.hidden = NO;
+        [_myMsgInputView prepareToShow];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    if (_myMsgInputView) {
+        _myMsgInputView.hidden = YES;
+        [_myMsgInputView prepareToDismiss];
+    }
+}
+
 - (void)loadNavigationBar
 {
     if (self.isNewMessage) {
@@ -107,13 +130,46 @@
 {
     _selectRemoveData = [NSMutableArray array];
     self.page = 0;
-    self.myMsgInputView.delegate = self;
     [self createTaleView];
+    [self createMessageInputView];
+    [self loadData];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KTAutoHeightTextViewFontChange" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow) name:@"KeyboardWillShowFinished" object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSMSAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuControllerDidHide:) name:UIMenuControllerDidHideMenuNotification object:nil];
+}
+
+- (void)createTaleView
+{
+    self.myTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    self.myTableView.un_height -= 64;
+    self.myTableView.backgroundColor = [UIColor darkGrayColor];
+    self.myTableView.dataSource = self;  //新增
+    self.myTableView.delegate = self; //控制器成为代理
+    self.myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.myTableView.allowsSelection = NO; // 不允许选中
+    self.myTableView.allowsMultipleSelectionDuringEditing = YES;
+    [self.view addSubview:self.myTableView];
+}
+
+- (void)createMessageInputView
+{
+    _myMsgInputView = [UNMessageInputView messageInputViewWithPlaceHolder:@"输入短信"];
+    _myMsgInputView.delegate = self;
+//    [_myMsgInputView prepareToShow];
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0,CGRectGetHeight(_myMsgInputView.frame), 0.0);
+    self.myTableView.contentInset = contentInsets;
+    self.myTableView.scrollIndicatorInsets = contentInsets;
+}
+
+- (void)loadData
+{
     if (self.isNewMessage) {
         self.arrLinkmans = [[NSMutableArray alloc] init];
-        self.txtLinkman.notifyTextFieldDelegate = self;
-        self.txtLinkman.textColor = [UIColor blackColor];
+        [self createTxtLinkman];
     }else{
         self.myTableView.mj_header = [CustomRefreshMessageHeader headerWithRefreshingBlock:^{
             [self cancelEdit];
@@ -133,22 +189,57 @@
             }
         }
     }
-    
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KTAutoHeightTextViewFontChange" object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow) name:@"KeyboardWillShowFinished" object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSMSAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuControllerDidHide:) name:UIMenuControllerDidHideMenuNotification object:nil];
 }
-- (void)createTaleView
+
+- (void)createTxtLinkman
 {
-    self.myTableView.backgroundColor = [UIColor whiteColor];
-    self.myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.myTableView.allowsSelection = NO; // 不允许选中
-    self.myTableView.allowsMultipleSelectionDuringEditing = YES;
-    self.myTableView.dataSource = self;  //新增
-    self.myTableView.delegate = self; //控制器成为代理
+    _topEditLinkManView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, 50)];
+    _topEditLinkManView.backgroundColor = UIColorFromRGB(0xF5F5F5);
+    [self.view addSubview:_topEditLinkManView];
+    
+    UILabel *leftLabel = [[UILabel alloc] init];
+    leftLabel.text = @"收件人:";
+    leftLabel.textColor = UIColorFromRGB(0x333333);
+    leftLabel.font = [UIFont systemFontOfSize:15];
+    [leftLabel sizeToFit];
+    leftLabel.un_left = 8;
+    leftLabel.un_centerY = _topEditLinkManView.un_height * 0.5;
+    [_topEditLinkManView addSubview:leftLabel];
+
+    AddTouchAreaButton *selectManButton = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];
+    [selectManButton setImage:[UIImage imageNamed:@"add_addressee_nor"] forState:UIControlStateNormal];
+    [selectManButton setImage:[UIImage imageNamed:@"add_addressee_pre"] forState:UIControlStateHighlighted];
+    [selectManButton addTarget:self action:@selector(addLinkManAction:) forControlEvents:UIControlEventTouchUpInside];
+    [selectManButton sizeToFit];
+    selectManButton.touchEdgeInset = UIEdgeInsetsMake(10, 10, 10, 10);
+    selectManButton.un_right = _topEditLinkManView.un_width - 19;
+    selectManButton.un_centerY = leftLabel.un_centerY;
+    [_topEditLinkManView addSubview:selectManButton];
+    
+    NotifyTextField *txtLinkman = [[NotifyTextField alloc] initWithFrame:CGRectMake(leftLabel.un_right + 8, 0, kScreenWidthValue - (leftLabel.un_right + 8) - (kScreenWidthValue - selectManButton.un_left + 8), 30)];
+    txtLinkman.un_centerY = _topEditLinkManView.un_height * 0.5;
+    self.txtLinkman = txtLinkman;
+    txtLinkman.font = [UIFont systemFontOfSize:14];
+    txtLinkman.notifyTextFieldDelegate = self;
+    txtLinkman.textColor = [UIColor blackColor];
+    [_topEditLinkManView addSubview:txtLinkman];
+}
+
+//添加联系人事件
+- (void)addLinkManAction:(UIButton *)button
+{
+    button.enabled = NO;
+    [self.txtLinkman endEditing:YES];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    if (storyboard) {
+        ContactsViewController *contactsViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsViewController"];
+        if (contactsViewController) {
+            contactsViewController.bOnlySelectNumber = YES;
+            contactsViewController.delegate = self;
+            [self.navigationController pushViewController:contactsViewController animated:YES];
+        }
+    }
+    button.enabled = YES;
 }
 
 - (void)selectAllCell
@@ -601,6 +692,9 @@
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     if (scrollView == self.myTableView) {
+        if (_myMsgInputView) {
+            [_myMsgInputView isAndResignFirstResponder];
+        }
         // 退出键盘
         [self.view endEditing:YES];
     }
@@ -646,8 +740,9 @@
     } headers:self.headers];
 }
 
-
-- (void)sendMessageActionWithMessage:(NSString *)message
+//点击发送消息
+#pragma mark --- 发送消息
+- (BOOL)sendMessageActionWithMessage:(NSString *)message
 {
     if (message && ![message isEqualToString:@""]) {
         if (self.isNewMessage) {
@@ -670,12 +765,14 @@
                     self.toTelephone = phoneNumbers;
                     self.toPhoneName = linkManName;
                 }else{
-                    return;
+                    HUDNormal(@"请先选择联系人");
+                    return NO;
                 }
             }
         }
         NSString *receiveNumbers = self.toTelephone;
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",message,@"SMSContent", nil];
+        self.checkToken = YES;
         [self getBasicHeader];
         [SSNetworkRequest postRequest:apiSMSSend params:params success:^(id responseObj) {
             NSLog(@"查询到的用户数据：%@",responseObj);
@@ -695,8 +792,8 @@
                         self.title = self.toPhoneName;
                     }
                     //隐藏新建短信控件
-                    self.txtLinkman.hidden = YES;
-                    [self.txtLinkman removeFromSuperview];
+                    self.topEditLinkManView.hidden = YES;
+                    [self.topEditLinkManView removeFromSuperview];
                 }
                 
                 
@@ -718,7 +815,10 @@
             NSLog(@"啥都没：%@",[error description]);
             [self.myMsgInputView sendMessageField];
         } headers:self.headers];
+    }else{
+        return NO;
     }
+    return YES;
 }
 
 
@@ -946,10 +1046,35 @@
     return phone;
 }
 
-
-
-
-
+#pragma mark --PhoneNumberSelectDelegate
+- (void)didSelectPhoneNumber:(NSString *)phoneNumber {
+    NSLog(@"选择号码");
+    //    NSLog(@"添加联系人：%@",phoneNumber);
+    //phoneNumber:name|phone
+    NSArray * arrNumberInfo = [phoneNumber componentsSeparatedByString:@"|"];
+    if ([arrNumberInfo count]==2) {
+        if (![UNConvertFormatTool isAllNumberWithString:arrNumberInfo.lastObject]) {HUDNormal(INTERNATIONALSTRING(@"号码格式错误"))
+            return;
+        }
+        //判断号码是否重复
+        if (self.arrLinkmans.count) {
+            for (UnMessageLinkManModel *model in self.arrLinkmans) {
+                if ([model.phoneNumber isEqualToString:arrNumberInfo.lastObject]) {
+                    HUDNormal(INTERNATIONALSTRING(@"请勿选择重复的联系人"))
+                    return;
+                }
+            }
+        }
+        UnMessageLinkManModel *linkModel = [[UnMessageLinkManModel alloc] initWithPhone:arrNumberInfo.lastObject LinkMan:arrNumberInfo.firstObject];
+        [self.arrLinkmans addObject:linkModel];
+    }else{
+        if ([UNConvertFormatTool isAllNumberWithString:phoneNumber]) {
+            UnMessageLinkManModel *linkModel = [[UnMessageLinkManModel alloc] initWithPhone:phoneNumber];
+            [self.arrLinkmans addObject:linkModel];
+        }
+    }
+    [self updateEditLinkManData];
+}
 
 
 
@@ -1153,14 +1278,14 @@
 
 
 //发送文字
-- (void)messageInputView:(UNMessageInputView *)inputView sendText:(NSString *)text
+- (BOOL)messageInputView:(UNMessageInputView *)inputView sendText:(NSString *)text
 {
-    
+    return [self sendMessageActionWithMessage:text];
 }
 //底部高度改变
 - (void)messageInputView:(UNMessageInputView *)inputView BottomViewHeightChanged:(CGFloat)BottomViewHeight
 {
-
+    NSLog(@"%.f", BottomViewHeight);
 }
 
 - (void)didReceiveMemoryWarning {

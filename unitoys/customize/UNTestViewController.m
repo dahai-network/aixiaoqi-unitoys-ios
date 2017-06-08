@@ -11,6 +11,7 @@
 #import "UNPresentTool.h"
 #import "UNPopTipMsgView.h"
 #import "UNReadyActivateController.h"
+#import "UNMessageContentController.h"
 
 @interface UNTestViewController ()
 @property (nonatomic, strong) UNPresentTool *presentTool;
@@ -36,9 +37,12 @@
 
 - (void)pushActive
 {
-    UNReadyActivateController *activeVc = [[UNReadyActivateController alloc] init];
-    activeVc.defaultDay = @"1";
-    [self.navigationController pushViewController:activeVc animated:YES];
+//    UNReadyActivateController *activeVc = [[UNReadyActivateController alloc] init];
+//    activeVc.defaultDay = @"1";
+//    [self.navigationController pushViewController:activeVc animated:YES];
+    UNMessageContentController *messageContentVc = [[UNMessageContentController alloc] init];
+    messageContentVc.isNewMessage = YES;
+    [self.navigationController pushViewController:messageContentVc animated:YES];
 }
 
 - (void)initPopView

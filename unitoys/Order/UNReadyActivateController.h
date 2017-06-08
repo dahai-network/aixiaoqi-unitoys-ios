@@ -14,7 +14,8 @@
 @property (nonatomic, copy) NSString *defaultDay;
 
 @property (nonatomic, copy) NSString *orderID;
-
 @property (nonatomic, assign) BOOL isAlreadyActivate;
+
+@property (nonatomic, assign) NSTimeInterval lastActivateDate;
 
 @end
