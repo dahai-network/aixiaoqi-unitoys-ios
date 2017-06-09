@@ -34,11 +34,11 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unibox-12:34:56:78:aa" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wRH-Y2-JZA">
-                        <rect key="frame" x="65" y="22" width="175" height="21"/>
+                        <rect key="frame" x="60" y="22" width="185" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="xvN-i1-HIz"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                         <color key="textColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -80,8 +80,8 @@
                     <constraint firstItem="U35-Ul-CBL" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Y5W-sK-Jua"/>
                     <constraint firstAttribute="trailing" secondItem="gm7-AA-Bjy" secondAttribute="trailing" id="b2A-3D-Cgg"/>
                     <constraint firstItem="JPy-uO-sf3" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="biZ-Qd-tkt"/>
-                    <constraint firstItem="09a-dV-Azu" firstAttribute="leading" secondItem="wRH-Y2-JZA" secondAttribute="trailing" constant="10" id="hVD-nQ-M1C"/>
-                    <constraint firstItem="wRH-Y2-JZA" firstAttribute="leading" secondItem="U35-Ul-CBL" secondAttribute="trailing" constant="10" id="xA1-om-I6a"/>
+                    <constraint firstItem="09a-dV-Azu" firstAttribute="leading" secondItem="wRH-Y2-JZA" secondAttribute="trailing" constant="5" id="hVD-nQ-M1C"/>
+                    <constraint firstItem="wRH-Y2-JZA" firstAttribute="leading" secondItem="U35-Ul-CBL" secondAttribute="trailing" constant="5" id="xA1-om-I6a"/>
                     <constraint firstAttribute="bottom" secondItem="gm7-AA-Bjy" secondAttribute="bottom" id="y69-cA-9C8"/>
                 </constraints>
             </tableViewCellContentView>

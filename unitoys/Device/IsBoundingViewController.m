@@ -338,8 +338,8 @@
     if (self.deviceDataArr.count) {
         NSDictionary *info = self.deviceDataArr[indexPath.row];
         cell.btnConnect.indexPath = indexPath;
-//        cell.lblDeviceName.text = [NSString stringWithFormat:@"Unibox-%@", info[@"mac"]];
-        cell.lblDeviceName.text = info[@"mac"];
+        cell.lblDeviceName.text = [NSString stringWithFormat:@"Unibox-%@", info[@"mac"]];
+//        cell.lblDeviceName.text = info[@"mac"];
         if ([info[@"isAlreadyBind"] isEqualToString:@"0"]) {
             cell.lblDeviceStatue.text = @"未绑定";
             cell.lblDeviceName.textColor = UIColorFromRGB(0x333333);
