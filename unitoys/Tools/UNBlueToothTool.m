@@ -69,11 +69,17 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, copy)NSString *activityCardData;
 
+//绑定计时器
 @property (nonatomic, strong) NSTimer *boundTimer;
 @property (nonatomic, assign) int boundTimeValue;
 
+//扫描计时器
 @property (nonatomic, strong) NSTimer *scanAndConnectingTimer;
 @property (nonatomic, assign) int scanAndConnectingTimeValue;
+
+//加密计时器
+@property (nonatomic, strong) NSTimer *encryptionTimer;
+@property (nonatomic, assign) int encryptionTimeValue;
 
 @property (nonatomic, copy)NSString *activityCardDataStr;//激活爱小器卡时记录多包的数据
 
@@ -1154,12 +1160,35 @@ static UNBlueToothTool *instance = nil;
     NSLog(@"加密之后的文字 -- %@", encryptStr);
     [BlueToothDataManager shareManager].checkStr = encryptStr;
     [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:appdenStr];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    [self startEncryptionTimer];
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        if (![BlueToothDataManager shareManager].isSame) {
+//            [self closeConnecting];
+//        }
+//    });
+//    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+}
+
+- (void)startEncryptionTimer {
+    self.encryptionTimeValue = 0;
+    if (!self.encryptionTimer) {
+        self.encryptionTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(actionToEncryption) userInfo:nil repeats:YES];
+        //如果不添加下面这条语句，在UITableView拖动的时候，会阻塞定时器的调用
+        [[NSRunLoop currentRunLoop] addTimer:self.encryptionTimer forMode:UITrackingRunLoopMode];
+    } else {
+        [self.encryptionTimer setFireDate:[NSDate distantPast]];
+    }
+}
+
+- (void)actionToEncryption {
+    if (self.encryptionTimeValue == 4) {
         if (![BlueToothDataManager shareManager].isSame) {
             [self closeConnecting];
         }
-    });
-//    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
+        [self.encryptionTimer setFireDate:[NSDate distantFuture]];
+    }
+    self.encryptionTimeValue++;
+    NSLog(@"加密正在计时 -- %d", self.encryptionTimeValue);
 }
 
 - (void)checkSystemInfo {
@@ -1572,6 +1601,7 @@ static UNBlueToothTool *instance = nil;
     [self.mgr cancelPeripheralConnection:self.peripheral];
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
     [self.boundTimer setFireDate:[NSDate distantFuture]];
+    [self.encryptionTimer setFireDate:[NSDate distantFuture]];
 }
 
 //初始化ICCID指令
@@ -2270,6 +2300,7 @@ static UNBlueToothTool *instance = nil;
                 } else {
                     [BlueToothDataManager shareManager].isSame = YES;
                 }
+                [self.encryptionTimer setFireDate:[NSDate distantFuture]];
                 break;
             default:
                 NSLog(@"不能识别的类别");
