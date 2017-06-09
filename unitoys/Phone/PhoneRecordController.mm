@@ -1867,6 +1867,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
         CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
         if (callingViewController) {
+//            [MobClick event:UMeng_Event_Call];
+            [self umengEvent:UMeng_Event_Call attributes:@{@"callTimes" : @"1"} number:@(1)];
 //            callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
             [self.nav presentViewController:callingViewController animated:YES completion:^{
                 callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
@@ -1890,6 +1892,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }];
         }
     }
+}
+
+-(void)umengEvent:(NSString *)eventId attributes:(NSDictionary *)attributes number:(NSNumber *)number{
+    NSString *numberKey = @"callTimes";
+    NSMutableDictionary *mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:attributes];
+    [mutableDictionary setObject:[number stringValue] forKey:numberKey];
+    [MobClick event:eventId attributes:mutableDictionary];
 }
 
 

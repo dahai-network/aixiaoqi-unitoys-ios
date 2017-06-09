@@ -266,8 +266,8 @@
         self.notBoundAlertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.notBoundAlertWindow.windowLevel = UIWindowLevelStatusBar;
         self.notBoundAlertWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
-                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenWindow)];
-                [self.notBoundAlertWindow addGestureRecognizer:tap];
+//                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenWindow)];
+//                [self.notBoundAlertWindow addGestureRecognizer:tap];
         
         UIView *littleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
         littleView.un_width = kScreenWidthValue-70;

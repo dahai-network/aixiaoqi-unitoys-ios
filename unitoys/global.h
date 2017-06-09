@@ -416,6 +416,10 @@
 //蓝牙扫描时间
 #define BLESCANTIME 7
 
+//友盟事件ID
+//拨打
+#define UMeng_Event_Call @"event_call"
+
 
 #define LBEUUID @"F9D77679-66D1-15A7-1052-EAD426D72C61"
 

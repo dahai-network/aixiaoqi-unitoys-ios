@@ -30,6 +30,7 @@ target "unitoys" do
     pod 'SSZipArchive'
     pod 'pop', '~> 1.0'
     pod 'Masonry'
+    pod 'UMengAnalytics-NO-IDFA'
 #    pod 'CocoaLumberjack'
     use_frameworks!
     pod 'iOSDFULibrary', '~> 2.1.6'

@@ -214,10 +214,12 @@
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
     
+    //友盟
+    [self initUMeng];
+    
     BuglyConfig *config = [[BuglyConfig alloc] init];  //初始化
     config.delegate = self;
     self.window.backgroundColor = [UIColor colorWithRed:234/255.0 green:236/255.0 blue:240/255.0 alpha:1.0];
-//    [self checkLogin];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] < 9.0) {
         ABAddressBookRef addresBook = ABAddressBookCreateWithOptions(NULL, NULL);
@@ -291,6 +293,20 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(isAlreadOnlineAndSendJumpData) name:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
     
     return YES;
+}
+
+- (void)initUMeng {
+    //打印登录信息
+#if DEBUG
+    [MobClick setLogEnabled:YES];
+#endif
+    UMConfigInstance.appKey = @"5938f75075ca357657001149";
+    UMConfigInstance.channelId = @"App Store";
+    //设置登录账号
+//    [MobClick profileSignInWithPUID:@"playerID"];
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    [MobClick setAppVersion:version];
+    [MobClick startWithConfigure:UMConfigInstance];//配置以上参数后调用此方法初始化SDK！
 }
 
 - (void)sendDataToCloseService {
