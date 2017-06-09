@@ -11,6 +11,7 @@
 #define kMessageInputView_HeightMax 120.0
 #define kMessageInputView_PadingHeight 7.0
 #define kMessageInputView_PaddingLeftWidth 15.0
+#define kSendMessageButtonWidth 50
 
 #import "UNMessageInputView.h"
 #import "UNPlaceHolderTextView.h"
@@ -69,12 +70,12 @@
         _contentView.backgroundColor = [UIColor whiteColor];
         _contentView.layer.borderWidth = 0.5;
         _contentView.layer.borderColor = [UIColor lightGrayColor].CGColor;
-        _contentView.layer.cornerRadius = contentViewHeight/2;
+        _contentView.layer.cornerRadius = 3.0;
         _contentView.layer.masksToBounds = YES;
         _contentView.alwaysBounceVertical = YES;
         [self addSubview:_contentView];
         [_contentView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self).insets(UIEdgeInsetsMake(kMessageInputView_PadingHeight, kMessageInputView_PaddingLeftWidth, kMessageInputView_PadingHeight, kMessageInputView_PaddingLeftWidth));
+            make.edges.equalTo(self).insets(UIEdgeInsetsMake(kMessageInputView_PadingHeight, kMessageInputView_PaddingLeftWidth, kMessageInputView_PadingHeight, kMessageInputView_PaddingLeftWidth + kSendMessageButtonWidth + kMessageInputView_PadingHeight));
         }];
     }
     
@@ -163,6 +164,7 @@
 
 - (void)placeHolderTextViewContentSizeChange:(CGSize)contentSize
 {
+    DebugUNLog(@"placeHolderTextViewContentSizeChange==%@", NSStringFromCGSize(contentSize));
     [self updateContentView];
 }
 
@@ -172,11 +174,12 @@
     if (ABS(CGRectGetHeight(_inputTextView.frame) - textSize.height) > 0.5) {
         [_inputTextView setUn_height:textSize.height];
     }
-    if (_contentView.isHidden) {
-        textSize.height = kMessageInputView_Height - 2*kMessageInputView_PadingHeight;
-    }
+//    if (_contentView.isHidden) {
+//        textSize.height = kMessageInputView_Height - 2*kMessageInputView_PadingHeight;
+//    }
     CGSize contentSize = CGSizeMake(textSize.width, textSize.height);
     CGFloat selfHeight = MAX(kMessageInputView_Height, contentSize.height + 2*kMessageInputView_PadingHeight);
+    DebugUNLog(@"selfHeight==%.f", selfHeight);
     CGFloat maxSelfHeight = kScreenHeightValue/5;
     if (kDevice_Is_iPhone5){
         maxSelfHeight = 140;
@@ -186,7 +189,6 @@
         maxSelfHeight = 250;
     }
     selfHeight = MIN(maxSelfHeight, selfHeight);
-    
     CGFloat diffHeight = selfHeight - _viewHeightOld;
     if (ABS(diffHeight) > 0.5) {
         CGRect selfFrame = self.frame;
@@ -195,8 +197,12 @@
         [self setFrame:selfFrame];
         self.viewHeightOld = selfHeight;
     }
-    [self.contentView setContentSize:contentSize];
     
+//    if (ABS(selfHeight) > 0.5) {
+//        [_inputTextView setUn_height:(selfHeight - 2 *kMessageInputView_PadingHeight)];
+//    }
+    
+    [self.contentView setContentSize:contentSize];
     CGFloat bottomY = textSize.height;
     CGFloat offsetY = MAX(0, bottomY - (CGRectGetHeight(self.frame)- 2* kMessageInputView_PadingHeight));
     [self.contentView setContentOffset:CGPointMake(0, offsetY) animated:YES];
@@ -295,36 +301,36 @@
 }
 
 
-- (UIView *)findKeyboard
-{
-    UIView *keyboardView = nil;
-    NSArray *windows = [[UIApplication sharedApplication] windows];
-    for (UIWindow *window in [windows reverseObjectEnumerator])//逆序效率更高，因为键盘总在上方
-    {
-        keyboardView = [self findKeyboardInView:window];
-        if (keyboardView)
-        {
-            return keyboardView;
-        }
-    }
-    return nil;
-}
-- (UIView *)findKeyboardInView:(UIView *)view
-{
-    for (UIView *subView in [view subviews])
-    {
-        if (strstr(object_getClassName(subView), "UIKeyboard"))
-        {
-            return subView;
-        }else{
-            UIView *tempView = [self findKeyboardInView:subView];
-            if (tempView)
-            {
-                return tempView;
-            }
-        }
-    }
-    return nil;
-}
+//- (UIView *)findKeyboard
+//{
+//    UIView *keyboardView = nil;
+//    NSArray *windows = [[UIApplication sharedApplication] windows];
+//    for (UIWindow *window in [windows reverseObjectEnumerator])//逆序效率更高，因为键盘总在上方
+//    {
+//        keyboardView = [self findKeyboardInView:window];
+//        if (keyboardView)
+//        {
+//            return keyboardView;
+//        }
+//    }
+//    return nil;
+//}
+//- (UIView *)findKeyboardInView:(UIView *)view
+//{
+//    for (UIView *subView in [view subviews])
+//    {
+//        if (strstr(object_getClassName(subView), "UIKeyboard"))
+//        {
+//            return subView;
+//        }else{
+//            UIView *tempView = [self findKeyboardInView:subView];
+//            if (tempView)
+//            {
+//                return tempView;
+//            }
+//        }
+//    }
+//    return nil;
+//}
 
 @end

@@ -88,6 +88,14 @@
     [self initMessageData];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if (_myMsgInputView) {
+        _myMsgInputView.hidden = NO;
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -100,6 +108,14 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    if (_myMsgInputView) {
+        _myMsgInputView.hidden = YES;
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
     if (_myMsgInputView) {
         _myMsgInputView.hidden = YES;
         [_myMsgInputView prepareToDismiss];
@@ -1276,7 +1292,6 @@
     } headers:self.headers];
 }
 
-
 //发送文字
 - (BOOL)messageInputView:(UNMessageInputView *)inputView sendText:(NSString *)text
 {
@@ -1286,6 +1301,18 @@
 - (void)messageInputView:(UNMessageInputView *)inputView BottomViewHeightChanged:(CGFloat)BottomViewHeight
 {
     NSLog(@"%.f", BottomViewHeight);
+    [self updateTableViewHeightWithBottomViewHeight:BottomViewHeight];
+}
+
+- (void)updateTableViewHeightWithBottomViewHeight:(CGFloat)BottomViewHeight
+{
+    if (BottomViewHeight > 50) {
+        self.myTableView.un_top = - (BottomViewHeight - 50);
+    }else{
+        if (self.myTableView.un_top != 0) {
+            self.myTableView.un_top = 0;
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning {
