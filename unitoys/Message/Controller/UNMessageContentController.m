@@ -1381,11 +1381,13 @@
 {
     DebugUNLog(@"scrollView====contentOffset%.f=======contentSize%.f", scrollView.contentOffset.y, scrollView.contentSize.height);
     if (scrollView == self.myTableView) {
-        if (_myMsgInputView) {
-            [_myMsgInputView isAndResignFirstResponder];
+        if ((kScreenHeightValue - 64 - 50 - (scrollView.contentSize.height - scrollView.contentOffset.y)) < 0) {
+            if (_myMsgInputView) {
+                [_myMsgInputView isAndResignFirstResponder];
+            }
+            // 退出键盘
+            [self.view endEditing:YES];
         }
-        // 退出键盘
-        [self.view endEditing:YES];
     }
 }
 

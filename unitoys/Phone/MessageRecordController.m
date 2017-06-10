@@ -170,15 +170,15 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
 - (void)createMsgAction:(AddTouchAreaButton *)button
 {
-    //    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-    //    NewMessageViewController *newMessageViewController = [mainStory instantiateViewControllerWithIdentifier:@"newMessageViewController"];
-    //    if (newMessageViewController) {
-    //        [self.nav pushViewController:newMessageViewController animated:YES];
-    //    }
+    UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+    NewMessageViewController *newMessageViewController = [mainStory instantiateViewControllerWithIdentifier:@"newMessageViewController"];
+    if (newMessageViewController) {
+        [self.nav pushViewController:newMessageViewController animated:YES];
+    }
     
-    UNMessageContentController *messageVc = [[UNMessageContentController alloc] init];
-    messageVc.isNewMessage = YES;
-    [self.nav pushViewController:messageVc animated:YES];
+//    UNMessageContentController *messageVc = [[UNMessageContentController alloc] init];
+//    messageVc.isNewMessage = YES;
+//    [self.nav pushViewController:messageVc animated:YES];
 }
 
 //- (void)loadMessage {
@@ -399,45 +399,45 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:@[dicMessageRecord]];
     }
     
-//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-//    if (storyboard) {
-//        //            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
-//        MJViewController *mjViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
-//        if (mjViewController) {
-//            NSString *currentPhone;
-//            if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
-//                //己方发送
-//                currentPhone = [dicMessageRecord objectForKey:@"To"];
-//            }else{
-//                //对方发送
-//                currentPhone = [dicMessageRecord objectForKey:@"Fm"];
-//            }
-//            self.currentSelectPhone = currentPhone;
-//            NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
-//            mjViewController.title = titleName;
-//            mjViewController.titleName = titleName;
-//            mjViewController.toTelephone = currentPhone;
-//            mjViewController.hidesBottomBarWhenPushed = YES;
-//            [self.nav pushViewController:mjViewController animated:YES];
-//        }
-//    }
-    
-    UNMessageContentController *messageVc = [[UNMessageContentController alloc] init];
-    NSString *currentPhone;
-    if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
-        //己方发送
-        currentPhone = [dicMessageRecord objectForKey:@"To"];
-    }else{
-        //对方发送
-        currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+    if (storyboard) {
+        //            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
+        MJViewController *mjViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
+        if (mjViewController) {
+            NSString *currentPhone;
+            if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+                //己方发送
+                currentPhone = [dicMessageRecord objectForKey:@"To"];
+            }else{
+                //对方发送
+                currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+            }
+            self.currentSelectPhone = currentPhone;
+            NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
+            mjViewController.title = titleName;
+            mjViewController.titleName = titleName;
+            mjViewController.toTelephone = currentPhone;
+            mjViewController.hidesBottomBarWhenPushed = YES;
+            [self.nav pushViewController:mjViewController animated:YES];
+        }
     }
-    self.currentSelectPhone = currentPhone;
-    NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
-    messageVc.title = titleName;
-    messageVc.toPhoneName = titleName;
-    messageVc.toTelephone = currentPhone;
-    messageVc.hidesBottomBarWhenPushed = YES;
-    [self.nav pushViewController:messageVc animated:YES];
+    
+//    UNMessageContentController *messageVc = [[UNMessageContentController alloc] init];
+//    NSString *currentPhone;
+//    if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+//        //己方发送
+//        currentPhone = [dicMessageRecord objectForKey:@"To"];
+//    }else{
+//        //对方发送
+//        currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+//    }
+//    self.currentSelectPhone = currentPhone;
+//    NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
+//    messageVc.title = titleName;
+//    messageVc.toPhoneName = titleName;
+//    messageVc.toTelephone = currentPhone;
+//    messageVc.hidesBottomBarWhenPushed = YES;
+//    [self.nav pushViewController:messageVc animated:YES];
 }
 
 //允许左滑删除
