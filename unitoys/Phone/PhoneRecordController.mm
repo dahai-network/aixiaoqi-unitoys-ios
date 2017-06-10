@@ -1756,6 +1756,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //            isHasPackage = NO;
 //        }
 //    }
+    
+    //屏蔽省心服务
+    if (!ShowConvenienceService) {
+        isCallPhone = YES;
+        isHasPackage = NO;
+    }
     //测试手动设置为NO
     if (isCallPhone) {
         [self showCallPhoneVc:strNumber IsNetWorkCallPhone:isHasPackage];

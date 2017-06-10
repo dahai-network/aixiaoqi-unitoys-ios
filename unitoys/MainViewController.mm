@@ -127,8 +127,11 @@ typedef enum : NSUInteger {
         self.selectedViewController = self.childViewControllers[1];
     });
     
+    //屏蔽省心服务
+    if (ShowConvenienceService) {
+        [self showPresentImageView];
+    }
     
-    [self showPresentImageView];
     [self updateCallTimeFromServer];
 }
 
@@ -302,23 +305,25 @@ typedef enum : NSUInteger {
 //        self.registProgress = nil;
 //    }
     
-    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
-        if ([UNPushKitMessageManager shareManager].iccidString) {
-//            NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", [UNPushKitMessageManager shareManager].iccidString];
-            NSString *iccidKey = @"ValidateICCID";
-            NSDictionary *iccidData = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
-            if (!iccidData || ![iccidData[@"ICCID"] isEqualToString:[UNPushKitMessageManager shareManager].iccidString]) {
-                if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
-                    if (![UNDataTools sharedInstance].isShowVerificationVc) {
-                        VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
-                        verificationVc.veriIccidString = [UNPushKitMessageManager shareManager].iccidString;
-                        navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
-                        [self.selectedViewController presentViewController:nav animated:YES completion:nil];
-                    }
-                }
-            }
-        }
-    }
+    
+    //屏蔽验证界面
+//    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]) {
+//        if ([UNPushKitMessageManager shareManager].iccidString) {
+////            NSString *iccidKey = [NSString stringWithFormat:@"ValidateICCID%@", [UNPushKitMessageManager shareManager].iccidString];
+//            NSString *iccidKey = @"ValidateICCID";
+//            NSDictionary *iccidData = [[NSUserDefaults standardUserDefaults] objectForKey:iccidKey];
+//            if (!iccidData || ![iccidData[@"ICCID"] isEqualToString:[UNPushKitMessageManager shareManager].iccidString]) {
+//                if ([self.selectedViewController isKindOfClass:[navHomeViewController class]]) {
+//                    if (![UNDataTools sharedInstance].isShowVerificationVc) {
+//                        VerificationPhoneController *verificationVc = [[VerificationPhoneController alloc] init];
+//                        verificationVc.veriIccidString = [UNPushKitMessageManager shareManager].iccidString;
+//                        navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
+//                        [self.selectedViewController presentViewController:nav animated:YES completion:nil];
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 
 - (void)networkNotUse:(NSNotification *)sender {

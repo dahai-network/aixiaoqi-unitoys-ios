@@ -182,8 +182,10 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
         if (self.isNoClickDetail) {
             return;
         }
-        ConvenienceServiceController *convenienceVc = [[ConvenienceServiceController alloc] init];
-        [self.navigationController pushViewController:convenienceVc animated:YES];
+        if (ShowConvenienceService) {
+            ConvenienceServiceController *convenienceVc = [[ConvenienceServiceController alloc] init];
+            [self.navigationController pushViewController:convenienceVc animated:YES];
+        }
     }
 }
 

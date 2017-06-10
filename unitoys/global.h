@@ -31,6 +31,8 @@
 
 #endif
 
+#define ShowConvenienceService 0
+
 #define isUseCallKit YES
 
 //Color

@@ -105,7 +105,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -1676,7 +1676,7 @@
 
 - (void)sendNewMessage:(NSNotification *)sender {
     NSString *dataStr = [NSString stringWithFormat:@"%@:%@",self.currentPacketNumber, sender.object];
-//    NSLog(@"最终发送的数据 -> %@", dataStr);
+    NSLog(@"最终发送的数据 -> %@", dataStr);
     NSData *data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
     NSLog(@"最终发送的数据包 : %@", data);
     
@@ -2658,7 +2658,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         DebugUNLog(@"tcp存在");
         if (![UNPushKitMessageManager shareManager].isTcpConnecting) {
             DebugUNLog(@"tcp没有正在重连");
-            [UNPushKitMessageManager shareManager].isTcpConnecting = YES;
             NSString *host = [VSWManager shareManager].vswIp;
             uint16_t port = [VSWManager shareManager].vswPort;
             NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
@@ -2668,14 +2667,20 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 port = [[[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerPort"] intValue];
             }
             NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
-            NSError *error;
-            [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:&error];
-            if (error) {
-                NSLog(@"socket连接出错----%@", error);
+            if (host && port) {
+                NSError *error;
+                [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:&error];
+                if (error) {
+                    NSLog(@"socket连接出错----%@", error);
+                    [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
+                }else{
+                    [UNPushKitMessageManager shareManager].isTcpConnecting = YES;
+                }
+            }else{
+                [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
             }
         }
     }else if (self.sendTcpSocket.isConnected){
-        [UNPushKitMessageManager shareManager].isTcpConnecting = YES;
         NSString *host = [VSWManager shareManager].vswIp;
         uint16_t port = [VSWManager shareManager].vswPort;
         NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
@@ -2685,10 +2690,17 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             port = [[[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerPort"] intValue];
         }
         NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
-        NSError *error;
-        [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:&error];
-        if (error) {
-            NSLog(@"socket连接出错----%@", error);
+        if (host && port) {
+            NSError *error;
+            [self.sendTcpSocket connectToHost:host onPort:port withTimeout:60 error:&error];
+            if (error) {
+                NSLog(@"socket连接出错----%@", error);
+                [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
+            }else{
+                [UNPushKitMessageManager shareManager].isTcpConnecting = YES;
+            }
+        }else{
+            [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
         }
     }
 }
