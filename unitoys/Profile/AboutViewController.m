@@ -652,6 +652,26 @@
     [self needRefreshAmount];
 }
 
+- (void)jumpToPackageListView {
+    if (self.havePackageView.hidden) {
+        UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
+        UIViewController *countryListViewController = [mainStory instantiateViewControllerWithIdentifier:@"countryListViewController"];
+        if (countryListViewController) {
+            self.tabBarController.tabBar.hidden = YES;
+            [self.navigationController pushViewController:countryListViewController animated:YES];
+        }
+    } else {
+        OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
+        if (orderListViewController) {
+            if ([UNDataTools sharedInstance].isHasNotActiveTip) {
+                [UNDataTools sharedInstance].isHasNotActiveTip = NO;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+            }
+            [self.navigationController pushViewController:orderListViewController animated:YES];
+        }
+    }
+}
+
 #pragma mark ---TableViewDelegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.row) {
@@ -659,25 +679,7 @@
             [self amountDetail];
             break;
         case 3:
-        {
-            if (self.havePackageView.hidden) {
-                UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Package" bundle:nil];
-                UIViewController *countryListViewController = [mainStory instantiateViewControllerWithIdentifier:@"countryListViewController"];
-                if (countryListViewController) {
-                    self.tabBarController.tabBar.hidden = YES;
-                    [self.navigationController pushViewController:countryListViewController animated:YES];
-                }
-            } else {
-                OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
-                if (orderListViewController) {
-                    if ([UNDataTools sharedInstance].isHasNotActiveTip) {
-                        [UNDataTools sharedInstance].isHasNotActiveTip = NO;
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
-                    }
-                    [self.navigationController pushViewController:orderListViewController animated:YES];
-                }
-            }
-        }
+            [self jumpToPackageListView];
             break;
         case 4:
             if ([UNDataTools sharedInstance].isHasFirmwareUpdateTip) {
@@ -816,24 +818,27 @@
 
 #pragma mark 点击手势进入服务相关
 - (IBAction)tapToJumpService:(UITapGestureRecognizer *)sender {
-    if ([self.commicateMin.text isEqualToString:@"----"]) {
-        ConvenienceServiceController *convenienceServiceVC = [[ConvenienceServiceController alloc] init];
-        if (convenienceServiceVC) {
-            [self.navigationController pushViewController:convenienceServiceVC animated:YES];
+    if (ShowConvenienceService) {
+        if ([self.commicateMin.text isEqualToString:@"----"]) {
+            ConvenienceServiceController *convenienceServiceVC = [[ConvenienceServiceController alloc] init];
+            if (convenienceServiceVC) {
+                [self.navigationController pushViewController:convenienceServiceVC animated:YES];
+            }
+        } else {
+            //        OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
+            //        if (orderListViewController) {
+            //            if ([UNDataTools sharedInstance].isHasNotActiveTip) {
+            //                [UNDataTools sharedInstance].isHasNotActiveTip = NO;
+            //                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
+            //            }
+            //            [self.navigationController pushViewController:orderListViewController animated:YES];
+            //        }
+            ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
+            convenienceOrderVc.orderDetailId = self.serviceOrderId;
+            [self.navigationController pushViewController:convenienceOrderVc animated:YES];
         }
     } else {
-//        OrderListViewController *orderListViewController = [[OrderListViewController alloc] init];
-//        if (orderListViewController) {
-//            if ([UNDataTools sharedInstance].isHasNotActiveTip) {
-//                [UNDataTools sharedInstance].isHasNotActiveTip = NO;
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"TipMessageStatuChange" object:nil];
-//            }
-//            [self.navigationController pushViewController:orderListViewController animated:YES];
-//        }
-        //通话时长服务
-        ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
-        convenienceOrderVc.orderDetailId = self.serviceOrderId;
-        [self.navigationController pushViewController:convenienceOrderVc animated:YES];
+        [self jumpToPackageListView];
     }
 }
 

@@ -882,9 +882,11 @@
             NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
             NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
             if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
+                NSLog(@"空中升级的时候删除本地绑定信息 %s,%d", __FUNCTION__, __LINE__);
                 [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
             }
             [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+            NSLog(@"空中升级的时候存储请求的绑定信息 %s,%d %@", __FUNCTION__, __LINE__, boundedDeviceInfo);
             [[NSUserDefaults standardUserDefaults] synchronize];
             [[UNBlueToothTool shareBlueToothTool] oatUpdateCommand];
             [BlueToothDataManager shareManager].isBeingOTA = YES;
@@ -977,6 +979,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        self.progressWindow = nil;
         self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n请重新启动爱小器App");
+        NSLog(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
         [BlueToothDataManager shareManager].isBeingOTA = NO;
     });
 }
@@ -994,6 +997,7 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级成功\n请重新启动爱小器App");
             [BlueToothDataManager shareManager].isBeingOTA = NO;
+            NSLog(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
         });
     }
 }
@@ -1819,7 +1823,11 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.row) {
         case 0:
-            return [UIScreen mainScreen].bounds.size.width*360.00/750.00+(([UIScreen mainScreen].bounds.size.width-40)/2)*92.00/167.00+80.00;
+            if (ShowConvenienceService) {
+                return [UIScreen mainScreen].bounds.size.width*360.00/750.00+(([UIScreen mainScreen].bounds.size.width-40)/2)*92.00/167.00+80.00;
+            } else {
+                return [UIScreen mainScreen].bounds.size.width*360.00/750.00+5.00;
+            }
             break;
         case 1:
             return 46;
