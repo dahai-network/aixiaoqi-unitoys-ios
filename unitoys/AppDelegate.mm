@@ -105,7 +105,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-//    [self redirectNSLogToDocumentFolder];
+    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -2066,22 +2066,26 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 #pragma mark 从后台进入前台时执行的方法
 - (void)checkRegistStatueEnterForeground {
-    if ([BlueToothDataManager shareManager].isOpened) {
-        if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
-            self.isNeedToCheckSIMStatue = YES;
-            if ([BlueToothDataManager shareManager].isTcpConnected) {
-                [self sendDataToCheckRegistStatue];
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+        if ([BlueToothDataManager shareManager].isOpened) {
+            if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
+                self.isNeedToCheckSIMStatue = YES;
+                if ([BlueToothDataManager shareManager].isTcpConnected) {
+                    [self sendDataToCheckRegistStatue];
+                } else {
+                    [self creatAsocketTcp];
+                }
+                if (![BlueToothDataManager shareManager].isConnected) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"scanToConnect"];
+                }
             } else {
-                [self creatAsocketTcp];
-            }
-            if (![BlueToothDataManager shareManager].isConnected) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"scanToConnect"];
+                NSLog(@"进入前台--没网络");
             }
         } else {
-            NSLog(@"进入前台--没网络");
+            NSLog(@"进入前台--蓝牙未开");
         }
     } else {
-        NSLog(@"进入前台--蓝牙未开");
+        NSLog(@"进入前台--服务未开");
     }
 }
 
