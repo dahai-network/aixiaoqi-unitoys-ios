@@ -86,6 +86,7 @@
 
 - (void)setContentSize:(CGSize)contentSize
 {
+//    NSLog(@"selfContentSize:%@======contentSize:%@", NSStringFromCGSize(self.contentSize), NSStringFromCGSize(contentSize));
     [super setContentSize:contentSize];
     if (_placeHolderTextViewDelegate && [_placeHolderTextViewDelegate respondsToSelector:@selector(placeHolderTextViewContentSizeChange:)]) {
         [self.placeHolderTextViewDelegate placeHolderTextViewContentSizeChange:contentSize];

@@ -75,5 +75,6 @@
 @property (nonatomic, assign) BOOL isAlreadyShowElectyAlert;//是否已经显示过低电量提示
 @property (nonatomic, assign) BOOL isDoneRegist;//是否已经走了正常注册流程
 
-
+//当前卡状态(PushKit下判断有无卡使用)(0未知,1无卡,2有卡)
+@property (nonatomic, assign) NSInteger currentSimCardStatu;
 @end

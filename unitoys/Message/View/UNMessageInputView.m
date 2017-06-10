@@ -11,7 +11,7 @@
 #define kMessageInputView_HeightMax 120.0
 #define kMessageInputView_PadingHeight 7.0
 #define kMessageInputView_PaddingLeftWidth 15.0
-#define kSendMessageButtonWidth 50
+#define kSendMessageButtonWidth 45
 
 #import "UNMessageInputView.h"
 #import "UNPlaceHolderTextView.h"
@@ -22,6 +22,8 @@
 @property (strong, nonatomic) UIScrollView *contentView;
 @property (strong, nonatomic) UNPlaceHolderTextView *inputTextView;
 @property (assign, nonatomic) CGFloat viewHeightOld;
+
+@property (strong, nonatomic) UIButton *sendButton;
 
 @end
 
@@ -75,12 +77,12 @@
         _contentView.alwaysBounceVertical = YES;
         [self addSubview:_contentView];
         [_contentView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.equalTo(self).insets(UIEdgeInsetsMake(kMessageInputView_PadingHeight, kMessageInputView_PaddingLeftWidth, kMessageInputView_PadingHeight, kMessageInputView_PaddingLeftWidth + kSendMessageButtonWidth + kMessageInputView_PadingHeight));
+            make.edges.equalTo(self).insets(UIEdgeInsetsMake(kMessageInputView_PadingHeight, kMessageInputView_PaddingLeftWidth, kMessageInputView_PadingHeight,2 * kMessageInputView_PadingHeight + kSendMessageButtonWidth));
         }];
     }
     
     if (!_inputTextView) {
-        _inputTextView = [[UNPlaceHolderTextView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue - 2 * kMessageInputView_PaddingLeftWidth , contentViewHeight)];
+        _inputTextView = [[UNPlaceHolderTextView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue -  kMessageInputView_PaddingLeftWidth - kSendMessageButtonWidth - 2 * kMessageInputView_PadingHeight , contentViewHeight)];
         _inputTextView.font = [UIFont systemFontOfSize:16];
         _inputTextView.returnKeyType = UIReturnKeySend;
         _inputTextView.scrollsToTop = NO;
@@ -92,14 +94,35 @@
         _inputTextView.textContainerInset = insets;
         [self.contentView addSubview:_inputTextView];
     }
+    if (!_sendButton) {
+        _sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_sendButton setTitle:@"发送" forState:UIControlStateNormal];
+        [_sendButton addTarget:self action:@selector(sendMessageAction:) forControlEvents:UIControlEventTouchUpInside];
+        _sendButton.titleLabel.font = [UIFont systemFontOfSize:14];
+        _sendButton.backgroundColor = DefultColor;
+        _sendButton.layer.cornerRadius = 2.0;
+        _sendButton.layer.masksToBounds = YES;
+        [self addSubview:_sendButton];
+        [_sendButton mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(CGSizeMake(kSendMessageButtonWidth, 30));
+            make.centerY.equalTo(self);
+            make.right.mas_equalTo(- kMessageInputView_PadingHeight);
+        }];
+    }
     
     if (_inputTextView) {
         _inputTextView.placeHolderTextViewDelegate = self;
     }
 }
 
-#pragma mark Public M
-- (void)prepareToShow
+- (void)sendMessageAction:(UIButton *)button
+{
+    button.enabled = NO;
+    [self sendTextStr];
+    button.enabled = YES;
+}
+
+- (void)prepareToShowWithAnimate:(BOOL)isAnimate
 {
     if ([self superview] == kKeyWindow) {
         return;
@@ -108,25 +131,57 @@
     [kKeyWindow addSubview:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
     if (![self isCustomFirstResponder]) {
-        [UIView animateWithDuration:0.25 animations:^{
+        if (isAnimate) {
+            [UIView animateWithDuration:0.2 animations:^{
+                [self setUn_top:kScreenHeightValue - CGRectGetHeight(self.frame)];
+            }];
+        }else{
             [self setUn_top:kScreenHeightValue - CGRectGetHeight(self.frame)];
-        }];
+        }
     }
 }
 
-- (void)prepareToDismiss
+- (void)prepareToDismissWithAnimate:(BOOL)isAnimate
 {
     if ([self superview] == nil) {
         return;
     }
     [self isAndResignFirstResponder];
-    [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if (isAnimate) {
+        [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
+            [self setUn_top:kScreenHeightValue];
+        } completion:^(BOOL finished) {
+            [self removeFromSuperview];
+        }];
+    }else{
+        [self setUn_top:kScreenHeightValue];
+        [self removeFromSuperview];
+    }
+}
+
+- (void)showInputView:(void (^ __nullable)(BOOL finished))completion
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        [self setUn_top:kScreenHeightValue - CGRectGetHeight(self.frame)];
+    } completion:^(BOOL finished) {
+        if (completion) {
+            completion(finished);
+        }
+    }];
+}
+
+- (void)hideInputView:(void (^ __nullable)(BOOL finished))completion
+{
+    [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionTransitionFlipFromBottom animations:^{
         [self setUn_top:kScreenHeightValue];
     } completion:^(BOOL finished) {
-        [self removeFromSuperview];
+        if (completion) {
+            completion(finished);
+        }
     }];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
 
 - (BOOL)isAndResignFirstResponder
 {
@@ -182,7 +237,7 @@
     DebugUNLog(@"selfHeight==%.f", selfHeight);
     CGFloat maxSelfHeight = kScreenHeightValue/5;
     if (kDevice_Is_iPhone5){
-        maxSelfHeight = 140;
+        maxSelfHeight = 150;
     }else if (kDevice_Is_iPhone6) {
         maxSelfHeight = 200;
     }else if (kDevice_Is_iPhone6Plus){
@@ -201,11 +256,17 @@
 //    if (ABS(selfHeight) > 0.5) {
 //        [_inputTextView setUn_height:(selfHeight - 2 *kMessageInputView_PadingHeight)];
 //    }
-    
+    NSLog(@"selfContentSize:%@======contentSize:%@", NSStringFromCGSize(self.contentView.contentSize), NSStringFromCGSize(contentSize));
+    BOOL isAnimate;
+    if (ABS(self.contentView.contentSize.height - contentSize.height) > 20) {
+        isAnimate = NO;
+    }else{
+        isAnimate = YES;
+    }
     [self.contentView setContentSize:contentSize];
     CGFloat bottomY = textSize.height;
     CGFloat offsetY = MAX(0, bottomY - (CGRectGetHeight(self.frame)- 2* kMessageInputView_PadingHeight));
-    [self.contentView setContentOffset:CGPointMake(0, offsetY) animated:YES];
+    [self.contentView setContentOffset:CGPointMake(0, offsetY) animated:isAnimate];
 }
 
 - (void)sendTextStr{

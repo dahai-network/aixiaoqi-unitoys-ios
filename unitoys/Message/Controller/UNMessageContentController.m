@@ -21,6 +21,7 @@
 #import "UNConvertFormatTool.h"
 #import "ContactsViewController.h"
 #import "AddTouchAreaButton.h"
+#import "BlueToothDataManager.h"
 
 @interface UNMessageContentController ()<UITableViewDataSource, UITableViewDelegate, NotifyTextFieldDelegate, UIMessageInputViewDelegate,PhoneNumberSelectDelegate>
 
@@ -101,7 +102,7 @@
     [super viewDidAppear:animated];
     if (_myMsgInputView) {
         _myMsgInputView.hidden = NO;
-        [_myMsgInputView prepareToShow];
+        [_myMsgInputView prepareToShowWithAnimate:NO];
     }
 }
 
@@ -110,6 +111,7 @@
     [super viewWillDisappear:animated];
     if (_myMsgInputView) {
         _myMsgInputView.hidden = YES;
+        [_myMsgInputView isAndResignFirstResponder];
     }
 }
 
@@ -118,7 +120,7 @@
     [super viewDidDisappear:animated];
     if (_myMsgInputView) {
         _myMsgInputView.hidden = YES;
-        [_myMsgInputView prepareToDismiss];
+        [_myMsgInputView prepareToDismissWithAnimate:YES];
     }
 }
 
@@ -161,7 +163,7 @@
 {
     self.myTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.myTableView.un_height -= 64;
-    self.myTableView.backgroundColor = [UIColor darkGrayColor];
+    self.myTableView.backgroundColor = [UIColor whiteColor];
     self.myTableView.dataSource = self;  //新增
     self.myTableView.delegate = self; //控制器成为代理
     self.myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -246,6 +248,7 @@
 {
     button.enabled = NO;
     [self.txtLinkman endEditing:YES];
+    [self.myMsgInputView isAndResignFirstResponder];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     if (storyboard) {
         ContactsViewController *contactsViewController = [storyboard instantiateViewControllerWithIdentifier:@"contactsViewController"];
@@ -280,8 +283,14 @@
 
 - (void)beComeEditMode
 {
-    self.myMsgInputView.hidden = YES;
-    [self showEditView];
+//    self.myMsgInputView.hidden = YES;
+    kWeakSelf
+    [self.myMsgInputView hideInputView:^(BOOL finished) {
+        if (finished) {
+            [weakSelf showEditViewWithCompletion:nil];
+        }
+    }];
+    
     self.navigationItem.leftBarButtonItem = self.editLeftItem;
     self.navigationItem.rightBarButtonItem = self.editRightItem;
     [self.selectRemoveData removeAllObjects];
@@ -293,8 +302,15 @@
     if (_bottomView == nil) {
         return;
     }
-    self.myMsgInputView.hidden = NO;
-    [self hideEditView];
+    
+//    self.myMsgInputView.hidden = NO;
+    kWeakSelf
+    [self hideEditViewWithCompletion:^(BOOL finished) {
+        if (finished) {
+            [weakSelf.myMsgInputView showInputView:nil];
+        }
+    }];
+    
     self.navigationItem.leftBarButtonItem = self.defaultLeftItem;
     self.navigationItem.rightBarButtonItem = self.defaultRightItem;
     [self.selectRemoveData removeAllObjects];
@@ -315,15 +331,19 @@
     }
 }
 
-- (void)showEditView
+- (void)showEditViewWithCompletion:(void (^ __nullable)(BOOL finished))completion
 {
     [self bottomView];
     [UIView animateWithDuration:0.3 animations:^{
         self.bottomView.un_top = self.view.un_height - self.bottomView.un_height;
+    } completion:^(BOOL finished) {
+        if (completion) {
+            completion(finished);
+        }
     }];
 }
 
-- (void)hideEditView
+- (void)hideEditViewWithCompletion:(void (^ __nullable)(BOOL finished))completion
 {
     [UIView animateWithDuration:0.3 animations:^{
         self.bottomView.un_top = self.view.un_height;
@@ -331,6 +351,9 @@
         if (finished) {
             [_bottomView removeFromSuperview];
             _bottomView = nil;
+        }
+        if (completion) {
+            completion(finished);
         }
     }];
 }
@@ -702,20 +725,6 @@
     //    }
 }
 
-/**
- *  当开始拖拽表格的时候就会调用
- */
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    if (scrollView == self.myTableView) {
-        if (_myMsgInputView) {
-            [_myMsgInputView isAndResignFirstResponder];
-        }
-        // 退出键盘
-        [self.view endEditing:YES];
-    }
-}
-
 
 - (void)repeatSendMessage:(MJMessageFrame *)messageFrame
 {
@@ -760,6 +769,10 @@
 #pragma mark --- 发送消息
 - (BOOL)sendMessageActionWithMessage:(NSString *)message
 {
+    if (![BlueToothDataManager shareManager].isRegisted) {
+        HUDNormal(INTERNATIONALSTRING(@"卡注册成功后才能发送短信"))
+        return NO;
+    }
     if (message && ![message isEqualToString:@""]) {
         if (self.isNewMessage) {
             if (!self.toTelephone || [self.toTelephone isEqualToString:@""]) {
@@ -1301,7 +1314,9 @@
 - (void)messageInputView:(UNMessageInputView *)inputView BottomViewHeightChanged:(CGFloat)BottomViewHeight
 {
     NSLog(@"%.f", BottomViewHeight);
-    [self updateTableViewHeightWithBottomViewHeight:BottomViewHeight];
+//    [self updateTableViewHeightWithBottomViewHeight:BottomViewHeight];
+    
+    [self updateTabelViewWithInputView:inputView height:BottomViewHeight];
 }
 
 - (void)updateTableViewHeightWithBottomViewHeight:(CGFloat)BottomViewHeight
@@ -1312,6 +1327,65 @@
         if (self.myTableView.un_top != 0) {
             self.myTableView.un_top = 0;
         }
+    }
+}
+
+- (void)updateTabelViewWithInputView:(UNMessageInputView *)inputView height:(CGFloat)BottomViewHeight
+{
+    UIEdgeInsets contentInsets= UIEdgeInsetsMake(0.0, 0.0, MAX(CGRectGetHeight(inputView.frame), BottomViewHeight), 0.0);;
+    self.myTableView.contentInset = contentInsets;
+    self.myTableView.scrollIndicatorInsets = contentInsets;
+    //调整内容
+    static BOOL keyboard_is_down = YES;
+    static CGPoint keyboard_down_ContentOffset;
+    static CGFloat keyboard_down_InputViewHeight;
+    if (BottomViewHeight > CGRectGetHeight(inputView.frame)) {
+        if (keyboard_is_down) {
+            keyboard_down_ContentOffset = self.myTableView.contentOffset;
+            keyboard_down_InputViewHeight = CGRectGetHeight(inputView.frame);
+        }
+        keyboard_is_down = NO;
+        
+        CGPoint contentOffset = keyboard_down_ContentOffset;
+        CGFloat spaceHeight = MAX(0, CGRectGetHeight(self.myTableView.frame) - self.myTableView.contentSize.height - keyboard_down_InputViewHeight);
+        contentOffset.y += MAX(0, BottomViewHeight - keyboard_down_InputViewHeight - spaceHeight);
+        NSLog(@"\nspaceHeight:%.2f heightToBottom:%.2f diff:%.2f Y:%.2f", spaceHeight, BottomViewHeight, MAX(0, BottomViewHeight - CGRectGetHeight(inputView.frame) - spaceHeight), contentOffset.y);
+        self.myTableView.contentOffset = contentOffset;
+    }else{
+        keyboard_is_down = YES;
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView == self.myTableView) {
+        DebugUNLog(@"scrollView====contentOffset%.f=======contentSize%.f", scrollView.contentOffset.y, scrollView.contentSize.height);
+        //        if (scrollView.contentSize.height - scrollView.contentOffset.y < kScreenHeightValue - 64 - 50) {
+        //
+        //        }
+        //底部
+        //        scrollView.contentSize.height - scrollView.contentOffset.y == kScreenHeightValue - 64 - 50
+        //        2850----3304
+        
+        if ((kScreenHeightValue - 64 - 50 - (scrollView.contentSize.height - scrollView.contentOffset.y)) > 60) {
+            [self.myMsgInputView notAndBecomeFirstResponder];
+        }
+    }
+}
+
+
+/**
+ *  当开始拖拽表格的时候就会调用
+ */
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    DebugUNLog(@"scrollView====contentOffset%.f=======contentSize%.f", scrollView.contentOffset.y, scrollView.contentSize.height);
+    if (scrollView == self.myTableView) {
+        if (_myMsgInputView) {
+            [_myMsgInputView isAndResignFirstResponder];
+        }
+        // 退出键盘
+        [self.view endEditing:YES];
     }
 }
 

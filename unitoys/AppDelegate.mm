@@ -2847,13 +2847,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         }
         [[UNBlueToothTool shareBlueToothTool] checkSystemBaseInfo];
         
-        if (dealyTime) {
-            [self.reconnectTimer fire];
-        }else{
-            //直接重连服务器
-            [self removeReconnectTimer];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(dealyTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self reconnectToServer];
-        }
+        });
         
     }else{
         NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
@@ -2863,40 +2859,17 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
-- (NSTimer *)reconnectTimer
-{
-    if (!_reconnectTimer) {
-        _reconnectTimer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(reconnectToServer) userInfo:nil repeats:YES];
-    }
-    return _reconnectTimer;
-}
-
-- (void)removeReconnectTimer
-{
-    if (_reconnectTimer) {
-        _reconnectTimeCount = 0;
-        [_reconnectTimer invalidate];
-        _reconnectTimer = nil;
-    }
-}
 
 - (void)reconnectToServer
 {
-    _reconnectTimeCount++;
     NSLog(@"已创建TCP");
     if (![BlueToothDataManager shareManager].isOpened) {
-        if (_reconnectTimeCount == 3) {
             [UNCreatLocalNoti createLBECloseNoti];
-            [self removeReconnectTimer];
-        }
         NSLog(@"蓝牙未开");
         return;
     }else{
-        if (![BlueToothDataManager shareManager].isHaveCard) {
-            if (_reconnectTimeCount == 3) {
+        if (![BlueToothDataManager shareManager].isHaveCard && [BlueToothDataManager shareManager].currentSimCardStatu == 1) {
                 [UNCreatLocalNoti createLBEDisConnectNoti];
-                [self removeReconnectTimer];
-            }
             NSLog(@"无电话卡");
             return;
         }
@@ -2907,10 +2880,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         //
         //                }
     }
-    
-
-    
-    [self removeReconnectTimer];
     
     if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected) {
         self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"PushKitTCPPacketStr"];

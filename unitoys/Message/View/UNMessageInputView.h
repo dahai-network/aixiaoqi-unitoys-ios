@@ -15,12 +15,16 @@
 @property (nonatomic, weak) id<UIMessageInputViewDelegate> delegate;
 
 + (instancetype)messageInputViewWithPlaceHolder:(NSString *)placeHolder;
-- (void)prepareToShow;
-- (void)prepareToDismiss;
+- (void)prepareToShowWithAnimate:(BOOL)isAnimate;
+- (void)prepareToDismissWithAnimate:(BOOL)isAnimate;
 - (BOOL)isAndResignFirstResponder;
+- (BOOL)notAndBecomeFirstResponder;
 
 - (void)sendMessageSuccess;
 - (void)sendMessageField;
+
+- (void)showInputView:(void (^ __nullable)(BOOL finished))completion;
+- (void)hideInputView:(void (^ __nullable)(BOOL finished))completion;
 @end
 
 

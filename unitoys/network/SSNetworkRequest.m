@@ -79,6 +79,12 @@
     
     AFHTTPSessionManager *manager = [self getRequstManager];
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    
+//    防止传NSNull类型数据
+//    AFJSONResponseSerializer *jsonResponse = [AFJSONResponseSerializer serializer];
+//    jsonResponse.removesKeysWithNullValues = YES;
+//    manager.responseSerializer = jsonResponse;
+    
     //开始加载头部
     if (headers) {
         NSEnumerator *enumerator = [headers keyEnumerator];
@@ -116,7 +122,6 @@
     }
     
     AFHTTPSessionManager *manager = [self getRequstManager];
-    
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     //开始加载头部
     if (headers) {

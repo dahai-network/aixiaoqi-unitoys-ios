@@ -41,7 +41,9 @@
 //    activeVc.defaultDay = @"1";
 //    [self.navigationController pushViewController:activeVc animated:YES];
     UNMessageContentController *messageContentVc = [[UNMessageContentController alloc] init];
-    messageContentVc.isNewMessage = YES;
+    messageContentVc.toTelephone = @"10086";
+    messageContentVc.toPhoneName = @"10086";
+//    messageContentVc.isNewMessage = YES;
     [self.navigationController pushViewController:messageContentVc animated:YES];
 }
 

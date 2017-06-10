@@ -1080,7 +1080,6 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].isLbeConnecting = NO;
     if (self.normalAuthSimString) {
         [self sendLBEConnectData];
-
         [UNPushKitMessageManager shareManager].isQuickLoad = NO;
         [self updataToCard];
         [BlueToothDataManager shareManager].isRegisted = NO;
@@ -1736,11 +1735,14 @@ static UNBlueToothTool *instance = nil;
                     if ([isHaveCardStr isEqualToString:@"00"]) {
                         NSLog(@"系统基本信息 -- 无卡");
                         [BlueToothDataManager shareManager].isHaveCard = NO;
+                        [BlueToothDataManager shareManager].currentSimCardStatu = 1;
                     } else if ([isHaveCardStr isEqualToString:@"01"]) {
                         NSLog(@"系统基本信息 -- 有卡");
                         [BlueToothDataManager shareManager].isHaveCard = YES;
+                        [BlueToothDataManager shareManager].currentSimCardStatu = 2;
                     } else {
                         NSLog(@"系统基本信息 -- 状态有问题");
+                        [BlueToothDataManager shareManager].currentSimCardStatu = 0;
                     }
                 }
                 [self otaDownload];
@@ -1806,12 +1808,14 @@ static UNBlueToothTool *instance = nil;
                 if ([contentStr isEqualToString:@"01"]) {
                     NSLog(@"对卡上电1成功，有卡");
                     [BlueToothDataManager shareManager].isHaveCard = YES;
+                    [BlueToothDataManager shareManager].currentSimCardStatu = 2;
                     //更新蓝牙状态
                     [self refreshBLEStatue];
                     //判断卡类型
                     [self checkCardType];
                 } else if ([contentStr isEqualToString:@"11"]) {
                     [BlueToothDataManager shareManager].isRegisted = NO;
+                    [BlueToothDataManager shareManager].currentSimCardStatu = 1;
                     NSLog(@"对卡上电1失败,没有卡");
                     if ([BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
                         [self checkBLEAndReset];
@@ -2147,6 +2151,7 @@ static UNBlueToothTool *instance = nil;
                             [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].operatorType forKey:@"operatorType"];
                             [UNPushKitMessageManager shareManager].isNeedRegister = NO;
                             [BlueToothDataManager shareManager].isHaveCard = NO;
+                            [BlueToothDataManager shareManager].currentSimCardStatu = 1;
                             [BlueToothDataManager shareManager].isBeingRegisting = NO;
                             [BlueToothDataManager shareManager].isChangeSimCard = YES;
                             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
@@ -2197,10 +2202,12 @@ static UNBlueToothTool *instance = nil;
                             if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"1"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"2"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"3"]) {
                                 //有电话卡
                                 [BlueToothDataManager shareManager].isHaveCard = YES;
+                                [BlueToothDataManager shareManager].currentSimCardStatu = 2;
                                 [BlueToothDataManager shareManager].cardType = @"2";
                             } else if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"4"]) {
                                 //爱小器卡
                                 [BlueToothDataManager shareManager].isHaveCard = YES;
+                                [BlueToothDataManager shareManager].currentSimCardStatu = 2;
                                 [BlueToothDataManager shareManager].cardType = @"1";
                                 [BlueToothDataManager shareManager].isRegisted = NO;
                                 [BlueToothDataManager shareManager].isActivityCard = YES;
@@ -2211,6 +2218,7 @@ static UNBlueToothTool *instance = nil;
                                 [BlueToothDataManager shareManager].cardType = @"0";
                                 [UNPushKitMessageManager shareManager].isNeedRegister = NO;
                                 [BlueToothDataManager shareManager].isHaveCard = NO;
+                                [BlueToothDataManager shareManager].currentSimCardStatu = 1;
                                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
                                 [BlueToothDataManager shareManager].isChangeSimCard = YES;
                                 if (cardType == 0) {
@@ -2223,6 +2231,7 @@ static UNBlueToothTool *instance = nil;
                                 [BlueToothDataManager shareManager].cardType = @"0";
                                 [UNPushKitMessageManager shareManager].isNeedRegister = NO;
                                 [BlueToothDataManager shareManager].isHaveCard = NO;
+                                [BlueToothDataManager shareManager].currentSimCardStatu = 1;
                                 [BlueToothDataManager shareManager].isBeingRegisting = NO;
                                 [BlueToothDataManager shareManager].isChangeSimCard = YES;
                                 [self showHudNormalString:@"您插入的卡不是常规卡，请更换"];
