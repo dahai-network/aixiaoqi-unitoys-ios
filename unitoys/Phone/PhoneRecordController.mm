@@ -1478,8 +1478,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnCallFailed:(CallErrorCode) error_code{
     [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallFailed;
     NSLog([NSString stringWithFormat:@"呼叫错误, 代码 %d",error_code],nil);
-    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"错误提示") message:[NSString stringWithFormat:@"%@", INTERNATIONALSTRING(@"呼叫异常,请确认网络或账号正常")] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+    //直接挂断
+    [self OnCallEnded];
     
+//    if (error_code == RequestTimeout || error_code == BusyHere) {
+//        //直接挂断
+//        [self OnCallEnded];
+//    }else{
+//        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"错误提示") message:[NSString stringWithFormat:@"%@", INTERNATIONALSTRING(@"呼叫异常,请确认网络或账号正常")] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+//    }
 }
 
 /*

@@ -13,12 +13,14 @@
 @interface UNMessageInputView : UIView<UITextViewDelegate>
 @property (nonatomic, copy) NSString *placeHolder;
 @property (nonatomic, weak) id<UIMessageInputViewDelegate> delegate;
+@property (nonatomic, assign) CGFloat bottomHeight;
 
 + (instancetype)messageInputViewWithPlaceHolder:(NSString *)placeHolder;
 - (void)prepareToShowWithAnimate:(BOOL)isAnimate;
 - (void)prepareToDismissWithAnimate:(BOOL)isAnimate;
 - (BOOL)isAndResignFirstResponder;
 - (BOOL)notAndBecomeFirstResponder;
+- (BOOL)isCustomFirstResponder;
 
 - (void)sendMessageSuccess;
 - (void)sendMessageField;

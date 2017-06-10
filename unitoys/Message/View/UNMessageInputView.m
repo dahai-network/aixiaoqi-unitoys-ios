@@ -36,6 +36,7 @@
     if (fabs(oldheightToBottom - newheightToBottom) > 0.1) {
         DebugUNLog(@"heightToBottom-----:%.2f", newheightToBottom);
         if (_delegate && [_delegate respondsToSelector:@selector(messageInputView:BottomViewHeightChanged:)]) {
+            self.bottomHeight = newheightToBottom;
             [self.delegate messageInputView:self BottomViewHeightChanged:newheightToBottom];
         }
     }

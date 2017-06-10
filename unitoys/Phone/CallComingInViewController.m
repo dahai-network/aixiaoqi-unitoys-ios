@@ -117,12 +117,16 @@ void screenLockFunction(){
 
 - (void)sipRegisterFailed
 {
-    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(@"错误提示") message:INTERNATIONALSTRING(@"通话异常,请检查网络或账号正常") preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [self endCallPhone];
-    }];
-    [alertVC addAction:action];
-    [self presentViewController:alertVC animated:YES completion:nil];
+//    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(@"错误提示") message:INTERNATIONALSTRING(@"通话异常,请检查网络或账号正常") preferredStyle:UIAlertControllerStyleAlert];
+//    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
+//        [self endCallPhone];
+//    }];
+//    [alertVC addAction:action];
+//    [self presentViewController:alertVC animated:YES completion:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"Hungup"];
+    [self endCallPhone];
 }
 
 - (void)appWillBeKilled

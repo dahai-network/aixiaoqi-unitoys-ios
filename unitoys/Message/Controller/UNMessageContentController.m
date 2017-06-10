@@ -467,11 +467,6 @@
         kWeakSelf
         [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                if (weakSelf.isNewMessage) {
-                    if (weakSelf.navigationItem.rightBarButtonItem != weakSelf.defaultRightItem) {
-                        weakSelf.navigationItem.rightBarButtonItem = weakSelf.defaultRightItem;
-                    }
-                }
                 
                 if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
                     [[UNDatabaseTools sharedFMDBTools] insertMessageContentWithMessageContent:responseObj[@"data"] Phone:weakSelf.toTelephone];
@@ -732,17 +727,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:messageFrame.message.SMSID,@"SMSID", nil];
     
     [self getBasicHeader];
-    //    NSLog(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiSendRetryForError params:params success:^(id responseObj) {
-        //
-        //KV来存放数组，所以要用枚举器来处理
-        /*
-         NSEnumerator *enumerator = [[responseObj objectForKey:@"data"] keyEnumerator];
-         id key;
-         while ((key = [enumerator nextObject])) {
-         [manager.requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
-         }*/
-        
         NSLog(@"查询到的用户数据：%@",responseObj);
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -823,6 +808,10 @@
                     //隐藏新建短信控件
                     self.topEditLinkManView.hidden = YES;
                     [self.topEditLinkManView removeFromSuperview];
+                    self.isNewMessage = NO;
+                    if (self.navigationItem.rightBarButtonItem != self.defaultRightItem) {
+                        self.navigationItem.rightBarButtonItem = self.defaultRightItem;
+                    }
                 }
                 
                 
@@ -1116,6 +1105,9 @@
 //长按响应
 - (void)longPressActionWithIndex:(NSInteger)index Content:(NSString *)content longPressView:(UIView *)longPressView
 {
+    if (self.myTableView.isEditing) {
+        return;
+    }
     NSArray *menus = [self menusItems];
     if ([menus count] && [self becomeFirstResponder]) {
         UIWindow *window = [[UIApplication sharedApplication].delegate window];
@@ -1358,30 +1350,33 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (scrollView == self.myTableView) {
-        DebugUNLog(@"scrollView====contentOffset%.f=======contentSize%.f", scrollView.contentOffset.y, scrollView.contentSize.height);
-        //        if (scrollView.contentSize.height - scrollView.contentOffset.y < kScreenHeightValue - 64 - 50) {
-        //
-        //        }
+    if (scrollView == self.myTableView && !self.myTableView.isEditing) {
+//        DebugUNLog(@"scrollView====contentOffset%.f=======contentSize%.f========bottomHeight%.f", scrollView.contentOffset.y, scrollView.contentSize.height, self.myMsgInputView.bottomHeight);
         //底部
         //        scrollView.contentSize.height - scrollView.contentOffset.y == kScreenHeightValue - 64 - 50
         //        2850----3304
-        
-        if ((kScreenHeightValue - 64 - 50 - (scrollView.contentSize.height - scrollView.contentOffset.y)) > 60) {
+        CGFloat newOffset = kScreenHeightValue - 64 - self.myMsgInputView.bottomHeight - (scrollView.contentSize.height - scrollView.contentOffset.y);
+        DebugUNLog(@"NewOffset=======%.4f", newOffset);
+        CGFloat offset = kScreenHeightValue - 64 - (scrollView.contentSize.height - (scrollView.contentOffset.y - self.myMsgInputView.bottomHeight));
+        if (offset > 60) {
             [self.myMsgInputView notAndBecomeFirstResponder];
         }
     }
 }
-
 
 /**
  *  当开始拖拽表格的时候就会调用
  */
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    DebugUNLog(@"scrollView====contentOffset%.f=======contentSize%.f", scrollView.contentOffset.y, scrollView.contentSize.height);
+//    DebugUNLog(@"scrollView====contentOffset%.4f=======contentSize%.4f========bottomHeight%.4f========InputHeight%.4f", scrollView.contentOffset.y, scrollView.contentSize.height, self.myMsgInputView.bottomHeight, self.myMsgInputView.un_height);
     if (scrollView == self.myTableView) {
-        if ((kScreenHeightValue - 64 - 50 - (scrollView.contentSize.height - scrollView.contentOffset.y)) < 0) {
+        CGFloat newOffset = kScreenHeightValue - 64 - self.myMsgInputView.bottomHeight - (scrollView.contentSize.height - scrollView.contentOffset.y);
+        DebugUNLog(@"NewOffset=======%.4f", newOffset);
+        
+        CGFloat offset = kScreenHeightValue - 64 - (scrollView.contentSize.height - (scrollView.contentOffset.y - self.myMsgInputView.bottomHeight));
+        if (offset <= 1 && scrollView.contentSize.height > kScreenHeightValue){
+            NSLog(@"注销第一响应者");
             if (_myMsgInputView) {
                 [_myMsgInputView isAndResignFirstResponder];
             }
@@ -1389,6 +1384,11 @@
             [self.view endEditing:YES];
         }
     }
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)didReceiveMemoryWarning {
