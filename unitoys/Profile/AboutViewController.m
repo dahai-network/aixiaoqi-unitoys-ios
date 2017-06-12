@@ -126,6 +126,11 @@
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aboutViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offsetCanEnable) name:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
+}
+
+- (void)offsetCanEnable {
+    self.offButton.enabled = YES;
 }
 
 - (void)changeFootViewHeight {
@@ -601,6 +606,7 @@
         } else {
             //添加注销注册的功能
             [self dj_alertAction:self alertTitle:@"温馨提示" actionTitle:@"继续" message:@"关闭此功能后您将无法正常使用电话和短信等相关功能，是否继续？" alertAction:^{
+                [MobClick event:UMeng_Event_CloseService];
                 [sender setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
                 NSString *statueStr = @"off";
                 [[NSUserDefaults standardUserDefaults] setObject:statueStr forKey:@"offsetStatue"];
@@ -610,6 +616,7 @@
                 }
                 [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
+                sender.enabled = NO;
             }];
         }
     } else {
@@ -876,5 +883,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatueAll" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
 }
 @end

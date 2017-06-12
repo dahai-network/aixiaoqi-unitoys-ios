@@ -78,6 +78,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)editContactInfo
 {
+    [MobClick event:UMeng_Event_EditContacts];
     if ([[UIDevice currentDevice] systemVersion].floatValue < 9.0) {
         if (self.contactModel && self.contactModel.recordRefId) {
             ABAddressBookRef addressBook = ABAddressBookCreate();

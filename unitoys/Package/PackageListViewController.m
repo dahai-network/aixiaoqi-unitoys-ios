@@ -52,6 +52,7 @@
     [self.ivPic sd_setImageWithURL:[NSURL URLWithString:[self.dicCountry objectForKey:@"Pic"]]];
     
     self.title = [self.dicCountry objectForKey:@"CountryName"];
+    [MobClick event:UMeng_Event_PackageCountry attributes:@{@"packageCountry" : [self.dicCountry objectForKey:@"CountryName"]} counter:1];
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载"))
     self.checkToken = YES;
     

@@ -105,7 +105,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //制定真机调试保存日志文件
-    [self redirectNSLogToDocumentFolder];
+//    [self redirectNSLogToDocumentFolder];
     
     NSLog(@"application---didFinishLaunchingWithOptions");
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -1456,6 +1456,7 @@
                     //需要重新注册
                     [BlueToothDataManager shareManager].isNeedToRegistAgain = YES;
                     self.communicateID = @"00000000";
+                    [BlueToothDataManager shareManager].iccidFromTcp = nil;
                     NSLog(@"需要重新注册");
                 } else if ([errorStr isEqualToString:@"29"]) {
                     //会话id错误
@@ -1472,8 +1473,13 @@
         }
     } else if ([classStr isEqualToString:@"8d"]) {
         NSLog(@"关闭tcp成功");
-        [BlueToothDataManager shareManager].isTcpConnected = NO;
+//        [BlueToothDataManager shareManager].isTcpConnected = NO;
         [BlueToothDataManager shareManager].isRegisted = NO;
+        [BlueToothDataManager shareManager].iccidFromTcp = nil;
+        [self closeTCP];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
+        });
     } else {
         NSLog(@"这是什么鬼");
     }

@@ -40,6 +40,7 @@
     sender.enabled = YES;
 }
 - (IBAction)defriendAction:(UIButton *)sender {
+    [MobClick event:UMeng_Event_Shield];
     sender.enabled = NO;
     [self buttonAction:2];
     sender.enabled = YES;

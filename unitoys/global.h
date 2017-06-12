@@ -421,6 +421,14 @@
 //友盟事件ID
 //拨打
 #define UMeng_Event_Call @"event_call"
+//点击的套餐
+#define UMeng_Event_PackageCountry @"event_packageCountry"
+//屏蔽
+#define UMeng_Event_Shield @"event_shield"
+//编辑联系人
+#define UMeng_Event_EditContacts @"event_editContacts"
+//关闭卡服务开关
+#define UMeng_Event_CloseService @"event_closeService"
 
 
 #define LBEUUID @"F9D77679-66D1-15A7-1052-EAD426D72C61"
