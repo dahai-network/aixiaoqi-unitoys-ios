@@ -43,6 +43,13 @@
 //是否已弹出验证界面
 @property (nonatomic, assign) BOOL isShowVerificationVc;
 
+//是否有未接来电
+@property (nonatomic, assign) BOOL isHasMissCall;
+//是否有未读短信
+@property (nonatomic, assign) BOOL isHasUnreadSMS;
+//当前未读短信号码数组
+@property (nonatomic, strong) NSMutableArray *currentUnreadSMSPhones;
+
 @property (nonatomic, copy) NSDictionary *normalHeaders;
 
 @property (nonatomic, assign) CGFloat tipStatusHeight;

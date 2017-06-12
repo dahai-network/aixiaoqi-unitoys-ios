@@ -10,7 +10,7 @@
 #import <objc/runtime.h>
 
 static char badgeViewKey;
-static NSInteger const pointWidth = 6; //小红点的宽高
+static NSInteger const pointWidth = 5; //小红点的宽高
 static NSInteger const rightRange = 2; //距离控件右边的距离
 static CGFloat const badgeFont = 9; //字体的大小
 
@@ -18,8 +18,24 @@ static CGFloat const badgeFont = 9; //字体的大小
 //显示小红点
 - (void)showBadge
 {
+//    if (self.badgeLabel == nil) {
+//        CGRect frame = CGRectMake(CGRectGetWidth(self.frame) + rightRange, -pointWidth / 2, pointWidth, pointWidth);
+//        self.badgeLabel = [[UILabel alloc] initWithFrame:frame];
+//        self.badgeLabel.backgroundColor = [UIColor redColor];
+//        //圆角为宽度的一半
+//        self.badgeLabel.layer.cornerRadius = pointWidth / 2;
+//        //确保可以有圆角
+//        self.badgeLabel.layer.masksToBounds = YES;
+//        [self addSubview:self.badgeLabel];
+//        [self bringSubviewToFront:self.badgeLabel];
+//    }
+    [self showBadgeWithRightMargin:0 TopMargin:0];
+}
+
+- (void)showBadgeWithRightMargin:(CGFloat)rightMargin TopMargin:(CGFloat)topMargin
+{
     if (self.badgeLabel == nil) {
-        CGRect frame = CGRectMake(CGRectGetWidth(self.frame) + rightRange, -pointWidth / 2, pointWidth, pointWidth);
+        CGRect frame = CGRectMake(CGRectGetWidth(self.frame) + rightRange - rightMargin, -pointWidth / 2 + topMargin, pointWidth, pointWidth);
         self.badgeLabel = [[UILabel alloc] initWithFrame:frame];
         self.badgeLabel.backgroundColor = [UIColor redColor];
         //圆角为宽度的一半
@@ -30,6 +46,8 @@ static CGFloat const badgeFont = 9; //字体的大小
         [self bringSubviewToFront:self.badgeLabel];
     }
 }
+
+
 //显示小红点消息数量
 - (void)showBadgeWithCount:(NSInteger)count
 {

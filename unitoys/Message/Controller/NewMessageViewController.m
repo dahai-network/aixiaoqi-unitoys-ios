@@ -15,7 +15,7 @@
 #import "CustomRefreshMessageHeader.h"
 #import "AddressBookManager.h"
 
-#import "MessagePhoneDetailController.h"
+//#import "MessagePhoneDetailController.h"
 #import "UNEditMessageView.h"
 #import "ContactsCallDetailsController.h"
 #import "UNDatabaseTools.h"

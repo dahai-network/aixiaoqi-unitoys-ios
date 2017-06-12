@@ -29,6 +29,9 @@ typedef void(^TitlesButtonAction)(UIButton *);
 - (void)setSelectButtonWithTag:(NSInteger)tag;
 
 
+- (void)showRedTipWithIndex:(NSInteger)buttonIndex;
+- (void)hiddenRedTipWithIndex:(NSInteger)buttonIndex;
+
 @property (nonatomic, copy) TitlesButtonAction titlesButtonAction;
 
 @end

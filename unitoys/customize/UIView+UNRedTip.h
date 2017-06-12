@@ -14,6 +14,7 @@
 
 //显示小红点
 - (void)showBadge;
+- (void)showBadgeWithRightMargin:(CGFloat)rightMargin TopMargin:(CGFloat)topMargin;
 
 //显示小红点消息数量
 - (void)showBadgeWithCount:(NSInteger)count;

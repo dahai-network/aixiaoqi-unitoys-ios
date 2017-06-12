@@ -32,6 +32,14 @@
     return _blackLists;
 }
 
+- (NSMutableArray *)currentUnreadSMSPhones
+{
+    if (!_currentUnreadSMSPhones) {
+        _currentUnreadSMSPhones = [NSMutableArray array];
+    }
+    return _currentUnreadSMSPhones;
+}
+
 - (NSString *)compareCurrentTimeStringWithRecord:(NSString *)compareDateString
 {
     NSTimeInterval second = compareDateString.longLongValue;

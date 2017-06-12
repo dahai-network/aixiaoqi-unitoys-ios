@@ -10,12 +10,14 @@
 #import "UIView+Utils.h"
 #import "AddTouchAreaButton.h"
 
+#import "UIView+UNRedTip.h"
+
 
 #define UIColorFromHex_hl(hexValue) [UIColor colorWithRed:((float)((hexValue & 0xFF0000) >> 16))/255.0 green:((float)((hexValue & 0xFF00) >> 8))/255.0 blue:((float)(hexValue & 0xFF))/255.0 alpha:1]
 
 @interface HLTitlesView ()
 
-//@property (nonatomic, assign) CGFloat margin;
+@property (nonatomic, assign) CGFloat margin;
 @end
 
 
@@ -40,6 +42,7 @@
     if (margin == 0) {
         margin = 10;
     }
+    self.margin = margin;
     self.titleCount = titlesArray.count;
     UIImageView *titleBottomView = [[UIImageView alloc] init];
 //    titleBottomView.backgroundColor = UIColorFromHex_hl(0x42a5f5);
@@ -138,6 +141,33 @@
     }
     if (button) {
         [self topButtonClick:button];
+    }
+}
+
+- (void)showRedTipWithIndex:(NSInteger)buttonIndex
+{
+    AddTouchAreaButton *button;
+    for (UIView *view in self.subviews) {
+        if ([view isKindOfClass:[AddTouchAreaButton class]] && view.tag == buttonIndex) {
+            button = (AddTouchAreaButton *)view;
+            break;
+        }
+    }
+    if (button) {
+        [button showBadgeWithRightMargin:self.margin * 0.5 TopMargin:0];
+    }
+}
+- (void)hiddenRedTipWithIndex:(NSInteger)buttonIndex
+{
+    AddTouchAreaButton *button;
+    for (UIView *view in self.subviews) {
+        if ([view isKindOfClass:[AddTouchAreaButton class]] && view.tag == buttonIndex) {
+            button = (AddTouchAreaButton *)view;
+            break;
+        }
+    }
+    if (button) {
+        [button hideBadge];
     }
 }
 

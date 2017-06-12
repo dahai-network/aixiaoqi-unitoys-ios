@@ -16,6 +16,8 @@
 #import "BlueToothDataManager.h"
 #import "StatuesViewDetailViewController.h"
 #import "BindDeviceViewController.h"
+#import "UITabBar+UNRedTip.h"
+#import "UNDatabaseTools.h"
 
 @interface PhoneIndexController ()
 
@@ -65,6 +67,12 @@
     
     [self setupViewControllers];
     [self setUpTitlesView];
+    //更新tabbar红点
+    [self initUnreadMessage];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(phoneTabbarDoubleClick:) name:@"PhoneTabbarDoubleClick" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(phoneTipMessageStatuChange) name:@"PhoneUnReadMessageStatuChange" object:nil];
+    
 }
 
 - (void)initTipStatuBar
@@ -115,7 +123,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statuBarHeightChange:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(phoneTabbarDoubleClick:) name:@"PhoneTabbarDoubleClick" object:nil];
 }
 
 #pragma mark 手势点击事件
@@ -217,10 +224,64 @@
         }
     }
 }
-//- (void)loadMessage
-//{
-//    
-//}
+
+- (void)initUnreadMessage
+{
+    NSArray *arrMessageRecord = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:0];
+    
+    //添加未读短信
+    for (NSDictionary *dicMessageRecord in arrMessageRecord) {
+        if (![dicMessageRecord[@"IsRead"] boolValue]) {
+            NSString *currentPhone;
+            if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+                //己方发送
+                currentPhone = [dicMessageRecord objectForKey:@"To"];
+            }else{
+                //对方发送
+                currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+            }
+            if (![[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
+                [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
+            }
+        }
+    }
+    if ([UNDataTools sharedInstance].currentUnreadSMSPhones.count) {
+        [UNDataTools sharedInstance].isHasUnreadSMS = YES;
+    }else{
+        [UNDataTools sharedInstance].isHasUnreadSMS = NO;
+    }
+    
+    [self phoneTipMessageStatuChange];
+}
+
+//设置tabbar红点
+- (void)phoneTipMessageStatuChange
+{
+    BOOL isHasMessage = NO;
+    if ([UNDataTools sharedInstance].isHasMissCall) {
+        isHasMessage = YES;
+        [self.titleView showRedTipWithIndex:0];
+    }else{
+        [self.titleView hiddenRedTipWithIndex:0];
+    }
+    
+    if ([UNDataTools sharedInstance].isHasUnreadSMS) {
+        isHasMessage = YES;
+        [self.titleView showRedTipWithIndex:1];
+    }else{
+        [self.titleView hiddenRedTipWithIndex:1];
+    }
+    if (isHasMessage) {
+        [self.tabBarController.tabBar showBadgeOnItemIndex:1];
+    }else{
+        [self.tabBarController.tabBar hideBadgeOnItemIndex:1];
+    }
+//    if ([UNDataTools sharedInstance].isHasMissCall || [UNDataTools sharedInstance].isHasUnreadSMS) {
+//        [self.tabBarController.tabBar showBadgeOnItemIndex:1];
+//    }else{
+//        [self.tabBarController.tabBar hideBadgeOnItemIndex:1];
+//    }
+}
 
 //设置导航栏
 - (void)setUpTitlesView
@@ -302,7 +363,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
+//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
 }
 
 @end

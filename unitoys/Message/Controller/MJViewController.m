@@ -12,7 +12,7 @@
 #import "MJMessageCell.h"
 //#import "MJRefresh.h"
 #import "CustomRefreshMessageHeader.h"
-#import "MessagePhoneDetailController.h"
+//#import "MessagePhoneDetailController.h"
 
 #import "UNEditMessageView.h"
 #import "ContactsCallDetailsController.h"
