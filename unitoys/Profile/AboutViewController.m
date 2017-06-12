@@ -101,6 +101,7 @@
     if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
+        self.footView.un_height = 0;
         [self.tableView reloadData];
     }
     
@@ -177,6 +178,7 @@
         }
         self.statuesView.un_height = STATUESVIEWHEIGHT;
     }
+    self.footView.un_height = 0;
     [self.tableView reloadData];
 }
 
