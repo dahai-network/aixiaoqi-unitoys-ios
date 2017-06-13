@@ -18,6 +18,14 @@ PODS:
   - CocoaAsyncSocket (7.5.1):
     - CocoaAsyncSocket/GCD (= 7.5.1)
   - CocoaAsyncSocket/GCD (7.5.1)
+  - CocoaLumberjack (3.0.0):
+    - CocoaLumberjack/Default (= 3.0.0)
+    - CocoaLumberjack/Extensions (= 3.0.0)
+  - CocoaLumberjack/Core (3.0.0)
+  - CocoaLumberjack/Default (3.0.0):
+    - CocoaLumberjack/Core
+  - CocoaLumberjack/Extensions (3.0.0):
+    - CocoaLumberjack/Default
   - FMDB (2.6.2):
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
@@ -41,6 +49,7 @@ DEPENDENCIES:
   - AFNetworking (~> 3.0)
   - Bugly
   - CocoaAsyncSocket (~> 7.5.1)
+  - CocoaLumberjack
   - FMDB (~> 2.5)
   - iOSDFULibrary (~> 2.1.6)
   - Masonry
@@ -57,6 +66,7 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   Bugly: 3b56d8365c5687f74fd6fbb50c5b7ede3cdac96c
   CocoaAsyncSocket: e0a7e93b2ffa411592ff87e58524fbbc9b95b4fa
+  CocoaLumberjack: c823149bccc5519a9447aeb433be7b1212a7d6a5
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   iOSDFULibrary: 1d597b90fed43a68aba886443a0045d900e622d9
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
@@ -70,6 +80,6 @@ SPEC CHECKSUMS:
   UMengAnalytics-NO-IDFA: 16666e32edce5be44ae5b14aaaa7f3582e09d6ab
   Zip: 805fc2fa9d2f05bbb7762d982d7a42ccdcc51f42
 
-PODFILE CHECKSUM: 898df6c3f5a107683c6f9c2145d85289cc1ca9c7
+PODFILE CHECKSUM: 9e20541fd63fd536133bb98c568d559df2f7ef92
 
 COCOAPODS: 1.2.0
