@@ -1513,14 +1513,22 @@ static UNBlueToothTool *instance = nil;
             NSLog(@"外设不足20个,%s,%d", __FUNCTION__, __LINE__);
             for (CBPeripheral *per in self.peripherals) {
                 NSString *imeiStr = [self.macAddressDict objectForKey:per.identifier];
-                [imeiArr addObject:imeiStr];
+                if (imeiStr) {
+                    [imeiArr addObject:imeiStr];
+                } else {
+                    NSLog(@"没有对应的IMEI %s,%d", __FUNCTION__, __LINE__);
+                }
             }
         } else {
             NSLog(@"外设多于20个,%s,%d", __FUNCTION__, __LINE__);
             for (int i = 0; i < 20; i++) {
                 CBPeripheral *per = self.peripherals[i];
                 NSString *imeiStr = [self.macAddressDict objectForKey:per.identifier];
-                [imeiArr addObject:imeiStr];
+                if (imeiStr) {
+                    [imeiArr addObject:imeiStr];
+                } else {
+                    NSLog(@"没有对应的IMEI %s,%d", __FUNCTION__, __LINE__);
+                }
             }
         }
         
