@@ -177,7 +177,8 @@
         hintInfo = INTERNATIONALSTRING(@"已发送验证码，请查看并输入完整注册信息");
     }
     
-    [SSNetworkRequest postRequest:[apiSendSMS stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiSendSMS params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:hintInfo delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             
@@ -197,7 +198,7 @@
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
         
-    } headers:nil];
+    } headers:self.headers];
 }
 
 - (void)hintTimeOut {
@@ -231,7 +232,8 @@
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.edtPhoneNumber.text,@"Tel",self.edtPassCode.text,@"PassWord", self.edtVerifyCode.text,@"smsVerCode", nil];
     
-    [SSNetworkRequest postRequest:[apiRegisterUser stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiRegisterUser params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
 //            [[[UIAlertView alloc] initWithTitle:@"注册提示" message:@"用户注册成功" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
 //            [self dismissViewControllerAnimated:YES completion:nil];
@@ -245,7 +247,7 @@
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
         
-    } headers:nil];
+    } headers:self.headers];
 }
 
 #pragma mark 注册成功之后后台登录
@@ -256,8 +258,8 @@
     NSLog(@"登录的设备是 --> %@", phoneNameAndSystem);
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.edtPhoneNumber.text,@"Tel",self.edtPassCode.text,@"PassWord", phoneNameAndSystem, @"LoginTerminal",nil];
     
-    
-    [SSNetworkRequest postRequest:[apiCheckLogin stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiCheckLogin params:params success:^(id resonseObj){
         NSMutableDictionary *userData = [[NSMutableDictionary alloc] initWithDictionary:[resonseObj objectForKey:@"data"]];
         
         if (resonseObj) {
@@ -291,7 +293,7 @@
         NSLog(@"登录失败：%@",[error description]);
         [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"服务器好像有点忙，请稍后重试") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         
-    } headers:nil];
+    } headers:self.headers];
 }
 
 - (NSString *)iphoneType {
@@ -413,7 +415,8 @@
     
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.edtPhoneNumber.text,@"Tel",self.edtPassCode.text,@"newPassWord", self.edtVerifyCode.text,@"smsVerCode", nil];
     
-    [SSNetworkRequest postRequest:[apiForgetPassword stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiForgetPassword params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"密码找回成功") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             [self dismissViewControllerAnimated:YES completion:nil];
@@ -425,7 +428,7 @@
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
         
-    } headers:nil];
+    } headers:self.headers];
 }
 
 - (IBAction)doAction:(id)sender {

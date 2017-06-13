@@ -82,6 +82,8 @@
 //重连定时器,收到0f数据后,每过几秒检查条件是否符合,符合才重连,并关闭定时器
 @property (nonatomic, strong) NSTimer *reconnectTimer;
 @property (nonatomic, assign) NSInteger reconnectTimeCount;
+@property (nonatomic, strong)NSMutableDictionary *headers;
+@property (nonatomic, assign) BOOL checkToken;
 @end
 
 @implementation AppDelegate
@@ -1706,52 +1708,30 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 #pragma mark 提前验证
 - (void)checkLogin {
-    NSString *strGetLogin = [apiGetLogin stringByAppendingString:[self getParamStr]];
+//    NSString *strGetLogin = [apiGetLogin stringByAppendingString:[self getParamStr]];
     
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     if (userdata) {
-        strGetLogin = [NSString stringWithFormat:@"%@&TOKEN=%@",strGetLogin,[userdata objectForKey:@"Token"]];
+//        strGetLogin = [NSString stringWithFormat:@"%@&TOKEN=%@",strGetLogin,[userdata objectForKey:@"Token"]];
         //
     }else{
         [self loadLoginViewController];
     }
+    self.checkToken = YES;
+    [self getBasicHeader];
     //    HUDNoStop1(@"正在登录...")
-    if (strGetLogin) {
-        [SSNetworkRequest getRequest:strGetLogin params:nil success:^(id resonseObj){
-            
-            if (resonseObj) {
-                if ([[resonseObj objectForKey:@"status"] intValue]==1) {
-                    //                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
-                    //更新别名为token
-                    NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
-                    [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
-                        NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
-                    }];
-//                    NSLog(@"拿到数据：%@",resonseObj);
-                    [self loginSuccessAndCreatTCP];
-                    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                    if (storyboard) {
-                        UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
-                        if (mainViewController) {
-                            self.window.rootViewController = mainViewController;
-                        }
-                    }
-                    
-                    //                [[UITabBar appearance] setBackgroundImage:<#(UIImage * _Nullable)#>:[UIColor blueColor]];
-                }else{
-                    [self loadLoginViewController];
-                    //                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"999" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-                }
-            }else{
-                [self loadLoginViewController];
-                //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器好像有点忙，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-            }
-            
-        }failure:^(id dataObj, NSError *error) {
-            NSLog(@"登录失败：%@",[error description]);
-            HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-            NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-            if (userdata) {
+    [SSNetworkRequest getRequest:apiGetLogin params:nil success:^(id resonseObj){
+        
+        if (resonseObj) {
+            if ([[resonseObj objectForKey:@"status"] intValue]==1) {
+                //                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
+                //更新别名为token
+                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
+                [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
+                    NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
+                }];
+                //                    NSLog(@"拿到数据：%@",resonseObj);
+                [self loginSuccessAndCreatTCP];
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 if (storyboard) {
                     UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
@@ -1759,10 +1739,31 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                         self.window.rootViewController = mainViewController;
                     }
                 }
+                
+                //                [[UITabBar appearance] setBackgroundImage:<#(UIImage * _Nullable)#>:[UIColor blueColor]];
+            }else{
+                [self loadLoginViewController];
+                //                [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"999" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
             }
-        } headers:nil];
-
-    }
+        }else{
+            [self loadLoginViewController];
+            //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器好像有点忙，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+        }
+        
+    }failure:^(id dataObj, NSError *error) {
+        NSLog(@"登录失败：%@",[error description]);
+        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+        if (userdata) {
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            if (storyboard) {
+                UIViewController *mainViewController = [storyboard instantiateViewControllerWithIdentifier:@"mainViewController"];
+                if (mainViewController) {
+                    self.window.rootViewController = mainViewController;
+                }
+            }
+        }
+    } headers:self.headers];
 }
 
 #pragma mark 登录成功之后创建tcp
@@ -1791,24 +1792,29 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             ];
 }
 
-- (NSString *)getParamStr {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+-(void)getBasicHeader
+{
+    //进行Header的构造，partner，Expries，Sign，TOKEN
+    self.headers = [[NSMutableDictionary alloc] init];
+    [self.headers setObject:@"2006808" forKey:@"partner"];
     
-    [params setObject:@"2006808" forKey:@"partner"];
-    
-//    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-//    NSInteger a=[dat timeIntervalSince1970];
+    //    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+    //    NSInteger a=[dat timeIntervalSince1970];
     //    NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
     NSString *timestemp = @"1471316792";
     
-    [params setObject:timestemp forKey:@"expires"];
+    [self.headers setObject:timestemp forKey:@"expires"];
     
     timestemp = [NSString stringWithFormat:@"2006808%@BAS123!@#FD1A56K",timestemp];
     
-    [params setObject:[[self md5:timestemp] uppercaseString] forKey:@"sign"];
+    [self.headers setObject:[self md5:timestemp] forKey:@"sign"];
+    if (self.checkToken) {
+        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+        if (userdata) {
+            [self.headers setObject:[userdata objectForKey:@"Token"] forKey:@"TOKEN"];
+        }
+    }
     
-    
-    return [NSString stringWithFormat:@"?partner=%@&expires=%@&sign=%@",[params objectForKey:@"partner"],[params objectForKey:@"expires"],[params objectForKey:@"sign"]];
 }
 
 - (void)loadLoginViewController {

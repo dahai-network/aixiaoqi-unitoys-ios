@@ -45,15 +45,17 @@
 }
 
 - (void)checkLogin {
-    NSString *strGetLogin = [apiGetLogin stringByAppendingString:[self getParamStr]];
+//    NSString *strGetLogin = [apiGetLogin stringByAppendingString:[self getParamStr]];
     
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-    if (userdata) {
-        strGetLogin = [NSString stringWithFormat:@"%@&TOKEN=%@",strGetLogin,[userdata objectForKey:@"Token"]];
-        //
-    }
+//    if (userdata) {
+//        strGetLogin = [NSString stringWithFormat:@"%@&TOKEN=%@",strGetLogin,[userdata objectForKey:@"Token"]];
+//        //
+//    }
     HUDNoStop1(INTERNATIONALSTRING(@"正在登录..."))
-    [SSNetworkRequest getRequest:strGetLogin params:nil success:^(id resonseObj){
+    self.checkToken = YES;
+    [self getBasicHeader];
+    [SSNetworkRequest getRequest:apiGetLogin params:nil success:^(id resonseObj){
         
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
@@ -84,7 +86,7 @@
         NSLog(@"登录失败：%@",[error description]);
         HUDNormal(INTERNATIONALSTRING(@"网络连接超时"))
 //        HUDNormal([error description])
-    } headers:nil];
+    } headers:self.headers];
 }
 
 - (IBAction)switchSecure:(id)sender {
@@ -114,7 +116,8 @@
     NSLog(@"登录的设备是 --> %@", phoneNameAndSystem);
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.edtUserName.text,@"Tel",self.edtPassText.text,@"PassWord", phoneNameAndSystem, @"LoginTerminal",nil];
     kWeakSelf
-    [SSNetworkRequest postRequest:[apiCheckLogin stringByAppendingString:[self getParamStr]] params:info success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiCheckLogin params:info success:^(id resonseObj){
         NSMutableDictionary *userData = [[NSMutableDictionary alloc] initWithDictionary:[resonseObj objectForKey:@"data"]];
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
@@ -165,7 +168,7 @@
 //        [[[UIAlertView alloc] initWithTitle:@"系统提示" message:@"服务器可能罢工中，请稍后重试" delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
         HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
 //        HUDNormal([error description])
-    } headers:nil];
+    } headers:self.headers];
 }
 
 - (void)getBlackListsFromServer

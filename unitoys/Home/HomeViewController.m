@@ -520,8 +520,9 @@
 }
 
 - (void)checkVersion {
+    [self getBasicHeader];
     NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"0", @"TerminalCode", [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"], @"Version", nil];
-    [SSNetworkRequest getRequest:[apiUpgrade stringByAppendingString:[self getParamStr]] params:info success:^(id responseObj){
+    [SSNetworkRequest getRequest:apiUpgrade params:info success:^(id responseObj){
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"app升级信息 -- %@", responseObj);
@@ -566,7 +567,7 @@
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"数据错误：%@",[error description]);
         
-    } headers:nil];
+    } headers:self.headers];
 }
 
 - (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle leftActionTitle:(NSString *)leftActionTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
@@ -1622,7 +1623,8 @@
             HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
     }else{
-        [SSNetworkRequest getRequest:[apiGetBannerList stringByAppendingString:[self getParamStr]] params:nil success:^(id responseObj){
+        [self getBasicHeader];
+        [SSNetworkRequest getRequest:apiGetBannerList params:nil success:^(id responseObj){
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetBannerList" dictData:responseObj];
@@ -1665,7 +1667,7 @@
             }
             NSLog(@"数据错误：%@",[error description]);
             
-        } headers:nil];
+        } headers:self.headers];
         self.AdView.delegate = self;
     }
 }
@@ -1677,7 +1679,8 @@
         self.productInfoArr = responseObj[@"data"];
         [self.hotCollectionView reloadData];
     }else{
-        [SSNetworkRequest getRequest:[apiGetProductList stringByAppendingString:[self getParamStr]] params:nil success:^(id responseObj){
+        [self getBasicHeader];
+        [SSNetworkRequest getRequest:apiGetProductList params:nil success:^(id responseObj){
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetProductList" dictData:responseObj];
@@ -1698,7 +1701,7 @@
             }
             NSLog(@"数据错误：%@",[error description]);
             
-        } headers:nil];
+        } headers:self.headers];
         self.AdView.delegate = self;
     }
 }

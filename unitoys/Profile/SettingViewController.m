@@ -112,7 +112,8 @@
 
 - (void)checkVersion {
     NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjectsAndKeys:@"0", @"TerminalCode", [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"], @"Version", nil];
-    [SSNetworkRequest getRequest:[apiUpgrade stringByAppendingString:[self getParamStr]] params:info success:^(id responseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest getRequest:apiUpgrade params:info success:^(id responseObj){
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSLog(@"app升级信息 -- %@", responseObj);
@@ -146,7 +147,7 @@
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"数据错误：%@",[error description]);
         
-    } headers:nil];
+    } headers:self.headers];
 }
 
 - (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle leftActionTitle:(NSString *)leftActionTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {

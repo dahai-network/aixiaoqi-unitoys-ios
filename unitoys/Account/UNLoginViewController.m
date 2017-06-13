@@ -155,7 +155,8 @@
     }
     [self.reCaptchaField becomeFirstResponder];
     kWeakSelf
-    [SSNetworkRequest postRequest:[apiSendSMS stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiSendSMS params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:hintInfo delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
             [weakSelf startTimer];
@@ -166,7 +167,7 @@
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
-    } headers:nil];
+    } headers:self.headers];
 }
 
 //确定(登陆/注册)
@@ -371,7 +372,8 @@
     NSLog(@"登录的设备是 --> %@", phoneNameAndSystem);
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.accountField.text,@"Tel",self.passWordField.text,@"PassWord", phoneNameAndSystem, @"LoginTerminal",nil];
     kWeakSelf
-    [SSNetworkRequest postRequest:[apiCheckLogin stringByAppendingString:[self getParamStr]] params:info success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiCheckLogin params:info success:^(id resonseObj){
         NSMutableDictionary *userData = [[NSMutableDictionary alloc] initWithDictionary:[resonseObj objectForKey:@"data"]];
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
@@ -421,7 +423,7 @@
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"登录失败：%@",[error description]);
         HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-    } headers:nil];
+    } headers:self.headers];
 }
 
 - (void)showAlertViewWithMessage:(NSString *)message {
@@ -463,7 +465,8 @@
     //注册成功后跳转到登录界面,重置状态
     NSLog(@"重置密码");
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.accountField.text,@"Tel",self.passWordField.text,@"newPassWord", self.reCaptchaField.text,@"smsVerCode", nil];
-    [SSNetworkRequest postRequest:[apiForgetPassword stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiForgetPassword params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"密码找回成功") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
 //            [self dismissViewControllerAnimated:YES completion:nil];
@@ -477,7 +480,7 @@
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
-    } headers:nil];
+    } headers:self.headers];
 }
 
 #pragma mark ---注册账号请求
@@ -493,7 +496,8 @@
     }
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.accountField.text,@"Tel",self.passWordField.text,@"PassWord", self.reCaptchaField.text,@"smsVerCode", nil];
     
-    [SSNetworkRequest postRequest:[apiRegisterUser stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiRegisterUser params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
             //注册成功之后登录
             [self registerSuccessAndLogin];
@@ -505,14 +509,15 @@
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
         
-    } headers:nil];
+    } headers:self.headers];
 
 }
 #pragma mark 注册成功之后后台登录
 - (void)registerSuccessAndLogin {
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.accountField.text,@"Tel",self.passWordField.text,@"PassWord", @"webApi", @"LoginTerminal",nil];
     kWeakSelf
-    [SSNetworkRequest postRequest:[apiCheckLogin stringByAppendingString:[self getParamStr]] params:params success:^(id resonseObj){
+    [self getBasicHeader];
+    [SSNetworkRequest postRequest:apiCheckLogin params:params success:^(id resonseObj){
         NSMutableDictionary *userData = [[NSMutableDictionary alloc] initWithDictionary:[resonseObj objectForKey:@"data"]];
         
         if (resonseObj) {
@@ -548,7 +553,7 @@
         NSLog(@"登录失败：%@",[error description]);
         [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"服务器好像有点忙，请稍后重试") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
         
-    } headers:nil];
+    } headers:self.headers];
 }
 
 
