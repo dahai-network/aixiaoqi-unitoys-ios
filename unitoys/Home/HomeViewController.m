@@ -548,9 +548,11 @@
                     } else {
                         NSLog(@"不知道是不是强制性的");
                     }
-                    
-                    [[NSUserDefaults standardUserDefaults] setObject:currentTimeString forKey:@"nowTime"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    if ([responseObj[@"data"][@"Mandatory"] intValue] == 0) {
+                        //非强制性的才存储
+                        [[NSUserDefaults standardUserDefaults] setObject:currentTimeString forKey:@"nowTime"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                    }
                 }
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
