@@ -409,6 +409,7 @@ typedef enum : NSUInteger {
 //退出登录
 - (void)reloginAction {
     NSLog(@"调用reloginAction方法");
+    [UNDataTools sharedInstance].isLogout = YES;
 //    [UNBlueToothTool shareBlueToothTool].isKill = YES;
     //删除存储的绑定信息
 //    [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];

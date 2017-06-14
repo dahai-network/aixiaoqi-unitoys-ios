@@ -293,8 +293,16 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendDataToCloseService) name:@"closeServiceNotifi" object:@"closeServiceNotifi"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginSuccessAndCreatTCP) name:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(isAlreadOnlineAndSendJumpData) name:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
+    //接收重新登入通知，清除缓存的数据包
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cleanPackageData) name:@"reloginNotify" object:nil];
     
     return YES;
+}
+
+
+- (void)cleanPackageData {
+    self.tcpPacketStr = nil;
+    [UNPushKitMessageManager shareManager].iccidString = nil;
 }
 
 - (void)initUMeng {
@@ -421,6 +429,7 @@
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"100"];
 //    [BlueToothDataManager shareManager].stepNumber = @"100";
     if (![UNPushKitMessageManager shareManager].iccidString) {
+        NSLog(@"ICCID没有了：%s,%d", __FUNCTION__, __LINE__);
         return;
     }
     NSLog(@"获取ICCID数据");
@@ -1724,6 +1733,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
+                [UNDataTools sharedInstance].isLogout = NO;
                 //                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
                 //更新别名为token
                 NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
@@ -2052,20 +2062,25 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     if (![UNPushKitMessageManager shareManager].isAlreadyInForeground) {
         if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
             NSLog(@"进入前台");
-            [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
-            [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
-            [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
-            [self closeTCP];
-            [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
-            [BlueToothDataManager shareManager].bleStatueForCard = 0;
-            [BlueToothDataManager shareManager].isBeingRegisting = NO;
-            [BlueToothDataManager shareManager].stepNumber = @"0";
-            self.lessStep = 0;
-            [BlueToothDataManager shareManager].isRegisted = NO;
-            self.tcpPacketStr = nil;
-            [[UNBlueToothTool shareBlueToothTool] fristJumpForeground];
-            //在pushkit里初始化蓝牙
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+            if (![UNDataTools sharedInstance].isLogout) {
+                NSLog(@"在线：%s,%d", __FUNCTION__, __LINE__);
+                [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
+                [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
+                [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
+                [self closeTCP];
+                [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
+                [BlueToothDataManager shareManager].bleStatueForCard = 0;
+                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+                [BlueToothDataManager shareManager].stepNumber = @"0";
+                self.lessStep = 0;
+                [BlueToothDataManager shareManager].isRegisted = NO;
+                self.tcpPacketStr = nil;
+                [[UNBlueToothTool shareBlueToothTool] fristJumpForeground];
+                //在pushkit里初始化蓝牙
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+            } else {
+                NSLog(@"不在线：%s,%d", __FUNCTION__, __LINE__);
+            }
         } else {
             [self checkRegistStatueEnterForeground];
         }
@@ -2078,26 +2093,31 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 #pragma mark 从后台进入前台时执行的方法
 - (void)checkRegistStatueEnterForeground {
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
-        if ([BlueToothDataManager shareManager].isOpened) {
-            if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
-                self.isNeedToCheckSIMStatue = YES;
-                if ([BlueToothDataManager shareManager].isTcpConnected) {
-                    [self sendDataToCheckRegistStatue];
+    if (![UNDataTools sharedInstance].isLogout) {
+        NSLog(@"在线：%s,%d", __FUNCTION__, __LINE__);
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            if ([BlueToothDataManager shareManager].isOpened) {
+                if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
+                    self.isNeedToCheckSIMStatue = YES;
+                    if ([BlueToothDataManager shareManager].isTcpConnected) {
+                        [self sendDataToCheckRegistStatue];
+                    } else {
+                        [self creatAsocketTcp];
+                    }
+                    if (![BlueToothDataManager shareManager].isConnected) {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"scanToConnect"];
+                    }
                 } else {
-                    [self creatAsocketTcp];
-                }
-                if (![BlueToothDataManager shareManager].isConnected) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"scanToConnect"];
+                    NSLog(@"进入前台--没网络");
                 }
             } else {
-                NSLog(@"进入前台--没网络");
+                NSLog(@"进入前台--蓝牙未开");
             }
         } else {
-            NSLog(@"进入前台--蓝牙未开");
+            NSLog(@"进入前台--服务未开");
         }
     } else {
-        NSLog(@"进入前台--服务未开");
+        NSLog(@"不在线：%s,%d", __FUNCTION__, __LINE__);
     }
 }
 
@@ -3022,6 +3042,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"closeServiceNotifi" object:@"closeServiceNotifi"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"reloginNotify" object:nil];
 }
 
 @end

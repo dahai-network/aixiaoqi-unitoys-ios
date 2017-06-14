@@ -377,6 +377,7 @@
         NSMutableDictionary *userData = [[NSMutableDictionary alloc] initWithDictionary:[resonseObj objectForKey:@"data"]];
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
+                [UNDataTools sharedInstance].isLogout = NO;
                 if ([NSNull null]== (NSNull *)[userData objectForKey:@"TrueName"]) {
                     [userData setObject:@"" forKey:@"TrueName"];
                 }
@@ -522,6 +523,7 @@
         
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
+                [UNDataTools sharedInstance].isLogout = NO;
                 if ([NSNull null]== (NSNull *)[userData objectForKey:@"TrueName"]) {
                     [userData setObject:@"" forKey:@"TrueName"];
                 }

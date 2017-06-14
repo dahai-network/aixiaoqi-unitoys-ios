@@ -172,30 +172,37 @@ static UNBlueToothTool *instance = nil;
 
 - (void)initBlueTooth
 {
-    if (self.isInitInstance) {
-        return;
+    NSLog(@"走了初始化蓝牙的方法");
+    if (![UNDataTools sharedInstance].isLogout) {
+        NSLog(@"在线：%s,%d", __FUNCTION__, __LINE__);
+        if (self.isInitInstance) {
+            NSLog(@"不初始化蓝牙");
+            return;
+        }
+        NSLog(@"初始化蓝牙");
+        NSLog(@"当前初始化线程======%@", [NSThread currentThread]);
+        
+        self.isKill = NO;
+        self.isInitInstance = YES;
+        self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
+        
+        [BlueToothDataManager shareManager].bleStatueForCard = 0;
+        self.macAddressDict = [NSMutableDictionary new];
+        self.RSSIDict = [NSMutableDictionary new];
+        if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+            [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
+        }
+        self.simtype = [self checkSimType];
+        NSLog(@"卡类型--%@", self.simtype);
+        
+        [BlueToothDataManager shareManager].isNeedToResert = YES;
+        [BlueToothDataManager shareManager].currentStep = @"0";
+        
+        //    [self initObserverAction];
+        [self checkBindedDeviceFromNet];
+    } else {
+        NSLog(@"不在线：%s,%d", __FUNCTION__, __LINE__);
     }
-    NSLog(@"初始化蓝牙");
-    NSLog(@"当前初始化线程======%@", [NSThread currentThread]);
-    
-    self.isKill = NO;
-    self.isInitInstance = YES;
-    self.isPushKitStatu = [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate;
-    
-    [BlueToothDataManager shareManager].bleStatueForCard = 0;
-    self.macAddressDict = [NSMutableDictionary new];
-    self.RSSIDict = [NSMutableDictionary new];
-    if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-        [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
-    }
-    self.simtype = [self checkSimType];
-    NSLog(@"卡类型--%@", self.simtype);
-    
-    [BlueToothDataManager shareManager].isNeedToResert = YES;
-    [BlueToothDataManager shareManager].currentStep = @"0";
-    
-//    [self initObserverAction];
-    [self checkBindedDeviceFromNet];
 }
 
 - (void)initObserverAction

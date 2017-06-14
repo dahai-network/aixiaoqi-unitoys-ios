@@ -15,6 +15,7 @@
 #import "DJPageControl.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "JPUSHService.h"
+#import "UNDataTools.h"
 #define HWNewfeatureCount 4
 
 @interface HWNewfeatureViewController () <UIScrollViewDelegate>
@@ -267,6 +268,7 @@
         
         if (resonseObj) {
             if ([[resonseObj objectForKey:@"status"] intValue]==1) {
+                [UNDataTools sharedInstance].isLogout = NO;
                 //                NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Tel"]];
                 //更新别名为token
                 NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
