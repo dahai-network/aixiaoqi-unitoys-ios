@@ -143,7 +143,12 @@
                 if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeNone) {
                     [UNPushKitMessageManager shareManager].isSendTcpString = NO;
                 }
-                [self creatAsocketTcp];
+                if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                    NSLog(@"服务开关是开的：%s,%d", __FUNCTION__, __LINE__);
+                    [self creatAsocketTcp];
+                } else {
+                    NSLog(@"服务开关关闭：%s,%d", __FUNCTION__, __LINE__);
+                }
             }
         } else {
             NSLog(@"无网络");

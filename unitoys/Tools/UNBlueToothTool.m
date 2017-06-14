@@ -884,16 +884,6 @@ static UNBlueToothTool *instance = nil;
     [self.timer setFireDate:[NSDate distantFuture]];
     [self.scanAndConnectingTimer setFireDate:[NSDate distantFuture]];
     peripheral.delegate = self;
-    if (![BlueToothDataManager shareManager].isBeingOTA && self.boundedDeviceInfo[@"IMEI"]) {
-        //将连接的信息存储到本地
-        NSLog(@"没有进行空中升级的时候连接 %@", [peripheral.identifier UUIDString]);
-        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-        [boundedDeviceInfo setObject:[peripheral.identifier UUIDString] forKey:userdata[@"Tel"]];
-        [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
     NSString *nameStr = peripheral.name;
     NSString *allDeviceStr = MYDEVICENAME;
     if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
@@ -1084,6 +1074,17 @@ static UNBlueToothTool *instance = nil;
         }
         NSLog(@"characteristic:%@", characteristic);
     }
+    
+    if (![BlueToothDataManager shareManager].isBeingOTA && self.boundedDeviceInfo[@"IMEI"]) {
+        //将连接的信息存储到本地
+        NSLog(@"没有进行空中升级的时候连接 %@", [peripheral.identifier UUIDString]);
+        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
+        NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
+        [boundedDeviceInfo setObject:[peripheral.identifier UUIDString] forKey:userdata[@"Tel"]];
+        [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
 //    [BlueToothDataManager shareManager].isConnected = YES;
     [BlueToothDataManager shareManager].isLbeConnecting = NO;
     if (self.normalAuthSimString) {
