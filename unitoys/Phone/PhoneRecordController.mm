@@ -118,6 +118,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    UNLogLBEProcess(@"PhoneRecordController")
+    
     [self initTableView];
     [self initNoDataLabel];
     //解压联系人数据库

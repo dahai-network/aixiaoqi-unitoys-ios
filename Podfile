@@ -21,7 +21,7 @@ target "unitoys" do
     pod 'MJExtension'
     pod 'AFNetworking', '~> 3.0'
 #    pod 'Reachability',  '~> 3.0.0'
-    pod 'MBProgressHUD', '~> 0.9.1'
+    pod 'MBProgressHUD', '~> 1.0.0'
     pod 'SDCycleScrollView','~> 1.3'
     pod 'SDWebImage', '~>3.7'
     pod 'FMDB', '~> 2.5'

@@ -36,6 +36,11 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    UNLogLBEProcess(@"MessageRecordController-")
+//    DDLogVerbose((@"[文件名:%s]" "[函数名:%s]" "[行号:%d]" format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
+//    DDLogVerbose([NSString stringWithFormat:@"[文件名:%s] [函数名:%s] [行号:%d]", __FILE__, __FUNCTION__, __LINE__], ##__VA_ARGS__);
+//    NSLog(@"%s(%d): %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(@""), ##__VA_ARGS__])
+    
     [self initTableView];
     [self initNoDataLabel];
     [self initRefresh];

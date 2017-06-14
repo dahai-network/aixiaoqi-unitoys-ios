@@ -32,19 +32,37 @@
 //    [self initPopView];
     
     //手机激活引导
-    [self pushActive];
+//    [self pushActive];
+    
+    //短信界面
+//    [self pushMessageVc];
+    
+    //上传日志
+    [self updateLogAction];
+    
 }
 
+//引导激活
 - (void)pushActive
 {
-//    UNReadyActivateController *activeVc = [[UNReadyActivateController alloc] init];
-//    activeVc.defaultDay = @"1";
-//    [self.navigationController pushViewController:activeVc animated:YES];
+    UNReadyActivateController *activeVc = [[UNReadyActivateController alloc] init];
+    activeVc.defaultDay = @"1";
+    [self.navigationController pushViewController:activeVc animated:YES];
+}
+
+//短信
+- (void)pushMessageVc
+{
     UNMessageContentController *messageContentVc = [[UNMessageContentController alloc] init];
     messageContentVc.toTelephone = @"10086";
     messageContentVc.toPhoneName = @"10086";
-//    messageContentVc.isNewMessage = YES;
+    //    messageContentVc.isNewMessage = YES;
     [self.navigationController pushViewController:messageContentVc animated:YES];
+}
+
+- (void)updateLogAction
+{
+    [[UNDDLogManager sharedInstance] updateLogToServerWithLogCount:2];
 }
 
 - (void)initPopView

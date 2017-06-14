@@ -94,15 +94,6 @@
 		04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EAB8C01E2788DB000D3D13 /* AlarmListTableViewCell.xib */; };
 		04F727971E641CE4002EB54C /* About.txt in Resources */ = {isa = PBXBuildFile; fileRef = 04F727521E641CE4002EB54C /* About.txt */; };
 		04F727981E641CE4002EB54C /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F727541E641CE4002EB54C /* GCDAsyncSocket.m */; };
-		04F727991E641CE4002EB54C /* About.txt in Resources */ = {isa = PBXBuildFile; fileRef = 04F727561E641CE4002EB54C /* About.txt */; };
-		04F7279A1E641CE4002EB54C /* DDAbstractDatabaseLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F727581E641CE4002EB54C /* DDAbstractDatabaseLogger.m */; };
-		04F7279B1E641CE4002EB54C /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F7275A1E641CE4002EB54C /* DDASLLogger.m */; };
-		04F7279C1E641CE4002EB54C /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F7275C1E641CE4002EB54C /* DDFileLogger.m */; };
-		04F7279D1E641CE4002EB54C /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F7275E1E641CE4002EB54C /* DDLog.m */; };
-		04F7279E1E641CE4002EB54C /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F727601E641CE4002EB54C /* DDTTYLogger.m */; };
-		04F7279F1E641CE4002EB54C /* ContextFilterLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F727631E641CE4002EB54C /* ContextFilterLogFormatter.m */; };
-		04F727A01E641CE4002EB54C /* DispatchQueueLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F727651E641CE4002EB54C /* DispatchQueueLogFormatter.m */; };
-		04F727A11E641CE4002EB54C /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 04F727661E641CE4002EB54C /* README.txt */; };
 		04F727A21E641CE4002EB54C /* DDData.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F7276A1E641CE4002EB54C /* DDData.m */; };
 		04F727A31E641CE4002EB54C /* DDNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F7276C1E641CE4002EB54C /* DDNumber.m */; };
 		04F727A41E641CE4002EB54C /* DDRange.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F7276E1E641CE4002EB54C /* DDRange.m */; };
@@ -144,6 +135,7 @@
 		3C07E2451EE29383001AB21D /* UnMessageLinkManModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2441EE29383001AB21D /* UnMessageLinkManModel.m */; };
 		3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */; };
 		3C15135B1E796CBD00AF48B6 /* AlarmListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */; };
+		3C1B341C1EEFD36200DFC56F /* UNDDLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C1B341B1EEFD36200DFC56F /* UNDDLogManager.m */; };
 		3C20C20D1E6CF3CC008078BB /* UNDataTransformation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C20A1E6CF3CC008078BB /* UNDataTransformation.m */; };
 		3C20C20E1E6CF3CC008078BB /* UNSipEngineInitialize.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C20C1E6CF3CC008078BB /* UNSipEngineInitialize.mm */; };
 		3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */; };
@@ -577,22 +569,6 @@
 		04F727521E641CE4002EB54C /* About.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = About.txt; sourceTree = "<group>"; };
 		04F727531E641CE4002EB54C /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		04F727541E641CE4002EB54C /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
-		04F727561E641CE4002EB54C /* About.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = About.txt; sourceTree = "<group>"; };
-		04F727571E641CE4002EB54C /* DDAbstractDatabaseLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDAbstractDatabaseLogger.h; sourceTree = "<group>"; };
-		04F727581E641CE4002EB54C /* DDAbstractDatabaseLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDAbstractDatabaseLogger.m; sourceTree = "<group>"; };
-		04F727591E641CE4002EB54C /* DDASLLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDASLLogger.h; sourceTree = "<group>"; };
-		04F7275A1E641CE4002EB54C /* DDASLLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDASLLogger.m; sourceTree = "<group>"; };
-		04F7275B1E641CE4002EB54C /* DDFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDFileLogger.h; sourceTree = "<group>"; };
-		04F7275C1E641CE4002EB54C /* DDFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDFileLogger.m; sourceTree = "<group>"; };
-		04F7275D1E641CE4002EB54C /* DDLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDLog.h; sourceTree = "<group>"; };
-		04F7275E1E641CE4002EB54C /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
-		04F7275F1E641CE4002EB54C /* DDTTYLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDTTYLogger.h; sourceTree = "<group>"; };
-		04F727601E641CE4002EB54C /* DDTTYLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDTTYLogger.m; sourceTree = "<group>"; };
-		04F727621E641CE4002EB54C /* ContextFilterLogFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContextFilterLogFormatter.h; sourceTree = "<group>"; };
-		04F727631E641CE4002EB54C /* ContextFilterLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContextFilterLogFormatter.m; sourceTree = "<group>"; };
-		04F727641E641CE4002EB54C /* DispatchQueueLogFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DispatchQueueLogFormatter.h; sourceTree = "<group>"; };
-		04F727651E641CE4002EB54C /* DispatchQueueLogFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DispatchQueueLogFormatter.m; sourceTree = "<group>"; };
-		04F727661E641CE4002EB54C /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		04F727691E641CE4002EB54C /* DDData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDData.h; sourceTree = "<group>"; };
 		04F7276A1E641CE4002EB54C /* DDData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDData.m; sourceTree = "<group>"; };
 		04F7276B1E641CE4002EB54C /* DDNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDNumber.h; sourceTree = "<group>"; };
@@ -668,6 +644,8 @@
 		3C116DF61E56CD90006C0641 /* CustomRefreshMessageHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomRefreshMessageHeader.h; sourceTree = "<group>"; };
 		3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshMessageHeader.m; sourceTree = "<group>"; };
 		3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlarmListViewController.xib; sourceTree = "<group>"; };
+		3C1B341A1EEFD36200DFC56F /* UNDDLogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDDLogManager.h; sourceTree = "<group>"; };
+		3C1B341B1EEFD36200DFC56F /* UNDDLogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDDLogManager.m; sourceTree = "<group>"; };
 		3C20C2091E6CF3CC008078BB /* UNDataTransformation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDataTransformation.h; sourceTree = "<group>"; };
 		3C20C20A1E6CF3CC008078BB /* UNDataTransformation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDataTransformation.m; sourceTree = "<group>"; };
 		3C20C20B1E6CF3CC008078BB /* UNSipEngineInitialize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNSipEngineInitialize.h; sourceTree = "<group>"; };
@@ -1246,7 +1224,6 @@
 			isa = PBXGroup;
 			children = (
 				04F727511E641CE4002EB54C /* CocoaAsyncSocket */,
-				04F727551E641CE4002EB54C /* CocoaLumberjack */,
 				04F727671E641CE4002EB54C /* Core */,
 				04F7278F1E641CE4002EB54C /* Resource */,
 			);
@@ -1261,37 +1238,6 @@
 				04F727541E641CE4002EB54C /* GCDAsyncSocket.m */,
 			);
 			path = CocoaAsyncSocket;
-			sourceTree = "<group>";
-		};
-		04F727551E641CE4002EB54C /* CocoaLumberjack */ = {
-			isa = PBXGroup;
-			children = (
-				04F727561E641CE4002EB54C /* About.txt */,
-				04F727571E641CE4002EB54C /* DDAbstractDatabaseLogger.h */,
-				04F727581E641CE4002EB54C /* DDAbstractDatabaseLogger.m */,
-				04F727591E641CE4002EB54C /* DDASLLogger.h */,
-				04F7275A1E641CE4002EB54C /* DDASLLogger.m */,
-				04F7275B1E641CE4002EB54C /* DDFileLogger.h */,
-				04F7275C1E641CE4002EB54C /* DDFileLogger.m */,
-				04F7275D1E641CE4002EB54C /* DDLog.h */,
-				04F7275E1E641CE4002EB54C /* DDLog.m */,
-				04F7275F1E641CE4002EB54C /* DDTTYLogger.h */,
-				04F727601E641CE4002EB54C /* DDTTYLogger.m */,
-				04F727611E641CE4002EB54C /* Extensions */,
-			);
-			path = CocoaLumberjack;
-			sourceTree = "<group>";
-		};
-		04F727611E641CE4002EB54C /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				04F727621E641CE4002EB54C /* ContextFilterLogFormatter.h */,
-				04F727631E641CE4002EB54C /* ContextFilterLogFormatter.m */,
-				04F727641E641CE4002EB54C /* DispatchQueueLogFormatter.h */,
-				04F727651E641CE4002EB54C /* DispatchQueueLogFormatter.m */,
-				04F727661E641CE4002EB54C /* README.txt */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		04F727671E641CE4002EB54C /* Core */ = {
@@ -1535,6 +1481,8 @@
 				3C6668C41EA078860050FA66 /* UNDataTools.m */,
 				3C7DECCC1EC2BB7C00CDCE34 /* UNConvertFormatTool.h */,
 				3C7DECCD1EC2BB7C00CDCE34 /* UNConvertFormatTool.m */,
+				3C1B341A1EEFD36200DFC56F /* UNDDLogManager.h */,
+				3C1B341B1EEFD36200DFC56F /* UNDDLogManager.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -2528,7 +2476,6 @@
 				3CD76AA31EA73394001E6466 /* UNLoginViewController.xib in Resources */,
 				04440D3E1E77CE9500206877 /* ActivateGiftCardViewController.xib in Resources */,
 				3CA898791E8DFD1600C38387 /* MBProgressHUD.bundle in Resources */,
-				04F727A11E641CE4002EB54C /* README.txt in Resources */,
 				3C99A8921EA85CD100C96BE7 /* ExplainDetailsLastController.xib in Resources */,
 				952B2B071DC22D75006A7C69 /* messages.plist in Resources */,
 				0480516D1E86682F00E8AB55 /* PurviewSettingViewController.xib in Resources */,
@@ -2551,7 +2498,6 @@
 				04F727971E641CE4002EB54C /* About.txt in Resources */,
 				954A87E21D9A0DA400570843 /* PhonePadView.xib in Resources */,
 				04127F631EA5F3BD00C18201 /* OrderListViewController.xib in Resources */,
-				04F727991E641CE4002EB54C /* About.txt in Resources */,
 				3C07E2351EE2577F001AB21D /* MessagePhoneDetailHeaderCell.xib in Resources */,
 				3C388A911EC4624B00A04BA8 /* VerificationPhoneController.xib in Resources */,
 				95C575FD1DA77C1000F459DF /* MessageRecordCell.xib in Resources */,
@@ -2665,11 +2611,11 @@
 				952EA1141DD6F02A004738A5 /* QuickSettingViewController.m in Sources */,
 				95938D541D951F63008A0A21 /* ContactsViewController.m in Sources */,
 				3C20C20E1E6CF3CC008078BB /* UNSipEngineInitialize.mm in Sources */,
+				3C1B341C1EEFD36200DFC56F /* UNDDLogManager.m in Sources */,
 				95938D351D933FFA008A0A21 /* CountryCell.m in Sources */,
 				3C99A8911EA85CD100C96BE7 /* ExplainDetailsLastController.m in Sources */,
 				9520BCB01DA1048100F0B286 /* RechargeViewController.m in Sources */,
 				3C7DECD11EC2C62B00CDCE34 /* ConvenienceServiceController.m in Sources */,
-				04F7279F1E641CE4002EB54C /* ContextFilterLogFormatter.m in Sources */,
 				3C9035561E9B344700FF95C0 /* PhoneIndexController.mm in Sources */,
 				040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */,
 				95E596601DC478A700B3F4F8 /* ContactPhoneCell.m in Sources */,
@@ -2686,7 +2632,6 @@
 				3CD0C8A01E864BDB00ABD21B /* UNPushKitMessageManager.m in Sources */,
 				0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */,
 				952B2AEE1DC224F4006A7C69 /* UIImage+Extension.m in Sources */,
-				04F7279B1E641CE4002EB54C /* DDASLLogger.m in Sources */,
 				954A87D21D98BBA700570843 /* JSONAPI.m in Sources */,
 				04AFE6621EC435C800B3BC8F /* HavePackageDetailTableViewCell.m in Sources */,
 				3C07E22F1EE2577F001AB21D /* UNMessageContentController.m in Sources */,
@@ -2720,7 +2665,6 @@
 				3C4A077C1E9CCAD500A6DDA9 /* UITableView+RegisterNib.m in Sources */,
 				954A87CF1D98BBA700570843 /* JSONModelClassProperty.m in Sources */,
 				95E5965D1DC4788D00B3F4F8 /* ContactsDetailViewController.m in Sources */,
-				04F7279C1E641CE4002EB54C /* DDFileLogger.m in Sources */,
 				0480516C1E86682F00E8AB55 /* PurviewSettingViewController.m in Sources */,
 				95E45CF41DBDFEB600A59EF4 /* BorderButton.m in Sources */,
 				3CB305D81EE7E102004728FB /* UNMobileActivateController.m in Sources */,
@@ -2800,7 +2744,6 @@
 				04553F301E70EE980025CA34 /* ChooseDeviceTypeViewController.m in Sources */,
 				954A87CE1D98BBA700570843 /* JSONModelArray.m in Sources */,
 				9536B9741D8FC16600CD6B78 /* UnderlineField.m in Sources */,
-				04F7279D1E641CE4002EB54C /* DDLog.m in Sources */,
 				3C07E22E1EE2577F001AB21D /* NewMessageViewController.m in Sources */,
 				95CD33EC1D9CE4F300EE5DD3 /* base64.m in Sources */,
 				3C7DECDE1EC2F86800CDCE34 /* OpenConvenienceServiceController.m in Sources */,
@@ -2843,10 +2786,7 @@
 				04F727A31E641CE4002EB54C /* DDNumber.m in Sources */,
 				95DD7FE61DAA4C1F006E1B0D /* KTAutoHeightTextView.m in Sources */,
 				0436C3651E1F90460033A8F1 /* CommunicatePackageTableViewCell.m in Sources */,
-				04F7279A1E641CE4002EB54C /* DDAbstractDatabaseLogger.m in Sources */,
 				04F727B11E641CE4002EB54C /* HTTPRedirectResponse.m in Sources */,
-				04F7279E1E641CE4002EB54C /* DDTTYLogger.m in Sources */,
-				04F727A01E641CE4002EB54C /* DispatchQueueLogFormatter.m in Sources */,
 				04EAB8BC1E2787F6000D3D13 /* AlarmListViewController.m in Sources */,
 				3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */,
 				3CC3E0BD1E63FB9100A62F8C /* ExplainDetailsChildController.m in Sources */,

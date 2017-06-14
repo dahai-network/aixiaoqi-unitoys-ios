@@ -32,7 +32,7 @@ PODS:
   - iOSDFULibrary (2.1.6):
     - Zip (~> 0.6)
   - Masonry (1.0.2)
-  - MBProgressHUD (0.9.2)
+  - MBProgressHUD (1.0.0)
   - MJExtension (3.0.13)
   - MJRefresh (3.1.12)
   - pop (1.0.9)
@@ -53,7 +53,7 @@ DEPENDENCIES:
   - FMDB (~> 2.5)
   - iOSDFULibrary (~> 2.1.6)
   - Masonry
-  - MBProgressHUD (~> 0.9.1)
+  - MBProgressHUD (~> 1.0.0)
   - MJExtension
   - MJRefresh
   - pop (~> 1.0)
@@ -70,7 +70,7 @@ SPEC CHECKSUMS:
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   iOSDFULibrary: 1d597b90fed43a68aba886443a0045d900e622d9
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
-  MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
+  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   MJExtension: 5932755f451458eefa24239358817f8d291240c7
   MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
   pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
@@ -80,6 +80,6 @@ SPEC CHECKSUMS:
   UMengAnalytics-NO-IDFA: 16666e32edce5be44ae5b14aaaa7f3582e09d6ab
   Zip: 805fc2fa9d2f05bbb7762d982d7a42ccdcc51f42
 
-PODFILE CHECKSUM: 9e20541fd63fd536133bb98c568d559df2f7ef92
+PODFILE CHECKSUM: ff33e2b0605f3eca20e6f05492d7882e0fa11ad3
 
 COCOAPODS: 1.2.0

@@ -90,6 +90,7 @@ typedef enum : NSUInteger {
     self.tabBar.tintColor = DefultColor;
     self.tabBar.backgroundColor = [UIColor whiteColor];
     
+    [UNPushKitMessageManager shareManager].isInitMainVc = YES;
     
     navHomeViewController *navPhoneViewController = [self.childViewControllers objectAtIndex:1];
 //    PhoneViewController *phoneViewController = [[PhoneViewController alloc] init];

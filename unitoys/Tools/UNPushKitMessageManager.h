@@ -136,4 +136,9 @@ typedef NS_ENUM(NSUInteger, PushKitMessageType) {
  */
 @property (nonatomic, copy) NSString *callKitHandleString;
 
+
+/**
+ *  是否初始化过MainVc(通过PushKit唤醒时会先走PushKit消息,再走MianVc,通过此状态判断是否通过PushKit唤醒)
+ */
+@property (nonatomic, assign) BOOL isInitMainVc;
 @end

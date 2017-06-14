@@ -112,6 +112,57 @@
 }
 
 
+/**
+ 上传文件请求
+ */
++ (void)updateDataRequest:(NSString *)url params:(id)params dataArray:(NSArray *)datas progress:(progressBlock)progressHandler success:(requestSuccessBlock)successHandler failure:(responseBlock)responseBlock headers:(NSDictionary *) headers
+{
+    if (![self checkNetworkStatus]) {
+        successHandler(nil);
+        responseBlock(nil,nil);
+        return;
+    }
+    AFHTTPSessionManager *manager = [self getRequstManager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    //开始加载头部
+    if (headers) {
+        NSEnumerator *enumerator = [headers keyEnumerator];
+        id key;
+        while ((key = [enumerator nextObject])) {
+            [manager.requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
+        }
+    }
+    [manager POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        for (int i=0; i<[datas count]; i++) {
+            [formData appendPartWithFileData:[datas objectAtIndex:i][@"data"] name:[NSString stringWithFormat:@"file%d",i ] fileName:[datas objectAtIndex:i][@"name"] mimeType:@"application/octet-stream"];
+        }
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        progressHandler(uploadProgress);
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        successHandler(responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        responseBlock(task.response,error);
+    }];
+    
+    
+//    [manager POST:url parameters:params progress:^(NSProgress * _Nonnull uploadProgress) {
+//        //
+//    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//        //
+//        if (![BlueToothDataManager shareManager].isShowHud) {
+//            HUDStop;
+//        }
+//        successHandler(responseObject);
+//    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//        //
+//        if (![BlueToothDataManager shareManager].isShowHud) {
+//            HUDStop;
+//        }
+//        responseBlock(task.response,error);
+//    }];
+
+}
+
 + (void)postRequest:(NSString *)url params:(id)params success:(requestSuccessBlock)successHandler failure:(responseBlock)failureHandler headers:(NSDictionary *) headers{
     
     if (![self checkNetworkStatus]) {
@@ -353,6 +404,40 @@
     [reachabilityManager startMonitoring];
     return isNetworkUse;
 }
+
+- (NSString *)mimeTypeForData:(NSData *)data {
+    uint8_t c;
+    [data getBytes:&c length:1];
+    
+    switch (c) {
+        case 0xFF:
+            return @"image/jpeg";
+            break;
+        case 0x89:
+            return @"image/png";
+            break;
+        case 0x47:
+            return @"image/gif";
+            break;
+        case 0x49:
+        case 0x4D:
+            return @"image/tiff";
+            break;
+        case 0x25:
+            return @"application/pdf";
+            break;
+        case 0xD0:
+            return @"application/vnd";
+            break;
+        case 0x46:
+            return @"text/plain";
+            break;
+        default:
+            return @"application/octet-stream";
+    }
+    return nil;
+}
+
 
 @end
 

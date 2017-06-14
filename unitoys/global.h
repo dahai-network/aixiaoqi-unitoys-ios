@@ -17,8 +17,6 @@
 #define defaultPort @":8000"
 */
 
-
-
 #define DEBUGMODE 1
 
 #if DEBUGMODE
@@ -68,6 +66,10 @@
 #define kDevice_Is_iPhone6Plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1242, 2208), [[UIScreen mainScreen] currentMode].size) : NO)
 
 #define DebugUNLog(s, ...) NSLog(@"%s(%d): %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__])
+
+
+//#define UNDDLog
+
 
 #define kWeakSelf __weak typeof(self) weakSelf = self;
 
@@ -303,6 +305,8 @@
 //获取已被绑定的IMEI设备地址
 #define apiGetBindsIMEI defaultHost@"api/DeviceBracelet/GetBindsIMEI"
 
+//获取已被绑定的IMEI设备地址
+#define apiUploadUserLog defaultHost@"api/User/UploadUserLog"
 
 
 

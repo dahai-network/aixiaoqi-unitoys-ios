@@ -35,9 +35,14 @@ typedef void (^requestFailureBlock) (NSError *error);
 typedef void (^responseBlock)(id dataObj, NSError *error);
 
 /**
+ 进度block
+ */
+typedef void (^progressBlock)(NSProgress *progress);
+
+/**
  监听进度响应block
  */
-typedef void (^progressBlock)(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
+//typedef void (^progressBlock)(int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
 
 
 @interface SSNetworkRequest : NSObject
@@ -56,6 +61,20 @@ typedef void (^progressBlock)(int64_t bytesWritten, int64_t totalBytesWritten, i
  */
 + (void)postRequest:(NSString *)url params:(id)params success:(requestSuccessBlock)successHandler failure:(responseBlock)responseBlock headers:(NSDictionary *) headers;
 
+
+/**
+ 上传文件
+
+ @param url url
+ @param params params
+ @param datas 格式:@[@{@"data":@"",@"name":@""}]
+ @param progress progress
+ @param successHandler success
+ @param responseBlock failed
+ @param headers headers
+ */
++ (void)updateDataRequest:(NSString *)url params:(id)params dataArray:(NSArray *)datas progress:(progressBlock)progress success:(requestSuccessBlock)successHandler failure:(responseBlock)responseBlock headers:(NSDictionary *) headers;
+
 /**
  POST请求
  */
@@ -71,20 +90,20 @@ typedef void (^progressBlock)(int64_t bytesWritten, int64_t totalBytesWritten, i
  */
 + (void)deleteRequest:(NSString *)url params:(NSDictionary *)params success:(requestSuccessBlock)successHandler failure:(requestFailureBlock)failureHandler;
 
-/**
- 下载文件，监听下载进度
- */
-+ (void)downloadRequest:(NSString *)url successAndProgress:(progressBlock)progressHandler complete:(responseBlock)completionHandler;
-
-/**
- 文件上传
- */
-+ (void)updateRequest:(NSString *)url params:(NSDictionary *)params fileConfig:(SSFileConfig *)fileConfig success:(requestSuccessBlock)successHandler failure:(requestFailureBlock)failureHandler;
-
-/**
- 文件上传，监听上传进度
- */
-+ (void)updateRequest:(NSString *)url params:(NSDictionary *)params fileConfig:(SSFileConfig *)fileConfig successAndProgress:(progressBlock)progressHandler complete:(responseBlock)completionHandler;
+///**
+// 下载文件，监听下载进度
+// */
+//+ (void)downloadRequest:(NSString *)url successAndProgress:(progressBlock)progressHandler complete:(responseBlock)completionHandler;
+//
+///**
+// 文件上传
+// */
+//+ (void)updateRequest:(NSString *)url params:(NSDictionary *)params fileConfig:(SSFileConfig *)fileConfig success:(requestSuccessBlock)successHandler failure:(requestFailureBlock)failureHandler;
+//
+///**
+// 文件上传，监听上传进度
+// */
+//+ (void)updateRequest:(NSString *)url params:(NSDictionary *)params fileConfig:(SSFileConfig *)fileConfig successAndProgress:(progressBlock)progressHandler complete:(responseBlock)completionHandler;
 
 @end
 

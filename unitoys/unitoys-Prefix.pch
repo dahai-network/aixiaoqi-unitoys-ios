@@ -18,7 +18,7 @@
 #import "UIView+Utils.h"
 #import "MJRefresh.h"
 #import "UMMobClick/MobClick.h"
-//#import "CocoaLumberjack/Classes/CocoaLumberjack.h"
+#import "UNDDLogManager.h"
 //#import <CocoaLumberjack/CocoaLumberjack.h>
 //#define MAS_SHORTHAND
 //#import "Masonry/Masonry/Masonry.h"

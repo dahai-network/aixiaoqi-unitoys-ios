@@ -80,9 +80,25 @@
  */
 + (void)showWarningWithMessage:(NSString *)message;
 
+
+
+typedef NS_ENUM(NSUInteger, UNProgressType) {
+    UNProgressTypeAnnularDeterminate = 1, //圆形外层填充
+    UNProgressTypeDeterminate = 2,  //圆形内层填充
+    UNProgressTypeDeterminateHorizontalBar = 3, //直线填充
+};
+/**
+ 加载进度条
+
+ @param progress 进度
+ @param type 类型
+ */
++ (void)showLoadingWithProgress:(double)progress ProgressType:(UNProgressType)type;
++ (void)showLoadingWithProgress:(double)progress ProgressType:(UNProgressType)type toView:(UIView *)view;
+
 /**
  *  隐藏提示
  */
-+ (void)hideHUD;
++ (void)hideMBHUD;
 
 @end
