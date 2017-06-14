@@ -137,7 +137,18 @@ typedef enum : NSUInteger {
 
 - (void)showLowElectyAlert {
     if (![BlueToothDataManager shareManager].isAlreadyShowElectyAlert) {
-        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"系统提示" message:@"蓝牙设备电量过低，请及时充电" preferredStyle:UIAlertControllerStyleAlert];
+        NSString *messageStr;
+        if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
+            //手环
+            messageStr = @"您的手环电量过低，请及时充电";
+        } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
+            //双待王
+            messageStr = @"您的双待王电量过低，请及时充电";
+        } else {
+            messageStr = @"您的爱小器蓝牙设备电量过低，请及时充电";
+            NSLog(@"这是连接的什么？");
+        }
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"系统提示" message:messageStr preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"确定") style:UIAlertActionStyleCancel handler:nil];
         [alertVC addAction:certailAction];
         [self presentViewController:alertVC animated:YES completion:nil];

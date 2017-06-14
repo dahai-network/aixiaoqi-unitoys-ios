@@ -306,11 +306,13 @@
 }
 
 - (void)initUMeng {
-    //打印登录信息
 #if DEBUG
+    //打印登录信息
     [MobClick setLogEnabled:YES];
-#endif
+    UMConfigInstance.appKey = @"5940f2581c5dd06a9f0011ad";
+#else
     UMConfigInstance.appKey = @"5938f75075ca357657001149";
+#endif
     UMConfigInstance.channelId = @"App Store";
     //设置登录账号
 //    [MobClick profileSignInWithPUID:@"playerID"];

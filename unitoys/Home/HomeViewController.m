@@ -885,7 +885,7 @@
             NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
             NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
             if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-                NSLog(@"空中升级的时候删除本地绑定信息 %s,%d", __FUNCTION__, __LINE__);
+                NSLog(@"空中升级的时候删除本地绑定信息前的数据 %s,%d %@", __FUNCTION__, __LINE__, boundedDeviceInfo);
                 [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
             }
             [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
