@@ -1639,7 +1639,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
     
     //    [mStatus setText:msg];
-    NSLog(@"注册状态：%@",msg);
+    UNLogLBEProcess(@"注册状态：%@",msg);
 }
 
 - (NSString *)formatPhoneNum:(NSString *)phone

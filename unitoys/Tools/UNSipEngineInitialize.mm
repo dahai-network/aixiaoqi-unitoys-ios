@@ -76,7 +76,7 @@
 }
 
 - (void)initEngine {
-    NSLog(@"UNSipEngineInitialize---initEngine");
+    UNLogLBEProcess(@"UNSipEngineInitialize---initEngine")
     
     //获取状态,如果注册失败或注册成功才重新注册
     BOOL isRegister = self.sipRegisterStatu == SipRegisterStatuCleared || self.sipRegisterStatu == SipRegisterStatuFailed;
@@ -115,7 +115,7 @@
 
 -(void)doRegister{
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-    NSLog(@"UNSipEngineInitialize--doRegister");
+    UNLogLBEProcess(@"UNSipEngineInitialize--doRegister");
     if(theSipEngine->AccountIsRegstered())
     {
         theSipEngine->DeRegisterSipAccount();
@@ -141,7 +141,7 @@
                 
                 
 //                self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
-                NSLog(@"UNSipEngineInitialize--1doRegister--secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
+                UNLogLBEProcess(@"UNSipEngineInitialize--1doRegister--secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
                 callEngine->SetEnCrypt(NO, NO);
                 //IP地址
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
@@ -150,9 +150,8 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
                 //数据请求失败
+                UNLogLBEProcess(@"apiGetSecrityConfig===%@",responseObj[@"data"])
             }
-            
-            
         } failure:^(id dataObj, NSError *error) {
             NSLog(@"有异常：%@",[error description]);
         } headers:self.headers];
@@ -180,14 +179,14 @@
                 NSString *thirdpwd = [self md5:secpwd];
                 
                 NSString *userName = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"] objectForKey:@"Tel"];
-                NSLog(@"UNSipEngineInitialize--doRegister---secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
+                UNLogLBEProcess(@"UNSipEngineInitialize--doRegister---secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName)
                 callEngine->SetEnCrypt(NO, NO);
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
                 //数据请求失败
+                UNLogLBEProcess(@"apiGetSecrityConfig===%@",responseObj[@"data"])
             }
         } failure:^(id dataObj, NSError *error) {
             NSLog(@"有异常：%@",[error description]);
