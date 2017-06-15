@@ -135,6 +135,16 @@
         [headers setObject:timestemp forKey:@"expires"];
         timestemp = [NSString stringWithFormat:@"2006808%@BAS123!@#FD1A56K",timestemp];
         [headers setObject:[self md5:timestemp] forKey:@"sign"];
+        
+        // 当前软件的版本号（从Info.plist中获得）
+        NSString *key = @"CFBundleShortVersionString";
+        NSString *versionNumberStr = [NSBundle mainBundle].infoDictionary[key];
+        [headers setObject:versionNumberStr forKey:@"Version"];
+        
+        //附加信息
+        NSString *terminalStr = @"iOS";
+        [headers setObject:terminalStr forKey:@"Terminal"];
+        
         NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
         if (userdata) {
             [headers setObject:[userdata objectForKey:@"Token"] forKey:@"TOKEN"];

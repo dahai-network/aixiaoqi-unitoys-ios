@@ -3428,12 +3428,20 @@ static UNBlueToothTool *instance = nil;
     [self.headers setObject:@"2006808" forKey:@"partner"];
     
     NSString *timestemp = @"1471316792";
-    
     [self.headers setObject:timestemp forKey:@"expires"];
     
     timestemp = [NSString stringWithFormat:@"2006808%@BAS123!@#FD1A56K",timestemp];
-    
     [self.headers setObject:[self md5:timestemp] forKey:@"sign"];
+    
+    // 当前软件的版本号（从Info.plist中获得）
+    NSString *key = @"CFBundleShortVersionString";
+    NSString *versionNumberStr = [NSBundle mainBundle].infoDictionary[key];
+    [self.headers setObject:versionNumberStr forKey:@"Version"];
+    
+    //附加信息
+    NSString *terminalStr = @"iOS";
+    [self.headers setObject:terminalStr forKey:@"Terminal"];
+    
     if (self.checkToken) {
         NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
         if (userdata) {

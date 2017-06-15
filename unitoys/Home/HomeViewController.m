@@ -981,7 +981,7 @@
     UNDebugLogVerbose(@"ERROR %ld:%@", (long)error, message);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        self.progressWindow = nil;
-        self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n爱小器双待王需等待2分钟才能重新连接");
+        self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n双待王需等待2分钟才能重新连接");
         UNDebugLogVerbose(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
         [BlueToothDataManager shareManager].isBeingOTA = NO;
     });
@@ -1037,7 +1037,7 @@
 #pragma mark 进度条布局
 - (void)showProgress {
     if (!self.progressWindow) {
-        self.progressWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 20, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height-20)];
+        self.progressWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.progressWindow.windowLevel = UIWindowLevelStatusBar+1;
         self.progressWindow.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
         
