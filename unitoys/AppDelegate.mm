@@ -307,8 +307,35 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(isAlreadOnlineAndSendJumpData) name:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
     //接收重新登入通知，清除缓存的数据包
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cleanPackageData) name:@"reloginNotify" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(otaSuccessAndReConnected) name:@"OTASuccessAndReConnectedNotif" object:@"OTASuccessAndReConnectedNotif"];
     
     return YES;
+}
+
+- (void)otaSuccessAndReConnected {
+    if (![UNDataTools sharedInstance].isLogout) {
+        UNDebugLogVerbose(@"在线：%s,%d", __FUNCTION__, __LINE__);
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            if ([BlueToothDataManager shareManager].isOpened) {
+                if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
+                    self.isNeedToCheckSIMStatue = YES;
+                    if ([BlueToothDataManager shareManager].isTcpConnected) {
+                        [self sendDataToCheckRegistStatue];
+                    } else {
+                        [self creatAsocketTcp];
+                    }
+                } else {
+                    UNLogLBEProcess(@"进入前台--没网络")
+                }
+            } else {
+                UNLogLBEProcess(@"进入前台--蓝牙未开")
+            }
+        } else {
+            UNLogLBEProcess(@"进入前台--服务未开")
+        }
+    } else {
+        UNDebugLogVerbose(@"不在线：%s,%d", __FUNCTION__, __LINE__);
+    }
 }
 
 
@@ -3075,6 +3102,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"loginSuccessAndCreatTcpNotif" object:@"loginSuccessAndCreatTcpNotif"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"reloginNotify" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"OTASuccessAndReConnectedNotif" object:@"OTASuccessAndReConnectedNotif"];
 }
 
 @end

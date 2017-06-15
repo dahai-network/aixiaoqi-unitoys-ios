@@ -958,23 +958,9 @@
      */
     //    DFUState dfuStateType = (DFUState)state;
     UNDebugLogVerbose(@"显示升级状态 --> %ld", (long)state);
-    if (state == 6&&self.progressWindow) {
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            self.progressWindow = nil;
-//        });
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            if (self.peripheral != nil) {
-//                self.myController = nil;
-//                [self checkBindedDeviceFromNet];
-//                UNDebugLogVerbose(@"------------------------------------------------");
-//            }
-            if ([UNBlueToothTool shareBlueToothTool].peripheral != nil) {
-                self.myController = nil;
-                [[UNBlueToothTool shareBlueToothTool] checkBindedDeviceFromNet];
-                UNDebugLogVerbose(@"------------------------------------------------");
-            }
-        });
-    }
+//    if (state == 6&&self.progressWindow) {
+//        self.myController = nil;
+//    }
 }
 
 - (void)didErrorOccur:(enum DFUError)error withMessage:(NSString *)message {
@@ -987,6 +973,7 @@
     });
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.myController = nil;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"OTASuccessAndReConnectedNotif" object:@"OTASuccessAndReConnectedNotif"];
         [[UNBlueToothTool shareBlueToothTool] clearInstance];
         [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
         [self hiddenProgressWindow];
@@ -1005,8 +992,9 @@
     if (progress == 100) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级成功\n正在重新连接双待王");
-            [BlueToothDataManager shareManager].isBeingOTA = NO;
             self.myController = nil;
+            [BlueToothDataManager shareManager].isBeingOTA = NO;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"OTASuccessAndReConnectedNotif" object:@"OTASuccessAndReConnectedNotif"];
             [[UNBlueToothTool shareBlueToothTool] clearInstance];
             [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
             [self hiddenProgressWindow];
