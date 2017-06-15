@@ -981,9 +981,15 @@
     NSLog(@"ERROR %ld:%@", (long)error, message);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        self.progressWindow = nil;
-        self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n请重新启动爱小器App");
+        self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n爱小器双待王需等待2分钟才能重新连接");
         NSLog(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
         [BlueToothDataManager shareManager].isBeingOTA = NO;
+    });
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.myController = nil;
+        [[UNBlueToothTool shareBlueToothTool] clearInstance];
+        [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+        [self hiddenProgressWindow];
     });
 }
 
@@ -998,11 +1004,22 @@
 //    NSLog(@"当前百分比%f", (float)progress/100);
     if (progress == 100) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级成功\n请重新启动爱小器App");
+            self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级成功\n正在重新连接双待王");
             [BlueToothDataManager shareManager].isBeingOTA = NO;
+            self.myController = nil;
+            [[UNBlueToothTool shareBlueToothTool] clearInstance];
+            [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+            [self hiddenProgressWindow];
             NSLog(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
         });
     }
+}
+
+- (void)hiddenProgressWindow {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.progressWindow = nil;
+        self.progressWindow.hidden = YES;
+    });
 }
 
 - (void)logWith:(enum LogLevel)level message:(NSString *)message {
