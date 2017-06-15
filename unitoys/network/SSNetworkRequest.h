@@ -15,7 +15,7 @@
  *  HUD隐藏
  *
  */
-#define HUDStop [MBProgressHUD hideAllHUDsForView:[[UIApplication sharedApplication].delegate window] animated:NO];
+//#define HUDStop [MBProgressHUD hideAllHUDsForView:[[UIApplication sharedApplication].delegate window] animated:NO];
 
 @class SSFileConfig;
 

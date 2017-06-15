@@ -24,9 +24,9 @@
 #define HUDNormal(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.mode = MBProgressHUDModeText;\
 hud.minShowTime=1;\
-hud.detailsLabelText= msg;\
-hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
-[hud hide:YES afterDelay:1];\
+hud.detailsLabel.text= msg;\
+hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
+[hud hideAnimated:YES afterDelay:1];\
 }
 
 /**
@@ -36,10 +36,10 @@ hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
 #define HUDNormalTop(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.mode = MBProgressHUDModeText;\
 hud.minShowTime=1;\
-hud.detailsLabelText= msg;\
-hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
+hud.detailsLabel.text= msg;\
+hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
 hud.yOffset =  -70;\
-[hud hide:YES afterDelay:1];\
+[hud hideAnimated:YES afterDelay:1];\
 }
 
 /**
@@ -47,8 +47,8 @@ hud.yOffset =  -70;\
  *
  */
 #define HUDNoStop1(msg)    {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
-hud.detailsLabelText = msg;\
-hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
+hud.detailsLabel.text = msg;\
+hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
 hud.mode = MBProgressHUDModeIndeterminate;}
 
 
@@ -56,7 +56,9 @@ hud.mode = MBProgressHUDModeIndeterminate;}
  *  HUD隐藏
  *
  */
-#define HUDStop [MBProgressHUD hideAllHUDsForView:[[UIApplication sharedApplication].delegate window] animated:NO];
+//#define HUDStop [MBProgressHUD hideAllHUDsForView:[[UIApplication sharedApplication].delegate window] animated:NO];
+#define HUDStop [MBProgressHUD hideHUDForView:[[UIApplication sharedApplication].delegate window] animated:NO];
+
 
 //加载图片
 #define setImage(ImageView,urlstr)   [ImageView sd_setImageWithURL:[NSURL URLWithString:urlstr] placeholderImage:nil];

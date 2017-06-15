@@ -108,6 +108,8 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    UNLogLBEProcess(@"============================================didFinishLaunchingWithOptions============================================\n")
+    
     //制定真机调试保存日志文件
 //    [self redirectNSLogToDocumentFolder];
     

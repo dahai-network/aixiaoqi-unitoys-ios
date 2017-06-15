@@ -21,9 +21,9 @@
 #define HUDNormal(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.mode = MBProgressHUDModeText;\
 hud.minShowTime=1;\
-hud.detailsLabelText= msg;\
-hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
-[hud hide:YES afterDelay:1];\
+hud.detailsLabel.text= msg;\
+hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
+[hud hideAnimated:YES afterDelay:1];\
 }
 
 /**
@@ -33,10 +33,10 @@ hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
 #define HUDNormalTop(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.mode = MBProgressHUDModeText;\
 hud.minShowTime=1;\
-hud.detailsLabelText= msg;\
-hud.detailsLabelFont = [UIFont systemFontOfSize:17];\
+hud.detailsLabel.text= msg;\
+hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
 hud.yOffset =  -70;\
-[hud hide:YES afterDelay:1];\
+[hud hideAnimated:YES afterDelay:1];\
 }
 
 

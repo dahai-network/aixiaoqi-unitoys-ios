@@ -15,7 +15,8 @@
 #ifdef DEBUG
 static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
-#define UNLogLBEProcess(format, ...) DDLogWarn((@"[Function:%s]" "[Line:%d]" format), __FUNCTION__, __LINE__, ##__VA_ARGS__);
+//#define UNLogLBEProcess(format, ...) DDLogWarn((@"[Function:%s]" "[Line:%d]" format), __FUNCTION__, __LINE__, ##__VA_ARGS__);
+#define UNLogLBEProcess(format, ...) DDLogWarn(format, ##__VA_ARGS__);
 #define UNLogVerbose(format, ...) DDLogVerbose((@"[%s]" format), __FUNCTION__, ##__VA_ARGS__);
 
 #else

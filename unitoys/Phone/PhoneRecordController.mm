@@ -235,7 +235,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 
 - (BOOL)initEngine {
-    NSLog(@"PhoneRecordController---initEngine");
+    UNLogLBEProcess(@"PhoneRecordController---initEngine")
 //    [[SipEngineManager instance] Init];
 //    [[SipEngineManager instance] LoadConfig];
 //    [[SipEngineManager instance] setCallDelegate:self];
@@ -476,6 +476,15 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             self.isSearchStatu = NO;
             [self.searchLists removeAllObjects];
             [self.tableView reloadData];
+            
+            if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
+                HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+                return;
+            }
+            if (![UNConvertFormatTool isAllNumberWithString:self.currentCallPhone]) {
+                HUDNormal(INTERNATIONALSTRING(@"号码格式错误"))
+                return;
+            }
             
             if (kSystemVersionValue >= 10.0) {
                 UNContact *contact = [[UNContact alloc] init];
@@ -1528,7 +1537,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 
                 self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
-                NSLog(@"secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
+                UNLogLBEProcess(@"注册网络电话secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
                 callEngine->SetEnCrypt(NO, NO);
                 //IP地址
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
@@ -1579,7 +1588,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
                 
                 callEngine->SetEnCrypt(NO, NO);
-                NSLog(@"secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
+                UNLogLBEProcess(@"注册网络电话secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName)
 
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
                 
@@ -1595,15 +1604,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         } failure:^(id dataObj, NSError *error) {
             NSLog(@"有异常：%@",[error description]);
         } headers:self.headers];
-        
-        /*
-         #define CRYPT
-         
-         #ifdef CRYPT
-         theSipEngine->RegisterSipAccount([@"18850161016" UTF8String], [@"18850161016" UTF8String],"", "121.46.3.20", 65061,1800);
-         #else
-         theSipEngine->RegisterSipAccount([@"18850161016" UTF8String], [@"18850161016" UTF8String],"", "121.46.3.20", 65060,1800);
-         #endif */
     }
 }
 
@@ -1708,15 +1708,14 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 //拨打电话
 - (void)callUnitysNumber:(NSString *)strNumber {
-    if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
-        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        return;
-    }
-    if (![UNConvertFormatTool isAllNumberWithString:strNumber]) {
-        HUDNormal(INTERNATIONALSTRING(@"号码格式错误"))
-        return;
-    }
-    
+//    if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
+//        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
+//        return;
+//    }
+//    if (![UNConvertFormatTool isAllNumberWithString:strNumber]) {
+//        HUDNormal(INTERNATIONALSTRING(@"号码格式错误"))
+//        return;
+//    }
     self.maxPhoneCall = -1;
     __block NSString *currentDateStr;
     //是否直接拨打电话

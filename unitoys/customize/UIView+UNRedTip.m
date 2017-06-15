@@ -35,11 +35,11 @@ static CGFloat const badgeFont = 9; //字体的大小
 - (void)showBadgeWithRightMargin:(CGFloat)rightMargin TopMargin:(CGFloat)topMargin
 {
     if (self.badgeLabel == nil) {
-        CGRect frame = CGRectMake(CGRectGetWidth(self.frame) + rightRange - rightMargin, -pointWidth / 2 + topMargin, pointWidth, pointWidth);
+        CGRect frame = CGRectMake(CGRectGetWidth(self.frame) + rightRange - rightMargin, -pointWidth / 2.0 + topMargin, pointWidth, pointWidth);
         self.badgeLabel = [[UILabel alloc] initWithFrame:frame];
         self.badgeLabel.backgroundColor = [UIColor redColor];
         //圆角为宽度的一半
-        self.badgeLabel.layer.cornerRadius = pointWidth / 2;
+        self.badgeLabel.layer.cornerRadius = pointWidth / 2.0;
         //确保可以有圆角
         self.badgeLabel.layer.masksToBounds = YES;
         [self addSubview:self.badgeLabel];

@@ -11,6 +11,7 @@
 #import "UNReadyActivateCell.h"
 #import "UNMobileActivateController.h"
 #import "UNConvertFormatTool.h"
+#import "UNDatabaseTools.h"
 
 @interface UNReadyActivateController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -186,12 +187,13 @@ static NSString *activateCellID = @"UNReadyActivateCell";
         HUDNoStop1(@"")
         self.checkToken = YES;
         NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderID,@"OrderID", self.selectDate,@"BeginDateTime", nil];
-        
+        NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderID%@", @"apiOrderActivation", self.orderID];
         [self getBasicHeader];
         //            NSLog(@"表演头：%@",self.headers);
         [SSNetworkRequest postRequest:apiOrderActivation params:info success:^(id responseObj) {
             NSLog(@"查询到的用户数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
+                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
                 [self activitySuccess];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 HUDStop
@@ -204,10 +206,16 @@ static NSString *activateCellID = @"UNReadyActivateCell";
             }
             
         } failure:^(id dataObj, NSError *error) {
-            //
+            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+            if (responseObj) {
+                [self activitySuccess];
+                HUDStop
+            }else{
+                [self.activeButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
+                HUDNormal(@"激活失败")
+            }
             NSLog(@"啥都没：%@",[error description]);
-            HUDNormal(@"激活失败")
-            [self.activeButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
+            
         } headers:self.headers];
     }else{
         //获取激活码
@@ -221,8 +229,11 @@ static NSString *activateCellID = @"UNReadyActivateCell";
     self.checkToken = YES;
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderID, @"OrderID", nil];
     [self getBasicHeader];
+    
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderID%@", @"apiActivationLocalCompleted", self.orderID];
     [SSNetworkRequest postRequest:apiActivationLocalCompleted params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             HUDStop
             //获取激活码
             [self getActivateCode];
@@ -234,6 +245,10 @@ static NSString *activateCellID = @"UNReadyActivateCell";
         }
     } failure:^(id dataObj, NSError *error) {
         HUDStop
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            [self getActivateCode];
+        }
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
@@ -245,8 +260,10 @@ static NSString *activateCellID = @"UNReadyActivateCell";
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderID, @"OrderID", nil];
     self.checkToken = YES;
     [self getBasicHeader];
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderID%@", @"apiQueryOrderData", self.orderID];
     [SSNetworkRequest postRequest:apiQueryOrderData params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             NSLog(@"%@", responseObj);
             HUDStop
             //粘贴激活码
@@ -264,7 +281,15 @@ static NSString *activateCellID = @"UNReadyActivateCell";
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
         }
     } failure:^(id dataObj, NSError *error) {
-        HUDNormal(@"网络貌似有问题")
+//        HUDNormal(@"网络貌似有问题")
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            NSString *code = [self convertActivationCode:responseObj[@"data"][@"Data"]];
+            [self pasteCode:code];
+            UNMobileActivateController * activateVc = [[UNMobileActivateController alloc] init];
+            [self.navigationController pushViewController:activateVc animated:YES];
+        }
+        
         NSLog(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
