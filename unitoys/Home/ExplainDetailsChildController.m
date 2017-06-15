@@ -133,7 +133,7 @@
 
 - (void)gotoNextPage
 {
-    NSLog(@"_currentPage--%ld,_totalPage--%ld", _currentPage, _totalPage);
+    UNDebugLogVerbose(@"_currentPage--%ld,_totalPage--%ld", _currentPage, _totalPage);
     
     if ([UNDataTools sharedInstance].isGoAbroad) {
         if (_currentPage < _totalPage - 1) {
@@ -181,7 +181,7 @@
     //访问描述文件
     NSString *textURL = [NSString stringWithFormat:@"http://localhost:%@/%@.mobileconfig", [BlueToothDataManager shareManager].localServicePort, self.apnName];
     NSURL *cleanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@", textURL]];
-    NSLog(@"访问的连接为 -- %@", cleanURL);
+    UNDebugLogVerbose(@"访问的连接为 -- %@", cleanURL);
     if (kSystemVersionValue >= 10.0) {
         NSDictionary *info = @{@"title": @"访问"};
         [[UIApplication sharedApplication] openURL:cleanURL options:info completionHandler:nil];
@@ -211,7 +211,7 @@
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]]) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]];
     } else {
-        NSLog(@"打不开");
+        UNDebugLogVerbose(@"打不开");
     }
 }
 

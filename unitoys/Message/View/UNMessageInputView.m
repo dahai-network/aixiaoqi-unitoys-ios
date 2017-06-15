@@ -257,7 +257,7 @@
 //    if (ABS(selfHeight) > 0.5) {
 //        [_inputTextView setUn_height:(selfHeight - 2 *kMessageInputView_PadingHeight)];
 //    }
-    NSLog(@"selfContentSize:%@======contentSize:%@", NSStringFromCGSize(self.contentView.contentSize), NSStringFromCGSize(contentSize));
+    UNDebugLogVerbose(@"selfContentSize:%@======contentSize:%@", NSStringFromCGSize(self.contentView.contentSize), NSStringFromCGSize(contentSize));
     BOOL isAnimate;
     if (ABS(self.contentView.contentSize.height - contentSize.height) > 20) {
         isAnimate = NO;

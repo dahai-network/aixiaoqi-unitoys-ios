@@ -70,7 +70,7 @@ static CallComingInViewController *selfClass =nil;
 //    NSError *error;
 //    [[AVAudioSession sharedInstance] setActive:YES error:&error];
 //    if (error) {
-//        NSLog(@"error==%@", error);
+//        UNDebugLogVerbose(@"error==%@", error);
 //    }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(systemSoundValueChange:) name:@"AVSystemController_SystemVolumeDidChangeNotification" object:nil];
     
@@ -82,11 +82,11 @@ static CallComingInViewController *selfClass =nil;
 - (void)systemSoundValueChange:(NSNotification *)noti
 {
     NSDictionary *userInfo = noti.userInfo;
-    NSLog(@"点击了音量按键====%@",userInfo);
+    UNDebugLogVerbose(@"点击了音量按键====%@",userInfo);
     if ([userInfo[@"AVSystemController_AudioVolumeChangeReasonNotificationParameter"] isEqualToString:@"ExplicitVolumeChange"]) {
         //解决通话前设置扩音无效问题
         if (!self.isCallAnswer) {
-            NSLog(@"点击了音量按键====%@",userInfo);
+            UNDebugLogVerbose(@"点击了音量按键====%@",userInfo);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingAction" object:@"SoundValueChange"];
         }
     }
@@ -97,10 +97,10 @@ static void screenLockStateChanged(CFNotificationCenterRef center,void* observer
     
     NSString* lockstate = (__bridge NSString*)name;
     if ([lockstate isEqualToString:(__bridge  NSString*)NotificationLock]) {
-        NSLog(@"screen Lock.");
+        UNDebugLogVerbose(@"screen Lock.");
         screenLockFunction();
     } else {
-        NSLog(@"lock state changed.");
+        UNDebugLogVerbose(@"lock state changed.");
         // 此处监听到屏幕解锁事件（锁屏也会掉用此处一次，锁屏事件要在上面实现）
     }
 }
@@ -203,10 +203,10 @@ void screenLockFunction(){
         kWeakSelf
         _phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 34 - 45 - 70 - 225, kScreenWidthValue, 225) IsTransparentBackground:YES];
         _phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum) {
-            NSLog(@"总字符---%@=====当前字符-----%@", btnText, currentNum);
+            UNDebugLogVerbose(@"总字符---%@=====当前字符-----%@", btnText, currentNum);
             weakSelf.lbName.text = btnText;
             if ([currentNum isEqualToString:@"DEL"]) {
-                NSLog(@"输入异常");
+                UNDebugLogVerbose(@"输入异常");
             }else{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"CallPhoneKeyBoard" object:currentNum];
             }
@@ -354,7 +354,7 @@ void screenLockFunction(){
         if ([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"呼叫接通")]) {
             
         }else if ([self.lbTime.text isEqualToString:INTERNATIONALSTRING(@"正在通话")]) {
-            NSLog(@"getCallingMessage--正在通话");
+            UNDebugLogVerbose(@"getCallingMessage--正在通话");
             if (!self.callTimer) {
                 self.callTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(displayTime) userInfo:nil repeats:YES];
             }

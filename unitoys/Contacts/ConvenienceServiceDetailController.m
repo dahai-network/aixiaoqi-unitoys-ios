@@ -33,7 +33,7 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             self.communicateDetailInfo = responseObj[@"data"][@"list"];
-            NSLog(@"%@", self.communicateDetailInfo);
+            UNDebugLogVerbose(@"%@", self.communicateDetailInfo);
             [self reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -47,7 +47,7 @@
             self.communicateDetailInfo = responseObj[@"data"][@"list"];
             [self reloadData];
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -64,7 +64,7 @@
 
 - (IBAction)openService:(UIButton *)sender {
     sender.enabled = NO;
-    NSLog(@"开通");
+    UNDebugLogVerbose(@"开通");
     OpenConvenienceServiceController *openServiceVc = [[OpenConvenienceServiceController alloc] init];
     openServiceVc.packageID = self.packageId;
     openServiceVc.packageDict = self.communicateDetailInfo;

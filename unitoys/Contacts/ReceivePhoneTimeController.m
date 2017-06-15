@@ -47,7 +47,7 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             self.communicateDetailInfo = responseObj[@"data"][@"list"];
-            NSLog(@"%@", self.communicateDetailInfo);
+            UNDebugLogVerbose(@"%@", self.communicateDetailInfo);
             [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -61,7 +61,7 @@
             self.communicateDetailInfo = responseObj[@"data"][@"list"];
             [self.tableView reloadData];
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -182,7 +182,7 @@
 
 #pragma mark 点击购买按钮点击事件
 - (void)jumpToReceiveView {
-    NSLog(@"领取");
+    UNDebugLogVerbose(@"领取");
     
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     self.checkToken = YES;
@@ -192,7 +192,7 @@
     [SSNetworkRequest postRequest:apiOrderAddReceive params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
-            NSLog(@"apiOrderAddReceive--%@", responseObj);
+            UNDebugLogVerbose(@"apiOrderAddReceive--%@", responseObj);
             HUDNormal(@"领取成功")
             [self.firstCell.buyButton setTitle:@"已领取" forState:UIControlStateNormal];
             self.firstCell.buyButton.enabled = NO;
@@ -216,7 +216,7 @@
             self.communicateDetailInfo = responseObj[@"data"][@"list"];
             [self.tableView reloadData];
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 

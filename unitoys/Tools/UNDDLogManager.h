@@ -17,13 +17,13 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
 //#define UNLogLBEProcess(format, ...) DDLogWarn((@"[Function:%s]" "[Line:%d]" format), __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #define UNLogLBEProcess(format, ...) DDLogWarn(format, ##__VA_ARGS__);
-#define UNLogVerbose(format, ...) DDLogVerbose((@"[%s]" format), __FUNCTION__, ##__VA_ARGS__);
+#define UNDebugLogVerbose(format, ...) DDLogVerbose((@"[%s][%d]" format), __FUNCTION__, __LINE__, ##__VA_ARGS__);
 
 #else
 static const DDLogLevel ddLogLevel = DDLogLevelWarning;
 
 #define UNLogLBEProcess(format, ...) DDLogWarn(format, ##__VA_ARGS__);
-#define UNLogVerbose(format, ...) do{} while (0);
+#define UNDebugLogVerbose(format, ...) do{} while (0);
 
 #endif
 

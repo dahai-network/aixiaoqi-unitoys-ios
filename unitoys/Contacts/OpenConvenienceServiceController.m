@@ -151,9 +151,9 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         }else{
             
         }
-        //        NSLog(@"查询到的用户数据：%@",responseObj);
+        //        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -280,7 +280,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -409,7 +409,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         //支付宝支付
         [self useAliPay];
     }else{
-        NSLog(@"支付类型错误");
+        UNDebugLogVerbose(@"支付类型错误");
         HUDNormal(INTERNATIONALSTRING(@"支付失败"))
     }
 }
@@ -417,17 +417,17 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 //#pragma mark --- 余额支付
 //- (void)useMyMoneyPay
 //{
-//    NSLog(@"余额支付--%f", self.payPrice);
+//    UNDebugLogVerbose(@"余额支付--%f", self.payPrice);
 //}
 //#pragma mark --- 微信支付
 //- (void)useWeChatPay
 //{
-//    NSLog(@"微信支付--%f", self.payPrice);
+//    UNDebugLogVerbose(@"微信支付--%f", self.payPrice);
 //}
 //#pragma mark --- 支付宝支付
 //- (void)useAliPay
 //{
-//    NSLog(@"支付宝支付--%f", self.payPrice);
+//    UNDebugLogVerbose(@"支付宝支付--%f", self.payPrice);
 //}
 
 - (void)monthPriceChange:(UITextField *)textField
@@ -600,7 +600,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrder objectForKey:@"OrderID"],@"OrderID", nil];
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiPayOrderByUserAmount params:params success:^(id responseObj) {
-        NSLog(@"查询到的用户数据：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
             if (storyboard) {
@@ -624,7 +624,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -632,7 +632,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
 - (BOOL)isWXAppInstalled
 {
     // 1.判断是否安装微信
-    NSLog(@"%d",[WXApi isWXAppInstalled]);
+    UNDebugLogVerbose(@"%d",[WXApi isWXAppInstalled]);
     if (![WXApi isWXAppInstalled]) {
         HUDNormal(INTERNATIONALSTRING(@"您尚未安装\"微信App\",请先安装后再返回支付"));
         return NO;
@@ -650,9 +650,9 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicOrder objectForKey:@"OrderNum"],@"orderOrPayment", nil];
     
     [self getBasicHeader];
-    //    NSLog(@"表演头：%@",self.headers);
+    //    UNDebugLogVerbose(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiGetPrepayID params:params success:^(id responseObj) {
-        NSLog(@"查询到的用户数据：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             NSMutableDictionary *dict = NULL;
             
@@ -677,15 +677,15 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                     
                     [WXApi sendReq:req];
                     //日志输出
-                    NSLog(@"appid=%@\npartid=%@\nprepayid=%@\nnoncestr=%@\ntimestamp=%ld\npackage=%@\nsign=%@",[dict objectForKey:@"appid"],req.partnerId,req.prepayId,req.nonceStr,(long)req.timeStamp,req.package,req.sign );
+                    UNDebugLogVerbose(@"appid=%@\npartid=%@\nprepayid=%@\nnoncestr=%@\ntimestamp=%ld\npackage=%@\nsign=%@",[dict objectForKey:@"appid"],req.partnerId,req.prepayId,req.nonceStr,(long)req.timeStamp,req.package,req.sign );
                     //                    return @"";
                 }else{
                     //                    return [dict objectForKey:@"retmsg"];
-                    NSLog(@"支付返回异常:%@",[dict objectForKey:@"retmsg"]);
+                    UNDebugLogVerbose(@"支付返回异常:%@",[dict objectForKey:@"retmsg"]);
                     [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:@"服务器异常,请稍后再试" delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
                 }
             }else{
-                NSLog(@"服务器返回异常");
+                UNDebugLogVerbose(@"服务器返回异常");
                 [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:@"服务器异常,请稍后再试" delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
                 //                return @"服务器返回错误，未获取到json对象";
             }
@@ -698,7 +698,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
     
 }
@@ -773,7 +773,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     //将商品信息拼接成字符串
     NSString *orderInfo = [order orderInfoEncoded:NO];
     NSString *orderInfoEncoded = [order orderInfoEncoded:YES];
-    NSLog(@"orderSpec = %@",orderInfo);
+    UNDebugLogVerbose(@"orderSpec = %@",orderInfo);
     
     // NOTE: 获取私钥并将商户信息签名，外部商户的加签过程请务必放在服务端，防止公私钥数据泄露；
     //       需要遵循RSA签名规范，并将签名字符串base64编码和UrlEncode
@@ -788,7 +788,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
                                  orderInfoEncoded, signedString];
         // NOTE: 调用支付结果开始支付
         [[AlipaySDK defaultService] payOrder:orderString fromScheme:appScheme callback:^(NSDictionary *resultDic) {
-            NSLog(@"reslut = %@",resultDic);
+            UNDebugLogVerbose(@"reslut = %@",resultDic);
         }];
     }
 }
@@ -807,7 +807,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
         //余额
         paymentMethod = @"3";
     }else{
-        NSLog(@"支付类型出错");
+        UNDebugLogVerbose(@"支付类型出错");
         HUDNormal(INTERNATIONALSTRING(@"支付失败"))
         return NO;
     }
@@ -818,7 +818,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
     HUDNoStop1(INTERNATIONALSTRING(@"正在提交订单..."))
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiOrderAdd params:params success:^(id responseObj) {
-        NSLog(@"查询到的订单数据：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的订单数据：%@",responseObj);
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             self.dicOrder = [[responseObj objectForKey:@"data"] objectForKey:@"order"];
             self.orderID = self.dicOrder[@"OrderID"];
@@ -834,7 +834,7 @@ static NSString *selectPayTypeCellID = @"SelectPayTypeCell";
          [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
     return YES;
 }

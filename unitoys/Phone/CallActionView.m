@@ -28,7 +28,7 @@
 /*
 - (void)setFrame:(CGRect)frame {
     [super setFrame:frame];
-    NSLog(@"有变化哦");
+    UNDebugLogVerbose(@"有变化哦");
 }*/
 
 - (UIWindow *)bgWindow

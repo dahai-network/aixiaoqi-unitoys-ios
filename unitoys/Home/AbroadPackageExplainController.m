@@ -192,24 +192,24 @@
 //    [_localHttpServer setType:@"_http.tcp"];
 //    
 //    NSFileManager *fileManager = [[NSFileManager alloc] init];
-//    NSLog(@"文件目录 -- %@",webPath);
+//    UNDebugLogVerbose(@"文件目录 -- %@",webPath);
 //    
 //    if (![fileManager fileExistsAtPath:webPath]){
-//        NSLog(@"File path error!");
+//        UNDebugLogVerbose(@"File path error!");
 //    }else{
 //        NSString *webLocalPath = webPath;
 //        [_localHttpServer setDocumentRoot:webLocalPath];
-//        NSLog(@"webLocalPath:%@",webLocalPath);
+//        UNDebugLogVerbose(@"webLocalPath:%@",webLocalPath);
 //        [self startServer];
 //    }
 //}
 //- (void)startServer {
 //    NSError *error;
 //    if([_localHttpServer start:&error]){
-//        NSLog(@"Started HTTP Server on port %hu", [_localHttpServer listeningPort]);
+//        UNDebugLogVerbose(@"Started HTTP Server on port %hu", [_localHttpServer listeningPort]);
 //        [BlueToothDataManager shareManager].localServicePort = [NSString stringWithFormat:@"%d",[_localHttpServer listeningPort]];
 //    } else {
-//        NSLog(@"Error starting HTTP Server: %@", error);
+//        UNDebugLogVerbose(@"Error starting HTTP Server: %@", error);
 //    }
 //}
 
@@ -239,7 +239,7 @@
 
 - (void)activationAction
 {
-    NSLog(@"activationAction");
+    UNDebugLogVerbose(@"activationAction");
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     BrowserViewController *browserViewController = [mainStory instantiateViewControllerWithIdentifier:@"browserViewController"];
     if (browserViewController) {
@@ -251,7 +251,7 @@
 
 - (void)userAction
 {
-    NSLog(@"userAction");
+    UNDebugLogVerbose(@"userAction");
 //    AbroadExplainController *abroadVc = [[AbroadExplainController alloc] init];
 //    abroadVc.currentExplainType = ExplainTypeAbroad;
 //    abroadVc.isSupport4G = self.isSupport4G;
@@ -263,7 +263,7 @@
 
 - (void)recoveryAction
 {
-    NSLog(@"recoveryAction");
+    UNDebugLogVerbose(@"recoveryAction");
     AbroadExplainController *abroadVc = [[AbroadExplainController alloc] init];
     abroadVc.currentExplainType = ExplainTypeInternal;
     abroadVc.isSupport4G = self.isSupport4G;

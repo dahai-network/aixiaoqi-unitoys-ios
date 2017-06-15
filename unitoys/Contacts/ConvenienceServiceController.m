@@ -62,7 +62,7 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
     HUDNoStop1(@"")
     [SSNetworkRequest getRequest:apiPackageGetRelaxed params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"%@", responseObj);
+            UNDebugLogVerbose(@"%@", responseObj);
             self.cellDatas = responseObj[@"data"][@"list"];
             [self.tableView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -70,7 +70,7 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -143,7 +143,7 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
             navHomeViewController *nav = [[navHomeViewController alloc] initWithRootViewController:verificationVc];
             [self.navigationController presentViewController:nav animated:YES completion:nil];
         }else{
-            NSLog(@"省心服务");
+            UNDebugLogVerbose(@"省心服务");
 //            if (![dict[@"Haveed"] boolValue]) {
                 //没有开通,进入开通页面
                 ConvenienceServiceDetailController *convenienceDetailVc = [[ConvenienceServiceDetailController alloc] init];
@@ -152,7 +152,7 @@ static NSString *convenienceServiceCellID = @"ConvenienceServiceCell";
                 [self.navigationController pushViewController:convenienceDetailVc animated:YES];
 //            }else{
 //                //已开通,进入订单详情
-//                NSLog(@"%@",dict);
+//                UNDebugLogVerbose(@"%@",dict);
 //                ConvenienceOrderDetailController *convenienceOrderVc = [[ConvenienceOrderDetailController alloc] init];
 //                convenienceOrderVc.orderDetailId = responseObj[@"data"][@"order"][@"OrderID"];
 //                [self.navigationController pushViewController:convenienceOrderVc animated:YES];

@@ -74,9 +74,9 @@
     if (sender) {
         [self.cancelButton setTitle:@"首选连接" forState:UIControlStateNormal];
         [self changeFrame];
-        NSLog(@"传过来的设备数组:%@", self.deviceDataArr);
+        UNDebugLogVerbose(@"传过来的设备数组:%@", self.deviceDataArr);
     } else {
-        NSLog(@"传过来的设备数组是空的");
+        UNDebugLogVerbose(@"传过来的设备数组是空的");
         HUDNormal(@"未搜索到设备")
     }
     [self.showDeviceTableView reloadData];
@@ -115,7 +115,7 @@
         self.firstTitle.text = @"正在搜索爱小器双待王";
         self.subTitleLbl.text = @"请将双待王贴近手机";
     } else {
-        NSLog(@"这是什么鬼类型？");
+        UNDebugLogVerbose(@"这是什么鬼类型？");
     }
 }
 
@@ -167,7 +167,7 @@
             if ([info[@"isAlreadyBind"] isEqualToString:@"0"]) {
                 NSString *indexRow = [NSString stringWithFormat:@"%d", i];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"clickAndConnectingPer" object:indexRow];
-                NSLog(@"发送过去连接的是第几个：%@", indexRow);
+                UNDebugLogVerbose(@"发送过去连接的是第几个：%@", indexRow);
                 return;
             }
         }
@@ -187,7 +187,7 @@
         [self.timer setFireDate:[NSDate distantPast]];
         [self.navigationController popToRootViewControllerAnimated:YES];
     } else {
-        NSLog(@"按钮有问题:%s,%d", __FUNCTION__, __LINE__);
+        UNDebugLogVerbose(@"按钮有问题:%s,%d", __FUNCTION__, __LINE__);
     }
 }
 
@@ -206,7 +206,7 @@
 }
 
 - (void)startToShowClickAnimation {
-    NSLog(@"走了启动动画的方法：%s,%d", __FUNCTION__, __LINE__);
+    UNDebugLogVerbose(@"走了启动动画的方法：%s,%d", __FUNCTION__, __LINE__);
     self.handupImg.hidden = NO;
     [self showClickAnimation];
 //    if (!self.clickAnimationTimer) {
@@ -351,7 +351,7 @@
             cell.lblDeviceStatue.hidden = NO;
             cell.btnConnect.hidden = YES;
         } else {
-            NSLog(@"状态有问题，%s;%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"状态有问题，%s;%d", __FUNCTION__, __LINE__);
         }
     }
     return cell;

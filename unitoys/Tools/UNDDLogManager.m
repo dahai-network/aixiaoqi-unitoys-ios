@@ -87,9 +87,9 @@
     if ([self.fileManager fileExistsAtPath:self.defaultFilePath]) {
         NSArray *fileList = [self.fileLog.logFileManager sortedLogFileNames];
 //        NSArray *logpathArray = [self.fileLog.logFileManager sortedLogFilePaths];
-        UNLogVerbose(@"存在指定路径");
+        UNDebugLogVerbose(@"存在指定路径");
 //        NSArray *fileList = [self.fileManager contentsOfDirectoryAtPath:self.defaultFilePath error:nil];
-        UNLogVerbose(@"文件列表====%@",fileList);
+        UNDebugLogVerbose(@"文件列表====%@",fileList);
         NSInteger updateCount;
         if (fileList.count) {
             if (logCount == 0 || logCount > fileList.count) {
@@ -104,7 +104,7 @@
             }
         }
     }else{
-        UNLogVerbose(@"不存在目录");
+        UNDebugLogVerbose(@"不存在目录");
     }
 }
 
@@ -128,10 +128,10 @@
     [MBProgressHUD showLoadingWithMessage:@"正在上传"];
     [SSNetworkRequest updateDataRequest:apiUploadUserLog params:nil dataArray:dataArray progress:^(NSProgress *progress) {
 //        [MBProgressHUD showLoadingWithProgress:progress.fractionCompleted ProgressType:UNProgressTypeAnnularDeterminate];
-        UNLogVerbose(@"progress===%.2f", progress.fractionCompleted)
+        UNDebugLogVerbose(@"progress===%.2f", progress.fractionCompleted)
     } success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            UNLogVerbose(@"%@", responseObj)
+            UNDebugLogVerbose(@"%@", responseObj)
             [MBProgressHUD showSuccess:@"上传成功"];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [MBProgressHUD showSuccess:@"上传失败"];

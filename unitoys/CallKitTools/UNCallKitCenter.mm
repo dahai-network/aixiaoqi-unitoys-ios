@@ -74,7 +74,7 @@
         if([notiText isEqualToString:INTERNATIONALSTRING(@"通话结束")]){
             //关掉当前
             [self endCall:_currentCallUUID completion:^(NSError * _Nullable error) {
-                NSLog(@"挂断通话");
+                UNDebugLogVerbose(@"挂断通话");
             }];
         }
     }
@@ -202,9 +202,9 @@
 {
     [_callController requestTransaction:transaction completion:^( NSError *_Nullable error){
         if (error !=nil) {
-            NSLog(@"Error requesting transaction: %@", error);
+            UNDebugLogVerbose(@"Error requesting transaction: %@", error);
         }else{
-            NSLog(@"Requested transaction successfully");
+            UNDebugLogVerbose(@"Requested transaction successfully");
         }
     }];
 }
@@ -237,25 +237,25 @@
 #pragma mark - CXProviderDelegate
 
 - (void)providerDidReset:(CXProvider *)provider{
-    NSLog(@"providerDidReset---%s", __func__);
+    UNDebugLogVerbose(@"providerDidReset---%s", __func__);
     //执行停止音频操作
 }
 
 //系统监听已经开始,程序创建时就会被调用
 - (void)providerDidBegin:(CXProvider *)provider
 {
-    NSLog(@"providerDidBegin---%s", __func__);
+    UNDebugLogVerbose(@"providerDidBegin---%s", __func__);
 }
 
 - (BOOL)provider:(CXProvider *)provider executeTransaction:(CXTransaction *)transaction
 {
-    NSLog(@"executeTransaction---%s", __func__);
+    UNDebugLogVerbose(@"executeTransaction---%s", __func__);
     return NO;
 }
 
 //通过系统向网络电话发起通话
 - (void)provider:(CXProvider *)provider performStartCallAction:(nonnull CXStartCallAction *)action {
-    NSLog(@"performStartCallAction---%s", __func__);
+    UNDebugLogVerbose(@"performStartCallAction---%s", __func__);
     if (self.actionNotificationBlock) {
         self.actionNotificationBlock(action, UNCallActionTypeStart);
     }
@@ -269,7 +269,7 @@
 
 //用户点击接受通话
 - (void)provider:(CXProvider *)provider performAnswerCallAction:(nonnull CXAnswerCallAction *)action {
-    NSLog(@"performAnswerCallAction---%s", __func__);
+    UNDebugLogVerbose(@"performAnswerCallAction---%s", __func__);
 
     if (self.actionNotificationBlock) {
         self.actionNotificationBlock(action, UNCallActionTypeAnswer);
@@ -279,7 +279,7 @@
 
 //用户挂断接听
 - (void)provider:(CXProvider *)provider performEndCallAction:(nonnull CXEndCallAction *)action {
-    NSLog(@"performEndCallAction---%s", __func__);
+    UNDebugLogVerbose(@"performEndCallAction---%s", __func__);
     
     if (self.isEndCall) {
         self.isEndCall = NO;
@@ -294,7 +294,7 @@
 
 //暂停通话
 - (void)provider:(CXProvider *)provider performSetHeldCallAction:(nonnull CXSetHeldCallAction *)action {
-    NSLog(@"performSetHeldCallAction----%s", __func__);
+    UNDebugLogVerbose(@"performSetHeldCallAction----%s", __func__);
 //    //此Block只更改APP按钮状态
 //    if (self.actionNotificationBlock) {
 //        self.actionNotificationBlock(action, UNCallActionTypeHeld);
@@ -307,7 +307,7 @@
 
 //点击系统通话界面会触发此回调
 - (void)provider:(CXProvider *)provider performSetMutedCallAction:(nonnull CXSetMutedCallAction *)action {
-    NSLog(@"performSetMutedCallAction---%s", __func__);
+    UNDebugLogVerbose(@"performSetMutedCallAction---%s", __func__);
     if (self.isSendMute) {
         self.isSendMute = NO;
     }else{
@@ -322,21 +322,21 @@
 
 //群组电话
 - (void)provider:(CXProvider *)provider performSetGroupCallAction:(CXSetGroupCallAction *)action{
-    NSLog(@"performSetGroupCallAction---%s", __func__);
+    UNDebugLogVerbose(@"performSetGroupCallAction---%s", __func__);
 }
 //双频多音功能
 - (void)provider:(CXProvider *)provider performPlayDTMFCallAction:(CXPlayDTMFCallAction *)action{
-    NSLog(@"performPlayDTMFCallAction---%@", action.digits);
+    UNDebugLogVerbose(@"performPlayDTMFCallAction---%@", action.digits);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallPhoneKeyBoard" object:action.digits];
 }
 //超时时调用
 - (void)provider:(CXProvider *)provider timedOutPerformingAction:(CXAction *)action{
-    NSLog(@"timedOutPerformingAction---%s", __func__);
+    UNDebugLogVerbose(@"timedOutPerformingAction---%s", __func__);
 }
 
 //此处进行通话处理
 - (void)provider:(CXProvider *)provider didActivateAudioSession:(AVAudioSession *)audioSession{
-    NSLog(@"didActivateAudioSession---%s", __func__);
+    UNDebugLogVerbose(@"didActivateAudioSession---%s", __func__);
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
     theSipEngine->MuteMic(NO);
 //    theSipEngine->AnswerCall();
@@ -344,7 +344,7 @@
 }
 
 - (void)provider:(CXProvider *)provider didDeactivateAudioSession:(AVAudioSession *)audioSession{
-    NSLog(@"didDeactivateAudioSession---%s", __func__);
+    UNDebugLogVerbose(@"didDeactivateAudioSession---%s", __func__);
 //    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
 //    if(theSipEngine->InCalling())
 //        theSipEngine->TerminateCall();

@@ -105,19 +105,19 @@
     switch ([BlueToothDataManager shareManager].chargingState) {
         case 1:
             self.customView.subTitleLabel.text = @"剩余电量";
-            NSLog(@"剩余电量");
+            UNDebugLogVerbose(@"剩余电量");
             break;
         case 2:
             self.customView.subTitleLabel.text = @"正在充电";
-            NSLog(@"正在充电");
+            UNDebugLogVerbose(@"正在充电");
             break;
         case 3:
             self.customView.subTitleLabel.text = @"充电完成";
-            NSLog(@"充电完成");
+            UNDebugLogVerbose(@"充电完成");
             break;
         default:
             self.customView.subTitleLabel.text = @"剩余电量";
-            NSLog(@"充电状态有问题");
+            UNDebugLogVerbose(@"充电状态有问题");
             break;
     }
 }
@@ -136,7 +136,7 @@
         if (![self.lblStatue.text containsString:INTERNATIONALSTRING(self.hintStrFirst)]) {
             self.lblStatue.text = INTERNATIONALSTRING(self.hintStrFirst);
         }
-        NSLog(@"状态改变 --> %@ %@", self.hintStrFirst, self.lblStatue.text);
+        UNDebugLogVerbose(@"状态改变 --> %@ %@", self.hintStrFirst, self.lblStatue.text);
     }
     if (![self.hintStrFirst isEqualToString:HOMESTATUETITLE_REGISTING]) {
         if (self.timer) {
@@ -217,21 +217,21 @@
 
 - (void)changeStatueAction:(NSNotification *)sender {
     NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
-    NSLog(@"接收到传过来的通知 -- %@", senderStr);
+    UNDebugLogVerbose(@"接收到传过来的通知 -- %@", senderStr);
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
         if ([senderStr intValue] == 1) {
             [self startTimerAction];
         }
         [self countAndShowPercentage:senderStr];
     } else {
-        NSLog(@"注册成功的时候处理");
+        UNDebugLogVerbose(@"注册成功的时候处理");
         if ([BlueToothDataManager shareManager].isRegisted) {
             self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
             if (self.timer) {
                 [self.timer setFireDate:[NSDate distantFuture]];
             }
         } else {
-            NSLog(@"信号强状态有问题");
+            UNDebugLogVerbose(@"信号强状态有问题");
         }
     }
 }
@@ -245,7 +245,7 @@
                 [self.timer setFireDate:[NSDate distantFuture]];
             }
         } else {
-            NSLog(@"这是啥");
+            UNDebugLogVerbose(@"这是啥");
         }
     }
 }
@@ -299,7 +299,7 @@
             self.deviceName.text = @"双待王";
             self.deviceName.hidden = NO;
         } else {
-            NSLog(@"这是连接的什么？");
+            UNDebugLogVerbose(@"这是连接的什么？");
         }
     } else {
         if (self.customView) {
@@ -334,7 +334,7 @@
     if ([BlueToothDataManager shareManager].isOpened) {
         if ([BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBounded) {
             //点击绑定设备
-            NSLog(@"扫描，%s%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"扫描，%s%d", __FUNCTION__, __LINE__);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"boundingDevice" object:@"bound"];
             [self addScanView];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -344,7 +344,7 @@
             });
         } else if (![BlueToothDataManager shareManager].isConnected) {
             //未连接设备，先扫描连接
-            NSLog(@"扫描，%s%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"扫描，%s%d", __FUNCTION__, __LINE__);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
             [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
             [self addScanView];
@@ -355,7 +355,7 @@
             });
         } else {
             //已经绑定了
-            NSLog(@"扫描，%s%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"扫描，%s%d", __FUNCTION__, __LINE__);
         }
     } else {
         HUDNormal(INTERNATIONALSTRING(@"请开启蓝牙"))
@@ -378,11 +378,11 @@
 - (void)checkHasBindDevice {
     self.checkToken = YES;
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     NSDictionary *info = [[NSDictionary alloc] init];
     [SSNetworkRequest getRequest:apiDeviceBracelet params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"绑定的设备 -- %@", responseObj);
+            UNDebugLogVerbose(@"绑定的设备 -- %@", responseObj);
             if (![responseObj[@"msg"] isEqualToString:@"empty"]) {
                 [self dj_alertAction:self alertTitle:nil actionTitle:@"继续" message:@"没有连接绑定的设备，是否要解除已绑定的设备？" alertAction:^{
                     [self unBindDevice];
@@ -394,12 +394,12 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else if ([[responseObj objectForKey:@"status"] intValue]==0){
             //数据请求失败
-            NSLog(@"没有设备");
+            UNDebugLogVerbose(@"没有设备");
             HUDNormal(INTERNATIONALSTRING(@"请求失败"))
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络连接失败"))
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -409,11 +409,11 @@
         HUDNoStop1(INTERNATIONALSTRING(@"正在解绑..."))
         self.checkToken = YES;
         [self getBasicHeader];
-//        NSLog(@"表头：%@",self.headers);
+//        UNDebugLogVerbose(@"表头：%@",self.headers);
         [SSNetworkRequest getRequest:apiUnBind params:nil success:^(id responseObj) {
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                NSLog(@"解除绑定结果：%@", responseObj);
+                UNDebugLogVerbose(@"解除绑定结果：%@", responseObj);
                 
                 //将连接的信息存储到本地
                 NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
@@ -472,9 +472,9 @@
                 //数据请求失败
                 HUDNormal(responseObj[@"msg"])
             }
-            NSLog(@"查询到的运动数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的运动数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
         } headers:self.headers];
     });
 }
@@ -482,7 +482,7 @@
 - (void)checkIsHaveNewVersion {
     self.checkToken = YES;
     [self getBasicHeader];
-    //    NSLog(@"表头：%@",self.headers);
+    //    UNDebugLogVerbose(@"表头：%@",self.headers);
     NSString *versionStr;
     NSString *typeStr;
     if ([BlueToothDataManager shareManager].versionNumber) {
@@ -496,12 +496,12 @@
         typeStr = @"1";
     } else {
         typeStr = @"0";
-        NSLog(@"连接的类型有问题");
+        UNDebugLogVerbose(@"连接的类型有问题");
     }
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:versionStr, @"Version", typeStr, @"DeviceType", nil];
     [SSNetworkRequest getRequest:apiDeviceBraceletOTA params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"空中升级的请求结果 -- %@", responseObj);
+            UNDebugLogVerbose(@"空中升级的请求结果 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
                 self.versionLabel.hidden = NO;
             } else {
@@ -511,12 +511,12 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else if ([[responseObj objectForKey:@"status"] intValue]==0){
             //数据请求失败
-            NSLog(@"请求失败");
+            UNDebugLogVerbose(@"请求失败");
         }
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         //
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -525,7 +525,7 @@
     self.isBeingNet = YES;
     self.checkToken = YES;
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     NSString *versionStr;
     NSString *typeStr;
     if ([BlueToothDataManager shareManager].versionNumber) {
@@ -539,12 +539,12 @@
         typeStr = @"1";
     } else {
         typeStr = @"0";
-        NSLog(@"连接的类型有问题");
+        UNDebugLogVerbose(@"连接的类型有问题");
     }
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:versionStr, @"Version", typeStr, @"DeviceType", nil];
     [SSNetworkRequest getRequest:apiDeviceBraceletOTA params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"空中升级的请求结果 -- %@", responseObj);
+            UNDebugLogVerbose(@"空中升级的请求结果 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
                 NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
                 [self dj_alertAction:self alertTitle:@"设备固件有更新" actionTitle:@"升级" message:infoStr alertAction:^{
@@ -558,14 +558,14 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else if ([[responseObj objectForKey:@"status"] intValue]==0){
             //数据请求失败
-            NSLog(@"请求失败");
+            UNDebugLogVerbose(@"请求失败");
         }
         self.isBeingNet = NO;
     } failure:^(id dataObj, NSError *error) {
         self.isBeingNet = NO;
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         //
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -591,7 +591,7 @@
             return 44;
         }
     } else {
-        NSLog(@"连接的设备类型有问题 %@", [BlueToothDataManager shareManager].connectedDeviceName);
+        UNDebugLogVerbose(@"连接的设备类型有问题 %@", [BlueToothDataManager shareManager].connectedDeviceName);
         if (indexPath.section == 1 && (indexPath.row == 0 || indexPath.row == 1)) {
             return 0;
         } else {

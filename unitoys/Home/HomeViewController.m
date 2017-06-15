@@ -176,7 +176,7 @@
 //    }
     kWeakSelf
     [UNBlueToothTool shareBlueToothTool].updateButtonImageAndTitleBlock = ^(NSString *title){
-        NSLog(@"updateButtonImageAndTitleBlock---%@", title);
+        UNDebugLogVerbose(@"updateButtonImageAndTitleBlock---%@", title);
         [weakSelf setButtonImageAndTitleWithTitle:title];
     };
     [UNBlueToothTool shareBlueToothTool].showHudNormalBlock = ^(NSInteger hudType, NSString *string){
@@ -349,7 +349,7 @@
 }
 
 - (void)homeViewChangeStatuesView:(NSNotification *)sender {
-    NSLog(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
+    UNDebugLogVerbose(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
 //    self.statuesLabel.text = sender.object;
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
@@ -366,11 +366,11 @@
 
 - (void)showRegistProgress:(NSNotification *)sender {
     NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
-    NSLog(@"接收到传过来的通知 -- %@", senderStr);
+    UNDebugLogVerbose(@"接收到传过来的通知 -- %@", senderStr);
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
         [self countAndShowRegistPercentage:senderStr];
     } else {
-        NSLog(@"注册成功的时候处理");
+        UNDebugLogVerbose(@"注册成功的时候处理");
     }
 }
 
@@ -478,7 +478,7 @@
         [weakSelf.presentTool dismissDuration:0.5 completion:^{
             weakSelf.presentTool = nil;
             if (type == 2) {
-                NSLog(@"push新界面----%@",extras);
+                UNDebugLogVerbose(@"push新界面----%@",extras);
             }
         }];
     };
@@ -506,9 +506,9 @@
             //数据请求失败
         }
         
-        NSLog(@"查询到的用户套餐余量：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的用户套餐余量：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -525,7 +525,7 @@
     [SSNetworkRequest getRequest:apiUpgrade params:info success:^(id responseObj){
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"app升级信息 -- %@", responseObj);
+            UNDebugLogVerbose(@"app升级信息 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
                 
                 NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -547,7 +547,7 @@
                             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/ai-xiao-qi/id1184825159?mt=8"]];
                         }];
                     } else {
-                        NSLog(@"不知道是不是强制性的");
+                        UNDebugLogVerbose(@"不知道是不是强制性的");
                     }
                     if ([responseObj[@"data"][@"Mandatory"] intValue] == 0) {
                         //非强制性的才存储
@@ -561,11 +561,11 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"数据请求失败 -- %@", responseObj[@"mag"]);
+            UNDebugLogVerbose(@"数据请求失败 -- %@", responseObj[@"mag"]);
         }
     }failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        NSLog(@"数据错误：%@",[error description]);
+        UNDebugLogVerbose(@"数据错误：%@",[error description]);
         
     } headers:self.headers];
 }
@@ -611,11 +611,11 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"1",@"pageNumber", @"20",@"pageSize",@"1", @"category", nil];
     NSString *apiNameStr = [NSString stringWithFormat:@"%@category%@", @"apiPackageGet", @"1"];
     [self getBasicHeader];
-    //    NSLog(@"表头：%@",self.headers);
+    //    UNDebugLogVerbose(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageGet params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
-            NSLog(@"首页获取到的通话套餐:%@", responseObj);
+            UNDebugLogVerbose(@"首页获取到的通话套餐:%@", responseObj);
             self.communicatePackageDataArr = responseObj[@"data"][@"list"];
             [self refreshCommunicatePackage];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -629,7 +629,7 @@
             self.communicatePackageDataArr = responseObj[@"data"][@"list"];
             [self refreshCommunicatePackage];
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -707,13 +707,13 @@
 
 #pragma mark 刷新卡状态
 - (void)refreshStatueToCard {
-    NSLog(@"刷新卡状态");
+    UNDebugLogVerbose(@"刷新卡状态");
     if ([BlueToothDataManager shareManager].isConnected) {
         [BlueToothDataManager shareManager].bleStatueForCard = 0;
         //对卡上电
         [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
     }else{
-        NSLog(@"蓝牙未连接");
+        UNDebugLogVerbose(@"蓝牙未连接");
         dispatch_async(dispatch_get_main_queue(), ^{
             HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
         });
@@ -725,7 +725,7 @@
     if ([BlueToothDataManager shareManager].isConnected) {
         [[UNBlueToothTool shareBlueToothTool] phoneCardToUpeLectrifyWithType:@"03"];
     }else{
-        NSLog(@"蓝牙未连接");
+        UNDebugLogVerbose(@"蓝牙未连接");
         dispatch_async(dispatch_get_main_queue(), ^{
             HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
         });
@@ -737,7 +737,7 @@
     if ([BlueToothDataManager shareManager].isConnected) {
         [[UNBlueToothTool shareBlueToothTool] searchBluetooth];
     }else{
-        NSLog(@"蓝牙未连接");
+        UNDebugLogVerbose(@"蓝牙未连接");
         dispatch_async(dispatch_get_main_queue(), ^{
             HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
         });
@@ -766,7 +766,7 @@
         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"App-prefs:root=Bluetooth"]]) {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=Bluetooth"]];
         } else {
-            NSLog(@"打不开");
+            UNDebugLogVerbose(@"打不开");
         }
     }];
     [alertVC addAction:certailAction];
@@ -854,12 +854,12 @@
 //        //爱小器卡
 //        [self.leftButton setImage:[UIImage imageNamed:HOMESTATUE_AIXIAOQICARD] forState:UIControlStateNormal];
 //    } else {
-//        NSLog(@"蓝牙状态有问题");
+//        UNDebugLogVerbose(@"蓝牙状态有问题");
 //    }
 }
 
 -(void)addressBookDidChange:(NSNotification*)notification{
-    NSLog(@"通讯录有变化");
+    UNDebugLogVerbose(@"通讯录有变化");
     if (self.contactsDataArr.count) {
         _contactsDataArr = nil;
     }
@@ -885,11 +885,11 @@
             NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
             NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
             if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
-                NSLog(@"空中升级的时候删除本地绑定信息前的数据 %s,%d %@", __FUNCTION__, __LINE__, boundedDeviceInfo);
+                UNDebugLogVerbose(@"空中升级的时候删除本地绑定信息前的数据 %s,%d %@", __FUNCTION__, __LINE__, boundedDeviceInfo);
                 [boundedDeviceInfo removeObjectForKey:userdata[@"Tel"]];
             }
             [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
-            NSLog(@"空中升级的时候存储请求的绑定信息 %s,%d %@", __FUNCTION__, __LINE__, boundedDeviceInfo);
+            UNDebugLogVerbose(@"空中升级的时候存储请求的绑定信息 %s,%d %@", __FUNCTION__, __LINE__, boundedDeviceInfo);
             [[NSUserDefaults standardUserDefaults] synchronize];
             [[UNBlueToothTool shareBlueToothTool] oatUpdateCommand];
             [BlueToothDataManager shareManager].isBeingOTA = YES;
@@ -900,7 +900,7 @@
                 // 文件路径
                 NSString* ceches = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
                 NSString* filepath = [ceches stringByAppendingPathComponent:response.suggestedFilename];
-                NSLog(@"文件路径 --> %@", filepath);
+                UNDebugLogVerbose(@"文件路径 --> %@", filepath);
                 
                 // 创建一个空的文件到沙盒中
                 NSFileManager *mgr = [NSFileManager defaultManager];
@@ -921,7 +921,7 @@
                     NSURL *fileURL = [NSURL fileURLWithPath:filepath];
                     //            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
                     DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
-                    NSLog(@"mgr---%@=====peripheral----%@",[UNBlueToothTool shareBlueToothTool].mgr,[UNBlueToothTool shareBlueToothTool].peripheral);
+                    UNDebugLogVerbose(@"mgr---%@=====peripheral----%@",[UNBlueToothTool shareBlueToothTool].mgr,[UNBlueToothTool shareBlueToothTool].peripheral);
                     DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:[UNBlueToothTool shareBlueToothTool].mgr target:[UNBlueToothTool shareBlueToothTool].peripheral];
                     [initiator withFirmwareFile:selectedFirmware];
                     initiator.delegate = self;
@@ -931,10 +931,10 @@
                 });
             }];
         } else {
-            NSLog(@"URL有问题");
+            UNDebugLogVerbose(@"URL有问题");
         }
     }else{
-        NSLog(@"蓝牙未连接");
+        UNDebugLogVerbose(@"蓝牙未连接");
         dispatch_async(dispatch_get_main_queue(), ^{
             HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
         });
@@ -957,7 +957,7 @@
      DFUStateFailed = 10,
      */
     //    DFUState dfuStateType = (DFUState)state;
-    NSLog(@"显示升级状态 --> %ld", (long)state);
+    UNDebugLogVerbose(@"显示升级状态 --> %ld", (long)state);
     if (state == 6&&self.progressWindow) {
 //        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //            self.progressWindow = nil;
@@ -966,23 +966,23 @@
 //            if (self.peripheral != nil) {
 //                self.myController = nil;
 //                [self checkBindedDeviceFromNet];
-//                NSLog(@"------------------------------------------------");
+//                UNDebugLogVerbose(@"------------------------------------------------");
 //            }
             if ([UNBlueToothTool shareBlueToothTool].peripheral != nil) {
                 self.myController = nil;
                 [[UNBlueToothTool shareBlueToothTool] checkBindedDeviceFromNet];
-                NSLog(@"------------------------------------------------");
+                UNDebugLogVerbose(@"------------------------------------------------");
             }
         });
     }
 }
 
 - (void)didErrorOccur:(enum DFUError)error withMessage:(NSString *)message {
-    NSLog(@"ERROR %ld:%@", (long)error, message);
+    UNDebugLogVerbose(@"ERROR %ld:%@", (long)error, message);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        self.progressWindow = nil;
         self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n爱小器双待王需等待2分钟才能重新连接");
-        NSLog(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
+        UNDebugLogVerbose(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
         [BlueToothDataManager shareManager].isBeingOTA = NO;
     });
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -995,13 +995,13 @@
 
 - (void)onUploadProgress:(NSInteger)part totalParts:(NSInteger)totalParts progress:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
     //进度
-    NSLog(@"dfuProgressChangedFor: %ld%% (part %ld/%ld).speed:%f bps, Avg speed:%f bps", (long)progress, (long)part, (long)totalParts, currentSpeedBytesPerSecond, avgSpeedBytesPerSecond);
+    UNDebugLogVerbose(@"dfuProgressChangedFor: %ld%% (part %ld/%ld).speed:%f bps, Avg speed:%f bps", (long)progress, (long)part, (long)totalParts, currentSpeedBytesPerSecond, avgSpeedBytesPerSecond);
     self.progressNumberLabel.text = [NSString stringWithFormat:@"%ld%%\n%@", (long)progress, INTERNATIONALSTRING(@"升级过程中请勿退出程序")];
     if (self.progressView.hidden) {
         self.progressView.hidden = NO;
     }
     self.progressView.selectedMinimum = (float)progress/100;
-//    NSLog(@"当前百分比%f", (float)progress/100);
+//    UNDebugLogVerbose(@"当前百分比%f", (float)progress/100);
     if (progress == 100) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级成功\n正在重新连接双待王");
@@ -1010,7 +1010,7 @@
             [[UNBlueToothTool shareBlueToothTool] clearInstance];
             [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
             [self hiddenProgressWindow];
-            NSLog(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
         });
     }
 }
@@ -1031,7 +1031,7 @@
      LogLevelWarning = 15,
      LogLevelError = 20,
      */
-    NSLog(@"升级步骤显示 --> %ld, %@", (long)level, message);
+    UNDebugLogVerbose(@"升级步骤显示 --> %ld, %@", (long)level, message);
 }
 
 #pragma mark 进度条布局
@@ -1084,11 +1084,11 @@
 
 - (void)senderNewMessageToBLE:(NSNotification *)sender {
     NSString *tempStr = sender.object;
-    NSLog(@"获取卡数据---%@", tempStr);
+    UNDebugLogVerbose(@"获取卡数据---%@", tempStr);
     if ([BlueToothDataManager shareManager].isConnected) {
         [[UNBlueToothTool shareBlueToothTool] sendBLECardDataWithValidData:tempStr];
     }else{
-        NSLog(@"蓝牙未连接");
+        UNDebugLogVerbose(@"蓝牙未连接");
         dispatch_async(dispatch_get_main_queue(), ^{
             HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
         });
@@ -1098,10 +1098,10 @@
 - (void)sendNewMessageToBLEWithPushKit:(NSString *)sendString
 {
     if ([BlueToothDataManager shareManager].isConnected) {
-        NSLog(@"获取卡数据从pushkit---%@", sendString);
+        UNDebugLogVerbose(@"获取卡数据从pushkit---%@", sendString);
         [[UNBlueToothTool shareBlueToothTool] sendBLECardDataWithValidData:sendString];
     }else{
-        NSLog(@"蓝牙未连接");
+        UNDebugLogVerbose(@"蓝牙未连接");
         dispatch_async(dispatch_get_main_queue(), ^{
             HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
         });
@@ -1117,9 +1117,9 @@
     ABAddressBookRef addressBook = ABAddressBookCreate(); //首次访问需用户授权
     if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusNotDetermined) {//首次访问通讯录
         ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) { if (!error) { if (granted) {//允许
-            NSLog(@"已授权访问通讯录"); NSArray *contacts = [self fetchContactWithAddressBook:addressBook]; dispatch_async(dispatch_get_main_queue(), ^{
+            UNDebugLogVerbose(@"已授权访问通讯录"); NSArray *contacts = [self fetchContactWithAddressBook:addressBook]; dispatch_async(dispatch_get_main_queue(), ^{
                 //----------------主线程 更新 UI-----------------
-//                NSLog(@"contacts:%@", contacts);
+//                UNDebugLogVerbose(@"contacts:%@", contacts);
                 _contactsDataArr = contacts;
                 for (NSDictionary *subDic in self.contactsDataArr) {
                     ContactModel *model=[[ContactModel alloc]initWithDic:subDic];
@@ -1130,7 +1130,7 @@
             });
             
         }else{//拒绝
-            NSLog(@"拒绝访问通讯录"); } }else{ NSLog(@"发生错误!");
+            UNDebugLogVerbose(@"拒绝访问通讯录"); } }else{ UNDebugLogVerbose(@"发生错误!");
             }
         });
     }else{
@@ -1141,7 +1141,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             //----------------主线程 更新 UI-----------------
             _contactsDataArr = contacts;
-//            NSLog(@"contacts:%@", contacts);
+//            UNDebugLogVerbose(@"contacts:%@", contacts);
             
             for (NSDictionary *subDic in self.contactsDataArr) {
                 ContactModel *model=[[ContactModel alloc]initWithDic:subDic];
@@ -1192,17 +1192,17 @@
                     [contacts addObject:@{@"name": lastName, @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData, @"recordRefId" : @(peopleValue)}];
                 }
             } else {
-                NSLog(@"9.0以前的系统，通讯录数据格式不正确");
+                UNDebugLogVerbose(@"9.0以前的系统，通讯录数据格式不正确");
                 if (phoneNumber) {
                     [contacts addObject:@{@"name": phoneNumber, @"phoneNumber": phoneNumber, @"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData, @"recordRefId" : @(peopleValue)}];
                 } else {
-                    NSLog(@"通讯录没有号码");
+                    UNDebugLogVerbose(@"通讯录没有号码");
                 }
             }
         }
         return contacts;
     }else{//无权限访问
-        NSLog(@"无权限访问通讯录");
+        UNDebugLogVerbose(@"无权限访问通讯录");
         return nil;
     }
 }
@@ -1219,10 +1219,10 @@
         [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error){
             if (!error){
                 if (granted) {//允许
-                    NSLog(@"已授权访问通讯录");
+                    UNDebugLogVerbose(@"已授权访问通讯录");
                     NSArray *contacts = [self fetchContactWithContactStore:contactStore];//访问通讯录
                     dispatch_async(dispatch_get_main_queue(),^{ //----------------主线程 更新 UI-----------------
-//                        NSLog(@"contacts:%@", contacts);
+//                        UNDebugLogVerbose(@"contacts:%@", contacts);
                         _contactsDataArr = contacts;
                         for (NSDictionary *subDic in self.contactsDataArr) {
                             ContactModel *model=[[ContactModel alloc]initWithDic:subDic];
@@ -1232,16 +1232,16 @@
                         [AddressBookManager shareManager].sectionArr=[ContactDataHelper getFriendListSectionBy:[[AddressBookManager shareManager].rowArr mutableCopy]];
                     });
                 }else{//拒绝
-                    NSLog(@"拒绝访问通讯录");
+                    UNDebugLogVerbose(@"拒绝访问通讯录");
                 }
             }else{
-                NSLog(@"发生错误!");
+                UNDebugLogVerbose(@"发生错误!");
             }
         }];
     }else{//非首次访问通讯录
         NSArray *contacts = [self fetchContactWithContactStore:contactStore];//访问通讯录
         dispatch_async(dispatch_get_main_queue(), ^{ //----------------主线程 更新 UI-----------------
-//            NSLog(@"contacts:%@", contacts);
+//            UNDebugLogVerbose(@"contacts:%@", contacts);
             _contactsDataArr = contacts;
             for (NSDictionary *subDic in self.contactsDataArr) {
                 ContactModel *model=[[ContactModel alloc]initWithDic:subDic];
@@ -1290,11 +1290,11 @@
 //                    [contacts addObject:@{@"name": [familyName stringByAppendingString:givenName], @"phoneNumber": phoneNumber,@"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]]}];
                     [contacts addObject:@{@"name": [familyName stringByAppendingString:givenName], @"phoneNumber": phoneNumber,@"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData, @"contactId":contactId}];
                 } else {
-                    NSLog(@"9.0以后的系统，通讯录数据格式不正确");
+                    UNDebugLogVerbose(@"9.0以后的系统，通讯录数据格式不正确");
                     if (phoneNumber) {
                         [contacts addObject:@{@"name": phoneNumber, @"phoneNumber": phoneNumber,@"portrait":[NSString stringWithFormat:@"con_face%d",[self getRandomNumber:1 to:3]],@"thumbnailImageData":thumbnailImageData,@"contactId":contactId}];
                     } else {
-                        NSLog(@"通讯录没有号码");
+                        UNDebugLogVerbose(@"通讯录没有号码");
                     }
                 }
             }
@@ -1304,7 +1304,7 @@
             return nil;
         }
     }else{//无权限访问
-        NSLog(@"无权限访问通讯录"); return nil;
+        UNDebugLogVerbose(@"无权限访问通讯录"); return nil;
     }
 }
 
@@ -1370,7 +1370,7 @@
 
 - (void)abroadMessageAction
 {
-    NSLog(@"境外通讯");
+    UNDebugLogVerbose(@"境外通讯");
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Order" bundle:nil];
     if (storyboard) {
         self.tabBarController.tabBar.hidden = YES;
@@ -1385,7 +1385,7 @@
 
 - (void)doubleCardsAction
 {
-    NSLog(@"双卡双待");
+    UNDebugLogVerbose(@"双卡双待");
     
     UIStoryboard *mainStory = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     BrowserViewController *browserViewController = [mainStory instantiateViewControllerWithIdentifier:@"browserViewController"];
@@ -1398,7 +1398,7 @@
 
 - (void)phonePackageAction
 {
-    NSLog(@"通话套餐");
+    UNDebugLogVerbose(@"通话套餐");
     CommunicatePackageViewController *communicateVC = [[CommunicatePackageViewController alloc] init];
     [self.navigationController pushViewController:communicateVC animated:YES];
 }
@@ -1435,7 +1435,7 @@
 //        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"3",@"PageSize",@"1",@"PageNumber", nil];
 //        
 //        [self getBasicHeader];
-////        NSLog(@"表头：%@",self.headers);
+////        UNDebugLogVerbose(@"表头：%@",self.headers);
 //        
 //        
 //        [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
@@ -1453,10 +1453,10 @@
 //            }else{
 //                
 //            }
-////            NSLog(@"查询到的套餐数据：%@",responseObj);
+////            UNDebugLogVerbose(@"查询到的套餐数据：%@",responseObj);
 //        } failure:^(id dataObj, NSError *error) {
 //            //
-//            NSLog(@"啥都没：%@",[error description]);
+//            UNDebugLogVerbose(@"啥都没：%@",[error description]);
 //            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiOrderList"];
 //            if (responseObj) {
 //                self.arrOrderList = [[responseObj objectForKey:@"data"] objectForKey:@"list"];
@@ -1493,7 +1493,7 @@
 //            self.lblFlow1.text = [dicOrder objectForKey:@"PackageName"];
 //            self.lblExpireDays1.text = [dicOrder objectForKey:@"ExpireDays"];
 //            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
-//                NSLog(@"未支付");
+//                UNDebugLogVerbose(@"未支付");
 //            }else{
 //                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
 //                    case 0:
@@ -1536,7 +1536,7 @@
 //            self.lblFlow2.text = [dicOrder objectForKey:@"PackageName"];
 //            self.lblExpireDays2.text = [dicOrder objectForKey:@"ExpireDays"];
 //            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
-//                NSLog(@"未支付");
+//                UNDebugLogVerbose(@"未支付");
 //            }else{
 //                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
 //                    case 0:
@@ -1581,7 +1581,7 @@
 //            self.lblFlow3.text = [dicOrder objectForKey:@"PackageName"];
 //            self.lblExpireDays3.text = [dicOrder objectForKey:@"ExpireDays"];
 //            if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
-//                NSLog(@"未支付");
+//                UNDebugLogVerbose(@"未支付");
 //            }else{
 //                switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {
 //                    case 0:
@@ -1682,7 +1682,7 @@
             }else{
                 HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
             }
-            NSLog(@"数据错误：%@",[error description]);
+            UNDebugLogVerbose(@"数据错误：%@",[error description]);
             
         } headers:self.headers];
         self.AdView.delegate = self;
@@ -1692,7 +1692,7 @@
 - (void)loadProductInfo {
     if (self.isPushKitStatu) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetProductList"];
-        NSLog(@"产品信息 -- %@", responseObj);
+        UNDebugLogVerbose(@"产品信息 -- %@", responseObj);
         self.productInfoArr = responseObj[@"data"];
         [self.hotCollectionView reloadData];
     }else{
@@ -1701,7 +1701,7 @@
             
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiGetProductList" dictData:responseObj];
-                NSLog(@"产品信息 -- %@", responseObj);
+                UNDebugLogVerbose(@"产品信息 -- %@", responseObj);
                 self.productInfoArr = responseObj[@"data"];
                 [self.hotCollectionView reloadData];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -1716,7 +1716,7 @@
                 self.productInfoArr = responseObj[@"data"];
                 [self.hotCollectionView reloadData];
             }
-            NSLog(@"数据错误：%@",[error description]);
+            UNDebugLogVerbose(@"数据错误：%@",[error description]);
             
         } headers:self.headers];
         self.AdView.delegate = self;
@@ -1749,7 +1749,7 @@
             }
         }failure:^(id dataObj, NSError *error) {
             
-            NSLog(@"数据错误：%@",[error description]);
+            UNDebugLogVerbose(@"数据错误：%@",[error description]);
             
         } headers:nil];
         self.AdView.delegate = self;
@@ -1771,7 +1771,7 @@
         self.checkToken = YES;
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"16",@"pageSize", nil];
         [self getBasicHeader];
-//        NSLog(@"表演头：%@",self.headers);
+//        UNDebugLogVerbose(@"表演头：%@",self.headers);
         [SSNetworkRequest getRequest:apiCountryHot params:params success:^(id responseObj) {
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCountryHot" dictData:responseObj];
@@ -1784,7 +1784,7 @@
                 //数据请求失败
             }
             
-            NSLog(@"查询到的用户数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiCountryHot"];
             if (responseObj) {
@@ -1793,7 +1793,7 @@
             }else{
                 HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
             }
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }
 }
@@ -1869,7 +1869,7 @@
             NSInteger sizeHeight = sizeWidth*189.00/170.00;
             int lineNumber = (int)self.productInfoArr.count/2;
             int numa = self.productInfoArr.count%2;
-//            NSLog(@"jisuan - %d - %d", lineNumber, numa);
+//            UNDebugLogVerbose(@"jisuan - %d - %d", lineNumber, numa);
             if (numa == 0) {
                 return sizeHeight*lineNumber+6*(lineNumber-1)+15;
             } else {
@@ -2044,7 +2044,7 @@
 - (void)updateLBEStatuWithPushKit
 {
     if (!self.isUpdatedLBEInfo) {
-        NSLog(@"更新蓝牙状态==============================");
+        UNDebugLogVerbose(@"更新蓝牙状态==============================");
         self.isPushKitStatu = NO;
         [[UNBlueToothTool shareBlueToothTool] setPushKitStatu:NO];
         [UNPushKitMessageManager shareManager].isQuickLoad = NO;

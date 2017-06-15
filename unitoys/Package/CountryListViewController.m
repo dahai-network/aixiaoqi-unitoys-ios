@@ -28,12 +28,12 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"100",@"pageSize", nil];
     NSString *apiNameStr = [NSString stringWithFormat:@"%@pageSize%@", @"apiCountryGet", @"100"];
     [self getBasicHeader];
-//    NSLog(@"表演头：%@",self.headers);
+//    UNDebugLogVerbose(@"表演头：%@",self.headers);
     [SSNetworkRequest getRequest:apiCountryGet params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
             self.continentIndex = [responseObj objectForKey:@"data"];
-            NSLog(@"查询到的用户数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
     
             [self.collectionView reloadData];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -44,15 +44,15 @@
         }
         
         
-        NSLog(@"查询到的用户数据：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
         if (responseObj) {
             self.continentIndex = [responseObj objectForKey:@"data"];
-            NSLog(@"查询到的用户数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
             [self.collectionView reloadData];
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 

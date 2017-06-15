@@ -60,7 +60,7 @@
             self.cell.imgType.image = [UIImage imageNamed:@"image_bound_shuangdaiwang"];
             break;
         default:
-            NSLog(@"绑定啥？");
+            UNDebugLogVerbose(@"绑定啥？");
             break;
     }
     self.cell.backGroundButton.indexPath = indexPath;
@@ -79,7 +79,7 @@
                 [BlueToothDataManager shareManager].deviceType = MYDEVICENAMEUNIBOX;
                 break;
             default:
-                NSLog(@"什么类型");
+                UNDebugLogVerbose(@"什么类型");
                 break;
         }
         if (!self.isBoundingVC) {
@@ -111,7 +111,7 @@
 //                [BlueToothDataManager shareManager].deviceType = MYDEVICENAMEUNIBOX;
 //                break;
 //            default:
-//                NSLog(@"什么类型");
+//                UNDebugLogVerbose(@"什么类型");
 //                break;
 //        }
 //        if (!self.isBoundingVC) {

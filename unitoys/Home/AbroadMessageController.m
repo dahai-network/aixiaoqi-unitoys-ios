@@ -41,7 +41,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"PageSize",@"1",@"PageNumber", nil];
     
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     
     
     [SSNetworkRequest getRequest:apiOrderList params:params success:^(id responseObj) {
@@ -58,10 +58,10 @@
         }else{
             //数据请求失败
         }
-//        NSLog(@"查询到的套餐数据：%@",responseObj);
+//        UNDebugLogVerbose(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         //
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -84,7 +84,7 @@
 //    cell.lblTotalPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicOrder objectForKey:@"TotalPrice"] floatValue]];
 //    cell.lblTotalPrice.font = [UIFont systemFontOfSize:15 weight:2];
     if ([[dicOrder objectForKey:@"PayStatus"] intValue]==0) {
-        NSLog(@"未支付");
+        UNDebugLogVerbose(@"未支付");
     }else{
         //order_actived
         switch ([[dicOrder objectForKey:@"OrderStatus"] intValue]) {

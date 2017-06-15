@@ -68,11 +68,11 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderDetailId,@"id", nil];
     NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderId%@", @"apiOrderById", [self.orderDetailId stringByReplacingOccurrencesOfString:@"-" withString:@""]];
     [self getBasicHeader];
-    //    NSLog(@"表头：%@",self.headers);
+    //    UNDebugLogVerbose(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiOrderById params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
-            NSLog(@"apiOrderById==responseObj");
+            UNDebugLogVerbose(@"apiOrderById==responseObj");
             self.orderData = [responseObj objectForKey:@"data"][@"list"];
             [self initCellDatas];
             [self.tableView reloadData];
@@ -85,13 +85,13 @@ static NSString *convenienceOrder2CellID = @"ConvenienceOrder2Cell";
     } failure:^(id dataObj, NSError *error) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
         if (responseObj) {
-            NSLog(@"apiOrderById==responseObj");
+            UNDebugLogVerbose(@"apiOrderById==responseObj");
             self.orderData = [responseObj objectForKey:@"data"][@"list"];
             [self.tableView reloadData];
         }else{
             HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 

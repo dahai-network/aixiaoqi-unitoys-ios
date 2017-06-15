@@ -86,7 +86,7 @@
 //            }
 //        }
 //    }
-//    NSLog(@"PhoneOperationPad-hitTest-------%@", view);
+//    UNDebugLogVerbose(@"PhoneOperationPad-hitTest-------%@", view);
 //    return view;
 //}
 

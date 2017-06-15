@@ -178,7 +178,7 @@
 - (void)deleteSelectSMS
 {
     if (self.selectRemoveData.count) {
-        NSLog(@"删除多条短信---%@", self.selectRemoveData);
+        UNDebugLogVerbose(@"删除多条短信---%@", self.selectRemoveData);
         NSMutableArray *smsArray = [NSMutableArray array];
         for (MJMessageFrame *messageFrame in self.selectRemoveData) {
             [smsArray addObject:messageFrame.message.SMSID];
@@ -270,9 +270,9 @@
 
 - (void)keyboardWillShow
 {
-    NSLog(@"更新inputContainerView");
-    NSLog(@"tableView---%@", NSStringFromCGRect(self.tableView.frame));
-    NSLog(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
+    UNDebugLogVerbose(@"更新inputContainerView");
+    UNDebugLogVerbose(@"tableView---%@", NSStringFromCGRect(self.tableView.frame));
+    UNDebugLogVerbose(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
 //    [self.tableView setNeedsLayout];
 //    [self.tableView layoutIfNeeded];
 //    [self scrollTableViewToBottomWithAnimated:YES];
@@ -280,9 +280,9 @@
 
 - (void)textViewFontChange
 {
-    NSLog(@"更新inputContainerView");
-    NSLog(@"tableView---%@", NSStringFromCGRect(self.tableView.frame));
-    NSLog(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
+    UNDebugLogVerbose(@"更新inputContainerView");
+    UNDebugLogVerbose(@"tableView---%@", NSStringFromCGRect(self.tableView.frame));
+    UNDebugLogVerbose(@"txtSendText---%@", NSStringFromCGRect(self.txtSendText.frame));
     [self.tableView setNeedsLayout];
     [self.tableView layoutIfNeeded];
     [self scrollTableViewToBottomWithAnimated:NO];
@@ -298,7 +298,7 @@
     NSDictionary *userInfo = noti.userInfo;
     NSDictionary *extras = [userInfo valueForKey:@"extras"];
     NSString *smsId = [extras valueForKey:@"SMSID"];
-    NSLog(@"extras---%@", extras);
+    UNDebugLogVerbose(@"extras---%@", extras);
 //    [[UNDatabaseTools sharedFMDBTools] updateMessageStatuWithSMSIDDictArray:@[extras]];
 //    if (self.messageDict) {
 //        for (NSDictionary *dict in self.messageDict) {
@@ -314,7 +314,7 @@
     [self.messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(MJMessageFrame *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([messageFrame.message.SMSID isEqualToString:smsId]) {
             if (statu != messageFrame.message.Status) {
-                NSLog(@"短信状态改变");
+                UNDebugLogVerbose(@"短信状态改变");
                 messageFrame.message.Status = statu;
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
                 [weakSelf.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -332,7 +332,7 @@
 //        NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber",self.toTelephone,@"Tel", nil];
 //        
 //        [self getBasicHeader];
-////        NSLog(@"表演头：%@",self.headers);
+////        UNDebugLogVerbose(@"表演头：%@",self.headers);
 //        [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
 //            if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //                //可通过异步处理优化
@@ -342,7 +342,7 @@
 //                arrMessages = [[arrMessages reverseObjectEnumerator] allObjects];
 //                
 //                for (NSDictionary *dict in arrMessages){
-//                    NSLog(@"%@", dict[@"SMSID"]);
+//                    UNDebugLogVerbose(@"%@", dict[@"SMSID"]);
 //                    if ([[dict objectForKey:@"IsSend"] boolValue]) {
 //                        //己方发送
 //                        //                        [dictArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[self compareCurrentTime:[self convertDate:[dict objectForKey:@"SMSTime"]]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
@@ -384,10 +384,10 @@
 //                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
 //            }else{
 //            }
-//            NSLog(@"查询到的消息数据：%@",responseObj);
+//            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
 //        } failure:^(id dataObj, NSError *error) {
 //            HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
-//            NSLog(@"啥都没：%@",[error description]);
+//            UNDebugLogVerbose(@"啥都没：%@",[error description]);
 //        } headers:self.headers];
 //    }
 //}
@@ -440,10 +440,10 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
             }
-            NSLog(@"查询到的消息数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }
 }
@@ -477,10 +477,10 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
             }
-            NSLog(@"查询到的消息数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }
 }
@@ -500,7 +500,7 @@
         [self.messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(MJMessageFrame *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([messageFrame.message.SMSID isEqualToString:smsId]) {
                 if (statu != messageFrame.message.Status) {
-                    NSLog(@"短信状态改变");
+                    UNDebugLogVerbose(@"短信状态改变");
                     messageFrame.message.Status = statu;
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
                     [weakSelf.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -516,7 +516,7 @@
     NSMutableArray *resultArray = [NSMutableArray array];
     NSArray *arrMessages = [[tempArray reverseObjectEnumerator] allObjects];
     for (NSDictionary *dict in arrMessages){
-        NSLog(@"%@", dict[@"SMSID"]);
+        UNDebugLogVerbose(@"%@", dict[@"SMSID"]);
         if ([[dict objectForKey:@"IsSend"] boolValue]) {
             //己方发送
             [resultArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
@@ -557,11 +557,11 @@
 //    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber",self.toTelephone,@"Tel", nil];
 //
 //    [self getBasicHeader];
-////    NSLog(@"表演头：%@",self.headers);
+////    UNDebugLogVerbose(@"表演头：%@",self.headers);
 //
 //    [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
 //
-//        NSLog(@"查询到的用户数据：%@",responseObj);
+//        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
 //
 //        if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //            
@@ -621,7 +621,7 @@
 //                    [self.tableView.mj_header endRefreshing];
 //                }
 //            }else{
-//                NSLog(@"无更多数据加载");
+//                UNDebugLogVerbose(@"无更多数据加载");
 //                [self.tableView.mj_header endRefreshing];
 //            }
 //            
@@ -690,7 +690,7 @@
             [self.tableView.mj_header endRefreshing];
         }
     }else{
-        NSLog(@"无更多数据加载");
+        UNDebugLogVerbose(@"无更多数据加载");
         [self.tableView.mj_header endRefreshing];
     }
 
@@ -699,11 +699,11 @@
 //    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@(self.page+1),@"pageNumber",self.toTelephone,@"Tel", nil];
 //    
 //    [self getBasicHeader];
-//    //    NSLog(@"表演头：%@",self.headers);
+//    //    UNDebugLogVerbose(@"表演头：%@",self.headers);
 //    
 //    [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
 //        
-//        NSLog(@"查询到的用户数据：%@",responseObj);
+//        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
 //        
 //        if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //            
@@ -763,7 +763,7 @@
 //                    [self.tableView.mj_header endRefreshing];
 //                }
 //            }else{
-//                NSLog(@"无更多数据加载");
+//                UNDebugLogVerbose(@"无更多数据加载");
 //                [self.tableView.mj_header endRefreshing];
 //            }
 //            
@@ -847,7 +847,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"didSelectRowAtIndexPath---%ld", indexPath.row);
+    UNDebugLogVerbose(@"didSelectRowAtIndexPath---%ld", indexPath.row);
     if (self.tableView.isEditing) {
         [self.selectRemoveData addObject:self.messageFrames[indexPath.row]];
     }
@@ -855,7 +855,7 @@
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"didDeselectRowAtIndexPath---%ld", indexPath.row);
+    UNDebugLogVerbose(@"didDeselectRowAtIndexPath---%ld", indexPath.row);
     if (self.tableView.isEditing) {
         if ([self.selectRemoveData containsObject:self.messageFrames[indexPath.row]]) {
             [self.selectRemoveData removeObject:self.messageFrames[indexPath.row]];
@@ -900,7 +900,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:messageFrame.message.SMSID,@"SMSID", nil];
     
     [self getBasicHeader];
-//    NSLog(@"表演头：%@",self.headers);
+//    UNDebugLogVerbose(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiSendRetryForError params:params success:^(id responseObj) {
         //
         //KV来存放数组，所以要用枚举器来处理
@@ -911,7 +911,7 @@
          [manager.requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
          }*/
         
-        NSLog(@"查询到的用户数据：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             _messageFrames = nil;
@@ -929,7 +929,7 @@
         
     } failure:^(id dataObj, NSError *error) {
         //
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -942,7 +942,7 @@
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtSendText.text,@"SMSContent", nil];
         [self getBasicHeader];
         [SSNetworkRequest postRequest:apiSMSSend params:params success:^(id responseObj) {
-            NSLog(@"查询到的用户数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
             if ([[responseObj objectForKey:@"status"] intValue]==1) {
                 self.txtSendText.text = @"";
                 [self.txtSendText resignFirstResponder];
@@ -962,7 +962,7 @@
             
         } failure:^(id dataObj, NSError *error) {
             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
             self.btnSend.enabled = YES;
         } headers:self.headers];
     }
@@ -1035,7 +1035,7 @@
 {
     if (_currentIndex < self.messageFrames.count) {
         MJMessageFrame *messageFrame = self.messageFrames[_currentIndex];
-        NSLog(@"当前删除短信%@", messageFrame);
+        UNDebugLogVerbose(@"当前删除短信%@", messageFrame);
         [self deleteMessageWithSMSId:messageFrame.message.SMSID Index:_currentIndex];
     }
 }
@@ -1057,7 +1057,7 @@
                 //刷新外部界面
                 [weakSelf updateMessageList];
             }
-            NSLog(@"删除单条短信成功");
+            UNDebugLogVerbose(@"删除单条短信成功");
             if (weakSelf.messageFrames.count > index) {
                 [weakSelf.messageFrames removeObjectAtIndex:index];
             }
@@ -1071,14 +1071,14 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"删除单条短信失败--%@", responseObj[@"msg"]);
+            UNDebugLogVerbose(@"删除单条短信失败--%@", responseObj[@"msg"]);
             
             [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:@[smsId] WithPhone:self.toTelephone];
             if ((weakSelf.messageFrames.count == index + 1) || weakSelf.messageFrames.count == 1) {
                 //刷新外部界面
                 [weakSelf updateMessageList];
             }
-            NSLog(@"删除单条短信成功");
+            UNDebugLogVerbose(@"删除单条短信成功");
             if (weakSelf.messageFrames.count > index) {
                 [weakSelf.messageFrames removeObjectAtIndex:index];
             }
@@ -1090,7 +1090,7 @@
             }
         }
     } failure:^(id dataObj, NSError *error) {
-        NSLog(@"删除单条短信异常：%@",[error description]);
+        UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -1101,7 +1101,7 @@
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"删除多条短信成功");
+            UNDebugLogVerbose(@"删除多条短信成功");
             [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:smsIds WithPhone:self.toTelephone];
             //刷新外部界面
             [weakSelf updateMessageList];
@@ -1128,7 +1128,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"删除多条短信失败--%@", responseObj[@"msg"]);
+            UNDebugLogVerbose(@"删除多条短信失败--%@", responseObj[@"msg"]);
             [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:smsIds WithPhone:self.toTelephone];
             //刷新外部界面
             [weakSelf updateMessageList];
@@ -1153,7 +1153,7 @@
             }
         }
     } failure:^(id dataObj, NSError *error) {
-        NSLog(@"删除单条短信异常：%@",[error description]);
+        UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
     } headers:self.headers];
 }
 

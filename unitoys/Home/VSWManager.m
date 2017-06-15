@@ -34,7 +34,7 @@ static VSWManager * manager=nil;
     int endMinutes = [sender intValue];
     Byte endMinuteByte = (Byte)0xff&endMinutes;
     appEvtSendBuff.pData = &endMinuteByte;
-    NSLog(@"前面传入的结构体参数 -- %hhu", endMinuteByte);
+    UNDebugLogVerbose(@"前面传入的结构体参数 -- %hhu", endMinuteByte);
     SimComEvtApp2Drv(&appEvtSendBuff);
     SimCom_Task();
 }

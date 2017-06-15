@@ -130,7 +130,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)addContactsAction
 {
-    NSLog(@"添加联系人");
+    UNDebugLogVerbose(@"添加联系人");
     CFErrorRef error = NULL;
     ABRecordRef person = ABPersonCreate ();
     ABMutableMultiValueRef multiValue = ABMultiValueCreateMutable(kABStringPropertyType);
@@ -174,12 +174,12 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                 phone = phoneNumber;
             }
         } else {
-            NSLog(@"9.0以前的系统，通讯录数据格式不正确");
+            UNDebugLogVerbose(@"9.0以前的系统，通讯录数据格式不正确");
             if (phoneNumber) {
                 name = phoneNumber;
                 phone = phoneNumber;
             } else {
-                NSLog(@"通讯录没有号码");
+                UNDebugLogVerbose(@"通讯录没有号码");
             }
         }
         if (!phone || !phone.length) {
@@ -195,13 +195,13 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         }
     }
     [newPersonView dismissViewControllerAnimated:YES completion:nil];
-    NSLog(@"newPersonView--%@---person---%@", newPersonView, person);
+    UNDebugLogVerbose(@"newPersonView--%@---person---%@", newPersonView, person);
 }
 
 #pragma mark - ABPersonViewControllerDelegate
 - (BOOL)personViewController:(ABPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier
 {
-    NSLog(@"person:%@--property:%d---identifier:%d", person, property, identifier);
+    UNDebugLogVerbose(@"person:%@--property:%d---identifier:%d", person, property, identifier);
     return YES;
 }
 
@@ -213,7 +213,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)contactViewController:(CNContactViewController *)viewController didCompleteWithContact:(nullable CNContact *)contact
 {
-    NSLog(@"%@", contact);
+    UNDebugLogVerbose(@"%@", contact);
     if (contact) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
         
@@ -225,7 +225,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
         if ((phoneNumber)&&([familyName stringByAppendingString:givenName])&&![[familyName stringByAppendingString:givenName] isEqualToString:@""]) {
             nickName = [familyName stringByAppendingString:givenName];
         } else {
-            NSLog(@"9.0以后的系统，通讯录数据格式不正确");
+            UNDebugLogVerbose(@"9.0以后的系统，通讯录数据格式不正确");
             nickName = phoneNumber;
         }
         phoneNumber = [phoneNumber stringByReplacingOccurrencesOfString:@"-" withString:@""];
@@ -267,7 +267,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             self.lastTime = [[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:self.phoneRecords.firstObject[@"calltime"]];
             self.phoneLocation = self.phoneRecords.firstObject[@"location"];
         }
-        NSLog(@"通话记录数据%@", array);
+        UNDebugLogVerbose(@"通话记录数据%@", array);
     }else{
         self.lastTime = @"";
         self.phoneLocation =@"";
@@ -413,7 +413,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     if (indexPath.section == 1) {
         if (indexPath.row == self.currentRecordPage * 10) {
-            NSLog(@"查看更多");
+            UNDebugLogVerbose(@"查看更多");
             self.currentRecordPage++;
             [self.tableView reloadData];
         }
@@ -459,7 +459,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)callActionType:(NSInteger)type
 {
-    NSLog(@"点击类型---%ld", type);
+    UNDebugLogVerbose(@"点击类型---%ld", type);
     if (type == 0) {
         [self sendMessage];
     }else if (type == 1){
@@ -536,7 +536,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
     }
     _isBlickAction = NO;
     if (_isInBlackLists) {
-        NSLog(@"解除屏蔽");
+        UNDebugLogVerbose(@"解除屏蔽");
         self.checkToken = YES;
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.phoneNumber,@"BlackNum", nil];
         [self getBasicHeader];
@@ -549,19 +549,19 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else if ([[responseObj objectForKey:@"status"] intValue]==9946){
-                NSLog(@"不在黑名单内");
+                UNDebugLogVerbose(@"不在黑名单内");
                 [weakSelf deleteBlickList:weakSelf.phoneNumber];
             }else{
                 HUDNormal(INTERNATIONALSTRING(@"解除屏蔽失败"))
             }
-            NSLog(@"查询到的消息数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             weakSelf.isBlickAction = YES;
             HUDNormal(INTERNATIONALSTRING(@"解除屏蔽失败"))
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }else{
-        NSLog(@"屏蔽");
+        UNDebugLogVerbose(@"屏蔽");
         self.checkToken = YES;
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.phoneNumber,@"BlackNum", nil];
         [self getBasicHeader];
@@ -574,16 +574,16 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else if ([[responseObj objectForKey:@"status"] intValue]==9946){
-                NSLog(@"已经在黑名单内");
+                UNDebugLogVerbose(@"已经在黑名单内");
                 [weakSelf addBlackList:weakSelf.phoneNumber];
             }else{
                 HUDNormal(INTERNATIONALSTRING(@"屏蔽失败"))
             }
-            NSLog(@"查询到的消息数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             weakSelf.isBlickAction = YES;
             HUDNormal(INTERNATIONALSTRING(@"屏蔽失败"))
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }
 }
@@ -591,7 +591,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 - (void)deleteBlickList:(NSString *)phone
 {
     if (![[UNDatabaseTools sharedFMDBTools] deleteBlackListWithPhoneString:phone]) {
-        NSLog(@"删除黑名单失败");
+        UNDebugLogVerbose(@"删除黑名单失败");
         //从服务器获取黑名单
         self.checkToken = YES;
         [self getBasicHeader];
@@ -603,7 +603,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
             }
-            NSLog(@"查询到的消息数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
             
         } failure:^(id dataObj, NSError *error) {
             
@@ -620,7 +620,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 - (void)addBlackList:(NSString *)phone
 {
     if (![[UNDatabaseTools sharedFMDBTools] insertBlackListWithPhoneString:phone]) {
-        NSLog(@"插入黑名单失败");
+        UNDebugLogVerbose(@"插入黑名单失败");
         //从服务器获取黑名单
         self.checkToken = YES;
         [self getBasicHeader];
@@ -632,7 +632,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
             }
-            NSLog(@"查询到的消息数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             
         } headers:self.headers];

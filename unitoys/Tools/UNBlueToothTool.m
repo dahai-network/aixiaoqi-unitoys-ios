@@ -137,13 +137,13 @@ static UNBlueToothTool *instance = nil;
 
 - (void)clearInstance
 {
-    NSLog(@"clearInstance");
+    UNDebugLogVerbose(@"clearInstance");
     self.isKill = YES;
     [[UNDatabaseTools sharedFMDBTools] deleteTableWithAPIName:@"apiDeviceBracelet"];
     if ([BlueToothDataManager shareManager].isConnected) {
-        NSLog(@"断开蓝牙1");
+        UNDebugLogVerbose(@"断开蓝牙1");
         if (_peripheral) {
-            NSLog(@"断开蓝牙2");
+            UNDebugLogVerbose(@"断开蓝牙2");
             [_mgr cancelPeripheralConnection:_peripheral];
         }
     }
@@ -172,15 +172,15 @@ static UNBlueToothTool *instance = nil;
 
 - (void)initBlueTooth
 {
-    NSLog(@"走了初始化蓝牙的方法");
+    UNDebugLogVerbose(@"走了初始化蓝牙的方法");
     if (![UNDataTools sharedInstance].isLogout) {
-        NSLog(@"在线：%s,%d", __FUNCTION__, __LINE__);
+        UNDebugLogVerbose(@"在线：%s,%d", __FUNCTION__, __LINE__);
         if (self.isInitInstance) {
             UNLogLBEProcess(@"不初始化蓝牙")
             return;
         }
         UNLogLBEProcess(@"初始化蓝牙")
-        NSLog(@"当前初始化线程======%@", [NSThread currentThread]);
+        UNDebugLogVerbose(@"当前初始化线程======%@", [NSThread currentThread]);
         
         self.isKill = NO;
         self.isInitInstance = YES;
@@ -193,7 +193,7 @@ static UNBlueToothTool *instance = nil;
             [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
         }
         self.simtype = [self checkSimType];
-        NSLog(@"卡类型--%@", self.simtype);
+        UNDebugLogVerbose(@"卡类型--%@", self.simtype);
         
         [BlueToothDataManager shareManager].isNeedToResert = YES;
         [BlueToothDataManager shareManager].currentStep = @"0";
@@ -208,7 +208,7 @@ static UNBlueToothTool *instance = nil;
 - (void)initObserverAction
 {
 //    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    NSLog(@"注册监听");
+    UNDebugLogVerbose(@"注册监听");
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downElectToCard) name:@"downElectic" object:@"downElectic"];//对卡断电
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];//接收PushKit消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据
@@ -230,29 +230,29 @@ static UNBlueToothTool *instance = nil;
         return;
     }
     
-    NSLog(@"接收到PushKit消息---receivePushKitMessage");
+    UNDebugLogVerbose(@"接收到PushKit消息---receivePushKitMessage");
     if ([BlueToothDataManager shareManager].isConnected) {
         
         if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-            NSLog(@"发送pushkit消息到蓝牙");
+            UNDebugLogVerbose(@"发送pushkit消息到蓝牙");
             if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect) {
-                NSLog(@"SIM断开连接消息类型");
+                UNDebugLogVerbose(@"SIM断开连接消息类型");
                 [self sendLBEMessageSIMDisConnect];
             }else{
                 if ([UNPushKitMessageManager shareManager].simDataDict) {
                     [self sendLBEMessageWithPushKit];
                 }else{
 //                    [self sendLBEConnectData];
-                    NSLog(@"必须有simDataDict");
+                    UNDebugLogVerbose(@"必须有simDataDict");
                 }
             }
         }else{
-            NSLog(@"数据错误,必须为PushKit模式");
+            UNDebugLogVerbose(@"数据错误,必须为PushKit模式");
         }
         
     }else{
         if (![BlueToothDataManager shareManager].isLbeConnecting) {
-            NSLog(@"蓝牙未连接,重连设备");
+            UNDebugLogVerbose(@"蓝牙未连接,重连设备");
             [self checkBindedDeviceFromNet];
         }
     }
@@ -264,7 +264,7 @@ static UNBlueToothTool *instance = nil;
     if (self.isKill || !self.isInitInstance) {
         return;
     }
-    NSLog(@"analysisAuthData---%@", noti.object);
+    UNDebugLogVerbose(@"analysisAuthData---%@", noti.object);
     [self analysisAuthDataWithString:noti.object];
 }
 
@@ -281,10 +281,10 @@ static UNBlueToothTool *instance = nil;
     }
     
     if ([BlueToothDataManager shareManager].isConnected) {
-        NSLog(@"对卡断电");
+        UNDebugLogVerbose(@"对卡断电");
         [self phoneCardToOutageNew];
     }else{
-        NSLog(@"蓝牙未连接");
+        UNDebugLogVerbose(@"蓝牙未连接");
         [self showHudNormalString:INTERNATIONALSTRING(@"蓝牙未连接")];
     }
 }
@@ -461,7 +461,7 @@ static UNBlueToothTool *instance = nil;
         if (firstStr.length/2 <= 15) {
             validStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)(firstStr.length+typeStr.length)/2]];
             totalStr = [NSString stringWithFormat:@"8880%@%@%@", validStrLength, typeStr, firstStr];
-            NSLog(@"只有一个包，最终发送的包内容 -> %@", totalStr);
+            UNDebugLogVerbose(@"只有一个包，最终发送的包内容 -> %@", totalStr);
             [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
         } else {
             NSString *totalNumber = [NSString stringWithFormat:@"%lu", ((firstStr.length - 15*2)/2)/17 + 2];
@@ -474,7 +474,7 @@ static UNBlueToothTool *instance = nil;
                     currentStrLength = [self hexStringFromString:@"17"];
                     tempStr = [firstStr substringWithRange:NSMakeRange(0, 34 - 4)];//减去类型的两个字节
                     totalStr = [NSString stringWithFormat:@"8800%@%@%@", currentStrLength, typeStr, tempStr];
-                    NSLog(@"多包第一个，最终发送的包内容 -> %@", totalStr);
+                    UNDebugLogVerbose(@"多包第一个，最终发送的包内容 -> %@", totalStr);
                     [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
                 } else if (i == [totalNumber integerValue] - 1) {
                     //最后一个
@@ -482,7 +482,7 @@ static UNBlueToothTool *instance = nil;
                     currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i + 128]];//加上0x80
                     tempStr = [firstStr substringFromIndex:15*2 + 17*2*(i - 1)];
                     totalStr = [NSString stringWithFormat:@"88%@%@%@", currentNumStr, currentStrLength, tempStr];
-                    NSLog(@"多包最后一个，最终发送的包内容 -> %@", totalStr);
+                    UNDebugLogVerbose(@"多包最后一个，最终发送的包内容 -> %@", totalStr);
                     [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
                 } else {
                     //中间的
@@ -490,7 +490,7 @@ static UNBlueToothTool *instance = nil;
                     tempStr = [firstStr substringWithRange:NSMakeRange(15*2+17*2*(i-1), 17*2)];
                     currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i]];
                     totalStr = [NSString stringWithFormat:@"88%@%@%@", currentNumStr, currentStrLength, tempStr];
-                    NSLog(@"多包中间的，最终发送的包内容 -> %@", totalStr);
+                    UNDebugLogVerbose(@"多包中间的，最终发送的包内容 -> %@", totalStr);
                     [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
                 }
             }
@@ -500,7 +500,7 @@ static UNBlueToothTool *instance = nil;
         //无有效data
         validStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)(typeStr.length)/2]];
         totalStr = [NSString stringWithFormat:@"8880%@%@", validStrLength, typeStr];
-        NSLog(@"无有效data，最终发送的包内容 -> %@", totalStr);
+        UNDebugLogVerbose(@"无有效data，最终发送的包内容 -> %@", totalStr);
         [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
     }
 }
@@ -516,19 +516,19 @@ static UNBlueToothTool *instance = nil;
             } else if ((self.characteristic.properties & CBCharacteristicPropertyWrite) != 0) {
                 [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithResponse];
             } else {
-                NSLog(@"No write property on TX characteristic, %ld.",(unsigned long)self.characteristic.properties);
+                UNDebugLogVerbose(@"No write property on TX characteristic, %ld.",(unsigned long)self.characteristic.properties);
             }
-            NSLog(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
+            UNDebugLogVerbose(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
         }
     } else {
         //        NSString *dataStr = [NSString stringWithFormat:@"%@", data];
         //        if (![dataStr isEqualToString:@"<88800310 0002>"]) {
-        //            NSLog(@"蓝牙未连接");
+        //            UNDebugLogVerbose(@"蓝牙未连接");
         //            dispatch_async(dispatch_get_main_queue(), ^{
         //                HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
         //            });
         //        }
-        NSLog(@"蓝牙未连接");
+        UNDebugLogVerbose(@"蓝牙未连接");
     }
 }
 
@@ -537,13 +537,13 @@ static UNBlueToothTool *instance = nil;
 #pragma mark 发现外围设备的时候调用,RSSI为负值，越接近0，信号越强
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
-    NSLog(@"发现设备");
+    UNDebugLogVerbose(@"发现设备");
     // 添加外围设备
     if (![self.peripherals containsObject:peripheral]) {
         // 设置外设的代理
         //        peripheral.delegate = self;
         if (peripheral.name) {
-            NSLog(@"发现设备名称：%@", peripheral.name);
+            UNDebugLogVerbose(@"发现设备名称：%@", peripheral.name);
             NSString *imeiStr = self.boundedDeviceInfo[@"IMEI"];
             NSString *imeiLowStr = imeiStr.lowercaseString;
             NSString *nameStr = peripheral.name;
@@ -562,7 +562,7 @@ static UNBlueToothTool *instance = nil;
                     //钥匙扣
                     allDeviceStr = MYDEVICENAMEUNIBOX;
                 } else {
-                    NSLog(@"类型错了");
+                    UNDebugLogVerbose(@"类型错了");
                 }
             }
             if (imeiLowStr&&[allDeviceStr containsString:nameStr.lowercaseString]) {
@@ -579,7 +579,7 @@ static UNBlueToothTool *instance = nil;
                 }
                 //mac地址没有广播
                 if (!advertisementData[@"kCBAdvDataManufacturerData"]) {
-                    NSLog(@"mac地址没有广播");
+                    UNDebugLogVerbose(@"mac地址没有广播");
                 }
             } else {
                 //新版本带mac地址的
@@ -587,16 +587,16 @@ static UNBlueToothTool *instance = nil;
                     NSString *macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1]];
                     if ([RSSI intValue] < 0) {
                         [self.peripherals addObject:peripheral];
-                        NSLog(@"带mac地址 -- uuid = %@ name = %@ 信号强度是：%@ mac地址是：%@", peripheral.identifier, peripheral.name, RSSI, macStr.lowercaseString);
+                        UNDebugLogVerbose(@"带mac地址 -- uuid = %@ name = %@ 信号强度是：%@ mac地址是：%@", peripheral.identifier, peripheral.name, RSSI, macStr.lowercaseString);
                         [self.macAddressDict setObject:macStr.lowercaseString forKey:peripheral.identifier];
                         [self.RSSIDict setObject:RSSI forKey:peripheral.identifier];
                     } else {
-                        NSLog(@"rssi大于0");
+                        UNDebugLogVerbose(@"rssi大于0");
                     }
                 }
                 //mac地址没有广播
                 if (!advertisementData[@"kCBAdvDataManufacturerData"]) {
-                    NSLog(@"mac地址没有广播");
+                    UNDebugLogVerbose(@"mac地址没有广播");
                 }
             }
         }
@@ -651,7 +651,7 @@ static UNBlueToothTool *instance = nil;
         case CBManagerStatePoweredOn:
         {
             UNLogLBEProcess(@"当前蓝牙状态CBManagerStatePoweredOn")
-            NSLog(@"蓝牙设备开着");
+            UNDebugLogVerbose(@"蓝牙设备开着");
             [BlueToothDataManager shareManager].bleStatueForCard = 0;
             [self.peripherals removeAllObjects];
             [BlueToothDataManager shareManager].isOpened = YES;
@@ -671,7 +671,7 @@ static UNBlueToothTool *instance = nil;
                     self.pairedArr = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
                 }
                 if(self.pairedArr.count>0) {
-                    NSLog(@"连接的配对设备 - %@", self.pairedArr);
+                    UNDebugLogVerbose(@"连接的配对设备 - %@", self.pairedArr);
                     for (CBPeripheral* peripheral in self.pairedArr) {
                         NSString *nameStr = peripheral.name;
                         NSString *allDeviceStr = MYDEVICENAME;
@@ -736,12 +736,12 @@ static UNBlueToothTool *instance = nil;
                     NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
                     if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
                         NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-                        NSLog(@"本地存储的设备信息 -- %@", arr);
+                        UNDebugLogVerbose(@"本地存储的设备信息 -- %@", arr);
                         if (arr.count) {
                             self.peripheral = arr[0];
-                            NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+                            UNDebugLogVerbose(@"获取到了存储的peripheral - %@", self.peripheral);
                             if (self.peripheral) {
-                                NSLog(@"存在连接过的外围设备");
+                                UNDebugLogVerbose(@"存在连接过的外围设备");
                                 [self.mgr connectPeripheral:self.peripheral options:nil];
                                 if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -756,15 +756,15 @@ static UNBlueToothTool *instance = nil;
                                     });
                                 }
                             } else {
-                                NSLog(@"不存在连接过的外围设备");
+                                UNDebugLogVerbose(@"不存在连接过的外围设备");
                                 [self.mgr scanForPeripheralsWithServices:nil options:nil];
                             }
                         } else {
-                            NSLog(@"本地有存储其他设备信息，不存在连接过的外围设备");
+                            UNDebugLogVerbose(@"本地有存储其他设备信息，不存在连接过的外围设备");
                             [self.mgr scanForPeripheralsWithServices:nil options:nil];
                         }
                     } else {
-                        NSLog(@"本地未存储其他设备信息,不存在连接过的外围设备");
+                        UNDebugLogVerbose(@"本地未存储其他设备信息,不存在连接过的外围设备");
                         [self.mgr scanForPeripheralsWithServices:nil options:nil];
                     }
                 }
@@ -779,7 +779,7 @@ static UNBlueToothTool *instance = nil;
                 self.pairedArr = [[NSArray alloc] initWithArray:[self.mgr retrieveConnectedPeripheralsWithServices:@[[CBUUID UUIDWithString:UUIDFORSERVICE1SERVICE]]]];
             }
             if(self.pairedArr.count>0) {
-                NSLog(@"连接的配对设备 - %@", self.pairedArr);
+                UNDebugLogVerbose(@"连接的配对设备 - %@", self.pairedArr);
                 for (CBPeripheral* peripheral in self.pairedArr) {
                     NSString *nameStr = peripheral.name;
                     NSString *allDeviceStr = MYDEVICENAME;
@@ -797,7 +797,7 @@ static UNBlueToothTool *instance = nil;
                             //钥匙扣
                             allDeviceStr = MYDEVICENAMEUNIBOX;
                         } else {
-                            NSLog(@"类型错了");
+                            UNDebugLogVerbose(@"类型错了");
                         }
                     }
                     if (peripheral != nil && [allDeviceStr containsString:nameStr.lowercaseString]) {
@@ -820,11 +820,11 @@ static UNBlueToothTool *instance = nil;
                                 [BlueToothDataManager shareManager].isNeedToBoundDevice = NO;
                                 [BlueToothDataManager shareManager].isConnectedPairedDevice = NO;
                             } else {
-                                NSLog(@"啥都不做");
+                                UNDebugLogVerbose(@"啥都不做");
                                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
                             }
                         } else {
-                            NSLog(@"已经绑定过了%@", self.boundedDeviceInfo[@"IMEI"]);
+                            UNDebugLogVerbose(@"已经绑定过了%@", self.boundedDeviceInfo[@"IMEI"]);
                             //已经绑定过
                             NSString *boundMac = self.boundedDeviceInfo[@"IMEI"];
                             if ([boundMac.lowercaseString isEqualToString:[BlueToothDataManager shareManager].deviceMacAddress]) {
@@ -839,29 +839,29 @@ static UNBlueToothTool *instance = nil;
                     }
                 }
             } else {
-                NSLog(@"没有配对设备");
+                UNDebugLogVerbose(@"没有配对设备");
                 
                 NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
                 NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
                 if ([boundedDeviceInfo objectForKey:userdata[@"Tel"]]) {
                     NSArray *arr = [self.mgr retrievePeripheralsWithIdentifiers:@[[[NSUUID alloc] initWithUUIDString:[boundedDeviceInfo objectForKey:userdata[@"Tel"]]]]];
-                    NSLog(@"本地存储的设备信息 -- %@", arr);
+                    UNDebugLogVerbose(@"本地存储的设备信息 -- %@", arr);
                     if (arr.count) {
                         self.peripheral = arr[0];
-                        NSLog(@"获取到了存储的peripheral - %@", self.peripheral);
+                        UNDebugLogVerbose(@"获取到了存储的peripheral - %@", self.peripheral);
                         if (self.peripheral) {
-                            NSLog(@"存在连接过的外围设备");
+                            UNDebugLogVerbose(@"存在连接过的外围设备");
                             [self.mgr connectPeripheral:self.peripheral options:nil];
                         } else {
-                            NSLog(@"不存在连接过的外围设备");
+                            UNDebugLogVerbose(@"不存在连接过的外围设备");
                             [self.mgr scanForPeripheralsWithServices:nil options:nil];
                         }
                     } else {
-                        NSLog(@"本地有存储其他设备信息，不存在连接过的外围设备");
+                        UNDebugLogVerbose(@"本地有存储其他设备信息，不存在连接过的外围设备");
                         [self.mgr scanForPeripheralsWithServices:nil options:nil];
                     }
                 } else {
-                    NSLog(@"本地未存储其他设备信息,不存在连接过的外围设备");
+                    UNDebugLogVerbose(@"本地未存储其他设备信息,不存在连接过的外围设备");
                     [self.mgr scanForPeripheralsWithServices:nil options:nil];
                 }
             }
@@ -872,7 +872,7 @@ static UNBlueToothTool *instance = nil;
         default:
             break;
     }
-    NSLog(@"中心设备：%ld，%@ %@", (long)central.state, central, self.mgr);
+    UNDebugLogVerbose(@"中心设备：%ld，%@ %@", (long)central.state, central, self.mgr);
 }
 
 #pragma mark 连接到某个外设的时候调用
@@ -1044,7 +1044,7 @@ static UNBlueToothTool *instance = nil;
 #warning 通过传入一个存放特征UUID的数组进去，过滤掉一些不要的特征
             [peripheral discoverCharacteristics:nil forService:service];
         }
-        NSLog(@"蓝牙设备的服务：%@", service);
+        UNDebugLogVerbose(@"蓝牙设备的服务：%@", service);
     }
 }
 
@@ -1056,23 +1056,23 @@ static UNBlueToothTool *instance = nil;
         // 过滤掉不想要的特征
         if ([[characteristic.UUID UUIDString] isEqual:UUIDFORSERVICE1CHARACTERISTICTOWRITE]) {
             // 找到想要的特征
-            NSLog(@"这是写特属性特征");
+            UNDebugLogVerbose(@"这是写特属性特征");
             self.characteristic = characteristic;
             [self.peripheral setNotifyValue:YES forCharacteristic:characteristic];
         } else if ([[characteristic.UUID UUIDString] isEqual:UUIDFORSERVICE1CHARACTERISTICTONOTIF]) {
-            NSLog(@"这是第一个通知属性的特征");
+            UNDebugLogVerbose(@"这是第一个通知属性的特征");
             self.notifyCharacteristic = characteristic;
             [self.peripheral setNotifyValue:YES forCharacteristic:self.notifyCharacteristic];
         } else if ([[characteristic.UUID UUIDString] isEqual:UUIDFORSERVICE1CHARACTERISTICTONOTIF2]) {
-            NSLog(@"这是第一个通知属性的特征2");
+            UNDebugLogVerbose(@"这是第一个通知属性的特征2");
             self.notifyCharacteristic2 = characteristic;
             [self.peripheral setNotifyValue:YES forCharacteristic:self.notifyCharacteristic2];
         }else if ([[characteristic.UUID UUIDString] isEqual:UUIDFORSERVICE1CHARACTERISTICTONOTIF3]) {
-            NSLog(@"这是第一个通知属性的特征3");
+            UNDebugLogVerbose(@"这是第一个通知属性的特征3");
             self.notifyCharacteristic3 = characteristic;
             [self.peripheral setNotifyValue:YES forCharacteristic:self.notifyCharacteristic3];
         }
-        NSLog(@"characteristic:%@", characteristic);
+        UNDebugLogVerbose(@"characteristic:%@", characteristic);
     }
     
     if (![BlueToothDataManager shareManager].isBeingOTA && self.boundedDeviceInfo[@"IMEI"]) {
@@ -1195,7 +1195,7 @@ static UNBlueToothTool *instance = nil;
         [self.encryptionTimer setFireDate:[NSDate distantFuture]];
     }
     self.encryptionTimeValue++;
-    NSLog(@"加密正在计时 -- %d", self.encryptionTimeValue);
+    UNDebugLogVerbose(@"加密正在计时 -- %d", self.encryptionTimeValue);
 }
 
 - (void)checkSystemInfo {
@@ -1234,7 +1234,7 @@ static UNBlueToothTool *instance = nil;
         
         [UNPushKitMessageManager shareManager].isQuickLoad = YES;
         //对卡上电
-        NSLog(@"对卡上电03");
+        UNDebugLogVerbose(@"对卡上电03");
         [self updataToCard];
         
         if ([UNPushKitMessageManager shareManager].simDataDict[@"time"]) {
@@ -1242,7 +1242,7 @@ static UNBlueToothTool *instance = nil;
             CGFloat dataTime = [timeString doubleValue];
             NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
             NSTimeInterval timeValue = [dataDate timeIntervalSinceNow];
-            NSLog(@"时间差为---%f", timeValue);
+            UNDebugLogVerbose(@"时间差为---%f", timeValue);
             if (timeValue > 150.0) {
                 UNLogLBEProcess(@"时间太久,丢弃当前数据")
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"PushKitMessageDataTimeout" object:nil];
@@ -1326,7 +1326,7 @@ static UNBlueToothTool *instance = nil;
 //                [self phoneCardToUpeLectrify:@"01"];
             }
         } else {
-//            NSLog(@"已绑定过之后上电");
+//            UNDebugLogVerbose(@"已绑定过之后上电");
             //对卡上电
 //            [self phoneCardToUpeLectrify:@"01"];
         }
@@ -1363,7 +1363,7 @@ static UNBlueToothTool *instance = nil;
         NSNumber *tempRssi;
         switch (self.peripherals.count) {
             case 0:
-                NSLog(@"没有搜索到可连接的设备");
+                UNDebugLogVerbose(@"没有搜索到可连接的设备");
                 //未连接
                 if ([BlueToothDataManager shareManager].isOpened) {
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -1405,7 +1405,7 @@ static UNBlueToothTool *instance = nil;
                     NSNumber *strongRssi = [self.RSSIDict objectForKey:self.strongestRssiPeripheral.identifier];
                     if ([strongRssi intValue]< [perRssi intValue] && [perRssi intValue] <= 0 && self.strongestRssiPeripheral) {
                         self.strongestRssiPeripheral = per;
-                        NSLog(@"strongest -- %@", self.strongestRssiPeripheral);
+                        UNDebugLogVerbose(@"strongest -- %@", self.strongestRssiPeripheral);
                     }
                 }
                 break;
@@ -1427,15 +1427,15 @@ static UNBlueToothTool *instance = nil;
                     [BlueToothDataManager shareManager].isNeedToBoundDevice = NO;
                 }
             } else {
-                NSLog(@"已经绑定过了%@", self.boundedDeviceInfo[@"IMEI"]);
+                UNDebugLogVerbose(@"已经绑定过了%@", self.boundedDeviceInfo[@"IMEI"]);
                 //已经绑定过
             }
         } else {
-            NSLog(@"蓝牙未开");
+            UNDebugLogVerbose(@"蓝牙未开");
         }
         [self stopScanBluetooth];
     }
-    NSLog(@"扫描计时器 -- %d", self.scanAndConnectingTimeValue);
+    UNDebugLogVerbose(@"扫描计时器 -- %d", self.scanAndConnectingTimeValue);
     self.scanAndConnectingTimeValue++;
 }
  */
@@ -1509,7 +1509,7 @@ static UNBlueToothTool *instance = nil;
         }
         [self stopScanBluetooth];
     }
-    NSLog(@"扫描计时器 -- %d", self.scanAndConnectingTimeValue);
+    UNDebugLogVerbose(@"扫描计时器 -- %d", self.scanAndConnectingTimeValue);
     self.scanAndConnectingTimeValue++;
 }
 
@@ -1518,24 +1518,24 @@ static UNBlueToothTool *instance = nil;
     if (self.peripherals.count) {
         NSMutableArray *imeiArr = [NSMutableArray array];
         if (self.peripherals.count <= 20) {
-            NSLog(@"外设不足20个,%s,%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"外设不足20个,%s,%d", __FUNCTION__, __LINE__);
             for (CBPeripheral *per in self.peripherals) {
                 NSString *imeiStr = [self.macAddressDict objectForKey:per.identifier];
                 if (imeiStr) {
                     [imeiArr addObject:imeiStr];
                 } else {
-                    NSLog(@"没有对应的IMEI %s,%d", __FUNCTION__, __LINE__);
+                    UNDebugLogVerbose(@"没有对应的IMEI %s,%d", __FUNCTION__, __LINE__);
                 }
             }
         } else {
-            NSLog(@"外设多于20个,%s,%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"外设多于20个,%s,%d", __FUNCTION__, __LINE__);
             for (int i = 0; i < 20; i++) {
                 CBPeripheral *per = self.peripherals[i];
                 NSString *imeiStr = [self.macAddressDict objectForKey:per.identifier];
                 if (imeiStr) {
                     [imeiArr addObject:imeiStr];
                 } else {
-                    NSLog(@"没有对应的IMEI %s,%d", __FUNCTION__, __LINE__);
+                    UNDebugLogVerbose(@"没有对应的IMEI %s,%d", __FUNCTION__, __LINE__);
                 }
             }
         }
@@ -1563,16 +1563,16 @@ static UNBlueToothTool *instance = nil;
                         }
                     }
                 }
-                NSLog(@"处理之后的绑定信息：%@", deviceInfoArr);
+                UNDebugLogVerbose(@"处理之后的绑定信息：%@", deviceInfoArr);
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBoundDeviceInfo" object:deviceInfoArr];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
-                NSLog(@"返回的状态码异常,%s,%d", __FUNCTION__, __LINE__);
+                UNDebugLogVerbose(@"返回的状态码异常,%s,%d", __FUNCTION__, __LINE__);
             }
-            NSLog(@"返回的绑定的设备的结果：%@",responseObj);
+            UNDebugLogVerbose(@"返回的绑定的设备的结果：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
         } headers:self.headers];
     } else {
         UNLogLBEProcess(@"没有搜索到适配的设备,%s%d", __FUNCTION__, __LINE__)
@@ -1607,7 +1607,7 @@ static UNBlueToothTool *instance = nil;
         }
     }
     self.boundTimeValue++;
-    NSLog(@"正在计时 -- %d", self.boundTimeValue);
+    UNDebugLogVerbose(@"正在计时 -- %d", self.boundTimeValue);
 }
 
 - (void)cancelToBound {
@@ -1669,14 +1669,14 @@ static UNBlueToothTool *instance = nil;
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     UNLogLBEProcess(@"发送指令成功")
     if (!error) {
-        NSLog(@"其他操作");
+        UNDebugLogVerbose(@"其他操作");
     }else{
         UNLogLBEProcess(@"发送指令错误%@",error)
     }
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForDescriptor:(CBDescriptor *)descriptor error:(NSError *)error {
-    NSLog(@"接收到数据什么鬼？");
+    UNDebugLogVerbose(@"接收到数据什么鬼？");
 }
 
 
@@ -1709,16 +1709,16 @@ static UNBlueToothTool *instance = nil;
             self.dataPackegType = [self convertRangeStringToIntWithString:str rangeLoc:6 rangeLen:2];
             if (str.length > 10) {
                 contentStr = [str substringFromIndex:10];
-                NSLog(@"接收到的有效data -- %@", contentStr);
+                UNDebugLogVerbose(@"接收到的有效data -- %@", contentStr);
             }
         } else {
             if (self.dataPackegType == 9 || self.dataPackegType == 10) {
                 if (str.length > 6) {
                     contentStr = [str substringFromIndex:6];
-                    NSLog(@"接收到的有效data -- %@", contentStr);
+                    UNDebugLogVerbose(@"接收到的有效data -- %@", contentStr);
                 }
             } else {
-                NSLog(@"接收到的数据不应该为多包%@",str);
+                UNDebugLogVerbose(@"接收到的数据不应该为多包%@",str);
                 return;
             }
         }
@@ -1734,7 +1734,7 @@ static UNBlueToothTool *instance = nil;
                 } else {
                     versionNumber = [NSString stringWithFormat:@"%d.%d", versionNumber1, versionNumber2];
                 }
-                NSLog(@"版本号:%@", versionNumber);
+                UNDebugLogVerbose(@"版本号:%@", versionNumber);
                 [BlueToothDataManager shareManager].versionNumber = versionNumber;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshVersionNumber" object:@"refreshVersionNumber"];
                 //电量
@@ -1742,7 +1742,7 @@ static UNBlueToothTool *instance = nil;
                 if (electricQuantity <= LOWELECTYNUM && ![BlueToothDataManager shareManager].isAlreadyShowElectyAlert && [BlueToothDataManager shareManager].chargingState != 2) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"showLowElectyAlert" object:@"showLowElectyAlert"];
                 }
-                NSLog(@"当前电量为：%d%%", electricQuantity);
+                UNDebugLogVerbose(@"当前电量为：%d%%", electricQuantity);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantity];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
                 [self refreshBLEInfo];
@@ -1771,7 +1771,7 @@ static UNBlueToothTool *instance = nil;
                 if (electricQuantityNew <= LOWELECTYNUM && ![BlueToothDataManager shareManager].isAlreadyShowElectyAlert && [BlueToothDataManager shareManager].chargingState != 2) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"showLowElectyAlert" object:@"showLowElectyAlert"];
                 }
-                NSLog(@"当前电量为：%d%%", electricQuantityNew);
+                UNDebugLogVerbose(@"当前电量为：%d%%", electricQuantityNew);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantityNew];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
                 break;
@@ -1784,16 +1784,16 @@ static UNBlueToothTool *instance = nil;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"chargeStatuChanged" object:@"chargeStatuChanged"];
                 switch (chargeStatue) {
                     case 1:
-                        NSLog(@"未充电");
+                        UNDebugLogVerbose(@"未充电");
                         break;
                     case 2:
-                        NSLog(@"正在充电");
+                        UNDebugLogVerbose(@"正在充电");
                         break;
                     case 3:
-                        NSLog(@"充电完成");
+                        UNDebugLogVerbose(@"充电完成");
                         break;
                     default:
-                        NSLog(@"充电状态有问题");
+                        UNDebugLogVerbose(@"充电状态有问题");
                         break;
                 }
                 break;
@@ -1896,7 +1896,7 @@ static UNBlueToothTool *instance = nil;
                                     }
                                 }
                             }
-                            NSLog(@"最终发送的数据包字符为：%@", self.totalString);
+                            UNDebugLogVerbose(@"最终发送的数据包字符为：%@", self.totalString);
                             if ([UNPushKitMessageManager shareManager].sendICCIDIndex < [UNPushKitMessageManager shareManager].sendICCIDCommands.count) {
                                 [UNPushKitMessageManager shareManager].sendICCIDIndex++;
                                 if ([UNPushKitMessageManager shareManager].sendICCIDIndex == [UNPushKitMessageManager shareManager].sendICCIDCommands.count) {
@@ -1904,7 +1904,7 @@ static UNBlueToothTool *instance = nil;
                                     [UNPushKitMessageManager shareManager].iccidString = [self getIccidWithString:self.totalString];
                                     
                                     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
-                                    NSLog(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
+                                    UNDebugLogVerbose(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
                                     if (dict) {
                                         //创建tcp,建立连接
                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
@@ -1930,19 +1930,19 @@ static UNBlueToothTool *instance = nil;
                                         if (self.authenticationModel.isAddSendData) {
                                             if ([currentSendStr isEqualToString:@"a0c0000003"] || [currentSendStr isEqualToString:@"a0c000000c"]) {
                                                 //最后一条额外数据
-                                                NSLog(@"====1111111====");
-                                                NSLog(@"最后一条额外数据");
+                                                UNDebugLogVerbose(@"====1111111====");
+                                                UNDebugLogVerbose(@"最后一条额外数据");
                                                 [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:2];
                                                 NSString *sendTcpStr = [self getStringToTcp];
                                                 [self sendTcpString:sendTcpStr];
-                                                NSLog(@"sendTcpStr====%@", sendTcpStr);
+                                                UNDebugLogVerbose(@"sendTcpStr====%@", sendTcpStr);
                                             }else if([currentSendStr isEqualToString:self.authenticationModel.simData]){
-                                                NSLog(@"====2222222====");
+                                                UNDebugLogVerbose(@"====2222222====");
                                                 [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
                                                 self.currentSendIndex += 1;
                                                 [self sendDataToLBEWithIndex:self.currentSendIndex];
                                             }else{
-                                                NSLog(@"====3333333====");
+                                                UNDebugLogVerbose(@"====3333333====");
                                                 self.currentSendIndex += 1;
                                                 [self sendDataToLBEWithIndex:self.currentSendIndex];
                                             }
@@ -1985,7 +1985,7 @@ static UNBlueToothTool *instance = nil;
                         [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0b000000a"];
                     } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"]) {
                         //对卡断电
-                        NSLog(@"对卡断电");
+                        UNDebugLogVerbose(@"对卡断电");
                         [self phoneCardToOutageNew];
                         //是大王卡
                         UNLogLBEProcess(@"是大王卡")
@@ -1999,7 +1999,7 @@ static UNBlueToothTool *instance = nil;
                         [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                     } else {
                         //对卡断电
-                        NSLog(@"对卡断电");
+                        UNDebugLogVerbose(@"对卡断电");
                         [self phoneCardToOutageNew];
                         UNLogLBEProcess(@"不是大王卡")
                         [BlueToothDataManager shareManager].cardType = @"2";
@@ -2047,7 +2047,7 @@ static UNBlueToothTool *instance = nil;
                             }
                             self.activityCardDataStr = nil;
                             
-                            NSLog(@"totalString -- %@", totalString);
+                            UNDebugLogVerbose(@"totalString -- %@", totalString);
                             if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9f17"]) {
                                 if (!self.isNewCard) {
                                     [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0a40000022f02"];
@@ -2060,7 +2060,7 @@ static UNBlueToothTool *instance = nil;
                                 [self sendMessageToBLEWithType:BLEAixiaoqiCardData validData:@"a0b000000a"];
                             } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0344"] || [[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"0345"]) {
                                 //对卡断电
-                                NSLog(@"对卡断电");
+                                UNDebugLogVerbose(@"对卡断电");
                                 [self phoneCardToOutageNew];
                                 self.bigKingCardNumber = [totalString substringWithRange:NSMakeRange(4, 16)];
                                 
@@ -2075,7 +2075,7 @@ static UNBlueToothTool *instance = nil;
                             } else if ([[totalString substringWithRange:NSMakeRange(0, 4)] isEqualToString:@"9000"]) {
                                 if (!self.isNewCard) {
                                     //对卡断电
-                                    NSLog(@"对卡断电");
+                                    UNDebugLogVerbose(@"对卡断电");
                                     [self phoneCardToOutageNew];
                                     [self activitySuccess];
                                 } else {
@@ -2085,7 +2085,7 @@ static UNBlueToothTool *instance = nil;
                                     } else {
                                         UNLogLBEProcess(@"激活卡有问题")
                                         [self phoneCardToOutageNew];
-                                        NSLog(@"返回数据有问题");
+                                        UNDebugLogVerbose(@"返回数据有问题");
                                         [self hideHud];
                                         [self showHudNormalString:INTERNATIONALSTRING(@"激活失败")];
                                         [BlueToothDataManager shareManager].isShowHud = NO;
@@ -2108,13 +2108,13 @@ static UNBlueToothTool *instance = nil;
                                 //激活成功
                                 //对卡断电
                                 UNLogLBEProcess(@"激活成功")
-                                NSLog(@"对卡断电");
+                                UNDebugLogVerbose(@"对卡断电");
                                 [self phoneCardToOutageNew];
                                 [self activitySuccess];
                                 self.isNewCard = NO;
                             } else {
                                 //对卡断电
-                                NSLog(@"对卡断电");
+                                UNDebugLogVerbose(@"对卡断电");
                                 [self phoneCardToOutageNew];
                                 UNLogLBEProcess(@"返回数据有问题")
                                 [self hideHud];
@@ -2356,7 +2356,7 @@ static UNBlueToothTool *instance = nil;
                 [BlueToothDataManager shareManager].isRegisted = NO;
                 [BlueToothDataManager shareManager].isBeingRegisting = YES;
                 //                                    [BlueToothDataManager shareManager].isChangeSimCard = NO;
-                NSLog(@"判断用户是否存在指定套餐");
+                UNDebugLogVerbose(@"判断用户是否存在指定套餐");
                 [self checkUserIsExistAppointPackage];
                 //                                });
                 
@@ -2448,11 +2448,11 @@ static UNBlueToothTool *instance = nil;
     }
     
     [self getBasicHeader];
-//    NSLog(@"表演头：%@",self.headers);
+//    UNDebugLogVerbose(@"表演头：%@",self.headers);
     
     [SSNetworkRequest postRequest:apiQueryOrderData params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"%@", responseObj);
+            UNDebugLogVerbose(@"%@", responseObj);
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiQueryOrderData" dictData:responseObj];
             //上电
             //对卡上电
@@ -2469,7 +2469,7 @@ static UNBlueToothTool *instance = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"请求失败：%@", responseObj[@"msg"]);
+            UNDebugLogVerbose(@"请求失败：%@", responseObj[@"msg"]);
         }
     } failure:^(id dataObj, NSError *error) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiQueryOrderData"];
@@ -2479,7 +2479,7 @@ static UNBlueToothTool *instance = nil;
         }else{
             [self showHudNormalString:INTERNATIONALSTRING(@"网络貌似有问题")];
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -2491,11 +2491,11 @@ static UNBlueToothTool *instance = nil;
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.activityOrderId, @"OrderID", nil];
     
     [self getBasicHeader];
-//    NSLog(@"表演头：%@",self.headers);
+//    UNDebugLogVerbose(@"表演头：%@",self.headers);
     
     [SSNetworkRequest postRequest:apiActivationLocalCompleted params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"%@", responseObj);
+            UNDebugLogVerbose(@"%@", responseObj);
             [self hideHud];
             [BlueToothDataManager shareManager].isShowHud = NO;
             [self showHudNormalString:INTERNATIONALSTRING(@"激活成功")];
@@ -2508,12 +2508,12 @@ static UNBlueToothTool *instance = nil;
         }else{
             //数据请求失败
             [BlueToothDataManager shareManager].isShowHud = NO;
-            NSLog(@"请求失败：%@", responseObj[@"msg"]);
+            UNDebugLogVerbose(@"请求失败：%@", responseObj[@"msg"]);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
         }
     } failure:^(id dataObj, NSError *error) {
         [BlueToothDataManager shareManager].isShowHud = NO;
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
         [[NSNotificationCenter defaultCenter] postNotificationName:@"actionOrderStatueFail" object:@"actionOrderStatueFail"];
     } headers:self.headers];
 }
@@ -2732,10 +2732,10 @@ static UNBlueToothTool *instance = nil;
 - (void)sendTcpString:(NSString *)string
 {
     if ([UNPushKitMessageManager shareManager].isQuickLoad) {
-        NSLog(@"SendTcpDataFromPushKit");
+        UNDebugLogVerbose(@"SendTcpDataFromPushKit");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"SendTcpDataFromPushKit" object:nil userInfo:@{@"tcpString" : string}];
     }else{
-        NSLog(@"receiveNewDataStr");
+        UNDebugLogVerbose(@"receiveNewDataStr");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDataStr" object:string];
     }
     self.authenticationModel = nil;
@@ -2750,11 +2750,11 @@ static UNBlueToothTool *instance = nil;
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"1",@"PackageCategory", nil];
     
     [self getBasicHeader];
-//    NSLog(@"表演头：%@",self.headers);
+//    UNDebugLogVerbose(@"表演头：%@",self.headers);
     
     [SSNetworkRequest postRequest:apiCheckUsedExistByPageCategory params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"是否存在制定套餐:%@", responseObj);
+            UNDebugLogVerbose(@"是否存在制定套餐:%@", responseObj);
             [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiCheckUsedExistByPageCategory" dictData:responseObj];
             
             if ([responseObj[@"data"][@"Used"] intValue]/*0：不存在，1：存在*/) {
@@ -2809,7 +2809,7 @@ static UNBlueToothTool *instance = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"请求失败：%@", responseObj[@"msg"]);
+            UNDebugLogVerbose(@"请求失败：%@", responseObj[@"msg"]);
         }
     } failure:^(id dataObj, NSError *error) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiCheckUsedExistByPageCategory"];
@@ -2839,7 +2839,7 @@ static UNBlueToothTool *instance = nil;
         }else{
             [self showHudNormalString:INTERNATIONALSTRING(@"网络貌似有问题")];
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -2860,18 +2860,18 @@ static UNBlueToothTool *instance = nil;
             [BlueToothDataManager shareManager].isBounded = YES;
         }
         UNLogLBEProcess(@"本地存储了的，直接扫描蓝牙设备")
-        NSLog(@"当前本地绑定设备----%@",self.boundedDeviceInfo);
+        UNDebugLogVerbose(@"当前本地绑定设备----%@",self.boundedDeviceInfo);
         //扫描蓝牙设备
         [self scanAndConnectDevice];
     } else {
         UNLogLBEProcess(@"本地没有存储，进行网络请求")
             self.checkToken = YES;
             [self getBasicHeader];
-//            NSLog(@"表头：%@",self.headers);
+//            UNDebugLogVerbose(@"表头：%@",self.headers);
             NSDictionary *info = [[NSDictionary alloc] init];
             [SSNetworkRequest getRequest:apiDeviceBracelet params:info success:^(id responseObj) {
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                    NSLog(@"查询绑定设备 -- %@", responseObj);
+                    UNDebugLogVerbose(@"查询绑定设备 -- %@", responseObj);
                     self.boundedDeviceInfo = [[NSDictionary alloc] initWithDictionary:responseObj[@"data"]];
                     if (!responseObj[@"data"][@"IMEI"]) {
                         [BlueToothDataManager shareManager].isShowStatuesView = YES;
@@ -2884,12 +2884,12 @@ static UNBlueToothTool *instance = nil;
                     //扫描蓝牙设备
                     [self scanAndConnectDevice];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                    NSLog(@"reloginNotify");
+                    UNDebugLogVerbose(@"reloginNotify");
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                     [self scanAndConnectDevice];
                 }else if ([[responseObj objectForKey:@"status"] intValue]==0){
                     //数据请求失败
-                    NSLog(@"没有设备");
+                    UNDebugLogVerbose(@"没有设备");
                     [BlueToothDataManager shareManager].isShowStatuesView = YES;
                     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
                     //扫描蓝牙设备
@@ -2903,7 +2903,7 @@ static UNBlueToothTool *instance = nil;
                 }
                 //扫描蓝牙设备
                 [self scanAndConnectDevice];
-                NSLog(@"啥都没：%@",[error description]);
+                UNDebugLogVerbose(@"啥都没：%@",[error description]);
             } headers:self.headers];
     }
 }
@@ -2913,7 +2913,7 @@ static UNBlueToothTool *instance = nil;
 - (void)checkDeviceIsBound {
     self.checkToken = YES;
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", nil];
     if (!info[@"IMEI"]) {
         [self showAlertViewWithMessage:@"没有搜索到可连接的设备"];
@@ -2921,7 +2921,7 @@ static UNBlueToothTool *instance = nil;
     }
     [SSNetworkRequest getRequest:apiIsBind params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"手环是否已被绑定 -- %@", responseObj[@"data"][@"BindStatus"]);
+            UNDebugLogVerbose(@"手环是否已被绑定 -- %@", responseObj[@"data"][@"BindStatus"]);
             if ([responseObj[@"data"][@"BindStatus"] isEqualToString:@"0"]) {
                 //未绑定
 //                [self bindBoundDevice];
@@ -2935,7 +2935,7 @@ static UNBlueToothTool *instance = nil;
                 [self showHudNormalString:INTERNATIONALSTRING(@"此设备已被其他用户绑定")];
                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
             } else {
-                NSLog(@"无法识别的判断");
+                UNDebugLogVerbose(@"无法识别的判断");
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -2945,7 +2945,7 @@ static UNBlueToothTool *instance = nil;
         }
     } failure:^(id dataObj, NSError *error) {
         [self showHudNormalString:INTERNATIONALSTRING(@"网络貌似有问题")];
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -2960,17 +2960,17 @@ static UNBlueToothTool *instance = nil;
             } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
                 info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", @"0", @"DeviceType", nil];
             } else {
-                NSLog(@"设备类型有问题");
+                UNDebugLogVerbose(@"设备类型有问题");
                 info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", @"1", @"DeviceType", nil];
             }
             
             [self getBasicHeader];
-//            NSLog(@"表演头：%@",self.headers);
+//            UNDebugLogVerbose(@"表演头：%@",self.headers);
             
             NSDictionary *saveData = @{@"data":info, @"status" : @1};
             [SSNetworkRequest postRequest:apiBind params:info success:^(id responseObj) {
                 if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                    NSLog(@"绑定结果：%@", responseObj);
+                    UNDebugLogVerbose(@"绑定结果：%@", responseObj);
                     //发送绑定成功通知
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"secondCkeckBoundSuccess" object:@"secondCkeckBoundSuccess"];
                     [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:@"apiDeviceBracelet" dictData:saveData];
@@ -2987,7 +2987,7 @@ static UNBlueToothTool *instance = nil;
                     if ([BlueToothDataManager shareManager].isConnected) {
                         NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
                         NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
-                        NSLog(@"绑定之后存储 %@", [self.peripheral.identifier UUIDString]);
+                        UNDebugLogVerbose(@"绑定之后存储 %@", [self.peripheral.identifier UUIDString]);
                         [boundedDeviceInfo setObject:[self.peripheral.identifier UUIDString] forKey:userdata[@"Tel"]];
                         [[NSUserDefaults standardUserDefaults] setObject:boundedDeviceInfo forKey:@"boundedDeviceInfo"];
                         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -2997,7 +2997,7 @@ static UNBlueToothTool *instance = nil;
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
                 }else{
                     //数据请求失败
-                    NSLog(@"请求失败：%@", responseObj[@"msg"]);
+                    UNDebugLogVerbose(@"请求失败：%@", responseObj[@"msg"]);
                     [self showHudNormalString:responseObj[@"msg"]];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"connectFail" object:@"connectFail"];
                 }
@@ -3010,7 +3010,7 @@ static UNBlueToothTool *instance = nil;
                     }
                     [BlueToothDataManager shareManager].isBounded = YES;
                 }
-                NSLog(@"啥都没：%@",[error description]);
+                UNDebugLogVerbose(@"啥都没：%@",[error description]);
             } headers:self.headers];
         } else {
             [self showHudNormalString:INTERNATIONALSTRING(@"请先在设置->蓝牙中忽略已配对的设备")];
@@ -3031,24 +3031,24 @@ static UNBlueToothTool *instance = nil;
     } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
         info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].versionNumber,@"Version", [BlueToothDataManager shareManager].electricQuantity, @"Power", @"0", @"DeviceType", nil];
     } else {
-        NSLog(@"设备类型有问题");
+        UNDebugLogVerbose(@"设备类型有问题");
         info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].versionNumber,@"Version", [BlueToothDataManager shareManager].electricQuantity, @"Power", @"1", @"DeviceType", nil];
     }
     
     [self getBasicHeader];
-    //            NSLog(@"表演头：%@",self.headers);
+    //            UNDebugLogVerbose(@"表演头：%@",self.headers);
     [SSNetworkRequest postRequest:apiUpdateConnectInfo params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"更新结果：%@", responseObj);
+            UNDebugLogVerbose(@"更新结果：%@", responseObj);
             
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"请求失败：%@", responseObj[@"msg"]);
+            UNDebugLogVerbose(@"请求失败：%@", responseObj[@"msg"]);
         }
     } failure:^(id dataObj, NSError *error) {
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -3070,10 +3070,10 @@ static UNBlueToothTool *instance = nil;
     }
     self.checkToken = YES;
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiUnBind params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"解除绑定结果：%@", responseObj);
+            UNDebugLogVerbose(@"解除绑定结果：%@", responseObj);
             //将连接的信息存储到本地
             NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
             NSMutableDictionary *boundedDeviceInfo = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:@"boundedDeviceInfo"]];
@@ -3120,7 +3120,7 @@ static UNBlueToothTool *instance = nil;
             self.isClickButton = NO;
         }
     } failure:^(id dataObj, NSError *error) {
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
         self.isClickButton = NO;
     } headers:self.headers];
 }
@@ -3129,7 +3129,7 @@ static UNBlueToothTool *instance = nil;
 - (void)checkRegistStatue {
     self.checkToken = YES;
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiGetRegStatus params:nil success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             UNLogLBEProcess(@"手环注册状态 -- %@", responseObj[@"data"][@"RegStatus"])
@@ -3183,11 +3183,11 @@ static UNBlueToothTool *instance = nil;
 //                    }
 //                }
 //            } else {
-//                NSLog(@"注册状态有问题");
+//                UNDebugLogVerbose(@"注册状态有问题");
 //            }
 //        }
         
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -3236,7 +3236,7 @@ static UNBlueToothTool *instance = nil;
     NSString *hourString = [NSString stringWithFormat:@"%d", hour];
     NSString *minString = [NSString stringWithFormat:@"%d", min];
     NSString *secString = [NSString stringWithFormat:@"%d", sec];
-    NSLog(@"十进制：%@ %d %d %@ %d %d %d", yearString, month, day, weekString, hour, min, sec);
+    UNDebugLogVerbose(@"十进制：%@ %d %d %@ %d %d %d", yearString, month, day, weekString, hour, min, sec);
     NSString *hexYear = [self hexStringFromString:yearString];
     NSString *hexMonth = [self hexStringFromString:monthString];
     NSString *hexDay = [self hexStringFromString:dayString];
@@ -3300,11 +3300,11 @@ static UNBlueToothTool *instance = nil;
     self.dataArr = [NSMutableArray arrayWithObjects:dict1, dict2, dict3, dict4, nil];
     self.checkToken = YES;
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiCheckUserConfig params:nil success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"获取到的用户配置信息 --> %@", responseObj);
+            UNDebugLogVerbose(@"获取到的用户配置信息 --> %@", responseObj);
             NSArray *arr = responseObj[@"data"];
             if (arr.count) {
                 for (NSDictionary *dict in arr) {
@@ -3321,7 +3321,7 @@ static UNBlueToothTool *instance = nil;
                         //QQ消息
                         [self.dataArr[3] setObject:[dict[@"Status"] intValue]?@"1":@"0" forKey:@"status"];
                     } else {
-                        NSLog(@"这是什么消息？");
+                        UNDebugLogVerbose(@"这是什么消息？");
                     }
                 }
             }
@@ -3334,7 +3334,7 @@ static UNBlueToothTool *instance = nil;
         }
     } failure:^(id dataObj, NSError *error) {
         //
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
@@ -3391,7 +3391,7 @@ static UNBlueToothTool *instance = nil;
     if (!self.boundedDeviceInfo[@"IMEI"]) {
         str = [self.macAddressDict objectForKey:self.strongestRssiPeripheral.identifier];
     } else {
-        NSLog(@"mac地址有问题");
+        UNDebugLogVerbose(@"mac地址有问题");
     }
     if ([str containsString:@"<"] && [str containsString:@">"]) {
         if (str && ![str isEqualToString:@"(null)"]) {
@@ -3402,18 +3402,18 @@ static UNBlueToothTool *instance = nil;
             NSString *string5 = [str substringWithRange:NSMakeRange(14, 2)];
             NSString *string6 = [str substringWithRange:NSMakeRange(16, 2)];
             NSString *string = [NSString stringWithFormat:@"%@:%@:%@:%@:%@:%@", string1, string2, string3, string4, string5, string6];
-            NSLog(@"mac地址：%@", string.lowercaseString);
+            UNDebugLogVerbose(@"mac地址：%@", string.lowercaseString);
             return string.lowercaseString;
         } else {
-            NSLog(@"mac地址为空");
+            UNDebugLogVerbose(@"mac地址为空");
             return nil;
         }
     } else {
         if (str && ![str isEqualToString:@"(null)"]) {
-            NSLog(@"mac地址：%@", str.lowercaseString);
+            UNDebugLogVerbose(@"mac地址：%@", str.lowercaseString);
             return str.lowercaseString;
         } else {
-            NSLog(@"mac地址为空");
+            UNDebugLogVerbose(@"mac地址为空");
             return nil;
         }
     }
@@ -3474,7 +3474,7 @@ static UNBlueToothTool *instance = nil;
     NSString *type = @"0";
     switch ([[BlueToothDataManager shareManager].operatorType intValue]) {
         case 0:
-            NSLog(@"运营商类型有问题,上电失败");
+            UNDebugLogVerbose(@"运营商类型有问题,上电失败");
             break;
         case 1:
             type = @"1";
@@ -3486,7 +3486,7 @@ static UNBlueToothTool *instance = nil;
             type = @"2";
             break;
         case 4:
-            NSLog(@"爱小器卡");
+            UNDebugLogVerbose(@"爱小器卡");
             break;
         default:
             break;
@@ -3513,14 +3513,14 @@ static UNBlueToothTool *instance = nil;
     for (NSInteger i = 0; i < date.count; i++) {
         //先将十六进制转换成十进制
         tempData = strtoul([date[i] UTF8String], 0, 16);
-        //        NSLog(@"date[i] = %ld",(long)tempData);
+        //        UNDebugLogVerbose(@"date[i] = %ld",(long)tempData);
         checksum ^= tempData;
-        //        NSLog(@"checksum = %ld",(long)checksum);
+        //        UNDebugLogVerbose(@"checksum = %ld",(long)checksum);
         
     }
     //再将十进制转换为十六进制
     NSString *hexChecksum = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)checksum]];
-    NSLog(@"校验位：%@", hexChecksum);
+    UNDebugLogVerbose(@"校验位：%@", hexChecksum);
     //    return hexChecksum;
     NSString *checkSum = [NSString stringWithFormat:@"%ld", (long)checksum];
     return checkSum;
@@ -3539,7 +3539,7 @@ static UNBlueToothTool *instance = nil;
 - (int)convertRangeStringToIntWithString:(NSString *)dataString rangeLoc:(NSUInteger)rangeLoc rangeLen:(NSUInteger)rangeLen {
     NSString *subString = [dataString substringWithRange:NSMakeRange(rangeLoc, rangeLen)];
     int result = strtoul([subString UTF8String], 0, 16);
-    //    NSLog(@"返回的结果为：%d", result);
+    //    UNDebugLogVerbose(@"返回的结果为：%d", result);
     return result;
 }
 
@@ -3599,7 +3599,7 @@ static UNBlueToothTool *instance = nil;
     NSData *data = [NSData dataWithBytes:buf length:len];
     
     free( buf );
-    NSLog(@"最终发送的包 -> %@", data);
+    UNDebugLogVerbose(@"最终发送的包 -> %@", data);
     return data;
 }
 
@@ -3614,10 +3614,10 @@ static UNBlueToothTool *instance = nil;
         NSString *string6 = [str substringWithRange:NSMakeRange(10, 2)];
         NSString *string = [NSString stringWithFormat:@"%@:%@:%@:%@:%@:%@", string1, string2, string3, string4, string5, string6];
         NSString *lowStr = string.lowercaseString;
-        NSLog(@"mac地址：%@", lowStr);
+        UNDebugLogVerbose(@"mac地址：%@", lowStr);
         return lowStr;
     } else {
-        NSLog(@"mac地址有问题,未连接");
+        UNDebugLogVerbose(@"mac地址有问题,未连接");
         return nil;
     }
 }
@@ -3625,7 +3625,7 @@ static UNBlueToothTool *instance = nil;
 //左上角状态刷新
 - (void)setButtonImageAndTitleWithTitle:(NSString *)title
 {
-    NSLog(@"%@", title);
+    UNDebugLogVerbose(@"%@", title);
     if (_updateButtonImageAndTitleBlock) {
         _updateButtonImageAndTitleBlock([title copy]);
     }
@@ -3634,7 +3634,7 @@ static UNBlueToothTool *instance = nil;
 //显示提示信息
 - (void)showHudNormalString:(NSString *)title
 {
-    NSLog(@"%@", title);
+    UNDebugLogVerbose(@"%@", title);
     if (self.showHudNormalBlock) {
         self.showHudNormalBlock(1, title);
     }
@@ -3643,7 +3643,7 @@ static UNBlueToothTool *instance = nil;
 //显示提示信息
 - (void)showHudNormalTop1String:(NSString *)title
 {
-    NSLog(@"%@", title);
+    UNDebugLogVerbose(@"%@", title);
     if (self.showHudNormalBlock) {
         self.showHudNormalBlock(2, title);
     }
@@ -3687,7 +3687,7 @@ static UNBlueToothTool *instance = nil;
     UNLogLBEProcess(@"otaDownload")
     self.checkToken = YES;
     [self getBasicHeader];
-    //    NSLog(@"表头：%@",self.headers);
+    //    UNDebugLogVerbose(@"表头：%@",self.headers);
     NSString *versionStr;
     NSString *typeStr;
     if ([BlueToothDataManager shareManager].versionNumber) {
@@ -3701,12 +3701,12 @@ static UNBlueToothTool *instance = nil;
         typeStr = @"1";
     } else {
         typeStr = @"0";
-        NSLog(@"连接的类型有问题");
+        UNDebugLogVerbose(@"连接的类型有问题");
     }
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:versionStr, @"Version", typeStr, @"DeviceType", nil];
     [SSNetworkRequest getRequest:apiDeviceBraceletOTA params:info success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            NSLog(@"空中升级的请求结果 -- %@", responseObj);
+            UNDebugLogVerbose(@"空中升级的请求结果 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
 //                NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
                 [UNDataTools sharedInstance].isHasFirmwareUpdateTip = YES;
@@ -3715,7 +3715,7 @@ static UNBlueToothTool *instance = nil;
                 NSRange pointLocation = [versionStr rangeOfString:@"."];
                 NSString *firstStr = [versionStr substringToIndex:pointLocation.location];
                 NSString *secondStr = [versionStr substringFromIndex:pointLocation.location+1];
-//                NSLog(@"拆分之后的固件版本号:%@,%@", firstStr, secondStr);
+//                UNDebugLogVerbose(@"拆分之后的固件版本号:%@,%@", firstStr, secondStr);
                 if ([firstStr isEqualToString:@"1"] && [secondStr intValue] < 18) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"showAlertToOta" object:responseObj[@"data"][@"Url"]];
                 }
@@ -3724,18 +3724,18 @@ static UNBlueToothTool *instance = nil;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else if ([[responseObj objectForKey:@"status"] intValue]==0){
             //数据请求失败
-            NSLog(@"请求失败");
+            UNDebugLogVerbose(@"请求失败");
         }
     } failure:^(id dataObj, NSError *error) {
         //
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 
 
 - (void)dealloc
 {
-    NSLog(@"UNBlueToothTool---dealloc");
+    UNDebugLogVerbose(@"UNBlueToothTool---dealloc");
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"downElectic" object:@"downElectic"];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceivePushKitMessage" object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AnalysisAuthData" object:nil];

@@ -109,7 +109,7 @@
 
 - (void)addContactsAction
 {
-    NSLog(@"添加联系人");
+    UNDebugLogVerbose(@"添加联系人");
     CFErrorRef error = NULL;
     ABRecordRef person = ABPersonCreate ();
     ABMutableMultiValueRef multiValue = ABMultiValueCreateMutable(kABStringPropertyType);
@@ -157,12 +157,12 @@
                 phone = phoneNumber;
             }
         } else {
-            NSLog(@"9.0以前的系统，通讯录数据格式不正确");
+            UNDebugLogVerbose(@"9.0以前的系统，通讯录数据格式不正确");
             if (phoneNumber) {
                 name = phoneNumber;
                 phone = phoneNumber;
             } else {
-                NSLog(@"通讯录没有号码");
+                UNDebugLogVerbose(@"通讯录没有号码");
             }
         }
         self.contactMan = name;
@@ -191,7 +191,7 @@
 
 - (void)contactViewController:(CNContactViewController *)viewController didCompleteWithContact:(nullable CNContact *)contact
 {
-    NSLog(@"%@", contact);
+    UNDebugLogVerbose(@"%@", contact);
     if (contact) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
         
@@ -219,7 +219,7 @@
         if ((phoneNumber)&&([familyName stringByAppendingString:givenName])&&![[familyName stringByAppendingString:givenName] isEqualToString:@""]) {
             nickName = [familyName stringByAppendingString:givenName];
         } else {
-            NSLog(@"9.0以后的系统，通讯录数据格式不正确");
+            UNDebugLogVerbose(@"9.0以后的系统，通讯录数据格式不正确");
             nickName = phoneNumber;
         }
         self.contactMan = nickName;

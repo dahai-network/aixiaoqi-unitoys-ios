@@ -203,7 +203,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 }
 
 - (void)contactsViewChangeStatuesView:(NSNotification *)sender {
-    NSLog(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
+    UNDebugLogVerbose(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
 //    self.statuesLabel.text = sender.object;
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
     if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
@@ -233,11 +233,11 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 
 - (void)showRegistProgress:(NSNotification *)sender {
     NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
-    NSLog(@"接收到传过来的通知 -- %@", senderStr);
+    UNDebugLogVerbose(@"接收到传过来的通知 -- %@", senderStr);
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
         [self countAndShowRegistPercentage:senderStr];
     } else {
-        NSLog(@"注册成功的时候处理");
+        UNDebugLogVerbose(@"注册成功的时候处理");
     }
 }
 
@@ -284,7 +284,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 
 - (void)addContactsAction:(UIButton *)button
 {
-    NSLog(@"添加联系人");
+    UNDebugLogVerbose(@"添加联系人");
     if ([[UIDevice currentDevice] systemVersion].floatValue < 9.0) {
         ABNewPersonViewController *newPersonVc = [[ABNewPersonViewController alloc] init];
         newPersonVc.newPersonViewDelegate = self;
@@ -318,7 +318,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 
 - (void)contactViewController:(CNContactViewController *)viewController didCompleteWithContact:(nullable CNContact *)contact
 {
-    NSLog(@"%@", contact);
+    UNDebugLogVerbose(@"%@", contact);
     if (contact) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"addressBookChanged" object:@"addressBookChanged"];
     }
@@ -505,7 +505,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
         }
     }else{
         ContactModel *model=_rowArr[indexPath.section][indexPath.row];
-        NSLog(@"联系结果：%@",model);
+        UNDebugLogVerbose(@"联系结果：%@",model);
         if ([model.phoneNumber containsString:@","] || self.bOnlySelectNumber) {
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
             if (!storyboard) {

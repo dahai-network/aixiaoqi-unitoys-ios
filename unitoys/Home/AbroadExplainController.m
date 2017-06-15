@@ -43,14 +43,14 @@
     [_localHttpServer setType:@"_http.tcp"];
     
     NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSLog(@"文件目录 -- %@",webPath);
+    UNDebugLogVerbose(@"文件目录 -- %@",webPath);
     
     if (![fileManager fileExistsAtPath:webPath]){
-        NSLog(@"File path error!");
+        UNDebugLogVerbose(@"File path error!");
     }else{
         NSString *webLocalPath = webPath;
         [_localHttpServer setDocumentRoot:webLocalPath];
-        NSLog(@"webLocalPath:%@",webLocalPath);
+        UNDebugLogVerbose(@"webLocalPath:%@",webLocalPath);
         [self startServer];
     }
 }
@@ -58,10 +58,10 @@
 - (void)startServer {
     NSError *error;
     if([_localHttpServer start:&error]){
-        NSLog(@"Started HTTP Server on port %hu", [_localHttpServer listeningPort]);
+        UNDebugLogVerbose(@"Started HTTP Server on port %hu", [_localHttpServer listeningPort]);
         [BlueToothDataManager shareManager].localServicePort = [NSString stringWithFormat:@"%d",[_localHttpServer listeningPort]];
     } else {
-        NSLog(@"Error starting HTTP Server: %@", error);
+        UNDebugLogVerbose(@"Error starting HTTP Server: %@", error);
     }
 }
 
@@ -371,7 +371,7 @@
     //访问描述文件
     NSString *textURL = [NSString stringWithFormat:@"http://localhost:%@/%@.mobileconfig", [BlueToothDataManager shareManager].localServicePort, self.apnName];
     NSURL *cleanURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@", textURL]];
-    NSLog(@"访问的连接为 -- %@", cleanURL);
+    UNDebugLogVerbose(@"访问的连接为 -- %@", cleanURL);
     if (kSystemVersionValue >= 10.0) {
         NSDictionary *info = @{@"title": @"访问"};
         [[UIApplication sharedApplication] openURL:cleanURL options:info completionHandler:nil];
@@ -401,7 +401,7 @@
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]]) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-prefs:root=MOBILE_DATA_SETTINGS_ID"]];
     } else {
-        NSLog(@"打不开");
+        UNDebugLogVerbose(@"打不开");
     }
 }
 

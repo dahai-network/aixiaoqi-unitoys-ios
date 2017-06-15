@@ -165,18 +165,16 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
             
             if ([cell.lblCallTime.text isEqualToString:@"刚刚"]) {
-                NSLog(@"有了：%@",dicPhoneRecord);
+                UNDebugLogVerbose(@"有了：%@",dicPhoneRecord);
             }
             //                    if ([[dicPhoneRecord objectForKey:@"status"] intValue]==0){  //如果未接听则显示红色
             //                        [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
             //                    }
         }else{
             [cell.ivStatus setImage:[UIImage imageNamed:@"tel_callout"]];
-            
-            
             NSString *phoneNum = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
             
-            //                    cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
+//            cell.lblPhoneNumber.text = [self checkLinkNameWithPhoneStr:[dicPhoneRecord objectForKey:@"destnumber"]];
             if (![(NSString *)[dicPhoneRecord objectForKey:@"destnumber"] containsString:phoneNum]) {
                 [bottomStr appendString:(NSString *)[dicPhoneRecord objectForKey:@"destnumber"]];
                 [bottomStr appendString:@"  "];
@@ -198,7 +196,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
         cell.lblPhoneType.attributedText = attriStr;
         return cell;
-        
     }
 }
 

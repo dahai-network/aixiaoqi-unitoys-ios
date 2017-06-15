@@ -88,7 +88,7 @@
     }else{
         containerX = screenW - padding - containerW;
     }
-    NSLog(@"%.2f", containerH);
+    UNDebugLogVerbose(@"%.2f", containerH);
     _containerViewF = CGRectMake(containerX, containerY, containerW, containerH);
     
     // 4.cell的高度

@@ -45,10 +45,10 @@
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",self.txtMessageContent.text,@"SMSContent", nil];
         
         [self getBasicHeader];
-//        NSLog(@"表演头：%@",self.headers);
+//        UNDebugLogVerbose(@"表演头：%@",self.headers);
         [SSNetworkRequest postRequest:apiSMSSend params:params success:^(id responseObj) {
             
-            NSLog(@"查询到的用户数据：%@",responseObj);
+            UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
             
             
             if ([[responseObj objectForKey:@"status"] intValue]==0) {
@@ -61,7 +61,7 @@
             }
         } failure:^(id dataObj, NSError *error) {
             //
-            NSLog(@"啥都没：%@",[error description]);
+            UNDebugLogVerbose(@"啥都没：%@",[error description]);
         } headers:self.headers];
     }
 }

@@ -128,7 +128,7 @@
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"1"];
 //        });
 //    }else{
-//        NSLog(@"无网络");
+//        UNDebugLogVerbose(@"无网络");
 //        [BlueToothDataManager shareManager].statuesTitleString = @"当前网络不可用";
 //        dispatch_async(dispatch_get_main_queue(), ^{
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"netWorkNotToUse" object:@"0"];
@@ -151,10 +151,10 @@
                     [UNPushKitMessageManager shareManager].isSendTcpString = NO;
                 }
                 if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
-                    NSLog(@"服务开关是开的：%s,%d", __FUNCTION__, __LINE__);
+                    UNDebugLogVerbose(@"服务开关是开的：%s,%d", __FUNCTION__, __LINE__);
                     [self creatAsocketTcp];
                 } else {
-                    NSLog(@"服务开关关闭：%s,%d", __FUNCTION__, __LINE__);
+                    UNDebugLogVerbose(@"服务开关关闭：%s,%d", __FUNCTION__, __LINE__);
                 }
             }
         } else {
@@ -273,7 +273,7 @@
 //    NSError * error = nil;
 //    [_udpSocket bindToPort:PORT error:&error];
 //    if (error) {//监听错误打印错误信息
-//        NSLog(@"error:%@",error);
+//        UNDebugLogVerbose(@"error:%@",error);
 //    }else {//监听成功则开始接收信息
 //        [_udpSocket beginReceiving:&error];
 //    }
@@ -357,9 +357,9 @@
         }
         UNLogLBEProcess(@"判断tcp是否在线的时候的token - %@", token)
         NSString *ascHex = [self hexStringFromString:token];
-        //    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
+        //    UNDebugLogVerbose(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
         NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
-        //    NSLog(@"长度为 -- %@", lengthHex);
+        //    UNDebugLogVerbose(@"长度为 -- %@", lengthHex);
         NSString *tokenHex = [NSString stringWithFormat:@"78%@%@", lengthHex, ascHex];
         //正常状态TCP包
         NSString *tempHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", tokenHex.length/2]];
@@ -369,7 +369,7 @@
         [self sendMsgWithMessage:sendStr];
         self.isNeedToCheckSIMStatue = NO;
     } else {
-        NSLog(@"状态不对 - 位置：%s%d", __func__, __LINE__);
+        UNDebugLogVerbose(@"状态不对 - 位置：%s%d", __func__, __LINE__);
     }
 }
 
@@ -404,7 +404,7 @@
             //数据请求失败
         }
     }failure:^(id dataObj, NSError *error) {
-        NSLog(@"数据错误：%@",[error description]);
+        UNDebugLogVerbose(@"数据错误：%@",[error description]);
     } headers:nil];
 }
 
@@ -497,7 +497,7 @@
             FMResultSet *rs = [db executeQuery:existsSql];
             if ([rs next]) {
                 NSInteger count = [rs intForColumn:@"countNum"];
-                NSLog(@"The table count: %zd", count);
+                UNDebugLogVerbose(@"The table count: %zd", count);
                 if (count == 0) {
                     [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
                 }
@@ -571,7 +571,7 @@
                         [self.sendTcpSocket readDataWithTimeout:-1 tag:201];
                         //发送数据
                         [self setUpTcppacketFromPushKit];
-                        NSLog(@"最终发送给tcp的pushkit数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
+                        UNDebugLogVerbose(@"最终发送给tcp的pushkit数据 -- %@", [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit);
                         [UNPushKitMessageManager shareManager].isSendTcpString = YES;
                     }
                 }else{
@@ -587,7 +587,7 @@
                         [BlueToothDataManager shareManager].isTcpConnected = YES;
                         // 等待数据来啊
                         [self.sendTcpSocket readDataWithTimeout:-1 tag:200];
-                        NSLog(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
+                        UNDebugLogVerbose(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr);
                         [self sendMsgWithMessage:self.tcpPacketStr];
                     }
                     
@@ -598,23 +598,23 @@
 }
 
 - (void)receiveTcpPacket:(NSNotification *)sender {
-//    NSLog(@"app里面收到数据了 -- %@", sender.object);
+//    UNDebugLogVerbose(@"app里面收到数据了 -- %@", sender.object);
     UNLogLBEProcess(@"receiveTcpPacket====%@", sender.object)
     NSString *packteStr = [NSString stringWithFormat:@"%@", sender.object];
     NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", packteStr.length/2]];
-    NSLog(@"数据包长度为 -- %zd  数据包长度转换成十六进制 -- %@", packteStr.length/2, packetLengthHex);
+    UNDebugLogVerbose(@"数据包长度为 -- %zd  数据包长度转换成十六进制 -- %@", packteStr.length/2, packetLengthHex);
     self.packetFinalHex = [NSString stringWithFormat:@"c7%@%@", packetLengthHex, packteStr];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
 }
 
 - (void)receiveTcpIccidAndImsi:(NSNotification *)sender {
-//    NSLog(@"app里面收到iccid和imsi -- %@", sender.object);
+//    UNDebugLogVerbose(@"app里面收到iccid和imsi -- %@", sender.object);
     UNLogLBEProcess(@"receiveTcpIccidAndImsi====%@", sender.object)
     NSString *iccidStr = [sender.object substringWithRange:NSMakeRange(6, 20)];
     [UNPushKitMessageManager shareManager].iccidString = [[iccidStr copy] lowercaseString];
     NSString *iccidHex = [self hexStringFromString:iccidStr];
     NSString *iccidLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", iccidHex.length/2]];
-//    NSLog(@"iccidStr -- %@  length -- %@", iccidHex, iccidLengthHex);
+//    UNDebugLogVerbose(@"iccidStr -- %@  length -- %@", iccidHex, iccidLengthHex);
     self.iccidTotalHex = [NSString stringWithFormat:@"be%@%@", iccidLengthHex, iccidHex];
     NSString *imsiStr;
     NSString *checkStr;
@@ -622,18 +622,18 @@
         imsiStr = [sender.object substringWithRange:NSMakeRange(32, 15)];
         NSString *imsiHex = [self hexStringFromString:imsiStr];
         NSString *imsiLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%ld", imsiHex.length/2]];
-        //    NSLog(@"imsiStr -- %@  length -- %@", imsiHex, imsiLengthHex);
+        //    UNDebugLogVerbose(@"imsiStr -- %@  length -- %@", imsiHex, imsiLengthHex);
         self.imsiTotalHex = [NSString stringWithFormat:@"bf%@%@", imsiLengthHex, imsiHex];
     }
     if (imsiStr.length >= 5) {
         checkStr = [imsiStr substringWithRange:NSMakeRange(0, 5)];
     } else {
-        NSLog(@"imsi前面的数据不对");
+        UNDebugLogVerbose(@"imsi前面的数据不对");
     }
     if ([checkStr isEqualToString:@"46000"] || [checkStr isEqualToString:@"46001"] || [checkStr isEqualToString:@"46002"] || [checkStr isEqualToString:@"46003"] || [checkStr isEqualToString:@"46007"]) {//因为移动网络编号46000下的IMSI已经用完，所以虚拟了一个46002编号，134/159号段使用了此编号
         [self groupPacket];
     } else {
-        NSLog(@"号码有问题");
+        UNDebugLogVerbose(@"号码有问题");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [BlueToothDataManager shareManager].isBeingRegisting = NO;
             [BlueToothDataManager shareManager].isRegisted = NO;
@@ -644,11 +644,11 @@
 }
 
 - (void)receiveTcpLength:(NSNotification *)sender {
-//    NSLog(@"app里面收到数据包压缩前长度 -- %@", sender.object);
+//    UNDebugLogVerbose(@"app里面收到数据包压缩前长度 -- %@", sender.object);
     NSString *totalLengthHex = [self hexNewStringFromString:sender.object];
     NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", totalLengthHex.length/2]];
     self.packetTotalLengthHex = [NSString stringWithFormat:@"c6%@%@", lengthHex, totalLengthHex];
-//    NSLog(@"压缩前长度转换成十六进制 -- %@", self.packetTotalLengthHex);
+//    UNDebugLogVerbose(@"压缩前长度转换成十六进制 -- %@", self.packetTotalLengthHex);
 }
 
 #pragma mark 组合数据包
@@ -660,9 +660,9 @@
     }
     UNLogLBEProcess(@"发送tcp连接的时候的token - %@", token)
     NSString *ascHex = [self hexStringFromString:token];
-    //    NSLog(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
+    //    UNDebugLogVerbose(@"转换前：%@\n 转换后：%@\n 转换后的长度：%lu", token, ascHex, (unsigned long)ascHex.length/2);
     NSString *lengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", ascHex.length/2]];
-    //    NSLog(@"长度为 -- %@", lengthHex);
+    //    UNDebugLogVerbose(@"长度为 -- %@", lengthHex);
     NSString *tokenHex = [NSString stringWithFormat:@"78%@%@", lengthHex, ascHex];
     NSString *tempString = [NSString stringWithFormat:@"%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@%@", TCPGOIP, TCPLIFETIME, TCPCHECKPREREAD, tokenHex, TCPCONNECT, TCPUUWIFI, TCPSLOT, TCPIMEI, TCPMODTYPE, TCPMODVER, TCPSIMLOCAL, self.iccidTotalHex, self.imsiTotalHex, TCPSIMNUMBER, TCPSIMBALANCE, self.packetTotalLengthHex, self.packetFinalHex, TCPVERSIONTYPE, [UNPushKitMessageManager shareManager].pushKitTokenString];
     
@@ -720,7 +720,7 @@
 {
     //    NSString *tempString = self.tcpStringWithPushKit;
     //    NSString *tempHex = [self hexTLVLength:[NSString stringWithFormat:@"%lu", tempString.length/2]];
-    //    //    NSLog(@"最终发送出去的数据包长度为 ---> %lu\n 转换之后的十六进制数 ---> %@", tempString.length/2, tempHex);
+    //    //    UNDebugLogVerbose(@"最终发送出去的数据包长度为 ---> %lu\n 转换之后的十六进制数 ---> %@", tempString.length/2, tempHex);
     //    self.tcpPacketStr = [NSString stringWithFormat:@"%@%@0001%@%@", TCPFIRSTSUBNOT, TCPCOMMUNICATEID, tempHex, tempString];
     //    [self sendMsgWithMessage:self.tcpPacketStr];
     
@@ -749,7 +749,7 @@
     
     NSString *countLengthStr = [appendString substringFromIndex:24];
     
-    NSLog(@"替换后面的文字之后 -- %@", appendString);
+    UNDebugLogVerbose(@"替换后面的文字之后 -- %@", appendString);
     NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", countLengthStr.length/2]];
     NSString *tcpString = [appendString stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
     UNLogLBEProcess(@"发送给服务器的数据 -- %@", tcpString)
@@ -758,8 +758,8 @@
     [self sendMsgWithMessage:tcpString];
     
     if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-        NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
-        NSLog(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices);
+        UNDebugLogVerbose(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
+        UNDebugLogVerbose(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices);
         
         [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
     }
@@ -874,7 +874,7 @@
             UNLogLBEProcess(@"2tcp数据----%@", self.tcpPacketStr)
             if (self.tcpPacketStr) {
                 self.communicateID = @"00000000";
-                NSLog(@"tcp连接成功");
+                UNDebugLogVerbose(@"tcp连接成功");
                 [BlueToothDataManager shareManager].isTcpConnected = YES;
                 // 等待数据来啊
                 [sock readDataWithTimeout:-1 tag:200];
@@ -883,7 +883,7 @@
                 //发送数据
                 [self sendMsgWithMessage:self.tcpPacketStr];
                 
-                NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
+                UNDebugLogVerbose(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
                 UNLogLBEProcess(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices)
                 [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -1046,7 +1046,7 @@
 //                }
 //                [self creatAsocketTcp];
 //            } else{
-//                NSLog(@"其他原因断开");
+//                UNDebugLogVerbose(@"其他原因断开");
 //                if ([self.sendTcpSocket.userData isEqualToString:SocketCloseByNet]) {
 //                    if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
 //                        [[UNPushKitMessageManager shareManager].tcpReconnectTimer invalidate];
@@ -1066,7 +1066,7 @@
 //                        [[UNPushKitMessageManager shareManager].tcpReconnectTimer fire];
 //                    }
 //                }else{
-//                    NSLog(@"不重连");
+//                    UNDebugLogVerbose(@"不重连");
 //                    [BlueToothDataManager shareManager].isTcpConnected = NO;
 //                }
 //            }
@@ -1160,7 +1160,7 @@
         [self checkManyPacketString:tempStr];
     }else{
         UNLogLBEProcess(@"PushKit状态不回数据")
-        NSLog(@"PushKit状态接收到服务器返回的数据%@", data);
+        UNDebugLogVerbose(@"PushKit状态接收到服务器返回的数据%@", data);
         
         //正常情况不走此处,(PushKit状态走此处说明后台出错)
         if (tag == 200) {
@@ -1169,7 +1169,7 @@
             NSString *ip = [sock connectedHost];
             uint16_t port = [sock connectedPort];
             //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSLog(@"200接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+            UNDebugLogVerbose(@"200接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
             NSString *tempStr = [NSString stringWithFormat:@"%@", data];
             if ([tempStr containsString:@"<"]) {
                 tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
@@ -1187,7 +1187,7 @@
             NSString *ip = [sock connectedHost];
             uint16_t port = [sock connectedPort];
             //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSLog(@"100接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+            UNDebugLogVerbose(@"100接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
             NSString *tempStr = [NSString stringWithFormat:@"%@", data];
             if ([tempStr containsString:@"<"]) {
                 tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
@@ -1205,7 +1205,7 @@
             NSString *ip = [sock connectedHost];
             uint16_t port = [sock connectedPort];
             //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSLog(@"201接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
+            UNDebugLogVerbose(@"201接收到服务器返回的数据 tcp [%@:%d] %@", ip, port, data);
             NSString *tempStr = [NSString stringWithFormat:@"%@", data];
             if ([tempStr containsString:@"<"]) {
                 tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
@@ -1222,7 +1222,7 @@
             NSString *ip = [sock connectedHost];
             uint16_t port = [sock connectedPort];
             //    NSString *s = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSLog(@"%ld接收到服务器返回的数据 tcp [%@:%d] %@",tag, ip, port, data);
+            UNDebugLogVerbose(@"%ld接收到服务器返回的数据 tcp [%@:%d] %@",tag, ip, port, data);
             NSString *tempStr = [NSString stringWithFormat:@"%@", data];
             if ([tempStr containsString:@"<"]) {
                 tempStr = [tempStr stringByReplacingOccurrencesOfString:@"<" withString:@""];
@@ -1242,7 +1242,7 @@
 {
     UNLogLBEProcess(@"处理数据包")
     if (tempStr.length < 24) {
-        NSLog(@"数据包异常----%@", tempStr);
+        UNDebugLogVerbose(@"数据包异常----%@", tempStr);
         return;
     }
     NSString *lengthStr = [tempStr substringWithRange:NSMakeRange(20, 4)];
@@ -1251,7 +1251,7 @@
         NSString *currentStr = [tempStr substringWithRange:NSMakeRange(0, 24 + leng*2)];
         UNLogLBEProcess(@"当前数据包---%@", currentStr)
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"checkPacketDetailWithString-----%@",[NSThread currentThread]);
+            UNDebugLogVerbose(@"checkPacketDetailWithString-----%@",[NSThread currentThread]);
             [self checkPacketDetailWithString:currentStr];
         });
         
@@ -1307,7 +1307,7 @@
         }
         NSString *callPortStr = [string substringFromIndex:44];
         NSString *newString = [NSString stringFromHexString:callPortStr];
-        NSLog(@"截取到的电话端口 -- %@", newString);
+        UNDebugLogVerbose(@"截取到的电话端口 -- %@", newString);
         if ([newString isEqualToString:@"n Failed"]) {
             UNLogLBEProcess(@"截取电话端口出错 -- %@", newString)
             return;
@@ -1333,7 +1333,7 @@
             [BlueToothDataManager shareManager].isRegisted = YES;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_SIGNALSTRONG];
             if ([UNPushKitMessageManager shareManager].isSysCallKitPhone && [UNPushKitMessageManager shareManager].callKitHandleString) {
-                NSLog(@"拨打CallKit电话");
+                UNDebugLogVerbose(@"拨打CallKit电话");
                 [self callPhoneFromCallKitWithHandleString:[[UNPushKitMessageManager shareManager].callKitHandleString copy]];
             }
         });
@@ -1383,7 +1383,7 @@
                 NSString *lengthStr = [string substringWithRange:NSMakeRange(32, 2)];
                 leng = strtoul([lengthStr UTF8String], 0, 16);
                 TLVdetail = [string substringWithRange:NSMakeRange(34, leng * 2)];
-                NSLog(@"两位leng = %zd  需要替换的字符串 -- %@", leng, TLVdetail);
+                UNDebugLogVerbose(@"两位leng = %zd  需要替换的字符串 -- %@", leng, TLVdetail);
             } else {
                 NSString *lengthStr = [string substringWithRange:NSMakeRange(32, 4)];
                 if ([[lengthStr substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"8"]) {
@@ -1394,7 +1394,7 @@
                 }
                 leng = strtoul([lengthStr UTF8String], 0, 16);
                 TLVdetail = [string substringWithRange:NSMakeRange(36, leng * 2)];
-                NSLog(@"四位leng = %zd  需要替换的字符串 -- %@", leng, TLVdetail);
+                UNDebugLogVerbose(@"四位leng = %zd  需要替换的字符串 -- %@", leng, TLVdetail);
             }
             tempStr = TLVdetail;
             TLVdetail = @"000100163b9f94801fc78031e073fe211b573786609b30800119";
@@ -1412,7 +1412,7 @@
             NSString *lengthStr = [string substringWithRange:NSMakeRange(32, 2)];
             leng = strtoul([lengthStr UTF8String], 0, 16);
             TLVdetail = [string substringWithRange:NSMakeRange(34, leng * 2)];
-            NSLog(@"两位leng = %zd  需要传入的字符串 -- %@", leng, TLVdetail);
+            UNDebugLogVerbose(@"两位leng = %zd  需要传入的字符串 -- %@", leng, TLVdetail);
             
             if ([UNPushKitMessageManager shareManager].isNeedRegister) {
                 UNLogLBEProcess(@"需要注册")
@@ -1439,9 +1439,9 @@
                     NSRange iccidRange = [string rangeOfString:@"00be"];
                     NSRange imsiRange = [string rangeOfString:@"00bf"];
                     NSRange goipnsRange = [string rangeOfString:@"00a0"];
-                    //                NSLog(@"iccidRange - %lu,%lu", iccidRange.location+4, imsiRange.location - (iccidRange.location+4));
-                    //                NSLog(@"imsiRange - %lu,%lu", imsiRange.location+4, goipnsRange.location - (imsiRange.location+4));
-                    //                NSLog(@"goipnsRange - %lu,%lu", goipnsRange.location+4, string.length-(goipnsRange.location+4));
+                    //                UNDebugLogVerbose(@"iccidRange - %lu,%lu", iccidRange.location+4, imsiRange.location - (iccidRange.location+4));
+                    //                UNDebugLogVerbose(@"imsiRange - %lu,%lu", imsiRange.location+4, goipnsRange.location - (imsiRange.location+4));
+                    //                UNDebugLogVerbose(@"goipnsRange - %lu,%lu", goipnsRange.location+4, string.length-(goipnsRange.location+4));
                     NSString *iccidStr = [string substringWithRange:NSMakeRange(iccidRange.location+4, imsiRange.location - (iccidRange.location+4))];
                     NSString *newIccidString = [NSString stringFromHexString:iccidStr];
                     NSString *imsiStr = [string substringWithRange:NSMakeRange(imsiRange.location+4, goipnsRange.location - (imsiRange.location+4))];
@@ -1452,25 +1452,25 @@
                     NSString *newGoipnsString = [NSString stringFromHexString:goipnsStr];
                     
                     if ([newGoipnsString isEqualToString:@"n Failed"]) {
-                        NSLog(@"截取电话端口出错 -- %@", newGoipnsString);
+                        UNDebugLogVerbose(@"截取电话端口出错 -- %@", newGoipnsString);
                         return;
                     }else if ([newGoipnsString isEqualToString:@"Timeout"]) {
-                        NSLog(@"截取电话端口出错 -- %@", newGoipnsString);
+                        UNDebugLogVerbose(@"截取电话端口出错 -- %@", newGoipnsString);
                         return;
                     }
                     NSString *cutStr = [newGoipnsString substringFromIndex:[newGoipnsString rangeOfString:@"_"].location+1];
                     cutStr = [cutStr stringByReplacingOccurrencesOfString:@"." withString:@""];
-                    NSLog(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@ -- 电话端口号：%@", communicateIdStr, newIccidString, newImsiString, newGoipnsString, cutStr);
+                    UNDebugLogVerbose(@"转换出来的会话ID -- %@\n转换出来的ICCID -- %@\n转换出来的IMSI -- %@\n转换出来的goipns -- %@ -- 电话端口号：%@", communicateIdStr, newIccidString, newImsiString, newGoipnsString, cutStr);
                     [BlueToothDataManager shareManager].iccidFromTcp = newIccidString.lowercaseString;
                     [BlueToothDataManager shareManager].commicateIDFromTcp = communicateIdStr.lowercaseString;
                     [BlueToothDataManager shareManager].portFromTcp = cutStr;
                     if ([BlueToothDataManager shareManager].iccidFromBle) {
                         if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
                             //在线
-                            NSLog(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__);
+                            UNDebugLogVerbose(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__);
                         } else {
                             //不是同一张卡，需要重新注册
-                            NSLog(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
+                            UNDebugLogVerbose(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__);
                         }
                     }
                 } else {
@@ -1509,7 +1509,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
         });
     } else {
-        NSLog(@"这是什么鬼");
+        UNDebugLogVerbose(@"这是什么鬼");
     }
 }
 
@@ -1517,13 +1517,13 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (!self.timer) {
             //开始计时
-            NSLog(@"开始计时 %s,%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"开始计时 %s,%d", __FUNCTION__, __LINE__);
             self.sec = 0;
             self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(jumpTimerAction) userInfo:nil repeats:YES];
             //如果不添加下面这条语句，会阻塞定时器的调用
             [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:UITrackingRunLoopMode];
         } else {
-            NSLog(@"继续计时 %s,%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"继续计时 %s,%d", __FUNCTION__, __LINE__);
             self.sec = 0;
             [self.timer setFireDate:[NSDate distantPast]];
         }
@@ -1544,7 +1544,7 @@
         NSString *lengthStr = [string substringWithRange:NSMakeRange(32, 2)];
         leng = strtoul([lengthStr UTF8String], 0, 16);
         TLVdetail = [string substringWithRange:NSMakeRange(34, leng * 2)];
-        NSLog(@"两位leng = %zd  需要替换的字符串 -- %@", leng, TLVdetail);
+        UNDebugLogVerbose(@"两位leng = %zd  需要替换的字符串 -- %@", leng, TLVdetail);
     } else {
         NSString *lengthStr = [string substringWithRange:NSMakeRange(32, 4)];
         if ([[lengthStr substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"8"]) {
@@ -1555,7 +1555,7 @@
         }
         leng = strtoul([lengthStr UTF8String], 0, 16);
         TLVdetail = [string substringWithRange:NSMakeRange(36, leng * 2)];
-        NSLog(@"四位leng = %zd  需要替换的字符串 -- %@", leng, TLVdetail);
+        UNDebugLogVerbose(@"四位leng = %zd  需要替换的字符串 -- %@", leng, TLVdetail);
     }
     tempStr = TLVdetail;
     TLVdetail = @"000100163b9f94801fc78031e073fe211b573786609b30800119";
@@ -1563,7 +1563,7 @@
         TLVdetail = [TLVdetail stringByAppendingString:@"0"];
     }
     string = [string stringByReplacingOccurrencesOfString:tempStr withString:TLVdetail];
-    NSLog(@"替换之后的字符串 -- %@", string);
+    UNDebugLogVerbose(@"替换之后的字符串 -- %@", string);
     
 //    if (!self.sendTcpSocket) {
 //        [self creatAsocketTcp];
@@ -1601,18 +1601,18 @@
             //发送心跳包
             NSString *sendStr = [NSString stringWithFormat:@"108a0500%@%@00060101006501b4", self.communicateID, str];
             if ([BlueToothDataManager shareManager].isTcpConnected) {
-                NSLog(@"发送心跳包 -- %@", sendStr);
+                UNDebugLogVerbose(@"发送心跳包 -- %@", sendStr);
                 [self sendMsgWithMessage:sendStr];
                 self.currentNumber++;
             } else {
-                NSLog(@"tcp断了，不发送心跳包,%s,%d", __FUNCTION__, __LINE__);
+                UNDebugLogVerbose(@"tcp断了，不发送心跳包,%s,%d", __FUNCTION__, __LINE__);
             }
         } else {
-            NSLog(@"会话id为0，不发送心跳包,%s,%d", __FUNCTION__, __LINE__);
+            UNDebugLogVerbose(@"会话id为0，不发送心跳包,%s,%d", __FUNCTION__, __LINE__);
         }
     }
     self.sec++;
-//    NSLog(@"心跳包的sec == %d", self.sec);
+//    UNDebugLogVerbose(@"心跳包的sec == %d", self.sec);
 }
 
 - (void)receiveNewDataStr:(NSNotification *)sender {
@@ -1621,8 +1621,8 @@
     NSString *packetLengthHex = [self hexNewStringFromString:[NSString stringWithFormat:@"%zd", packteStr.length/2]];
     NSString *newStr = [NSString stringWithFormat:@"%@%@%@",self.tlvFirstStr, packetLengthHex, packteStr];
     NSString *countLengthStr = [newStr substringFromIndex:24];
-    NSLog(@"替换后面的文字之后 -- %@", newStr);
-//    NSLog(@"jiequzhihoudes  -- %@", countLengthStr);
+    UNDebugLogVerbose(@"替换后面的文字之后 -- %@", newStr);
+//    UNDebugLogVerbose(@"jiequzhihoudes  -- %@", countLengthStr);
     NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", countLengthStr.length/2]];
 //    NSString *finalString = [newStr stringByReplacingOccurrencesOfString:[newStr substringWithRange:NSMakeRange(20, 4)] withString:countLengthHex];
     NSString *finalString = [newStr stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
@@ -1673,7 +1673,7 @@
     self.prot = [GCDAsyncUdpSocket portFromAddress:address];
     UNLogLBEProcess(@"接收到%@的消息:%@",address,data)//自行转换格式吧
     NSString *receivedMessage = [[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding];
-//    NSLog(@"获取的端口号 -> %d", self.prot);
+//    UNDebugLogVerbose(@"获取的端口号 -> %d", self.prot);
     self.currentPacketNumber = [receivedMessage substringWithRange:NSMakeRange(0, 6)];
     NSString *str = [self.currentPacketNumber substringWithRange:NSMakeRange(3, 3)];
     [BlueToothDataManager shareManager].isBeingRegisting = YES;
@@ -1683,7 +1683,7 @@
     if (![BlueToothDataManager shareManager].isRegisted) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
     }
-    NSLog(@"转换之后的内容：%@", receivedMessage);
+    UNDebugLogVerbose(@"转换之后的内容：%@", receivedMessage);
     if ([receivedMessage isEqualToString:@"200001:0x0000"]) {
         if (![UNPushKitMessageManager shareManager].isUdpSendFristMsg) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"upLoadToCard" object:@"upLoadToCard"];
@@ -1700,19 +1700,19 @@
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
 {
-    NSLog(@"发送信息成功");
+    UNDebugLogVerbose(@"发送信息成功");
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error
 {
-    NSLog(@"发送信息失败");
+    UNDebugLogVerbose(@"发送信息失败");
 }
 
 - (void)sendNewMessage:(NSNotification *)sender {
     NSString *dataStr = [NSString stringWithFormat:@"%@:%@",self.currentPacketNumber, sender.object];
-    NSLog(@"最终发送的数据 -> %@", dataStr);
+    UNDebugLogVerbose(@"最终发送的数据 -> %@", dataStr);
     NSData *data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
-    NSLog(@"最终发送的数据包 : %@", data);
+    UNDebugLogVerbose(@"最终发送的数据包 : %@", data);
     
     //开始发送
     //改函数只是启动一次发送 它本身不进行数据的发送, 而是让后台的线程慢慢的发送 也就是说这个函数调用完成后,数据并没有立刻发送,异步发送
@@ -1721,7 +1721,7 @@
 
 -(void)log
 {
-//    NSLog(@"执行");
+//    UNDebugLogVerbose(@"执行");
 }
 -(void)startBgTask
 {
@@ -1755,9 +1755,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 //更新别名为token
                 NSString *alias = [NSString stringWithFormat:@"aixiaoqi%@", userdata[@"Token"]];
                 [JPUSHService setTags:nil alias:alias fetchCompletionHandle:^(int iResCode, NSSet *iTags, NSString *iAlias) {
-                    NSLog(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
+                    UNDebugLogVerbose(@"极光别名：irescode = %d\n itags = %@\n ialias = %@", iResCode, iTags, iAlias);
                 }];
-                //                    NSLog(@"拿到数据：%@",resonseObj);
+                //                    UNDebugLogVerbose(@"拿到数据：%@",resonseObj);
                 [self loginSuccessAndCreatTCP];
                 UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                 if (storyboard) {
@@ -1778,7 +1778,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         }
         
     }failure:^(id dataObj, NSError *error) {
-        NSLog(@"登录失败：%@",[error description]);
+        UNDebugLogVerbose(@"登录失败：%@",[error description]);
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
         if (userdata) {
@@ -1913,7 +1913,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                           channel:@"App Store"
                  apsForProduction:!DEBUGMODE//0为开发环境，1为发布环境
             advertisingIdentifier:nil];
-    NSLog(@"极光环境为：%d", !DEBUGMODE);
+    UNDebugLogVerbose(@"极光环境为：%d", !DEBUGMODE);
 }
 
 #pragma mark 收到自定义通知
@@ -1923,7 +1923,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     NSString *contentType = userInfo[@"content_type"];
     NSDictionary *extras = [userInfo valueForKey:@"extras"];
 //    NSString *customizeField1 = [extras valueForKey:@"customizeField1"]; //服务端传递的Extras附加字段，key是自己定义的
-    NSLog(@"收到通知：\n content - %@\n content_type - %@\n extras - %@", content, contentType, extras);
+    UNDebugLogVerbose(@"收到通知：\n content - %@\n content_type - %@\n extras - %@", content, contentType, extras);
 //    [self testAddNotification];
     if ([contentType isEqualToString:@"SMSReceiveNew"]) {
         //收到对方发送的短信
@@ -1946,7 +1946,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             [self addNotificationWithTitle:INTERNATIONALSTRING(@"短信发送提醒") body:INTERNATIONALSTRING(@"短信发送失败！") userInfo:userInfo];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SendMessageStatuChange" object:@"MessageStatu" userInfo:userInfo];
         } else {
-            NSLog(@"收到短信发送结果的推送，状态码有问题");
+            UNDebugLogVerbose(@"收到短信发送结果的推送，状态码有问题");
         }
         
     }else if ([contentType isEqualToString:@"ProductNew"]){
@@ -2002,14 +2002,14 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     request.content = content;
     request.trigger = trigger1;//trigger2;//trigger3;//trigger4;//trigger5;
     request.completionHandler = ^(id result) {
-        NSLog(@"结果返回：%@", result);
+        UNDebugLogVerbose(@"结果返回：%@", result);
     };
     [JPUSHService addNotification:request];
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
     
-    NSLog(@"url1=%@",url);
+    UNDebugLogVerbose(@"url1=%@",url);
     
     return [WXApi handleOpenURL:url delegate:self];
 }
@@ -2020,7 +2020,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     
-    NSLog(@"URL=%@",url);
+    UNDebugLogVerbose(@"URL=%@",url);
     
     
     return [WXApi handleOpenURL:url delegate:self];
@@ -2065,7 +2065,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         });
     });
     
-    NSLog(@"后台backgroundTaskIdentifier--------  %zd",backgroundTaskIdentifier);
+    UNDebugLogVerbose(@"后台backgroundTaskIdentifier--------  %zd",backgroundTaskIdentifier);
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -2111,7 +2111,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 #pragma mark 从后台进入前台时执行的方法
 - (void)checkRegistStatueEnterForeground {
     if (![UNDataTools sharedInstance].isLogout) {
-        NSLog(@"在线：%s,%d", __FUNCTION__, __LINE__);
+        UNDebugLogVerbose(@"在线：%s,%d", __FUNCTION__, __LINE__);
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
             if ([BlueToothDataManager shareManager].isOpened) {
                 if ([UNNetWorkStatuManager shareManager].currentStatu != 0) {
@@ -2134,7 +2134,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             UNLogLBEProcess(@"进入前台--服务未开")
         }
     } else {
-        NSLog(@"不在线：%s,%d", __FUNCTION__, __LINE__);
+        UNDebugLogVerbose(@"不在线：%s,%d", __FUNCTION__, __LINE__);
     }
 }
 
@@ -2146,7 +2146,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 - (void)applicationWillTerminate:(UIApplication *)application {
 //    if (self.phoneViewController) {
 //        [self.phoneViewController unregister];  //注销电话登入账号
-//        NSLog(@"电话注销了");
+//        UNDebugLogVerbose(@"电话注销了");
 //    }
     //发送注销电话通知
 //    [[NSNotificationCenter defaultCenter] postNotificationName:@"appIsKilled" object:@"appIsKilled"];
@@ -2161,40 +2161,40 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
          annotation:(id)annotation {
     //跳转支付宝支付,处理支付结果
     //    [[AlipaySDK defaultService]processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
-    //        NSLog(@"result = %@",resultDic);
+    //        UNDebugLogVerbose(@"result = %@",resultDic);
     //    }];
     
     if ([url.host isEqualToString:@"safepay"]) {
         [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
-            NSLog(@"result = %@",resultDic);
+            UNDebugLogVerbose(@"result = %@",resultDic);
             [self processAlipayResult:resultDic];
         }];
     }
     if ([url.host isEqualToString:@"platformapi"]){//支付宝钱包快登授权返回 authCode
         [[AlipaySDK defaultService] processAuthResult:url standbyCallback:^(NSDictionary *resultDic) {
-            NSLog(@"result = %@",resultDic);
+            UNDebugLogVerbose(@"result = %@",resultDic);
             [self processAlipayResult:resultDic];
         }];
     }
     
-    NSLog(@"谁家的支付回调1：%@",[url absoluteString]);
+    UNDebugLogVerbose(@"谁家的支付回调1：%@",[url absoluteString]);
     
     return [WXApi handleOpenURL:url delegate:self];
     return YES;
 }
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options {
-    NSLog(@"谁家的支付回调2：%@",[url absoluteString]);
+    UNDebugLogVerbose(@"谁家的支付回调2：%@",[url absoluteString]);
     if ([url.host isEqualToString:@"safepay"]) {
         [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
-            NSLog(@"result = %@",resultDic);
+            UNDebugLogVerbose(@"result = %@",resultDic);
             [self processAlipayResult:resultDic];
             //正常的支付宝回调哦
         }];
     }
     if ([url.host isEqualToString:@"platformapi"]){//支付宝钱包快登授权返回 authCode
         [[AlipaySDK defaultService] processAuthResult:url standbyCallback:^(NSDictionary *resultDic) {
-            NSLog(@"result = %@",resultDic);
+            UNDebugLogVerbose(@"result = %@",resultDic);
             [self processAlipayResult:resultDic];
         }];
     }
@@ -2222,13 +2222,13 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             case WXSuccess:
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"WeipayComplete" object:@"success"];
 //                strMsg = @"支付结果：成功！";
-                NSLog(@"支付成功－PaySuccess，retcode = %d", resp.errCode);
+                UNDebugLogVerbose(@"支付成功－PaySuccess，retcode = %d", resp.errCode);
                 break;
                 
             default:
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"WeipayComplete" object:resp.errStr];
 //                strMsg = [NSString stringWithFormat:@"支付结果：失败！retcode = %d, retstr = %@", resp.errCode,resp.errStr];
-                NSLog(@"错误，retcode = %d, retstr = %@", resp.errCode,resp.errStr);
+                UNDebugLogVerbose(@"错误，retcode = %d, retstr = %@", resp.errCode,resp.errStr);
                 break;
         }
         /*
@@ -2255,7 +2255,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 #pragma mark 实现注册APNs失败接
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     //Optional
-    NSLog(@"注册极光推送失败 did Fail To Register For Remote Notifications With Error: %@", error);
+    UNDebugLogVerbose(@"注册极光推送失败 did Fail To Register For Remote Notifications With Error: %@", error);
 }
 
 // iOS 10 Support,本地通知为notification，接收到通知
@@ -2318,16 +2318,16 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     
     // 取得Extras字段内容
     NSString *customizeField1 = [userInfo valueForKey:@"customizeExtras"]; //服务端中Extras字段，key是自己定义的
-    NSLog(@"content =[%@], badge=[%ld], sound=[%@], customize field  =[%@]",content,(long)badge,sound,customizeField1);
+    UNDebugLogVerbose(@"content =[%@], badge=[%ld], sound=[%@], customize field  =[%@]",content,(long)badge,sound,customizeField1);
     
     // iOS 10 以下 Required
     [JPUSHService handleRemoteNotification:userInfo];
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-    NSLog(@"收到通知了");
+    UNDebugLogVerbose(@"收到通知了");
 //    UIViewController *currentVc = [self currentViewController];
-//    NSLog(@"%@", NSStringFromClass([[self currentViewController] class]));
+//    UNDebugLogVerbose(@"%@", NSStringFromClass([[self currentViewController] class]));
 //    if ([NSStringFromClass([currentVc class]) isEqualToString:@"PhoneViewController"]) {
 //        PhoneViewController *phoneVc = (PhoneViewController *)currentVc;
 //        if (phoneVc.phoneOperation == 1) {
@@ -2339,7 +2339,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //    }else if ([NSStringFromClass([currentVc class]) isEqualToString:@"PhoneViewController"]){
 //        
 //    }
-//    NSLog(@"%@", NSStringFromClass([[self presentingVC] class]));
+//    UNDebugLogVerbose(@"%@", NSStringFromClass([[self presentingVC] class]));
 }
 
 //获取当前屏幕显示的viewcontroller
@@ -2368,7 +2368,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 #pragma mark -BuglyDelegate
 
 - (NSString *)attachmentForException:(NSException *)exception {
-    NSLog(@"attachmentForException %@",exception);
+    UNDebugLogVerbose(@"attachmentForException %@",exception);
     [Bugly reportException:exception];  //直接上报异常
     return @"Test User attachment";
 }
@@ -2439,14 +2439,14 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         return NO;
     }
     UNLogLBEProcess(@"application--continueUserActivity")
-    NSLog(@"userActivity:%@", userActivity.description);
-    NSLog(@"userActivity--userInfo:%@", userActivity.userInfo);
+    UNDebugLogVerbose(@"userActivity:%@", userActivity.description);
+    UNDebugLogVerbose(@"userActivity--userInfo:%@", userActivity.userInfo);
     if ([BlueToothDataManager shareManager].isTcpConnected && ![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
         NSString * handle =userActivity.startCallHandle;
         if(nil == handle ){
             [UNPushKitMessageManager shareManager].isSysCallKitPhone = NO;
             [UNPushKitMessageManager shareManager].callKitHandleString = nil;
-            NSLog(@"Could not determine start call handle from user activity:%@", userActivity);
+            UNDebugLogVerbose(@"Could not determine start call handle from user activity:%@", userActivity);
             return NO;
         }else{
             [self callPhoneFromCallKitWithHandleString:handle];
@@ -2474,7 +2474,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     dispatch_async(dispatch_get_main_queue(), ^{
         NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
         }];
-        NSLog(@"callUUID==%@", callUUID);
+        UNDebugLogVerbose(@"callUUID==%@", callUUID);
         [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
     });
     
@@ -2482,7 +2482,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 //        NSUUID *callUUID = [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
 //            
 //        }];
-//        NSLog(@"callUUID==%@", callUUID);
+//        UNDebugLogVerbose(@"callUUID==%@", callUUID);
 //        [[UIApplication sharedApplication] endBackgroundTask:backgroundTaskIdentifier];
 //    });
 }
@@ -2515,7 +2515,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
     
     if ([payload.type isEqualToString:@"PKPushTypeVoIP"]) {
-        NSLog(@"开始电话接入======%@=======", payload.dictionaryPayload);
+        UNDebugLogVerbose(@"开始电话接入======%@=======", payload.dictionaryPayload);
         //        if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground || [UNPushKitMessageManager shareManager].isAlreadyInForeground) {
         if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
             UNLogLBEProcess(@"非PushKit状态处理消息---%@", payload.dictionaryPayload)
@@ -2543,12 +2543,12 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             //                [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
             //                [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"SIM卡断开连接--"]];
             //
-            //                NSLog(@"已创建TCP");
+            //                UNDebugLogVerbose(@"已创建TCP");
             //                if (!self.tcpPacketStr) {
             //                    self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"TCPPacketStr"];
             //                }
             //                if (self.sendTcpSocket) {
-            //                    NSLog(@"注册过,重新发送注册信息");
+            //                    UNDebugLogVerbose(@"注册过,重新发送注册信息");
             //                    [BlueToothDataManager shareManager].isBeingRegisting = NO;
             //                    [BlueToothDataManager shareManager].stepNumber = @"0";
             //                    self.lessStep = 0;
@@ -2566,7 +2566,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             //                        }
             //                    });
             //                }else{
-            //                    NSLog(@"当前没有注册过,需要重新注册");
+            //                    UNDebugLogVerbose(@"当前没有注册过,需要重新注册");
             //                    [BlueToothDataManager shareManager].isReseted = NO;
             //                    [self creatAsocketTcp];
             //                }
@@ -2581,12 +2581,12 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             //                [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
             //                [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到10数据--%@", servicePushKitData]];
             //
-            //                NSLog(@"已创建TCP");
+            //                UNDebugLogVerbose(@"已创建TCP");
             //                if (!self.tcpPacketStr) {
             //                    self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"TCPPacketStr"];
             //                }
             //                if (self.sendTcpSocket) {
-            //                    NSLog(@"注册过,解析鉴权数据信息");
+            //                    UNDebugLogVerbose(@"注册过,解析鉴权数据信息");
             //                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             //                        [BlueToothDataManager shareManager].isRegisted = NO;
             //                        if (!self.sendTcpSocket.isConnected) {
@@ -2613,7 +2613,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             //                        }
             //                    });
             //                }else{
-            //                    NSLog(@"当前没有注册过,需要重新注册");
+            //                    UNDebugLogVerbose(@"当前没有注册过,需要重新注册");
             //                    [BlueToothDataManager shareManager].isReseted = NO;
             //                    [self creatAsocketTcp];
             //                }
@@ -2720,7 +2720,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             DebugUNLog(@"tcp没有正在重连");
             NSString *host = [VSWManager shareManager].vswIp;
             uint16_t port = [VSWManager shareManager].vswPort;
-//            NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
+//            UNDebugLogVerbose(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
             self.lessStep = 0;
             if (!host || !port) {
                 host = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerIp"];
@@ -2743,7 +2743,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }else if (self.sendTcpSocket.isConnected){
         NSString *host = [VSWManager shareManager].vswIp;
         uint16_t port = [VSWManager shareManager].vswPort;
-//        NSLog(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
+//        UNDebugLogVerbose(@"reConnectTcp---tcp连接或断线重连---[%@:%d]",host, port);
         self.lessStep = 0;
         if (!host || !port) {
             host = [[NSUserDefaults standardUserDefaults] objectForKey:@"VSWServerIp"];
@@ -2787,7 +2787,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     [self sendMsgWithMessage:tcpString];
     
     if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-        NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
+        UNDebugLogVerbose(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
         UNLogLBEProcess(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices)
         [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
     }
@@ -2877,7 +2877,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
             }else{
                 if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                    NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
+                    UNDebugLogVerbose(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
                     UNLogLBEProcess(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices)
                     [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
                 }
@@ -2924,7 +2924,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         });
         
     }else{
-        NSLog(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
+        UNDebugLogVerbose(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
         UNLogLBEProcess(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices)
         [UNPushKitMessageManager shareManager].receivePushKitDataFormServices = servicePushKitData;
         [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
@@ -2946,7 +2946,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             return;
         }
         //                if (![BlueToothDataManager shareManager].isConnected) {
-        //                    NSLog(@"蓝牙未连接");
+        //                    UNDebugLogVerbose(@"蓝牙未连接");
         //                    return;
         //                }else{
         //

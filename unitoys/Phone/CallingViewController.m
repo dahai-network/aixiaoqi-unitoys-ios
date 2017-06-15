@@ -141,10 +141,10 @@
         kWeakSelf
         _phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 34 - 45 - 70 - 225, kScreenWidthValue, 225) IsTransparentBackground:YES];
         _phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum) {
-            NSLog(@"总字符---%@=====当前字符-----%@", btnText, currentNum);
+            UNDebugLogVerbose(@"总字符---%@=====当前字符-----%@", btnText, currentNum);
             weakSelf.lblCallingInfo.text = btnText;
             if ([currentNum isEqualToString:@"DEL"]) {
-                NSLog(@"输入异常");
+                UNDebugLogVerbose(@"输入异常");
             }else{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"CallPhoneKeyBoard" object:currentNum];
             }

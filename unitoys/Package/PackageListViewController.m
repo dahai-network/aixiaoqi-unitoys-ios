@@ -21,7 +21,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.CountryID,@"CountryID", nil];
     
     [self getBasicHeader];
-    NSLog(@"表头：%@",self.headers);
+    UNDebugLogVerbose(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageByCountry params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -37,10 +37,10 @@
             //数据请求失败
         }
         
-        NSLog(@"查询到的套餐数据：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         //
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers]; */
     
     [self loadData];
@@ -59,7 +59,7 @@
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.CountryID,@"CountryID", nil];
     
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageByCountry params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -91,10 +91,10 @@
             //数据请求失败
         }
         
-//        NSLog(@"查询到的套餐数据：%@",responseObj);
+//        UNDebugLogVerbose(@"查询到的套餐数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
 }
 

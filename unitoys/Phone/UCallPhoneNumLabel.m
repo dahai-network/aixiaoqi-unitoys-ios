@@ -66,7 +66,7 @@
 
 - (void)currentLabelText:(NSString *)text currentNum:(NSString *)number
 {
-    NSLog(@"当前输入文字---%@",text);
+    UNDebugLogVerbose(@"当前输入文字---%@",text)
     if (_phoneLabelChangeBlock) {
         _phoneLabelChangeBlock(text,number);
     }

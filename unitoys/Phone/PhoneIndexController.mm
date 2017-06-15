@@ -146,7 +146,7 @@
 
 - (void)statuBarHeightChange:(NSNotification *)noti
 {
-    NSLog(@"statuBarHeightChange----%@", noti.object);
+    UNDebugLogVerbose(@"statuBarHeightChange----%@", noti.object);
 //    self.statuesLabel.text = noti.object;
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:noti.object];
     if ([noti.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
@@ -170,11 +170,11 @@
 
 - (void)showRegistProgress:(NSNotification *)sender {
     NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
-    NSLog(@"状态栏文字 --> %@, %s, %d", senderStr, __FUNCTION__, __LINE__);
+    UNDebugLogVerbose(@"状态栏文字 --> %@, %s, %d", senderStr, __FUNCTION__, __LINE__);
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
         [self countAndShowRegistPercentage:senderStr];
     } else {
-        NSLog(@"注册成功的时候处理");
+        UNDebugLogVerbose(@"注册成功的时候处理");
     }
 }
 
@@ -289,7 +289,7 @@
     kWeakSelf
     HLTitlesView *titlesView = [HLTitlesView titlesViewWithTitles:@[@"通话历史", @"短信记录"]  Margin:15];
     titlesView.titlesButtonAction = ^(UIButton *button){
-        NSLog(@"%zd", button.tag);
+        UNDebugLogVerbose(@"%zd", button.tag);
         [weakSelf setCurrentShowView:button.tag];
     };
     self.titleView = titlesView;

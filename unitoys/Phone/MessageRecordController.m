@@ -39,7 +39,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     UNLogLBEProcess(@"MessageRecordController-")
 //    DDLogVerbose((@"[文件名:%s]" "[函数名:%s]" "[行号:%d]" format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
 //    DDLogVerbose([NSString stringWithFormat:@"[文件名:%s] [函数名:%s] [行号:%d]", __FILE__, __FUNCTION__, __LINE__], ##__VA_ARGS__);
-//    NSLog(@"%s(%d): %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(@""), ##__VA_ARGS__])
+//    UNDebugLogVerbose(@"%s(%d): %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(@""), ##__VA_ARGS__])
     
     [self initTableView];
     [self initNoDataLabel];
@@ -220,9 +220,9 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 //    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:@"20",@"pageSize",@"1",@"pageNumber", nil];
 //    
 //    [self getBasicHeader];
-//    //    NSLog(@"表演头：%@",self.headers);
+//    //    UNDebugLogVerbose(@"表演头：%@",self.headers);
 //    [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
-//        NSLog(@"查询到的用户数据：%@",responseObj);
+//        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
 //        [self.tableView.mj_header endRefreshing];
 //        if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //            _arrMessageRecord = [responseObj objectForKey:@"data"];
@@ -236,7 +236,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 //            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
 //        }else{
 //            //数据请求失败
-//            NSLog(@"请求短信数据失败");
+//            UNDebugLogVerbose(@"请求短信数据失败");
 //        }
 //    } failure:^(id dataObj, NSError *error) {
 //        [self.tableView.mj_header endRefreshing];
@@ -256,7 +256,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     }
     [self getBasicHeader];
     [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
-        NSLog(@"查询到的用户数据：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
         [self.tableView.mj_header endRefreshing];
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
@@ -305,7 +305,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"请求短信数据失败");
+            UNDebugLogVerbose(@"请求短信数据失败");
         }
     } failure:^(id dataObj, NSError *error) {
         [self.tableView.mj_header endRefreshing];
@@ -335,7 +335,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 //    [self getBasicHeader];
 //    
 //    [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
-//        NSLog(@"查询到的用户数据：%@",responseObj);
+//        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
 //        if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //            NSArray *arrNewMessages = [responseObj objectForKey:@"data"];
 //            if (arrNewMessages.count>0) {
@@ -522,15 +522,15 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [SSNetworkRequest postRequest:apiDeletesByTels params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] deteleMessageListWithPhoneLists:@[phoneNumber]];
-            NSLog(@"删除单条短信成功");
+            UNDebugLogVerbose(@"删除单条短信成功");
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
-            NSLog(@"删除单条短信失败");
+            UNDebugLogVerbose(@"删除单条短信失败");
         }
     } failure:^(id dataObj, NSError *error) {
-        NSLog(@"删除单条短信异常：%@",[error description]);
+        UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
     } headers:self.headers];
 }
 

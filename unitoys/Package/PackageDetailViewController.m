@@ -34,7 +34,7 @@
     NSString *apiNameStr = [NSString stringWithFormat:@"%@idPackage%@", @"apiPackageByID", self.idPackage];
     HUDNoStop1(INTERNATIONALSTRING(@"正在加载..."))
     [self getBasicHeader];
-//    NSLog(@"表头：%@",self.headers);
+//    UNDebugLogVerbose(@"表头：%@",self.headers);
     [SSNetworkRequest getRequest:apiPackageByID params:params success:^(id responseObj) {
         
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
@@ -69,7 +69,7 @@
         }
         
         
-        NSLog(@"查询到的套餐详情数据：%@",responseObj);
+        UNDebugLogVerbose(@"查询到的套餐详情数据：%@",responseObj);
     } failure:^(id dataObj, NSError *error) {
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
         if (responseObj) {
@@ -87,7 +87,7 @@
                 self.title = responseObj[@"data"][@"list"][@"CountryName"];
             }
         }
-        NSLog(@"啥都没：%@",[error description]);
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(payConfrim) name:@"BuyConfrim" object:nil];
@@ -96,7 +96,7 @@
 - (void)rightButtonClick
 {
     if (self.isAbroadMessage) {
-        NSLog(@"使用教程");
+        UNDebugLogVerbose(@"使用教程");
         AbroadPackageExplainController *abroadVc = [[AbroadPackageExplainController alloc] init];
         abroadVc.isSupport4G = self.isSupport4G;
         abroadVc.isApn = self.isApn;
