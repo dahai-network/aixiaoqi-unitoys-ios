@@ -50,7 +50,12 @@
 //当前未读短信号码数组
 @property (nonatomic, strong) NSMutableArray *currentUnreadSMSPhones;
 
+//AFN网络请求带Token头部(退出登录需清空)
 @property (nonatomic, copy) NSDictionary *normalHeaders;
+//AFN网络请求不带Token头部
+@property (nonatomic, copy) NSDictionary *notokenHeaders;
+//AFN网络请求不带Token的Url
+@property (nonatomic, copy) NSArray *notokenUrls;
 
 @property (nonatomic, assign) CGFloat tipStatusHeight;
 @property (nonatomic, assign) CGFloat pageViewHeight;

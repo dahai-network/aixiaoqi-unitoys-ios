@@ -19,6 +19,7 @@
 #import "MJRefresh.h"
 #import "UMMobClick/MobClick.h"
 #import "UNDDLogManager.h"
+#import "UNNetworkManager.h"
 //#import <CocoaLumberjack/CocoaLumberjack.h>
 //#define MAS_SHORTHAND
 //#import "Masonry/Masonry/Masonry.h"

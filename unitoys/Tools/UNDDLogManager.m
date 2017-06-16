@@ -59,16 +59,21 @@
 {
 #ifdef DEBUG
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
-#else
     
-#endif
     DDFileLogger *fileLog = [[DDFileLogger alloc] init];
     _fileLog = fileLog;
-//    fileLog.rollingFrequency = 60 * 60 * 24;
-//    fileLog.logFileManager.maximumNumberOfLogFiles = 2;
-    fileLog.rollingFrequency = 60 * 60 * 24;
+    fileLog.rollingFrequency = 60 * 60 * 12;
+    fileLog.logFileManager.maximumNumberOfLogFiles = 5;
+    [DDLog addLogger:fileLog];
+#else
+    DDFileLogger *fileLog = [[DDFileLogger alloc] init];
+    _fileLog = fileLog;
+    //    fileLog.rollingFrequency = 60 * 60 * 24;
+    //    fileLog.logFileManager.maximumNumberOfLogFiles = 2;
+    fileLog.rollingFrequency = 60 * 60 * 12;
     fileLog.logFileManager.maximumNumberOfLogFiles = 2;
     [DDLog addLogger:fileLog];
+#endif
 }
 
 //上传最后一个日志

@@ -49,9 +49,14 @@
 //16进制字符串转普通字符串
 + (NSString *)stringFromHexString:(NSString *)hexString;
 
+
+
 //id转JSON
 + (NSString *)objectToJson:(id)object;
 //JSON转id
 + (id)jsonToObject:(NSString *)jsonStr;
+
+//获取数据类型
++ (NSString *)mimeTypeForData:(NSData *)data;
 
 @end

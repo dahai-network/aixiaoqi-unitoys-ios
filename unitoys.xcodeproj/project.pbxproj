@@ -240,6 +240,8 @@
 		3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE117491E616B8F008D5976 /* AddTouchAreaButton.m */; };
 		3CE1174D1E618A27008D5976 /* MessageContactsInfoController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE1174C1E618A27008D5976 /* MessageContactsInfoController.m */; };
 		3CE5CC881E7F63F100FCEA81 /* UNBlueToothTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */; };
+		3CE7DA0D1EF2906800CFF9E8 /* UNNetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE7DA0C1EF2906800CFF9E8 /* UNNetworkManager.m */; };
+		3CE7DA101EF2909B00CFF9E8 /* UNHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CE7DA0F1EF2909B00CFF9E8 /* UNHTTPSessionManager.m */; };
 		3CEA93931E5C537B00205C29 /* UNCallKitCenter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */; };
 		3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CEA93951E5C5A1900205C29 /* NSUserActivity+UnExtension.m */; };
 		3CF1A69B1EBD7FCC00E765AF /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3CF1A69A1EBD7FCC00E765AF /* Default-568h@2x.png */; };
@@ -826,6 +828,10 @@
 		3CE430671EAF2029000A4F04 /* unitoys-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "unitoys-Prefix.pch"; sourceTree = "<group>"; };
 		3CE5CC861E7F63F100FCEA81 /* UNBlueToothTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNBlueToothTool.h; sourceTree = "<group>"; };
 		3CE5CC871E7F63F100FCEA81 /* UNBlueToothTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNBlueToothTool.m; sourceTree = "<group>"; };
+		3CE7DA0B1EF2906800CFF9E8 /* UNNetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNNetworkManager.h; sourceTree = "<group>"; };
+		3CE7DA0C1EF2906800CFF9E8 /* UNNetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNNetworkManager.m; sourceTree = "<group>"; };
+		3CE7DA0E1EF2909B00CFF9E8 /* UNHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNHTTPSessionManager.h; sourceTree = "<group>"; };
+		3CE7DA0F1EF2909B00CFF9E8 /* UNHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNHTTPSessionManager.m; sourceTree = "<group>"; };
 		3CEA93911E5C537B00205C29 /* UNCallKitCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCallKitCenter.h; sourceTree = "<group>"; };
 		3CEA93921E5C537B00205C29 /* UNCallKitCenter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = UNCallKitCenter.mm; sourceTree = "<group>"; };
 		3CEA93941E5C5A1900205C29 /* NSUserActivity+UnExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserActivity+UnExtension.h"; sourceTree = "<group>"; };
@@ -1708,6 +1714,10 @@
 			children = (
 				953B01F31D8BDA6C00EDF5ED /* SSNetworkRequest.h */,
 				953B01F41D8BDA6C00EDF5ED /* SSNetworkRequest.m */,
+				3CE7DA0B1EF2906800CFF9E8 /* UNNetworkManager.h */,
+				3CE7DA0C1EF2906800CFF9E8 /* UNNetworkManager.m */,
+				3CE7DA0E1EF2909B00CFF9E8 /* UNHTTPSessionManager.h */,
+				3CE7DA0F1EF2909B00CFF9E8 /* UNHTTPSessionManager.m */,
 			);
 			path = network;
 			sourceTree = "<group>";
@@ -2681,6 +2691,7 @@
 				3CC3E0A71E63C22F00A62F8C /* CustomOrderCell.m in Sources */,
 				95E918601DDC91DD005DABC0 /* BeforeBackPageViewController.m in Sources */,
 				04F727A51E641CE4002EB54C /* HTTPAuthenticationRequest.m in Sources */,
+				3CE7DA0D1EF2906800CFF9E8 /* UNNetworkManager.m in Sources */,
 				3C7DECF61EC32C0700CDCE34 /* OpenService2Cell.m in Sources */,
 				043638DB1EB1A4AF0064207E /* StatuesViewDetailViewController.m in Sources */,
 				04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */,
@@ -2694,6 +2705,7 @@
 				955CCC351D9016EB00BC8110 /* MainViewController.mm in Sources */,
 				3C4A07761E9C6EFC00A6DDA9 /* UCallPhoneNumLabel.m in Sources */,
 				04472AB91E1CABD70042CEE1 /* ActivateGiftCardViewController.m in Sources */,
+				3CE7DA101EF2909B00CFF9E8 /* UNHTTPSessionManager.m in Sources */,
 				954D37EF1D8CD5A7002A8F46 /* RegisterViewController.m in Sources */,
 				95FB44211DC82B9C00B81A0D /* AmountDetailViewController.m in Sources */,
 				04AFE6661EC568D700B3BC8F /* ZBRreshViewController.m in Sources */,

@@ -143,8 +143,8 @@
     
     [self.params setObject:@"2006808" forKey:@"partner"];
     
-    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
-    NSInteger a=[dat timeIntervalSince1970];
+//    NSDate* dat = [NSDate dateWithTimeIntervalSinceNow:0];
+//    NSInteger a=[dat timeIntervalSince1970];
 //    NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
     NSString *timestemp = @"1471316792";
     [self.params setObject:timestemp forKey:@"expires"];

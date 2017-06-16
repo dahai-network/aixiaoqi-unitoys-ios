@@ -65,16 +65,16 @@
 #define kDevice_Is_iPhone6 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(750, 1334), [[UIScreen mainScreen] currentMode].size) : NO)
 #define kDevice_Is_iPhone6Plus ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1242, 2208), [[UIScreen mainScreen] currentMode].size) : NO)
 
+//日志打印
 #ifdef DEBUG
-
+#define NSLog(...) NSLog(__VA_ARGS__)
 #define DebugUNLog(s, ...) NSLog(@"%s(%d): %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(s), ##__VA_ARGS__])
 
 #else
-
+#define NSLog(...)
 #define DebugUNLog(...) do {} while (0)
 
 #endif
-//#define UNDDLog
 
 
 #define kWeakSelf __weak typeof(self) weakSelf = self;
@@ -114,7 +114,7 @@
 //不用签名，用户登录
 #define apiCheckLogin defaultHost@"api/Login/CheckLogin"
 
-//判断token是否过期
+//使用签名，判断token是否过期
 #define apiGetLogin defaultHost@"api/Login/Get"
 
 //使用签名，查询用户余额
@@ -257,16 +257,16 @@
 //使用签名，获取手环设备注册状态
 #define apiGetRegStatus defaultHost@"api/DeviceBracelet/GetRegStatus"
 
-//删除单个联系人短信
+//使用签名，删除单个联系人短信
 #define apiDeletesByTel  defaultHost@"api/SMS/DeletesByTel"
 
-//删除多个联系人短信
+//使用签名，删除多个联系人短信
 #define apiDeletesByTels  defaultHost@"api/SMS/DeletesByTels"
 
-//删除多条短信内容
+//使用签名，删除多条短信内容
 #define apiDeletes  defaultHost@"api/SMS/Deletes"
 
-//短信发送错误-重试
+//使用签名，短信发送错误-重试
 #define apiSendRetryForError  defaultHost@"api/SMS/SendRetryForError"
 
 //使用签名，获取用户配置
@@ -275,43 +275,43 @@
 //使用签名，上传用户设置
 #define apiUploadConfig defaultHost@"api/UsersConfig/UploadConfig"
 
-//添加黑名单
+//使用签名，添加黑名单
 #define apiBlackListAdd defaultHost@"api/BlackList/Add"
 
-//删除黑名单
+//使用签名，删除黑名单
 #define apiBlackListDelete defaultHost@"api/BlackList/Delete"
 
-//查询黑名单列表
+//使用签名，查询黑名单列表
 #define apiBlackListGet defaultHost@"api/BlackList/Get"
 
-//查询省心服务推送消息
+//使用签名，查询省心服务推送消息
 #define apiPushContentGet defaultHost@"api/PushContent/Get"
 
-//创建免费订单
+//使用签名，创建免费订单
 #define apiOrderAddReceive defaultHost@"api/Order/AddReceive"
 
-//设备内手机号码验证
+//使用签名，设备内手机号码验证
 #define apiUserDeviceTelConfirmed defaultHost@"api/UserDeviceTel/Confirmed"
 
-//查询最新已验证信息
+//使用签名，查询最新已验证信息
 #define apiUserDeviceTelGetCurrent defaultHost@"api/UserDeviceTel/GetCurrent"
 
 //检查是否需要验证
 #define apiUserDeviceTelCheckConfirmed defaultHost@"api/UserDeviceTel/CheckConfirmed"
 
-//查询套餐组合
+//使用签名，查询套餐组合
 #define apiPackageGetAttrsByID defaultHost@"api/Package/GetAttrsByID"
 
-//获取多条短信状态
+//使用签名，获取多条短信状态
 #define apiSMSGets defaultHost@"api/SMS/Gets"
 
-//获取本次订单可通话分钟数和到期日期
+//使用签名，获取本次订单可通话分钟数和到期日期
 #define apiUserGetMaximumPhoneCallTimeAndExpiredTime defaultHost@"api/User/GetMaximumPhoneCallTimeAndExpiredTime"
 
-//获取已被绑定的IMEI设备地址
+//使用签名，获取已被绑定的IMEI设备地址
 #define apiGetBindsIMEI defaultHost@"api/DeviceBracelet/GetBindsIMEI"
 
-//获取已被绑定的IMEI设备地址
+//使用签名，获取已被绑定的IMEI设备地址
 #define apiUploadUserLog defaultHost@"api/User/UploadUserLog"
 
 

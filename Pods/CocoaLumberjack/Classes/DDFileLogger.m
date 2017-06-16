@@ -528,6 +528,7 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
     return [self initWithDateFormatter:nil];
 }
 
+//日志时间格式
 - (instancetype)initWithDateFormatter:(NSDateFormatter *)aDateFormatter {
     if ((self = [super init])) {
         if (aDateFormatter) {
@@ -535,7 +536,8 @@ unsigned long long const kDDDefaultLogFilesDiskQuota   = 20 * 1024 * 1024; // 20
         } else {
             _dateFormatter = [[NSDateFormatter alloc] init];
             [_dateFormatter setFormatterBehavior:NSDateFormatterBehavior10_4]; // 10.4+ style
-            [_dateFormatter setDateFormat:@"yyyy/MM/dd HH:mm:ss:SSS"];
+//            [_dateFormatter setDateFormat:@"yyyy/MM/dd HH:mm:ss:SSS"];
+            [_dateFormatter setDateFormat:@"MM/dd HH:mm:ss:SSS"];
         }
     }
 

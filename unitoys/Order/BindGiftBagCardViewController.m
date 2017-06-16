@@ -39,6 +39,7 @@
                 [self.navigationController popViewControllerAnimated:YES];
             }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
                 NSLog(@"绑定礼包卡错误");
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
                 //数据请求失败
                 //                NSLog(@"请求失败：%@", responseObj[@"msg"]);

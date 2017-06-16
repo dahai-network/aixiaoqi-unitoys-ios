@@ -128,31 +128,28 @@
 - (NSDictionary *)normalHeaders
 {
     if (!_normalHeaders) {
-        //进行Header的构造，partner，Expries，Sign，TOKEN
-        NSMutableDictionary *headers = [[NSMutableDictionary alloc] init];
-        [headers setObject:@"2006808" forKey:@"partner"];
-        NSString *timestemp = @"1471316792";
-        [headers setObject:timestemp forKey:@"expires"];
-        timestemp = [NSString stringWithFormat:@"2006808%@BAS123!@#FD1A56K",timestemp];
-        [headers setObject:[self md5:timestemp] forKey:@"sign"];
-        
-        // 当前软件的版本号（从Info.plist中获得）
-        NSString *key = @"CFBundleShortVersionString";
-        NSString *versionNumberStr = [NSBundle mainBundle].infoDictionary[key];
-        [headers setObject:versionNumberStr forKey:@"Version"];
-        
-        //附加信息
-        NSString *terminalStr = @"iOS";
-        [headers setObject:terminalStr forKey:@"Terminal"];
-        
-        NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-        if (userdata) {
-            [headers setObject:[userdata objectForKey:@"Token"] forKey:@"TOKEN"];
-        }
-        _normalHeaders = headers;
+        //       sign @"20068081471316792BAS123!@#FD1A56K" md5
+        _normalHeaders = @{@"partner" : @"2006808", @"expires" : @"1471316792", @"sign" : @"9cd966960652e7c6ac60bafd8cc76273", @"Terminal" : @"iOS", @"Version" : [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"], @"TOKEN" :[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"][@"Token"]};
     }
     return _normalHeaders;
 }
+
+- (NSDictionary *)notokenHeaders
+{
+    if (!_notokenHeaders) {
+        _notokenHeaders = @{@"partner" : @"2006808", @"expires" : @"1471316792", @"sign" : @"9cd966960652e7c6ac60bafd8cc76273", @"Terminal" : @"iOS", @"Version" : [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"]};
+    }
+    return _notokenHeaders;
+}
+
+- (NSArray *)notokenUrls
+{
+    if (!_notokenUrls) {
+        _notokenUrls = @[apiGetBannerList,apiUpgrade,apiGetProductList,apiSendSMS,apiRegisterUser,apiForgetPassword,apiCheckLogin];
+    }
+    return _notokenUrls;
+}
+
 
 - (NSString *)md5:(NSString *)str
 {
