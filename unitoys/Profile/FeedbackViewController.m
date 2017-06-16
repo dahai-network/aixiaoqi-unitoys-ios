@@ -18,8 +18,6 @@
 - (IBAction)feedback:(id)sender {
     [self.contentFeedback resignFirstResponder];
     self.checkToken = YES;
-//    ;
-//
     if (self.contentFeedback.text.length < 10) {
         HUDNormal(INTERNATIONALSTRING(@"内容不少于10个字"))
     } else if (self.contentFeedback.text.length > 500) {

@@ -151,7 +151,6 @@
                         [self presentViewController:mainViewController animated:YES completion:nil];
                     }
                 }
-                //                [[UITabBar appearance] setBackgroundImage:<#(UIImage * _Nullable)#>:[UIColor blueColor]];
             }else{
                 if (resonseObj[@"msg"]) {
                     [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[resonseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];

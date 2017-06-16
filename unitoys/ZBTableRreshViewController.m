@@ -70,23 +70,6 @@
 
 }
 
-//-(void)ShowNoDataWithMessage:(NSString *)message WithDataArray:(NSMutableArray *)array{
-//    if (array.count) {
-//           noDataView.hidden=YES;
-//    }else{
-//        if (noDataView) {
-//            noDataView.hidden=NO;
-//        }else{
-//            noDataView=[[[NSBundle mainBundle] loadNibNamed:@"NoDataView" owner:nil options:nil] firstObject];
-//            noDataView.Message.text=message;
-//            noDataView.size=self.scrollView.size;
-//            [self.scrollView addSubview:noDataView];
-//        }
-//        
-//    }
-//   
-//}
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

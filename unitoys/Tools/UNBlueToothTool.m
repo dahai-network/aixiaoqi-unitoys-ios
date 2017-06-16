@@ -521,13 +521,6 @@ static UNBlueToothTool *instance = nil;
             UNDebugLogVerbose(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
         }
     } else {
-        //        NSString *dataStr = [NSString stringWithFormat:@"%@", data];
-        //        if (![dataStr isEqualToString:@"<88800310 0002>"]) {
-        //            UNDebugLogVerbose(@"蓝牙未连接");
-        //            dispatch_async(dispatch_get_main_queue(), ^{
-        //                HUDNormal(INTERNATIONALSTRING(@"蓝牙未连接"))
-        //            });
-        //        }
         UNDebugLogVerbose(@"蓝牙未连接");
     }
 }
@@ -748,11 +741,6 @@ static UNBlueToothTool *instance = nil;
                                             if (![BlueToothDataManager shareManager].isConnected) {
                                                 [UNCreatLocalNoti createLBEDisConnectNoti];
                                             }
-//                                            else{
-//                                                if (![BlueToothDataManager shareManager].isHaveCard) {
-//                                                    [UNCreatLocalNoti createLBEDisConnectNoti];
-//                                                }
-//                                            }
                                     });
                                 }
                             } else {
@@ -1019,10 +1007,6 @@ static UNBlueToothTool *instance = nil;
                 }
             });
         }
-        
-        //        [self dj_alertAction:self alertTitle:nil actionTitle:@"重试" message:@"未能搜索到爱小器手环" alertAction:^{
-        //            [self.timer setFireDate:[NSDate distantPast]];
-        //        }];
     }
     self.time++;
 }
@@ -1144,9 +1128,6 @@ static UNBlueToothTool *instance = nil;
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
         }
     }
-//    if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
-//        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
-//    }
     //请求电量
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
     //仅钥匙扣能连接
@@ -1168,12 +1149,6 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].checkStr = encryptStr;
     [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:appdenStr];
     [self startEncryptionTimer];
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        if (![BlueToothDataManager shareManager].isSame) {
-//            [self closeConnecting];
-//        }
-//    });
-//    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
 }
 
 - (void)startEncryptionTimer {
@@ -1307,20 +1282,6 @@ static UNBlueToothTool *instance = nil;
                 //发送绑定请求
                 [self sendMessageToBLEWithType:BLECkeckToBound validData:nil];
                 [self startBoundTimer];
-//                [self showHudNormalTop1String:INTERNATIONALSTRING(@"请点击双待王按钮确认绑定")];
-//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(20 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                    if (![BlueToothDataManager shareManager].isAllowToBound) {
-//                        [self hideHud];
-//                        [BlueToothDataManager shareManager].isAccordBreak = YES;
-//                        [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"00"];
-//                        [self.mgr cancelPeripheralConnection:self.peripheral];
-//                        [[NSNotificationCenter defaultCenter] postNotificationName:@"boundDeviceFailNotifi" object:@"boundDeviceFailNotifi"];
-////                        [self sendDataToUnBoundDevice];
-//                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
-//                        [self showHudNormalString:INTERNATIONALSTRING(@"绑定失败")];
-//                        return;
-//                    }
-//                });
             } else {
                 //对卡上电
 //                [self phoneCardToUpeLectrify:@"01"];
