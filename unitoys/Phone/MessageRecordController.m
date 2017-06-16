@@ -148,7 +148,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         _noDataLabel.textAlignment = NSTextAlignmentCenter;
         [_noDataLabel sizeToFit];
         _noDataLabel.un_centerX = kScreenWidthValue * 0.5;
-        _noDataLabel.un_centerY = (kScreenHeightValue - 64 - 49 - 50) * 0.5;
+        _noDataLabel.un_centerY = (kScreenHeightValue - 64 - 49 - STATUESVIEWHEIGHT - 50) * 0.5;
         [self.view addSubview:_noDataLabel];
         _noDataLabel.hidden = YES;
     }

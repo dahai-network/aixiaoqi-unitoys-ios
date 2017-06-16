@@ -128,6 +128,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aboutViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offsetCanEnable) name:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
+    [[BlueToothDataManager shareManager] addObserver:self forKeyPath:@"isShowStatuesView" options:NSKeyValueObservingOptionInitial context:nil];
+}
+
+#pragma mark KVO执行的方法
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+    [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
 }
 
 - (void)offsetCanEnable {
@@ -135,12 +143,6 @@
 }
 
 - (void)changeFootViewHeight {
-//    CGFloat height = scrollView.frame.size.height;
-//    CGFloat contentYoffset = scrollView.contentOffset.y;
-//    CGFloat distance = scrollView.contentSize.height - height;
-//    if (distance - contentYoffset<=0) {
-//        self.footView.un_height = contentYoffset-distance;
-//    }
     if (self.isAtend) {
         self.tableView.frame = CGRectOffset(self.tableView.frame, 0, -kStatusBarHeight);
     }
@@ -167,13 +169,16 @@
 
 - (void)aboutViewChangeStatuesView:(NSNotification *)sender {
     NSLog(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
-//    self.statuesLabel.text = sender.object;
-    [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
-    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
+    [self changeStatueViewHeightWithString:sender.object];
+}
+
+- (void)changeStatueViewHeightWithString:(NSString *)statueStr {
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
+    if ([statueStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
     } else {
-        if (![sender.object isEqualToString:HOMESTATUETITLE_REGISTING]) {
+        if (![statueStr isEqualToString:HOMESTATUETITLE_REGISTING]) {
             self.registProgressView.un_width = 0;
         }
         self.statuesView.un_height = STATUESVIEWHEIGHT;
@@ -886,5 +891,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
+    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView"];
 }
 @end

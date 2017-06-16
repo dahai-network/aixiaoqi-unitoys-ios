@@ -34,6 +34,7 @@ typedef enum : NSUInteger {
 @interface MainViewController()
 
 @property (nonatomic, weak) UNPresentImageView *presentImageView;
+@property (nonatomic, strong)UIWindow *firstWindow;
 
 @end
 
@@ -135,6 +136,8 @@ typedef enum : NSUInteger {
     
     [self updateCallTimeFromServer];
 }
+
+
 
 - (void)showLowElectyAlert {
     if (![BlueToothDataManager shareManager].isAlreadyShowElectyAlert) {
@@ -285,14 +288,23 @@ typedef enum : NSUInteger {
 
 
 
-//- (void)viewWillAppear:(BOOL)animated {
-//    [super viewWillAppear:animated];
-//    self.selectedViewController = self.childViewControllers[1];
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//        self.selectedViewController = self.childViewControllers[1];
-//    });
-//    self.navigationController.navigationBar.translucent = NO;
-//}
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (!self.firstWindow) {
+        self.firstWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.firstWindow.windowLevel = UIWindowLevelStatusBar-1;
+        self.firstWindow.backgroundColor = [UIColor whiteColor];
+    }
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.firstWindow.frame];
+    imgView.image = [UIImage imageNamed:@"AppLaunch"];
+    [self.firstWindow addSubview:imgView];
+    [self.firstWindow makeKeyAndVisible];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.firstWindow.hidden = YES;
+        self.firstWindow = nil;
+        [self.firstWindow makeKeyAndVisible];
+    });
+}
 
 - (void)changeStatuesAll:(NSNotification *)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:sender.object];

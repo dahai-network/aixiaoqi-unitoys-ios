@@ -75,6 +75,33 @@
     
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+    [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
+}
+
+- (void)changeStatueViewHeightWithString:(NSString *)statueStr {
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
+    if ([statueStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
+        self.statuesView.un_height = 0;
+        self.registProgressView.un_width = 0;
+    } else {
+        if (![statueStr isEqualToString:HOMESTATUETITLE_REGISTING]) {
+            self.registProgressView.un_width = 0;
+        }
+        self.statuesView.un_height = STATUESVIEWHEIGHT;
+    }
+    if ([UNDataTools sharedInstance].tipStatusHeight != self.statuesView.un_height) {
+        self.pageViewController.view.un_top = self.statuesView.un_height;
+        self.pageViewController.view.un_height = self.view.un_height - self.statuesView.un_height - 49;
+        [UNDataTools sharedInstance].tipStatusHeight = self.statuesView.un_height;
+        //        [UNDataTools sharedInstance].pageViewHeight = self.pageViewController.view.un_height;
+        [UNDataTools sharedInstance].pageViewHeight = kScreenHeightValue - 64 - self.statuesView.un_height - 49;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TipStatuBarHeightChange" object:nil];
+    }
+}
+
 - (void)initTipStatuBar
 {
     //添加状态栏
@@ -123,6 +150,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statuBarHeightChange:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
+    [[BlueToothDataManager shareManager] addObserver:self forKeyPath:@"isShowStatuesView" options:NSKeyValueObservingOptionInitial context:nil];
 }
 
 #pragma mark 手势点击事件
@@ -147,25 +175,7 @@
 - (void)statuBarHeightChange:(NSNotification *)noti
 {
     UNDebugLogVerbose(@"statuBarHeightChange----%@", noti.object);
-//    self.statuesLabel.text = noti.object;
-    [self setStatuesLabelTextWithLabel:self.statuesLabel String:noti.object];
-    if ([noti.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
-        self.statuesView.un_height = 0;
-        self.registProgressView.un_width = 0;
-    } else {
-        if (![noti.object isEqualToString:HOMESTATUETITLE_REGISTING]) {
-            self.registProgressView.un_width = 0;
-        }
-        self.statuesView.un_height = STATUESVIEWHEIGHT;
-    }
-    if ([UNDataTools sharedInstance].tipStatusHeight != self.statuesView.un_height) {
-        self.pageViewController.view.un_top = self.statuesView.un_height;
-        self.pageViewController.view.un_height = self.view.un_height - self.statuesView.un_height - 49;
-        [UNDataTools sharedInstance].tipStatusHeight = self.statuesView.un_height;
-//        [UNDataTools sharedInstance].pageViewHeight = self.pageViewController.view.un_height;
-        [UNDataTools sharedInstance].pageViewHeight = kScreenHeightValue - 64 - self.statuesView.un_height - 49;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"TipStatuBarHeightChange" object:nil];
-    }
+    [self changeStatueViewHeightWithString:noti.object];
 }
 
 - (void)showRegistProgress:(NSNotification *)sender {
@@ -363,6 +373,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView"];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
 }
 

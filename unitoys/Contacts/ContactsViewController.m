@@ -181,6 +181,41 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
+    [[BlueToothDataManager shareManager] addObserver:self forKeyPath:@"isShowStatuesView" options:NSKeyValueObservingOptionInitial context:nil];
+}
+
+#pragma mark KVO执行的方法
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+    [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
+}
+
+- (void)changeStatueViewHeightWithString:(NSString *)statueStr {
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
+    if ([statueStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
+        if (self.statuesView.un_height == STATUESVIEWHEIGHT) {
+            _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -STATUESVIEWHEIGHT);
+            _tableView.frame = CGRectOffset(_tableView.frame, 0, -STATUESVIEWHEIGHT);
+            _tableView.un_height += STATUESVIEWHEIGHT;
+        }
+        self.statuesView.un_height = 0;
+        self.registProgressView.un_width = 0;
+        self.statuesView.hidden = YES;
+    } else {
+        if (![statueStr isEqualToString:HOMESTATUETITLE_REGISTING]) {
+            self.registProgressView.un_width = 0;
+        }
+        if (self.statuesView.un_height == 0) {
+            _searchBar.frame = CGRectOffset(_searchBar.frame, 0, STATUESVIEWHEIGHT);
+            _tableView.frame = CGRectOffset(_tableView.frame, 0, STATUESVIEWHEIGHT);
+            _tableView.un_height -= STATUESVIEWHEIGHT;
+        }
+        self.statuesView.un_height = STATUESVIEWHEIGHT;
+        if (self.statuesView.isHidden) {
+            self.statuesView.hidden = NO;
+        }
+    }
 }
 
 #pragma mark 手势点击事件
@@ -204,31 +239,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
 
 - (void)contactsViewChangeStatuesView:(NSNotification *)sender {
     UNDebugLogVerbose(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
-//    self.statuesLabel.text = sender.object;
-    [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
-    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
-        if (self.statuesView.un_height == STATUESVIEWHEIGHT) {
-            _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -STATUESVIEWHEIGHT);
-            _tableView.frame = CGRectOffset(_tableView.frame, 0, -STATUESVIEWHEIGHT);
-            _tableView.un_height += STATUESVIEWHEIGHT;
-        }
-        self.statuesView.un_height = 0;
-        self.registProgressView.un_width = 0;
-        self.statuesView.hidden = YES;
-    } else {
-        if (![sender.object isEqualToString:HOMESTATUETITLE_REGISTING]) {
-            self.registProgressView.un_width = 0;
-        }
-        if (self.statuesView.un_height == 0) {
-            _searchBar.frame = CGRectOffset(_searchBar.frame, 0, STATUESVIEWHEIGHT);
-            _tableView.frame = CGRectOffset(_tableView.frame, 0, STATUESVIEWHEIGHT);
-            _tableView.un_height -= STATUESVIEWHEIGHT;
-        }
-        self.statuesView.un_height = STATUESVIEWHEIGHT;
-        if (self.statuesView.isHidden) {
-            self.statuesView.hidden = NO;
-        }
-    }
+    [self changeStatueViewHeightWithString:sender.object];
 }
 
 - (void)showRegistProgress:(NSNotification *)sender {
@@ -648,6 +659,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBook"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
+    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView"];
 }
 
 

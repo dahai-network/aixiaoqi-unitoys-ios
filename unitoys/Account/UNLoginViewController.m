@@ -515,7 +515,12 @@
 }
 #pragma mark 注册成功之后后台登录
 - (void)registerSuccessAndLogin {
-    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.accountField.text,@"Tel",self.passWordField.text,@"PassWord", @"webApi", @"LoginTerminal",nil];
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    NSString *phoneModel = [self iphoneType];
+    NSString *phoneNameAndSystem = [NSString stringWithFormat:@"%@,%@", phoneModel, systemVersion];
+    NSLog(@"登录的设备是 --> %@", phoneNameAndSystem);
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.accountField.text,@"Tel",self.passWordField.text,@"PassWord", phoneNameAndSystem, @"LoginTerminal",nil];
+    
     kWeakSelf
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiCheckLogin params:params success:^(id resonseObj){

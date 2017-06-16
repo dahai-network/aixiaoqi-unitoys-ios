@@ -88,7 +88,6 @@
 @property (nonatomic, weak) UNPopTipMsgView *popView;
 @property (nonatomic, strong)UIView *statuesView;
 @property (nonatomic, strong)UILabel *statuesLabel;
-@property (nonatomic, strong)UIWindow *firstWindow;
 @property (nonatomic, strong)UIView *registProgressView;
 @end
 
@@ -102,21 +101,6 @@
 }
 
 - (void)viewDidLoad {
-    if (!self.firstWindow) {
-        self.firstWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        self.firstWindow.windowLevel = UIWindowLevelStatusBar+1;
-        self.firstWindow.backgroundColor = [UIColor whiteColor];
-    }
-    UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.firstWindow.frame];
-    imgView.image = [UIImage imageNamed:@"AppLaunch"];
-    [self.firstWindow addSubview:imgView];
-    [self.firstWindow makeKeyAndVisible];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.firstWindow.hidden = YES;
-        self.firstWindow = nil;
-        [self.firstWindow makeKeyAndVisible];
-    });
-    
     [super viewDidLoad];
     
     if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
@@ -290,6 +274,7 @@
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(homeViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
+    [[BlueToothDataManager shareManager] addObserver:self forKeyPath:@"isShowStatuesView" options:NSKeyValueObservingOptionInitial context:nil];
     
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据
     
@@ -329,6 +314,12 @@
 //    });
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context
+{
+    [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
+}
+
 #pragma mark 手势点击事件
 - (void)jumpToShowDetail {
     if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTCONNECTED]) {
@@ -350,13 +341,16 @@
 
 - (void)homeViewChangeStatuesView:(NSNotification *)sender {
     UNDebugLogVerbose(@"状态栏文字 --> %@, %s, %d", sender.object, __FUNCTION__, __LINE__);
-//    self.statuesLabel.text = sender.object;
-    [self setStatuesLabelTextWithLabel:self.statuesLabel String:sender.object];
-    if ([sender.object isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
+    [self changeStatueViewHeightWithString:sender.object];
+}
+
+- (void)changeStatueViewHeightWithString:(NSString *)statuesStr {
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statuesStr];
+    if ([statuesStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
     } else {
-        if (![sender.object isEqualToString:HOMESTATUETITLE_REGISTING]) {
+        if (![statuesStr isEqualToString:HOMESTATUETITLE_REGISTING]) {
             self.registProgressView.un_width = 0;
         }
         self.statuesView.un_height = STATUESVIEWHEIGHT;
@@ -1404,6 +1398,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:YES];
     self.tabBarController.tabBar.hidden = NO;
+    
+    [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
+    
 }
 
 //- (void)loadOrderList {
@@ -2101,6 +2098,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UpdateLBEStatuWithPushKit" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
+    
+    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView"];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:CNContactStoreDidChangeNotification object:nil];
