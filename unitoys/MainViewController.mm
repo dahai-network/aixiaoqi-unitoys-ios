@@ -43,6 +43,21 @@ typedef enum : NSUInteger {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    if (!self.firstWindow) {
+        self.firstWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.firstWindow.windowLevel = UIWindowLevelStatusBar-1;
+        self.firstWindow.backgroundColor = [UIColor whiteColor];
+    }
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.firstWindow.frame];
+    imgView.image = [UIImage imageNamed:@"AppLaunch"];
+    [self.firstWindow addSubview:imgView];
+    [self.firstWindow makeKeyAndVisible];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.firstWindow.hidden = YES;
+        self.firstWindow = nil;
+        [self.firstWindow makeKeyAndVisible];
+    });
+    
     self.delegate = self;
     for (navHomeViewController *controller in self.childViewControllers) {
         controller.navigationBar.tintColor = [UIColor whiteColor];
@@ -281,26 +296,6 @@ typedef enum : NSUInteger {
         ConvenienceServiceController *convenienceVC = [[ConvenienceServiceController alloc] init];
         [self.selectedViewController pushViewController:convenienceVC animated:YES];
     }
-}
-
-
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    if (!self.firstWindow) {
-        self.firstWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        self.firstWindow.windowLevel = UIWindowLevelStatusBar-1;
-        self.firstWindow.backgroundColor = [UIColor whiteColor];
-    }
-    UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.firstWindow.frame];
-    imgView.image = [UIImage imageNamed:@"AppLaunch"];
-    [self.firstWindow addSubview:imgView];
-    [self.firstWindow makeKeyAndVisible];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.firstWindow.hidden = YES;
-        self.firstWindow = nil;
-        [self.firstWindow makeKeyAndVisible];
-    });
 }
 
 - (void)changeStatuesAll:(NSNotification *)sender {

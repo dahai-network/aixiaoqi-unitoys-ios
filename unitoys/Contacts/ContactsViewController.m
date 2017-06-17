@@ -181,13 +181,11 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     //处理状态栏文字及高度
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
-    [[BlueToothDataManager shareManager] addObserver:self forKeyPath:@"isShowStatuesView" options:NSKeyValueObservingOptionInitial context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentStatueChangeAndChangeHeight) name:@"currentStatueChangedAndHeightChange" object:@"currentStatueChangedAndHeightChange"];
 }
 
-#pragma mark KVO执行的方法
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
-                        change:(NSDictionary *)change context:(void *)context
-{
+
+- (void)currentStatueChangeAndChangeHeight {
     [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
 }
 
@@ -659,7 +657,7 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"addressBookChanged" object:@"addressBook"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
-    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"currentStatueChangedAndHeightChange" object:@"currentStatueChangedAndHeightChange"];
 }
 
 

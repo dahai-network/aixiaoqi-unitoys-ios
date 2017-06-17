@@ -121,13 +121,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(aboutViewChangeStatuesView:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offsetCanEnable) name:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
-    [[BlueToothDataManager shareManager] addObserver:self forKeyPath:@"isShowStatuesView" options:NSKeyValueObservingOptionInitial context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentStatueChangeAndChangeHeight) name:@"currentStatueChangedAndHeightChange" object:@"currentStatueChangedAndHeightChange"];
 }
 
 #pragma mark KVO执行的方法
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
-                        change:(NSDictionary *)change context:(void *)context
-{
+- (void)currentStatueChangeAndChangeHeight {
     [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
 }
 
@@ -854,6 +852,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
-    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"currentStatueChangedAndHeightChange" object:@"currentStatueChangedAndHeightChange"];
 }
 @end

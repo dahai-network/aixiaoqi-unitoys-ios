@@ -312,6 +312,7 @@
                         change:(NSDictionary *)change context:(void *)context
 {
     [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"currentStatueChangedAndHeightChange" object:@"currentStatueChangedAndHeightChange"];
 }
 
 #pragma mark 手势点击事件
@@ -1849,7 +1850,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
     
-    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView"];
+    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView" context:nil];
     
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:CNContactStoreDidChangeNotification object:nil];

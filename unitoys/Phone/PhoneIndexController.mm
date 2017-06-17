@@ -75,9 +75,7 @@
     
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
-                        change:(NSDictionary *)change context:(void *)context
-{
+- (void)currentStatueChangeAndChangeHeight {
     [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
 }
 
@@ -150,7 +148,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statuBarHeightChange:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
-    [[BlueToothDataManager shareManager] addObserver:self forKeyPath:@"isShowStatuesView" options:NSKeyValueObservingOptionInitial context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentStatueChangeAndChangeHeight) name:@"currentStatueChangedAndHeightChange" object:@"currentStatueChangedAndHeightChange"];
 }
 
 #pragma mark 手势点击事件
@@ -373,8 +371,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[BlueToothDataManager shareManager] removeObserver:self forKeyPath:@"isShowStatuesView"];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
 }
 
 @end
