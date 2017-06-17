@@ -89,6 +89,9 @@
 @property (nonatomic, strong)UIView *statuesView;
 @property (nonatomic, strong)UILabel *statuesLabel;
 @property (nonatomic, strong)UIView *registProgressView;
+@property (nonatomic, strong) NSTimer *otaFailTimer;
+@property (nonatomic, assign) int otaFailTimeValue;
+
 @end
 
 @implementation HomeViewController
@@ -923,17 +926,37 @@
     UNDebugLogVerbose(@"ERROR %ld:%@", (long)error, message);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        self.progressWindow = nil;
-        self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n双待王需等待2分钟才能重新连接");
+        self.progressNumberLabel.text = INTERNATIONALSTRING(@"升级失败\n120s后重新连接双待王");
         UNDebugLogVerbose(@"[BlueToothDataManager shareManager].isBeingOTA = NO;%s%d", __FUNCTION__, __LINE__);
         [BlueToothDataManager shareManager].isBeingOTA = NO;
     });
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(120 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    [self startOtaFailTimer];
+}
+
+- (void)startOtaFailTimer {
+    self.otaFailTimeValue = 120;
+    if (!self.otaFailTimer) {
+        self.otaFailTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(actionToOtaFailTimer) userInfo:nil repeats:YES];
+        //如果不添加下面这条语句，在UITableView拖动的时候，会阻塞定时器的调用
+        [[NSRunLoop currentRunLoop] addTimer:self.otaFailTimer forMode:UITrackingRunLoopMode];
+    } else {
+        [self.otaFailTimer setFireDate:[NSDate distantPast]];
+    }
+}
+
+- (void)actionToOtaFailTimer {
+    if (self.otaFailTimeValue == 0) {
         self.myController = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"OTASuccessAndReConnectedNotif" object:@"OTASuccessAndReConnectedNotif"];
         [[UNBlueToothTool shareBlueToothTool] clearInstance];
         [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
         [self hiddenProgressWindow];
-    });
+        [self.otaFailTimer setFireDate:[NSDate distantFuture]];
+    } else {
+        self.progressNumberLabel.text = [NSString stringWithFormat:@"升级失败\n%ds后重新连接双待王", self.otaFailTimeValue];
+    }
+    self.otaFailTimeValue--;
+//    UNDebugLogVerbose(@"升级失败正在计时 -- %d", self.otaFailTimeValue);
 }
 
 - (void)onUploadProgress:(NSInteger)part totalParts:(NSInteger)totalParts progress:(NSInteger)progress currentSpeedBytesPerSecond:(double)currentSpeedBytesPerSecond avgSpeedBytesPerSecond:(double)avgSpeedBytesPerSecond {
