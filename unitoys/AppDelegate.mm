@@ -541,8 +541,9 @@
     if (self.sendTcpSocket) {
         //        self.sendTcpSocket.userData = SocketCloseByUser;
         [self.sendTcpSocket disconnect];
+        self.sendTcpSocket = nil;
     }
-    self.sendTcpSocket = nil;
+    
     [BlueToothDataManager shareManager].isTcpConnected = NO;
     [BlueToothDataManager shareManager].isBeingRegisting = NO;
     [BlueToothDataManager shareManager].isRegisted = NO;

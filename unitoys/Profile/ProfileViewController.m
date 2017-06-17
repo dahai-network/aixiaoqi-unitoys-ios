@@ -138,47 +138,52 @@
 
 - (void)setValue :(NSNotification *)notification {
 
-    self.checkToken = YES;
+//    self.checkToken = YES;
     NSString *str = notification.object;
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithObjectsAndKeys:str,@"NickName", nil];
-    NSLog(@"%@", params);
-    NSMutableDictionary *dic = [NSMutableDictionary new];
-    [dic setObject:str forKey:@"NickName"];
+//    NSMutableDictionary *params = [[NSMutableDictionary alloc] initWithObjectsAndKeys:str,@"NickName", nil];
+//    NSLog(@"%@", params);
+//    NSMutableDictionary *dic = [NSMutableDictionary new];
+//    [dic setObject:str forKey:@"NickName"];
     
 //    [self.dicInfo setObject:str forKey:@"NickName"];
     [self.dicInfo setObject:str forKey:@"NickName"];
     
-    [self getBasicHeader];
+//    [self getBasicHeader];
 //    NSLog(@"表演头：%@",self.headers);
     
     [self.valueView setHidden:YES];
     self.tableView.scrollEnabled = self.valueView.hidden;
-    [SSNetworkRequest postRequest:apiUpdateUserInfo params:dic success:^(id responseObj) {
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            
-            NSLog(@"查询到的用户数据：%@",responseObj);
-            
-//            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-            HUDNormal(responseObj[@"msg"])
-            
-            [[NSUserDefaults standardUserDefaults] setObject:self.dicInfo forKey:@"userData"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            [self loadUserInfo];
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-        }
-        
-        [self.navigationController popViewControllerAnimated:YES];
-        
-    } failure:^(id dataObj, NSError *error) {
-        //
-        NSLog(@"啥都没：%@",[error description]);
-    } headers:self.headers];
+    [[NSUserDefaults standardUserDefaults] setObject:self.dicInfo forKey:@"userData"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self loadUserInfo];
+    
+//    [SSNetworkRequest postRequest:apiUpdateUserInfo params:dic success:^(id responseObj) {
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            
+//            NSLog(@"查询到的用户数据：%@",responseObj);
+//            
+////            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+//            HUDNormal(responseObj[@"msg"])
+//            
+//            [[NSUserDefaults standardUserDefaults] setObject:self.dicInfo forKey:@"userData"];
+//            [[NSUserDefaults standardUserDefaults] synchronize];
+//            
+//            [self loadUserInfo];
+//            
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//        }
+//        
+//        [self.navigationController popViewControllerAnimated:YES];
+//        
+//    } failure:^(id dataObj, NSError *error) {
+//        //
+//        NSLog(@"啥都没：%@",[error description]);
+//    } headers:self.headers];
 }
 
 - (void)selectValue {

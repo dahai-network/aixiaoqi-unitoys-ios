@@ -90,6 +90,20 @@
     [self initMessageData];
 }
 
+//- (void)leftButtonAction
+//{
+//    if (self.isNewMessage) {
+//        CATransition *transition = [[CATransition alloc] init];
+//        transition.duration =0.3f;
+//        transition.type = kCATransitionReveal;
+//        transition.subtype = kCATransitionFromBottom;
+//        [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+//        [self.navigationController popViewControllerAnimated:NO];
+//    }else{
+//        [self.navigationController popViewControllerAnimated:YES];
+//    }
+//}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -105,6 +119,11 @@
         _myMsgInputView.hidden = NO;
         [_myMsgInputView prepareToShowWithAnimate:NO];
     }
+//    if (self.isNewMessage) {
+//        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+//    }else{
+//        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+//    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -123,6 +142,9 @@
         _myMsgInputView.hidden = YES;
         [_myMsgInputView prepareToDismissWithAnimate:YES];
     }
+//    if (self.isNewMessage) {
+//        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+//    }
 }
 
 - (void)loadNavigationBar

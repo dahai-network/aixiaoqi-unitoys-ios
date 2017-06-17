@@ -12,17 +12,32 @@
 #import "UNPopTipMsgView.h"
 #import "UNReadyActivateController.h"
 #import "UNMessageContentController.h"
+#import "HLLoadingView.h"
 
 @interface UNTestViewController ()
 @property (nonatomic, strong) UNPresentTool *presentTool;
 @property (nonatomic, weak) UNPopTipMsgView *popView;
+
+@property (nonatomic, strong) HLLoadingView *loadingView;
 @end
 
 @implementation UNTestViewController
 
+- (HLLoadingView *)loadingView
+{
+    if (!_loadingView) {
+        _loadingView = [[HLLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        [_loadingView setLineWidth:3.0];
+        _loadingView.un_centerX = self.view.un_width * 0.5;
+        _loadingView.un_centerY = self.view.un_height * 0.5;
+        [self.view addSubview:_loadingView];
+    }
+    return _loadingView;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = DefultColor;
+    self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Present" style:UIBarButtonItemStyleDone target:self action:@selector(presentVc)];
 }
 
@@ -38,7 +53,9 @@
 //    [self pushMessageVc];
     
     //上传日志
-    [self updateLogAction];
+//    [self updateLogAction];
+    
+    [self startLoadingAnima];
     
 }
 
@@ -63,6 +80,14 @@
 - (void)updateLogAction
 {
     [[UNDDLogManager sharedInstance] updateLogToServerWithLogCount:2];
+}
+
+- (void)startLoadingAnima
+{
+    [self.loadingView startAnimating];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.loadingView stopAnimating];
+    });
 }
 
 - (void)initPopView

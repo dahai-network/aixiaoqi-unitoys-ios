@@ -1706,7 +1706,9 @@ static UNBlueToothTool *instance = nil;
                 UNDebugLogVerbose(@"当前电量为：%d%%", electricQuantity);
                 [BlueToothDataManager shareManager].electricQuantity = [NSString stringWithFormat:@"%d", electricQuantity];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"boundSuccessAndAddElecty" object:@"boundSuccessAndAddElecty"];
-                [self refreshBLEInfo];
+                if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                    [self refreshBLEInfo];
+                }
                 //是否有卡
                 if (contentStr.length >= 8) {
                     NSString *isHaveCardStr = [contentStr substringWithRange:NSMakeRange(6, 2)];
@@ -1723,7 +1725,9 @@ static UNBlueToothTool *instance = nil;
                         [BlueToothDataManager shareManager].currentSimCardStatu = 0;
                     }
                 }
-                [self otaDownload];
+                if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                    [self otaDownload];
+                }
                 break;
             case 2:
                 //电量

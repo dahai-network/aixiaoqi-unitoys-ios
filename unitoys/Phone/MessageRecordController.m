@@ -211,6 +211,11 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     
     UNMessageContentController *messageVc = [[UNMessageContentController alloc] init];
     messageVc.isNewMessage = YES;
+//    CATransition *transition = [[CATransition alloc] init];
+//    transition.duration =0.3f;
+//    transition.type = kCATransitionMoveIn;
+//    transition.subtype = kCATransitionFromTop;
+//    [self.nav.view.layer addAnimation:transition forKey:kCATransition];
     [self.nav pushViewController:messageVc animated:YES];
 }
 

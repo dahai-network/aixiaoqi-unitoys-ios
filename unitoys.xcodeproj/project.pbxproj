@@ -141,6 +141,9 @@
 		3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C20C2101E6CF3E5008078BB /* UNCreatLocalNoti.m */; };
 		3C20C2131E6D00F1008078BB /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C20C2121E6D00F1008078BB /* PushKit.framework */; };
 		3C27E1BF1EC06E7A00D48F12 /* UNPresentHomeTipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */; };
+		3C2F0D501EF3C16D00053979 /* UNBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F0D4F1EF3C16D00053979 /* UNBaseViewController.m */; };
+		3C2F0D531EF3C54D00053979 /* UNHudViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F0D521EF3C54D00053979 /* UNHudViewController.m */; };
+		3C2F0D561EF3C89200053979 /* HLLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C2F0D551EF3C89200053979 /* HLLoadingView.m */; };
 		3C388A7E1EC4186500A04BA8 /* ReceivePhoneTimeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A7C1EC4186500A04BA8 /* ReceivePhoneTimeController.m */; };
 		3C388A7F1EC4186500A04BA8 /* ReceivePhoneTimeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C388A7D1EC4186500A04BA8 /* ReceivePhoneTimeController.xib */; };
 		3C388A821EC4402D00A04BA8 /* ConvenienceOrderDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C388A811EC4402D00A04BA8 /* ConvenienceOrderDetailController.m */; };
@@ -657,6 +660,12 @@
 		3C20C2121E6D00F1008078BB /* PushKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushKit.framework; path = System/Library/Frameworks/PushKit.framework; sourceTree = SDKROOT; };
 		3C27E1BD1EC06E7A00D48F12 /* UNPresentHomeTipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPresentHomeTipView.h; sourceTree = "<group>"; };
 		3C27E1BE1EC06E7A00D48F12 /* UNPresentHomeTipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPresentHomeTipView.m; sourceTree = "<group>"; };
+		3C2F0D4E1EF3C16D00053979 /* UNBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNBaseViewController.h; sourceTree = "<group>"; };
+		3C2F0D4F1EF3C16D00053979 /* UNBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNBaseViewController.m; sourceTree = "<group>"; };
+		3C2F0D511EF3C54C00053979 /* UNHudViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNHudViewController.h; sourceTree = "<group>"; };
+		3C2F0D521EF3C54D00053979 /* UNHudViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNHudViewController.m; sourceTree = "<group>"; };
+		3C2F0D541EF3C89200053979 /* HLLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HLLoadingView.h; sourceTree = "<group>"; };
+		3C2F0D551EF3C89200053979 /* HLLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HLLoadingView.m; sourceTree = "<group>"; };
 		3C388A7B1EC4186500A04BA8 /* ReceivePhoneTimeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReceivePhoneTimeController.h; sourceTree = "<group>"; };
 		3C388A7C1EC4186500A04BA8 /* ReceivePhoneTimeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReceivePhoneTimeController.m; sourceTree = "<group>"; };
 		3C388A7D1EC4186500A04BA8 /* ReceivePhoneTimeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ReceivePhoneTimeController.xib; sourceTree = "<group>"; };
@@ -1489,6 +1498,10 @@
 				3C7DECCD1EC2BB7C00CDCE34 /* UNConvertFormatTool.m */,
 				3C1B341A1EEFD36200DFC56F /* UNDDLogManager.h */,
 				3C1B341B1EEFD36200DFC56F /* UNDDLogManager.m */,
+				3C2F0D4E1EF3C16D00053979 /* UNBaseViewController.h */,
+				3C2F0D4F1EF3C16D00053979 /* UNBaseViewController.m */,
+				3C2F0D511EF3C54C00053979 /* UNHudViewController.h */,
+				3C2F0D521EF3C54D00053979 /* UNHudViewController.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1693,6 +1706,8 @@
 				3C388A931EC588E000A04BA8 /* ServiceRecommendView.m */,
 				3C07E2401EE2931C001AB21D /* BaseModel.h */,
 				3C07E2411EE2931C001AB21D /* BaseModel.m */,
+				3C2F0D541EF3C89200053979 /* HLLoadingView.h */,
+				3C2F0D551EF3C89200053979 /* HLLoadingView.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -2736,6 +2751,7 @@
 				04F727AF1E641CE4002EB54C /* HTTPErrorResponse.m in Sources */,
 				04A9497D1E826875007611F7 /* WristbandSettingViewController.m in Sources */,
 				3C90355F1E9B53B700FF95C0 /* PageViewController.m in Sources */,
+				3C2F0D531EF3C54D00053979 /* UNHudViewController.m in Sources */,
 				043638D61EB0A62F0064207E /* AbordSaveViewController.m in Sources */,
 				04553F351E70F3CF0025CA34 /* ChooseDeviceTypeTableViewCell.m in Sources */,
 				952AB0091DF8DA8900C5A927 /* PhoneOperationPad.m in Sources */,
@@ -2754,6 +2770,7 @@
 				3C7DECE21EC2FE6C00CDCE34 /* OpenServiceCell.m in Sources */,
 				3CA898771E8DF33F00C38387 /* MBProgressHUD+UNTip.m in Sources */,
 				04553F301E70EE980025CA34 /* ChooseDeviceTypeViewController.m in Sources */,
+				3C2F0D501EF3C16D00053979 /* UNBaseViewController.m in Sources */,
 				954A87CE1D98BBA700570843 /* JSONModelArray.m in Sources */,
 				9536B9741D8FC16600CD6B78 /* UnderlineField.m in Sources */,
 				3C07E22E1EE2577F001AB21D /* NewMessageViewController.m in Sources */,
@@ -2855,6 +2872,7 @@
 				04F727B21E641CE4002EB54C /* WebSocket.m in Sources */,
 				3C20C2111E6CF3E5008078BB /* UNCreatLocalNoti.m in Sources */,
 				3C98E99A1E9B736900B51419 /* PhoneRecordSearchController.m in Sources */,
+				3C2F0D561EF3C89200053979 /* HLLoadingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

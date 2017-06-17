@@ -7,6 +7,8 @@
 //
 
 #import "SetValueViewController.h"
+#import "UNNetworkManager.h"
+#import "MBProgressHUD+UNTip.h"
 
 @interface SetValueViewController ()
 
@@ -44,7 +46,48 @@
 //}
 
 - (void)rightButtonClick {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"setValue" object:self.edtValue.text];
+    [self changeNickName];
+}
+
+- (void)changeNickName {
+    [MBProgressHUD showLoadingWithMessage:@"正在保存..."];
+    [UNNetworkManager postUrl:apiUpdateUserInfo parameters:@{@"NickName" : self.edtValue.text} success:^(ResponseType type, id  _Nullable responseObj) {
+        if (type == ResponseTypeSuccess) {
+            [MBProgressHUD showSuccess:responseObj[@"msg"]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"setValue" object:self.edtValue.text];
+            [self.navigationController popViewControllerAnimated:YES];
+        }else if (type == ResponseTypeFailed){
+            [MBProgressHUD showError:responseObj[@"msg"]];
+        }
+    } failure:^(NSError * _Nonnull error) {
+        [MBProgressHUD showError:@"网络请求失败"];
+    }];
+    
+//    self.checkToken = YES;
+//    NSDictionary *dict = @{@"NickName" : self.edtValue.text};
+//    
+//    [self getBasicHeader];
+//    [SSNetworkRequest postRequest:apiUpdateUserInfo params:dict success:^(id responseObj) {
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            
+//            NSLog(@"查询到的用户数据：%@",responseObj);
+//            
+//            //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
+//            HUDNormal(responseObj[@"msg"])
+//            
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//        }
+//        
+//        [self.navigationController popViewControllerAnimated:YES];
+//        
+//    } failure:^(id dataObj, NSError *error) {
+//        //
+//        NSLog(@"啥都没：%@",[error description]);
+//    } headers:self.headers];
 }
 
 - (void)didReceiveMemoryWarning {
