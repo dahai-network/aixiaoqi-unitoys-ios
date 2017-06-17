@@ -1464,6 +1464,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         //呼入(当时间为0且通话状态为miss时为未接)
         if (cdr->duration == 0 && cdr->status == CallMissed) {
             callStatu = 0;
+            [self addMissPhoneRecord];
         }
     }
     [self addPhoneRecordWithHostcid:hostcid Destcid:destcid Calltime:[NSDate date] Calltype:callType CallDuration:cdr->duration CallStatus:callStatu];
@@ -2296,6 +2297,40 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeCallAction" object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"MakeUnitysCallAction" object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"CallPhoneKeyBoard" object:nil];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self updateMissCall];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:@"MissPhoneRecord"];
+    [self updateMissCall];
+}
+
+- (void)addMissPhoneRecord
+{
+    NSString *missNumberStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"MissPhoneRecord"];
+    if (missNumberStr) {
+        NSInteger missNum = [missNumberStr integerValue] + 1;
+        [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%zd",missNum] forKey:@"MissPhoneRecord"];
+    }
+    [self updateMissCall];
+}
+
+- (void)updateMissCall
+{
+    NSString *missNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"MissPhoneRecord"];
+    if (missNumber && [missNumber integerValue]) {
+        [UNDataTools sharedInstance].isHasMissCall = YES;
+    }else{
+        [UNDataTools sharedInstance].isHasMissCall = NO;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"PhoneUnReadMessageStatuChange" object:nil];
 }
 
 @end

@@ -1217,7 +1217,7 @@ static UNBlueToothTool *instance = nil;
             CGFloat dataTime = [timeString doubleValue];
             NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
             NSTimeInterval timeValue = [dataDate timeIntervalSinceNow];
-            UNDebugLogVerbose(@"时间差为---%f", timeValue);
+            UNLogLBEProcess(@"时间差为---%f", timeValue);
             if (timeValue > 150.0) {
                 UNLogLBEProcess(@"时间太久,丢弃当前数据")
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"PushKitMessageDataTimeout" object:nil];
@@ -1628,9 +1628,9 @@ static UNBlueToothTool *instance = nil;
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
-    UNLogLBEProcess(@"发送指令成功")
+    UNDebugLogVerbose(@"发送指令成功")
     if (!error) {
-        UNDebugLogVerbose(@"其他操作");
+        UNLogLBEProcess(@"发送指令成功无错误");
     }else{
         UNLogLBEProcess(@"发送指令错误%@",error)
     }
@@ -1742,7 +1742,7 @@ static UNBlueToothTool *instance = nil;
                 break;
             case 3:
                 //充电状态
-                UNLogLBEProcess(@"接收到充电状态数据")
+                UNDebugLogVerbose(@"接收到充电状态数据")
                 int chargeStatue = [self convertRangeStringToIntWithString:contentStr rangeLoc:0 rangeLen:2];
                 UNLogLBEProcess(@"充电状态 --> %d", chargeStatue)
                 [BlueToothDataManager shareManager].chargingState = chargeStatue;
@@ -3572,7 +3572,7 @@ static UNBlueToothTool *instance = nil;
     NSData *data = [NSData dataWithBytes:buf length:len];
     
     free( buf );
-    UNDebugLogVerbose(@"最终发送的包 -> %@", data);
+    UNLogLBEProcess(@"最终发送的包 -> %@", data)
     return data;
 }
 

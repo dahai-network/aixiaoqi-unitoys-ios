@@ -8,10 +8,12 @@
 
 #import "UNHudViewController.h"
 #import "MBProgressHUD+UNTip.h"
+#import "UNHudView.h"
+#import <Masonry/Masonry.h>
 
 @interface UNHudViewController ()
 
-
+@property (nonatomic, strong) UNHudView *hudView;
 
 @end
 
@@ -25,7 +27,17 @@
 //自定义Loading
 - (void)showLoadingView
 {
-
+    if (!_hudView) {
+        _hudView = [[UNHudView alloc] init];
+        [_hudView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view);
+            make.left.equalTo(self.view);
+            make.width.equalTo(self.view);
+            make.height.equalTo(self.view);
+        }];
+        [self.view addSubview:_hudView];
+        [_hudView startLoading];
+    }
 }
 - (void)hideLoadingView
 {

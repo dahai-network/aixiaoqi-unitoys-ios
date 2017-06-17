@@ -108,14 +108,13 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    UNLogLBEProcess(@"============================================didFinishLaunchingWithOptions============================================\n")
     
     //制定真机调试保存日志文件
 //    [self redirectNSLogToDocumentFolder];
     
     [[UNDDLogManager sharedInstance] enabelUNLog];
     
-    UNLogLBEProcess(@"application---didFinishLaunchingWithOptions")
+    UNLogLBEProcess(@"============================================didFinishLaunchingWithOptions============================================\n")
     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
     [BlueToothDataManager shareManager].isOpened = YES;
     [BlueToothDataManager shareManager].isShowStatuesView = NO;
@@ -2116,7 +2115,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
             UNLogLBEProcess(@"进入前台")
             if (![UNDataTools sharedInstance].isLogout) {
-                UNLogLBEProcess(@"在线：%s,%d", __FUNCTION__, __LINE__)
+                UNDebugLogVerbose(@"在线：%s,%d", __FUNCTION__, __LINE__)
                 [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
                 [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
                 [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
@@ -2132,7 +2131,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 //在pushkit里初始化蓝牙
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
             } else {
-                UNLogLBEProcess(@"不在线：%s,%d", __FUNCTION__, __LINE__)
+                UNDebugLogVerbose(@"不在线：%s,%d", __FUNCTION__, __LINE__)
             }
         } else {
             [self checkRegistStatueEnterForeground];
@@ -2535,26 +2534,38 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 }
 
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
-    if (![UNPushKitMessageManager shareManager].isAlreadyInForeground) {
-//        DebugUNLog(@"isAlreadyInForeground==NO");
-        UNLogLBEProcess(@"isAlreadyInForeground==NO")
-        if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-            UNLogLBEProcess(@"isPushKitFromAppDelegate==NO")
-            if (![UNPushKitMessageManager shareManager].isInitMainVc) {
-                UNLogLBEProcess(@"isInitMainVc==NO")
-                [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = YES;
-            }
-        }
-    }else{
-        UNLogLBEProcess(@"isAlreadyInForeground==YES")
-        [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
-    }
-    
     if ([payload.type isEqualToString:@"PKPushTypeVoIP"]) {
+        
+        
+        if (![UNPushKitMessageManager shareManager].isAlreadyInForeground) {
+            UNLogLBEProcess(@"isAlreadyInForeground==NO")
+            if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                UNLogLBEProcess(@"isPushKitFromAppDelegate==NO")
+                if (![UNPushKitMessageManager shareManager].isInitMainVc) {
+                    UNLogLBEProcess(@"isInitMainVc==NO")
+                    [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = YES;
+                }
+            }
+        }else{
+            UNLogLBEProcess(@"isAlreadyInForeground==YES")
+            [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
+        }
+        
         UNDebugLogVerbose(@"开始电话接入======%@=======", payload.dictionaryPayload);
         //        if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground || [UNPushKitMessageManager shareManager].isAlreadyInForeground) {
+        NSDictionary *dict = payload.dictionaryPayload;
+        NSString *messageType = [dict[@"MessageType"] lowercaseString];
+        if (messageType && [messageType isEqualToString:@"99"]) {
+            UNLogLBEProcess(@"收到日志操作PushKit---%@", payload.dictionaryPayload)
+            if ([dict[@"Data"] integerValue] == 100) {
+                [[UNDDLogManager sharedInstance] clearAllLog];
+            }else{
+                [[UNDDLogManager sharedInstance] updateLogToServerWithLogCount:[dict[@"Data"] integerValue]];
+            }
+            return;
+        }
         if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-            UNLogLBEProcess(@"非PushKit状态处理消息---%@", payload.dictionaryPayload)
+            UNLogLBEProcess(@"非PushKit状态")
             
             NSDictionary *dict = payload.dictionaryPayload;
             //            NSString *messageType = [dict[@"MessageType"] lowercaseString];
@@ -2657,7 +2668,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             return;
         }else{
             if (payload.dictionaryPayload) {
-                UNLogLBEProcess(@"PushKit状态处理消息---%@", payload.dictionaryPayload)
+                UNLogLBEProcess(@"PushKit状态")
                 NSDictionary *dict = payload.dictionaryPayload;
                 NSString *messageType = [dict[@"MessageType"] lowercaseString];
                 
@@ -2865,7 +2876,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (void)sendPushKitMessage:(NSDictionary *)servicePushKitData
 {
-    UNLogLBEProcess(@"当前队列需要发送的pushkit消息=====%@", servicePushKitData)
+    UNLogLBEProcess(@"当前队列需要发送的pushkit消息=====%@", servicePushKitData[@"dataString"])
     if ([UIApplication sharedApplication].applicationState != UIApplicationStateBackground) {
         [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate = NO;
         [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
@@ -3051,7 +3062,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         //        NSString *TLVdetail;
         dataString = [dataString stringByReplacingCharactersInRange:NSMakeRange(4, 2) withString:@"90"];
         self.tlvFirstStr = [dataString substringWithRange:NSMakeRange(0, 32)];
-        UNLogLBEProcess(@"截取Pushkit消息前面的数据 -- %@", self.tlvFirstStr)
+        UNDebugLogVerbose(@"截取Pushkit消息前面的数据 -- %@", self.tlvFirstStr)
         if ([[dataString substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"00"]) {
 //            00
             NSString *lengthStr = [dataString substringWithRange:NSMakeRange(32, 2)];
@@ -3060,7 +3071,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             if (dataString.length >= (34+leng * 2)) {
                 [UNPushKitMessageManager shareManager].simDataDict = @{@"time" : serviceData[@"time"], @"dataString" : [dataString substringWithRange:NSMakeRange(34, leng * 2)]};
             }
-            UNLogLBEProcess(@"两位leng = %zd  需要传入的字符串 -- %@", leng, [UNPushKitMessageManager shareManager].simDataDict)
+            UNDebugLogVerbose(@"两位leng = %zd  需要传入的字符串 -- %@", leng, [UNPushKitMessageManager shareManager].simDataDict)
         }
     }
 }

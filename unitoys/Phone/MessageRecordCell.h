@@ -10,6 +10,7 @@
 //#import "TopLeftLabel.h"
 
 @interface MessageRecordCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *unreadMsgLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *lblPhoneNumber;
 @property (weak, nonatomic) IBOutlet UILabel *lblMessageDate;

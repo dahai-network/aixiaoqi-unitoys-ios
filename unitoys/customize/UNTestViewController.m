@@ -34,30 +34,68 @@
     }
     return _loadingView;
 }
+- (IBAction)buttonArrayAction:(UIButton *)sender {
+    switch (sender.tag) {
+        case 1:
+        {
+            //present动画
+            [self initPopView];
+        }
+            break;
+        case 2:
+        {
+            //手机激活引导
+            [self pushActive];
+            
+        }
+            break;
+        case 3:
+        {
+            //短信界面
+//            [self pushMessageVc];
+            //上传日志
+            [self updateLogAction];
+        }
+            break;
+        case 4:
+        {
+            //动画
+            [self startLoadingAnima];
+        }
+            break;
+        case 5:
+        {
+            
+        }
+            break;
+        case 6:
+        {
+            
+        }
+            break;
+        case 7:
+        {
+            
+        }
+            break;
+        case 8:
+        {
+            
+        }
+            break;
+        default:
+            break;
+    }
+    
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Present" style:UIBarButtonItemStyleDone target:self action:@selector(presentVc)];
+    
+//    self.view.backgroundColor = [UIColor whiteColor];
+//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Present" style:UIBarButtonItemStyleDone target:self action:@selector(presentVc)];
 }
 
-- (void)presentVc
-{
-    //present动画
-//    [self initPopView];
-    
-    //手机激活引导
-//    [self pushActive];
-    
-    //短信界面
-//    [self pushMessageVc];
-    
-    //上传日志
-//    [self updateLogAction];
-    
-    [self startLoadingAnima];
-    
-}
 
 //引导激活
 - (void)pushActive

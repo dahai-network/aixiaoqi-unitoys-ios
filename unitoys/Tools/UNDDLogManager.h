@@ -13,7 +13,8 @@
 #define LOG_ASYNC_ENABLED YES
 
 #ifdef DEBUG
-static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+//static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+static const DDLogLevel ddLogLevel = DDLogLevelWarning;
 
 //#define UNLogLBEProcess(format, ...) DDLogWarn((@"[Function:%s]" "[Line:%d]" format), __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #define UNLogLBEProcess(format, ...) DDLogWarn(format, ##__VA_ARGS__);
@@ -40,5 +41,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelWarning;
 - (void)updateAllLogToServer;
 //上传指定日志数量
 - (void)updateLogToServerWithLogCount:(NSInteger)logCount;
+//删除所有日志
+- (void)clearAllLog;
 
 @end

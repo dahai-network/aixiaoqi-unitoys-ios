@@ -268,17 +268,18 @@
     BOOL isHasMessage = NO;
     if ([UNDataTools sharedInstance].isHasMissCall) {
         isHasMessage = YES;
-        [self.titleView showRedTipWithIndex:0];
+//        [self.titleView showRedTipWithIndex:0];
     }else{
-        [self.titleView hiddenRedTipWithIndex:0];
+//        [self.titleView hiddenRedTipWithIndex:0];
     }
     
     if ([UNDataTools sharedInstance].isHasUnreadSMS) {
         isHasMessage = YES;
-        [self.titleView showRedTipWithIndex:1];
+//        [self.titleView showRedTipWithIndex:1];
     }else{
-        [self.titleView hiddenRedTipWithIndex:1];
+//        [self.titleView hiddenRedTipWithIndex:1];
     }
+    
     if (isHasMessage) {
         [self.tabBarController.tabBar showBadgeOnItemIndex:1];
     }else{

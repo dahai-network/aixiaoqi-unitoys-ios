@@ -147,7 +147,7 @@ void networkReachabilityCallBack(SCNetworkReachabilityRef target, SCNetworkReach
 //        theSipEngine->SetDtmfMode(RFC2833);
         
         /*设置用户代理*/
-        theSipEngine->SetUserAgent("51dyt","iOS");
+        theSipEngine->SetUserAgent("aixiaoqi","iOS");
         
         first_run_ = YES;
         [self setCallDelegate:nil];

@@ -621,7 +621,7 @@ static FMDatabaseQueue *_msgDatabase =nil;
             NSString *sqlString = [NSString stringWithFormat:@"DROP TABLE IF EXISTS %@", apiName];
             BOOL isSuccess = [db executeUpdate:sqlString];
             if (!isSuccess) {
-                NSLog(@"删除数据库文件失败");
+                UNLogLBEProcess(@"删除短信数据库文件失败")
                 isSuccess = NO;
             }
             [db close];

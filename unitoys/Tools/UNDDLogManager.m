@@ -71,7 +71,7 @@
     //    fileLog.rollingFrequency = 60 * 60 * 24;
     //    fileLog.logFileManager.maximumNumberOfLogFiles = 2;
     fileLog.rollingFrequency = 60 * 60 * 12;
-    fileLog.logFileManager.maximumNumberOfLogFiles = 2;
+    fileLog.logFileManager.maximumNumberOfLogFiles = 3;
     [DDLog addLogger:fileLog];
 #endif
 }
@@ -92,7 +92,6 @@
     if ([self.fileManager fileExistsAtPath:self.defaultFilePath]) {
         NSArray *fileList = [self.fileLog.logFileManager sortedLogFileNames];
 //        NSArray *logpathArray = [self.fileLog.logFileManager sortedLogFilePaths];
-        UNDebugLogVerbose(@"存在指定路径");
 //        NSArray *fileList = [self.fileManager contentsOfDirectoryAtPath:self.defaultFilePath error:nil];
         UNDebugLogVerbose(@"文件列表====%@",fileList);
         NSInteger updateCount;
@@ -150,30 +149,23 @@
 }
 
 
-//- (void)uploadHead {
-//    
-//    UIImage *img = self.ivUserHead.image;
-//    
-//    self.checkToken = YES;
-//    [self getBasicHeader];
-//    /*
-//     
-//     SSFileConfig *uploadConfig = [[SSFileConfig alloc] initWithfileData:UIImageJPEGRepresentation(img,0.3) name:@"attachment" fileName:@"uploadFile.jpg" mimeType:@"image/jpeg"];*/
-//    NSData *imageData = UIImageJPEGRepresentation(img, 0.3);
-//    NSString *mimeType = @"image/jpeg";
-//    
-//    
-//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"data:%@;base64,%@", mimeType,[imageData base64EncodedStringWithOptions:0]],@"file", nil];
-//    
-//    self.checkToken = YES;
-//    
-//    [SSNetworkRequest postRequest:apiModifyUserHead params:params success:^(id responseObj) {
-//        //
-//        NSLog(@"上传结果：%@",responseObj);
-//    } failure:^(id dataObj, NSError *error) {
-//        //
-//        NSLog(@"上传错误：%@",dataObj);
-//    } headers:self.headers];
-//}
+- (void)clearAllLog
+{
+    if ([self.fileManager fileExistsAtPath:self.defaultFilePath]) {
+        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:self.defaultFilePath];
+        NSString *fileName;
+        while (fileName = [dirEnum nextObject]) {
+            NSError *error;
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@",self.defaultFilePath,fileName] error:&error];
+            if (error) {
+                UNLogLBEProcess(@"删除日志失败===%@", error);
+            }
+        }
+        UNLogLBEProcess(@"删除日志完成");
+    }else{
+        UNLogLBEProcess(@"不存在目录");
+    }
+
+}
 
 @end

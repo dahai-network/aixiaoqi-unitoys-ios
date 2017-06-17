@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface UNTestViewController : UIViewController
-
+@property (strong, nonatomic) IBOutletCollection(UIButton) NSArray *buttonArray;
 @end

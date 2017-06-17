@@ -412,7 +412,10 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     cell.lblMessageDate.text = textStr;
     cell.lblContent.text = [dicMessageRecord objectForKey:@"SMSContent"];
     if (_currentSelectPhone && [_currentSelectPhone isEqualToString:currentPhone]) {
-        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+        
+//        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+        cell.unreadMsgLabel.hidden = YES;
+        
         if (![dicMessageRecord[@"IsRead"] boolValue]) {
             NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
             [mutableDict setObject:@(1) forKey:@"IsRead"];
@@ -421,9 +424,11 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         }
     }else{
         if (![dicMessageRecord[@"IsRead"] boolValue]) {
-            [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
+//            [cell.lblPhoneNumber setTextColor:[UIColor redColor]];
+            cell.unreadMsgLabel.hidden = NO;
         }else{
-            [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+//            [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+            cell.unreadMsgLabel.hidden = YES;
         }
     }
     return cell;
@@ -443,7 +448,8 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         [mutableDict setObject:@(1) forKey:@"IsRead"];
         dicMessageRecord = mutableDict;
         MessageRecordCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+//        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+        cell.unreadMsgLabel.hidden = YES;
         [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:@[dicMessageRecord]];
     }
     

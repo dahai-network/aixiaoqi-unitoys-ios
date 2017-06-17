@@ -173,6 +173,8 @@
 		3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F81E5EB65B001E67C4 /* logo_call.png */; };
 		3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */; };
 		3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */; };
+		3C62E2CA1EF4DE9C0021358B /* UNHudView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C62E2C91EF4DE9C0021358B /* UNHudView.m */; };
+		3C62E2CC1EF5258F0021358B /* UNTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C62E2CB1EF5258F0021358B /* UNTestViewController.xib */; };
 		3C6668C51EA078860050FA66 /* UNDataTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6668C41EA078860050FA66 /* UNDataTools.m */; };
 		3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */; };
 		3C74D51E1EAD94EC009FE12D /* UNCustomTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C74D51D1EAD94EC009FE12D /* UNCustomTabBar.m */; };
@@ -711,6 +713,9 @@
 		3C52B1F81E5EB65B001E67C4 /* logo_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_call.png; sourceTree = "<group>"; };
 		3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_callKit.png; sourceTree = "<group>"; };
 		3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_callKit@2x.png"; sourceTree = "<group>"; };
+		3C62E2C81EF4DE9C0021358B /* UNHudView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNHudView.h; sourceTree = "<group>"; };
+		3C62E2C91EF4DE9C0021358B /* UNHudView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNHudView.m; sourceTree = "<group>"; };
+		3C62E2CB1EF5258F0021358B /* UNTestViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UNTestViewController.xib; sourceTree = "<group>"; };
 		3C6668C31EA078860050FA66 /* UNDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDataTools.h; sourceTree = "<group>"; };
 		3C6668C41EA078860050FA66 /* UNDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDataTools.m; sourceTree = "<group>"; };
 		3C66D0DB1E66714F00A7B125 /* UNDatabaseTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDatabaseTools.h; sourceTree = "<group>"; };
@@ -1502,6 +1507,8 @@
 				3C2F0D4F1EF3C16D00053979 /* UNBaseViewController.m */,
 				3C2F0D511EF3C54C00053979 /* UNHudViewController.h */,
 				3C2F0D521EF3C54D00053979 /* UNHudViewController.m */,
+				3C62E2C81EF4DE9C0021358B /* UNHudView.h */,
+				3C62E2C91EF4DE9C0021358B /* UNHudView.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1696,6 +1703,7 @@
 				3C99A8A01EA9DF9C00C96BE7 /* UNPresentTool.m */,
 				3C99A8A21EA9E4DC00C96BE7 /* UNTestViewController.h */,
 				3C99A8A31EA9E4DC00C96BE7 /* UNTestViewController.m */,
+				3C62E2CB1EF5258F0021358B /* UNTestViewController.xib */,
 				3C74D51C1EAD94EC009FE12D /* UNCustomTabBar.h */,
 				3C74D51D1EAD94EC009FE12D /* UNCustomTabBar.m */,
 				3C27E1BD1EC06E7A00D48F12 /* UNPresentHomeTipView.h */,
@@ -2541,6 +2549,7 @@
 				04440D301E77C98F00206877 /* CallComingInViewController.xib in Resources */,
 				3C4863601E8CF111006FD87C /* number_location.zip in Resources */,
 				04440D451E77CEE000206877 /* BindGiftBagCardViewController.xib in Resources */,
+				3C62E2CC1EF5258F0021358B /* UNTestViewController.xib in Resources */,
 				04A9497E1E826875007611F7 /* WristbandSettingViewController.xib in Resources */,
 				0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */,
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
@@ -2799,6 +2808,7 @@
 				3C388A861EC4438300A04BA8 /* ConvenienceOrderCell.m in Sources */,
 				04AFE6691EC584D100B3BC8F /* ZBTableRreshViewController.m in Sources */,
 				95938D321D92C3C6008A0A21 /* CountryListViewController.m in Sources */,
+				3C62E2CA1EF4DE9C0021358B /* UNHudView.m in Sources */,
 				95938D3B1D93ABB2008A0A21 /* PackageListViewController.m in Sources */,
 				954A87D61D98BBA700570843 /* JSONValueTransformer.m in Sources */,
 				04F727981E641CE4002EB54C /* GCDAsyncSocket.m in Sources */,
