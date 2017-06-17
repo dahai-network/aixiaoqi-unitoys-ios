@@ -35,6 +35,7 @@ typedef enum : NSUInteger {
 
 @property (nonatomic, weak) UNPresentImageView *presentImageView;
 @property (nonatomic, strong)UIWindow *firstWindow;
+@property (nonatomic, assign) BOOL isShowWimdow;
 
 @end
 
@@ -42,21 +43,6 @@ typedef enum : NSUInteger {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    if (!self.firstWindow) {
-        self.firstWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        self.firstWindow.windowLevel = UIWindowLevelStatusBar-1;
-        self.firstWindow.backgroundColor = [UIColor whiteColor];
-    }
-    UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.firstWindow.frame];
-    imgView.image = [UIImage imageNamed:@"AppLaunch"];
-    [self.firstWindow addSubview:imgView];
-    [self.firstWindow makeKeyAndVisible];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        self.firstWindow.hidden = YES;
-        self.firstWindow = nil;
-        [self.firstWindow makeKeyAndVisible];
-    });
     
     self.delegate = self;
     for (navHomeViewController *controller in self.childViewControllers) {
@@ -149,7 +135,25 @@ typedef enum : NSUInteger {
     [self updateCallTimeFromServer];
 }
 
-
+- (void)viewWillAppear:(BOOL)animated {
+    if (!self.isShowWimdow) {
+        if (!self.firstWindow) {
+            self.firstWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+            self.firstWindow.windowLevel = UIWindowLevelStatusBar-1;
+            self.firstWindow.backgroundColor = [UIColor whiteColor];
+        }
+        UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.firstWindow.frame];
+        imgView.image = [UIImage imageNamed:@"AppLaunch"];
+        [self.firstWindow addSubview:imgView];
+        [self.firstWindow makeKeyAndVisible];
+        self.isShowWimdow = YES;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            self.firstWindow.hidden = YES;
+            self.firstWindow = nil;
+            [self.firstWindow makeKeyAndVisible];
+        });
+    }
+}
 
 - (void)showLowElectyAlert {
     if (![BlueToothDataManager shareManager].isAlreadyShowElectyAlert) {
