@@ -533,6 +533,7 @@
     } else {
         versionStr = @"1.00";
     }
+//    versionStr = @"1.17";
     if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
         typeStr = @"0";
     } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {

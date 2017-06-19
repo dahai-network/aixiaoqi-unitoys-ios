@@ -25,4 +25,6 @@
 
 - (void)reconnectAction;
 
+- (void)registAndInit;
+
 @end

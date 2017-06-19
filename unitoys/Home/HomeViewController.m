@@ -564,6 +564,7 @@
 
 - (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle leftActionTitle:(NSString *)leftActionTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
     UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    [self setAlertMessageTextAlignment:alertVC];
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(leftActionTitle) style:UIAlertActionStyleCancel handler:nil];
     UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         rightAlertAction();
@@ -575,10 +576,29 @@
 
 - (void)dj_alertActionWithAlertTitle:(NSString *)alertTitle rightActionTitle:(NSString *)rightActionTitle message:(NSString *)message rightAlertAction:(void (^)())rightAlertAction {
     UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    [self setAlertMessageTextAlignment:alertVC];
     UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(rightActionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self showMustAlert:alertVC];
         rightAlertAction();
     }];
     [alertVC addAction:certailAction];
+    [self presentViewController:alertVC animated:YES completion:nil];
+}
+
+- (void)setAlertMessageTextAlignment:(UIAlertController *)alertController {
+    UIView *subView1 = alertController.view.subviews[0];
+    UIView *subView2 = subView1.subviews[0];
+    UIView *subView3 = subView2.subviews[0];
+    UIView *subView4 = subView3.subviews[0];
+    UIView *subView5 = subView4.subviews[0];
+    NSLog(@"%@",subView5.subviews);
+    //取title和message：
+//    UILabel *title = subView5.subviews[0];
+    UILabel *message = subView5.subviews[1];
+    message.textAlignment = NSTextAlignmentLeft;
+}
+
+- (void)showMustAlert:(UIAlertController *)alertVC {
     [self presentViewController:alertVC animated:YES completion:nil];
 }
 

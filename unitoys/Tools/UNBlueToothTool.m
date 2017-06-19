@@ -1058,7 +1058,6 @@ static UNBlueToothTool *instance = nil;
         }
         UNDebugLogVerbose(@"characteristic:%@", characteristic);
     }
-    
     if (![BlueToothDataManager shareManager].isBeingOTA && self.boundedDeviceInfo[@"IMEI"]) {
         //将连接的信息存储到本地
         UNLogLBEProcess(@"没有进行空中升级的时候连接 %@", [peripheral.identifier UUIDString])
@@ -2246,7 +2245,8 @@ static UNBlueToothTool *instance = nil;
                         [UNPushKitMessageManager shareManager].iccidString = contentStr.lowercaseString;
                         [BlueToothDataManager shareManager].iccidFromBle = contentStr.lowercaseString;
                         if ([BlueToothDataManager shareManager].iccidFromTcp) {
-                            if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle]) {
+                            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
+                            if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle] && dict) {
                                 //在线
                                 UNLogLBEProcess(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__)
                                 [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];

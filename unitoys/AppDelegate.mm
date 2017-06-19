@@ -457,6 +457,8 @@
 {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [[VSWManager shareManager] simActionWithSimType:noti.object];
+        [[VSWManager shareManager] registAndInit];
+        
     });
     UNLogLBEProcess(@"创建udp")
     [self setUpUdpSocket];
@@ -1713,6 +1715,7 @@
     UNDebugLogVerbose(@"转换之后的内容：%@", receivedMessage);
     if ([receivedMessage isEqualToString:@"200001:0x0000"]) {
         if (![UNPushKitMessageManager shareManager].isUdpSendFristMsg) {
+            DebugUNLog(@"注册百分之一");
             [[NSNotificationCenter defaultCenter] postNotificationName:@"upLoadToCard" object:@"upLoadToCard"];
             [UNPushKitMessageManager shareManager].isUdpSendFristMsg = YES;
         }
@@ -1720,6 +1723,7 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
         }
     } else {
+        DebugUNLog(@"注册百分之一");
         [UNPushKitMessageManager shareManager].isUdpSendFristMsg = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewMessageFromBLE" object:[receivedMessage substringFromIndex:7]];
     }

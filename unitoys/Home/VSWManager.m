@@ -61,6 +61,18 @@ static VSWManager * manager=nil;
     SimComEvtApp2Drv(&appEvtSendBuff);
 }
 
+
+- (void)registAndInit {
+    ST_SIMCOM_APPEVT appEvtSendBuff;
+    appEvtSendBuff.chn = 0;
+    appEvtSendBuff.evtIndex = EN_APPEVT_CMD_SETRST;
+    appEvtSendBuff.len = 1;
+    int endMinutes = 1;
+    Byte endMinuteByte = (Byte)0xff&endMinutes;
+    appEvtSendBuff.pData = &endMinuteByte;
+    SimComEvtApp2Drv(&appEvtSendBuff);
+}
+
 - (NSData *)convertHexStrToData:(NSString *)str {
     if (!str || [str length] == 0) {
         return nil;
