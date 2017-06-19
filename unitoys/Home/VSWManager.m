@@ -14,6 +14,11 @@
 
 static VSWManager * manager=nil;
 
+@interface VSWManager ()
+@property (nonatomic, assign)BOOL isNeedReSetSDK;
+
+@end
+
 @implementation VSWManager
 
 + (VSWManager *)shareManager {
@@ -25,18 +30,22 @@ static VSWManager * manager=nil;
 }
 
 - (void)simActionWithSimType:(NSString *)sender {
-    SimComInit();
-    
-    ST_SIMCOM_APPEVT appEvtSendBuff;
-    appEvtSendBuff.chn = 0;
-    appEvtSendBuff.evtIndex = EN_APPEVT_SETSIMTYPE;
-    appEvtSendBuff.len = 1;
-    int endMinutes = [sender intValue];
-    Byte endMinuteByte = (Byte)0xff&endMinutes;
-    appEvtSendBuff.pData = &endMinuteByte;
-    UNDebugLogVerbose(@"前面传入的结构体参数 -- %hhu", endMinuteByte);
-    SimComEvtApp2Drv(&appEvtSendBuff);
-    SimCom_Task();
+    if (!self.isNeedReSetSDK) {
+        self.isNeedReSetSDK = YES;
+        SimComInit();
+        ST_SIMCOM_APPEVT appEvtSendBuff;
+        appEvtSendBuff.chn = 0;
+        appEvtSendBuff.evtIndex = EN_APPEVT_SETSIMTYPE;
+        appEvtSendBuff.len = 1;
+        int endMinutes = [sender intValue];
+        Byte endMinuteByte = (Byte)0xff&endMinutes;
+        appEvtSendBuff.pData = &endMinuteByte;
+        UNDebugLogVerbose(@"前面传入的结构体参数 -- %hhu", endMinuteByte);
+        SimComEvtApp2Drv(&appEvtSendBuff);
+        SimCom_Task();
+    } else {
+        [self registAndInit];
+    }
 }
 
 - (void)sendMessageToDev:(NSString *)length pdata:(NSString *)dataStr {
@@ -63,6 +72,7 @@ static VSWManager * manager=nil;
 
 
 - (void)registAndInit {
+    UNDebugLogVerbose(@"走了重新初始化VSW的步骤");
     ST_SIMCOM_APPEVT appEvtSendBuff;
     appEvtSendBuff.chn = 0;
     appEvtSendBuff.evtIndex = EN_APPEVT_CMD_SETRST;

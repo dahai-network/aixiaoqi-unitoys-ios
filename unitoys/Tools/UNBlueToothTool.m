@@ -1141,7 +1141,7 @@ static UNBlueToothTool *instance = nil;
             appdenStr = [appdenStr stringByAppendingString:randomNumStr];
         }
     }
-//    appdenStr = @"0102030405060708";
+    appdenStr = @"0102030405060708";
     NSString *encryptStr = [NSString doEncryptBuffer:[self convenStrToCharWithString:appdenStr]];
     UNLogLBEProcess(@"转换之后的文字 -- %@", appdenStr)
     UNLogLBEProcess(@"加密之后的文字 -- %@", encryptStr)
@@ -1713,6 +1713,7 @@ static UNBlueToothTool *instance = nil;
                     NSString *isHaveCardStr = [contentStr substringWithRange:NSMakeRange(6, 2)];
                     if ([isHaveCardStr isEqualToString:@"00"]) {
                         UNLogLBEProcess(@"系统基本信息 -- 无卡")
+                        [BlueToothDataManager shareManager].isDoneRegist = NO;
                         [BlueToothDataManager shareManager].isHaveCard = NO;
                         [BlueToothDataManager shareManager].currentSimCardStatu = 1;
                     } else if ([isHaveCardStr isEqualToString:@"01"]) {
@@ -1871,9 +1872,11 @@ static UNBlueToothTool *instance = nil;
                                     UNDebugLogVerbose(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
                                     if (dict) {
                                         //创建tcp,建立连接
+                                        [BlueToothDataManager shareManager].isFirstRegist = NO;
                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
                                     }else{
                                         //创建udp,初始化操作
+                                        [BlueToothDataManager shareManager].isFirstRegist = YES;
                                         [UNPushKitMessageManager shareManager].isNeedRegister = YES;
                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
                                     }
@@ -2120,6 +2123,7 @@ static UNBlueToothTool *instance = nil;
                         case 0:
                         {
                             UNLogLBEProcess(@"卡状态改变 -- 无卡")
+                            [BlueToothDataManager shareManager].isDoneRegist = NO;
                             [BlueToothDataManager shareManager].isShowStatuesView = YES;
                             if (![BlueToothDataManager shareManager].isBeingShowAlert && [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue) {
                                 [BlueToothDataManager shareManager].isBeingShowAlert = YES;
@@ -2740,10 +2744,12 @@ static UNBlueToothTool *instance = nil;
                                 NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
                                 if (dict) {
                                     //创建tcp,建立连接
+                                    DebugUNLog(@"创建tcp,建立连接");
                                     [BlueToothDataManager shareManager].isFirstRegist = NO;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
                                 }else{
                                     //创建udp,初始化操作
+                                    DebugUNLog(@"创建udp,初始化操作");
                                     [BlueToothDataManager shareManager].isFirstRegist = YES;
                                     [UNPushKitMessageManager shareManager].isNeedRegister = YES;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];

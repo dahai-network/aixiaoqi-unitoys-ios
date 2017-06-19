@@ -457,7 +457,7 @@
 {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [[VSWManager shareManager] simActionWithSimType:noti.object];
-        [[VSWManager shareManager] registAndInit];
+//        [[VSWManager shareManager] registAndInit];
         
     });
     UNLogLBEProcess(@"创建udp")
@@ -589,6 +589,7 @@
             [UNPushKitMessageManager shareManager].isSendTcpString = NO;
             [self reConnectTcp];
         }else{
+            UNLogLBEProcess(@"tcp已连接")
             if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                 if (self.sendTcpSocket.isConnected) {
                     UNLogLBEProcess(@"tcp pushkit数据---%@",[UNPushKitMessageManager shareManager].tcpStringWithPushKit)
@@ -605,6 +606,7 @@
                     }
                 }else{
                     [UNPushKitMessageManager shareManager].isSendTcpString = NO;
+                    DebugUNLog(@"走的这里");
                     [self reConnectTcp];
                 }
             }else{
@@ -620,6 +622,8 @@
                         [self sendMsgWithMessage:self.tcpPacketStr];
                     }
                     
+                } else {
+                    DebugUNLog(@"走的哪里？");
                 }
             }
         }
@@ -971,6 +975,7 @@
 //            }
         }else{
             [BlueToothDataManager shareManager].isTcpConnected = YES;
+            self.isNeedToCheckSIMStatue = YES;
             [self sendDataToCheckRegistStatue];
             if (![BlueToothDataManager shareManager].isReseted) {
                 UNLogLBEProcess(@"1tcp数据----%@", self.tcpPacketStr)

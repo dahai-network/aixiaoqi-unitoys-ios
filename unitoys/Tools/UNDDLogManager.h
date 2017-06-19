@@ -13,8 +13,8 @@
 #define LOG_ASYNC_ENABLED YES
 
 #ifdef DEBUG
-//static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
-static const DDLogLevel ddLogLevel = DDLogLevelWarning;
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
+//static const DDLogLevel ddLogLevel = DDLogLevelWarning;
 
 //#define UNLogLBEProcess(format, ...) DDLogWarn((@"[Function:%s]" "[Line:%d]" format), __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #define UNLogLBEProcess(format, ...) DDLogWarn(format, ##__VA_ARGS__);
