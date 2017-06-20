@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -20,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="后台应用刷新权限" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mkH-19-KAO">
-                        <rect key="frame" x="15" y="11" width="140" height="21"/>
+                        <rect key="frame" x="55" y="11" width="140" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="cI6-wm-SPB"/>
                             <constraint firstAttribute="width" constant="140" id="w3Q-2f-8GO"/>
@@ -30,7 +30,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mSk-i4-gmU">
-                        <rect key="frame" x="165" y="11" width="127" height="21"/>
+                        <rect key="frame" x="205" y="11" width="87" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="Wav-iv-jAD"/>
                         </constraints>
@@ -52,10 +52,17 @@
                             <constraint firstAttribute="height" constant="1" id="2G3-J8-qxH"/>
                         </constraints>
                     </view>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QRx-GF-w9U">
+                        <rect key="frame" x="15" y="6.5" width="30" height="30"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="QRx-GF-w9U" secondAttribute="height" multiplier="1:1" id="AUo-1y-TEI"/>
+                            <constraint firstAttribute="width" constant="30" id="arI-GG-uG2"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="mkH-19-KAO" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="6aT-Mh-eVd"/>
                     <constraint firstItem="mSk-i4-gmU" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="GeZ-K9-V2p"/>
+                    <constraint firstItem="mkH-19-KAO" firstAttribute="leading" secondItem="QRx-GF-w9U" secondAttribute="trailing" constant="10" id="Gi3-0e-xNx"/>
                     <constraint firstItem="mkH-19-KAO" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="H1S-Q5-58G"/>
                     <constraint firstItem="mSk-i4-gmU" firstAttribute="leading" secondItem="mkH-19-KAO" secondAttribute="trailing" constant="10" id="NAt-Ln-PmY"/>
                     <constraint firstAttribute="trailing" secondItem="Fa0-oL-0lJ" secondAttribute="trailing" constant="15" id="Usw-8Q-pk3"/>
@@ -63,10 +70,13 @@
                     <constraint firstItem="nVi-nj-Iew" firstAttribute="trailing" secondItem="Fa0-oL-0lJ" secondAttribute="trailing" id="X3U-aS-f54"/>
                     <constraint firstItem="Fa0-oL-0lJ" firstAttribute="leading" secondItem="mSk-i4-gmU" secondAttribute="trailing" constant="5" id="b3e-jL-Yrh"/>
                     <constraint firstItem="Fa0-oL-0lJ" firstAttribute="centerY" secondItem="mkH-19-KAO" secondAttribute="centerY" id="dIU-d2-qD9"/>
-                    <constraint firstItem="nVi-nj-Iew" firstAttribute="leading" secondItem="mkH-19-KAO" secondAttribute="leading" id="gaL-Ac-owO"/>
+                    <constraint firstItem="nVi-nj-Iew" firstAttribute="leading" secondItem="QRx-GF-w9U" secondAttribute="leading" id="gWY-Rg-KEf"/>
+                    <constraint firstItem="QRx-GF-w9U" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="15" id="hJl-nq-Jum"/>
+                    <constraint firstItem="QRx-GF-w9U" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="pDW-sn-Nva"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="imgSettingImage" destination="QRx-GF-w9U" id="Y0h-tT-3ku"/>
                 <outlet property="lblLast" destination="mSk-i4-gmU" id="HHV-EE-fC3"/>
                 <outlet property="lblName" destination="mkH-19-KAO" id="rRf-vQ-ukf"/>
             </connections>

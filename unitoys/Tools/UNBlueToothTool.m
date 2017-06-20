@@ -2260,31 +2260,36 @@ static UNBlueToothTool *instance = nil;
                 }
                 
                 if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-                    if (contentStr && [[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
-                        [BlueToothDataManager shareManager].isShowStatuesView = YES;
-                        [UNPushKitMessageManager shareManager].iccidString = contentStr.lowercaseString;
-                        [BlueToothDataManager shareManager].iccidFromBle = contentStr.lowercaseString;
-                        if ([BlueToothDataManager shareManager].iccidFromTcp) {
-                            NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
-                            if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle] && dict) {
-                                //在线
-                                UNLogLBEProcess(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__)
-                                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-                                [BlueToothDataManager shareManager].isRegisted = YES;
-                                [UNPushKitMessageManager shareManager].iccidString = [BlueToothDataManager shareManager].iccidFromTcp;
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
+                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                        if (contentStr && [[BlueToothDataManager shareManager].cardType isEqualToString:@"2"]) {
+                            [BlueToothDataManager shareManager].isShowStatuesView = YES;
+                            [UNPushKitMessageManager shareManager].iccidString = contentStr.lowercaseString;
+                            [BlueToothDataManager shareManager].iccidFromBle = contentStr.lowercaseString;
+                            if ([BlueToothDataManager shareManager].iccidFromTcp) {
+                                NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
+                                if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle] && dict) {
+                                    //在线
+                                    UNLogLBEProcess(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__)
+                                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
+                                    [BlueToothDataManager shareManager].isRegisted = YES;
+                                    [UNPushKitMessageManager shareManager].iccidString = [BlueToothDataManager shareManager].iccidFromTcp;
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
+                                } else {
+                                    //不是同一张卡，需要重新注册
+                                    UNLogLBEProcess(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__)
+                                    [BlueToothDataManager shareManager].isChangeSimCard = YES;
+                                    [self registSimCardStep];
+                                }
                             } else {
-                                //不是同一张卡，需要重新注册
-                                UNLogLBEProcess(@"不是同一张卡在线，需要重新注册 - tcpiccid:%@ bleiccid:%@,%s,%d", [BlueToothDataManager shareManager].iccidFromTcp, [BlueToothDataManager shareManager].iccidFromBle, __FUNCTION__, __LINE__)
-                                [BlueToothDataManager shareManager].isChangeSimCard = YES;
+                                //原先注册程序在这里
+                                UNLogLBEProcess(@"不在线，正常注册 - %s,%d", __FUNCTION__, __LINE__)
+                                [BlueToothDataManager shareManager].isDoneRegist = YES;
                                 [self registSimCardStep];
                             }
-                        } else {
-                            //原先注册程序在这里
-                            UNLogLBEProcess(@"不在线，正常注册 - %s,%d", __FUNCTION__, __LINE__)
-                            [BlueToothDataManager shareManager].isDoneRegist = YES;
-                            [self registSimCardStep];
                         }
+                    } else {
+                        UNLogLBEProcess(@"服务未开");
+                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
                     }
                 }else{
                     if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect) {

@@ -130,6 +130,8 @@
 }
 
 - (void)offsetCanEnable {
+//    DebugUNLog(@"开关可以点击了");
+    UNLogLBEProcess(@"开关可以点击了");
     self.offButton.enabled = YES;
 }
 
@@ -224,10 +226,14 @@
         self.operatorName.text = @"----";
     } else {
         NSLog(@"网络可用");
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self checkBLEStatue];
-            [self checkPackageResidue];
-        });
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self checkBLEStatue];
+                [self checkPackageResidue];
+            });
+        } else {
+            DebugUNLog(@"服务未开");
+        }
     }
 }
 
@@ -594,6 +600,9 @@
         } else {
             //添加注销注册的功能
             [self dj_alertAction:self alertTitle:@"温馨提示" actionTitle:@"继续" message:@"关闭此功能后您将无法正常使用电话和短信等相关功能，是否继续？" alertAction:^{
+                if (([[BlueToothDataManager shareManager].operatorType isEqualToString:@"1"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"2"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"3"]) && [BlueToothDataManager shareManager].isTcpConnected) {
+                    sender.enabled = NO;
+                }
                 [MobClick event:UMeng_Event_CloseService];
                 [sender setImage:[UIImage imageNamed:@"btn_kg_close"] forState:UIControlStateNormal];
                 NSString *statueStr = @"off";
@@ -604,7 +613,6 @@
                 }
                 [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
-                sender.enabled = NO;
             }];
         }
     } else {

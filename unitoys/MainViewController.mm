@@ -362,7 +362,11 @@ typedef enum : NSUInteger {
         //有网络
         NSLog(@"当前网络可用");
 //        NSString *statuesLabelStr = @"注册中";
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:HOMESTATUETITLE_REGISTING];
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:HOMESTATUETITLE_REGISTING];
+        } else {
+            DebugUNLog(@"服务未开");
+        }
 //        self.isNetworkCanUse = YES;
 //        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {
 //            [self addProgressWindow];

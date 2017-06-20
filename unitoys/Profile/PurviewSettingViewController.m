@@ -37,14 +37,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSMutableDictionary *dict1 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"定位权限", @"status":@"未知"}];
-    NSMutableDictionary *dict2 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"通讯录权限", @"status":@"未知"}];
-    NSMutableDictionary *dict3 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"相册权限", @"status":@"未知"}];
-    NSMutableDictionary *dict4 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"麦克风权限", @"status":@"未知"}];
-    NSMutableDictionary *dict5 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"相机权限", @"status":@"未知"}];
-    NSMutableDictionary *dict6 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"通知权限", @"status":@"未知"}];
-    NSMutableDictionary *dict7 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"后台应用刷新权限", @"status":@"未知"}];
-    NSMutableDictionary *dict8 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"无线数据权限", @"status":@"未知"}];
+    NSMutableDictionary *dict1 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"定位权限", @"status":@"未知", @"img":@"positioning"}];
+    NSMutableDictionary *dict2 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"通讯录权限", @"status":@"未知", @"img":@"contacts"}];
+    NSMutableDictionary *dict3 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"相册权限", @"status":@"未知", @"img":@"photos"}];
+    NSMutableDictionary *dict4 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"麦克风权限", @"status":@"未知", @"img":@"mike"}];
+    NSMutableDictionary *dict5 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"相机权限", @"status":@"未知", @"img":@"camera"}];
+    NSMutableDictionary *dict6 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"通知权限", @"status":@"未知", @"img":@"notice"}];
+    NSMutableDictionary *dict7 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"后台应用刷新权限", @"status":@"未知", @"img":@"site"}];
+    NSMutableDictionary *dict8 = [NSMutableDictionary dictionaryWithDictionary:@{@"lblName":@"无线数据权限", @"status":@"未知", @"img":@"data"}];
     self.dataArr = [NSMutableArray arrayWithObjects:dict1, dict2, dict3, dict4, dict5, dict6, dict7, dict8, nil];
     self.title = INTERNATIONALSTRING(@"权限设置");
     self.tableView.tableFooterView = [UIView new];
@@ -341,6 +341,7 @@
     NSDictionary *dict = self.dataArr[indexPath.row];
     cell.lblName.text = dict[@"lblName"];
     cell.lblLast.text = dict[@"status"];
+    cell.imgSettingImage.image = [UIImage imageNamed:dict[@"img"]];
     return cell;
 }
 

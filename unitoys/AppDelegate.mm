@@ -567,6 +567,7 @@
 
 - (void)connectingBLEAction {
     //发送数据
+    self.communicateID = @"00000000";
     [self sendMsgWithMessage:self.tcpPacketStr];
 }
 
@@ -998,6 +999,7 @@
 // 如果对象关闭了 这里也会调用
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err {
     [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
+    self.communicateID = @"00000000";
     UNLogLBEProcess(@"tcp连接失败 %@", err)
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"off"]) {
         UNLogLBEProcess(@"关闭开关，断开tcp")
@@ -1023,10 +1025,6 @@
         }
     }
     
-//    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
-//        return;
-//    }
-    
     [BlueToothDataManager shareManager].isTcpConnected = NO;
     
     if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
@@ -1035,10 +1033,6 @@
         UNLogLBEProcess(@"无网络")
     }else{
         if (err) {
-//            if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-//                [UNCreatLocalNoti createNETDisConnectNoti];
-//                return;
-//            }
             UNLogLBEProcess(@"连接失败")
             
             [self closeTCP];
@@ -1049,82 +1043,30 @@
                 }
                 return;
             }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
-                    [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
-                    [UNPushKitMessageManager shareManager].tcpReconnectTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tcpReconnectTimerAction) userInfo:nil repeats:YES];
-                    [[UNPushKitMessageManager shareManager].tcpReconnectTimer fire];
-                }
-            });
-            
-            
-//            if(err.code == 7 || err.code == 61){
-//                self.sendTcpSocket.userData = SocketCloseByServer;
-//                [BlueToothDataManager shareManager].isTcpConnected = NO;
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
-//                        [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
-//                        [UNPushKitMessageManager shareManager].tcpReconnectTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tcpReconnectTimerAction) userInfo:nil repeats:YES];
-//                        [[UNPushKitMessageManager shareManager].tcpReconnectTimer fire];
-//                    }
-//                });
-//            }else if (err.code == 57 || err.code == 32 || err.code == 51 || err.code == 1) {
-//                if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
-//                    [[UNPushKitMessageManager shareManager].tcpReconnectTimer invalidate];
-//                    [UNPushKitMessageManager shareManager].tcpReconnectTimer = nil;
-//                }
-//                self.sendTcpSocket.userData = SocketCloseByNet;
-//                [self closeTCP];
-//                if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeNone) {
-//                    [UNPushKitMessageManager shareManager].isSendTcpString = NO;
-//                }
-//                [self creatAsocketTcp];
-//            } else{
-//                UNDebugLogVerbose(@"其他原因断开");
-//                if ([self.sendTcpSocket.userData isEqualToString:SocketCloseByNet]) {
-//                    if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
-//                        [[UNPushKitMessageManager shareManager].tcpReconnectTimer invalidate];
-//                        [UNPushKitMessageManager shareManager].tcpReconnectTimer = nil;
-//                    }
-//                    [self closeTCP];
-//                    if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeNone) {
-//                        [UNPushKitMessageManager shareManager].isSendTcpString = NO;
-//                    }
-//                    [self creatAsocketTcp];
-//                }else if ([self.sendTcpSocket.userData isEqualToString:SocketCloseByServer]){
-////                    self.sendTcpSocket.userData = SocketCloseByServer;
-//                    [BlueToothDataManager shareManager].isTcpConnected = NO;
-//                    if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
-//                        [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
-//                        [UNPushKitMessageManager shareManager].tcpReconnectTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tcpReconnectTimerAction) userInfo:nil repeats:YES];
-//                        [[UNPushKitMessageManager shareManager].tcpReconnectTimer fire];
-//                    }
-//                }else{
-//                    UNDebugLogVerbose(@"不重连");
-//                    [BlueToothDataManager shareManager].isTcpConnected = NO;
-//                }
-//            }
+            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
+                        [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
+                        [UNPushKitMessageManager shareManager].tcpReconnectTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tcpReconnectTimerAction) userInfo:nil repeats:YES];
+                        [[UNPushKitMessageManager shareManager].tcpReconnectTimer fire];
+                    }
+                });
+            } else {
+                DebugUNLog(@"服务未开");
+            }
         }else{
             UNLogLBEProcess(@"正常断开")
-            [BlueToothDataManager shareManager].isTcpConnected = NO;
-            if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
-                [[UNPushKitMessageManager shareManager].tcpReconnectTimer invalidate];
-                [UNPushKitMessageManager shareManager].tcpReconnectTimer = nil;
+            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                [BlueToothDataManager shareManager].isTcpConnected = NO;
+                if ([UNPushKitMessageManager shareManager].tcpReconnectTimer) {
+                    [[UNPushKitMessageManager shareManager].tcpReconnectTimer invalidate];
+                    [UNPushKitMessageManager shareManager].tcpReconnectTimer = nil;
+                }
+            } else {
+                DebugUNLog(@"服务未开");
             }
         }
     }
-    
-    
-//    [BlueToothDataManager shareManager].isTcpConnected = NO;
-//    if (![UNPushKitMessageManager shareManager].tcpReconnectTimer) {
-//        [UNPushKitMessageManager shareManager].tcpSocketTimerIndex = 0;
-//        [UNPushKitMessageManager shareManager].tcpReconnectTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(tcpReconnectTimerAction) userInfo:nil repeats:YES];
-//    }
-    
-//    if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-//        [self reConnectTcp];
-//    }
 }
 
 - (void)tcpReconnectTimerAction
@@ -1536,13 +1478,13 @@
         }
     } else if ([classStr isEqualToString:@"8d"]) {
         UNLogLBEProcess(@"关闭tcp成功")
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
+        });
 //        [BlueToothDataManager shareManager].isTcpConnected = NO;
         [BlueToothDataManager shareManager].isRegisted = NO;
         [BlueToothDataManager shareManager].iccidFromTcp = nil;
         [self closeTCP];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
-        });
     } else {
         UNDebugLogVerbose(@"这是什么鬼");
     }

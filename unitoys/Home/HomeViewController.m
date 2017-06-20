@@ -507,7 +507,11 @@
 
 - (void)networkStatues:(NSNotification *)sender {
     if ([sender.object isEqualToString:@"1"] && [BlueToothDataManager shareManager].isConnected) {
-        [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            [[UNBlueToothTool shareBlueToothTool] checkSystemInfo];
+        } else {
+            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
+        }
     }
 }
 

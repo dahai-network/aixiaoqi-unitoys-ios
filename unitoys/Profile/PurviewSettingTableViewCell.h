@@ -11,5 +11,6 @@
 @interface PurviewSettingTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *lblName;
 @property (weak, nonatomic) IBOutlet UILabel *lblLast;
+@property (weak, nonatomic) IBOutlet UIImageView *imgSettingImage;
 
 @end
