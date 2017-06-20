@@ -606,7 +606,7 @@
                     }
                 }else{
                     [UNPushKitMessageManager shareManager].isSendTcpString = NO;
-                    DebugUNLog(@"走的这里");
+                    UNLogLBEProcess(@"走的这里");
                     [self reConnectTcp];
                 }
             }else{
@@ -623,7 +623,7 @@
                     }
                     
                 } else {
-                    DebugUNLog(@"走的哪里？");
+                    UNLogLBEProcess(@"走的哪里？");
                 }
             }
         }
@@ -734,6 +734,7 @@
                               };
     [[NSUserDefaults standardUserDefaults] setObject:simData forKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
     //创建tcp
+    [BlueToothDataManager shareManager].isReseted = NO;
     [self creatAsocketTcp];
 }
 

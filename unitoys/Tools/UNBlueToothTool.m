@@ -1120,7 +1120,11 @@ static UNBlueToothTool *instance = nil;
             //请求卡类型和ICCID
             if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                 UNLogLBEProcess(@"获取卡类型")
-                [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+                if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                    [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+                } else {
+                    DebugUNLog(@"服务未开");
+                }
             }
         } else {
             [BlueToothDataManager shareManager].isShowStatuesView = YES;
@@ -1141,7 +1145,7 @@ static UNBlueToothTool *instance = nil;
             appdenStr = [appdenStr stringByAppendingString:randomNumStr];
         }
     }
-    appdenStr = @"0102030405060708";
+//    appdenStr = @"0102030405060708";
     NSString *encryptStr = [NSString doEncryptBuffer:[self convenStrToCharWithString:appdenStr]];
     UNLogLBEProcess(@"转换之后的文字 -- %@", appdenStr)
     UNLogLBEProcess(@"加密之后的文字 -- %@", encryptStr)
@@ -1176,7 +1180,11 @@ static UNBlueToothTool *instance = nil;
     //请求基本信息
 //    [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
     //请求卡类型和ICCID
-    [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+        [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+    } else {
+        DebugUNLog(@"服务未开");
+    }
 }
 
 //请求系统基本信息
@@ -1257,7 +1265,11 @@ static UNBlueToothTool *instance = nil;
 {
     if ([BlueToothDataManager shareManager].isConnected) {
         [UNPushKitMessageManager shareManager].isQuickLoad = NO;
-        [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+        } else {
+            DebugUNLog(@"服务未开");
+        }
     }
 }
 
@@ -1772,7 +1784,11 @@ static UNBlueToothTool *instance = nil;
 //                [self showHudNormalString:INTERNATIONALSTRING(@"绑定成功")];
 //                [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
                 //请求卡类型和ICCID
-                [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+                if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                    [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
+                } else {
+                    DebugUNLog(@"服务未开");
+                }
                 [self bindBoundDevice];
                 //对卡上电
 //                [self phoneCardToUpeLectrify:@"01"];
