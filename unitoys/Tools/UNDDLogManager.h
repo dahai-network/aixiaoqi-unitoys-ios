@@ -44,4 +44,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelWarning;
 //删除所有日志
 - (void)clearAllLog;
 
+//获取日志数据
+- (NSArray *)getAllLogLists;
+
 @end

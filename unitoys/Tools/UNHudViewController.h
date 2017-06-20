@@ -18,4 +18,6 @@
 - (void)showMBLoadingView;
 - (void)hideMBLoadingView;
 
+- (void)showMBMessageSuccessView:(NSString *)message;
+- (void)showMBMessageFailedView:(NSString *)message;
 @end

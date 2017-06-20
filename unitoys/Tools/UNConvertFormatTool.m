@@ -263,4 +263,28 @@
     return nil;
 }
 
++ (NSDictionary *)firstPageParamDictionry:(NSDictionary *)dic
+{
+    if ([dic.allKeys containsObject:@"pageNumber"]) {
+        NSMutableDictionary *mdic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+        [mdic setValue:[NSString stringWithFormat:@"%@", @1] forKey:@"pageNumber"];
+        return mdic;
+    }else{
+        return dic;
+    }
+}
+
++ (NSDictionary *)nextPageParamDictionry:(NSDictionary *)dic WithPage:(NSInteger)page
+{
+    // 如果有分页
+    if ([dic.allKeys containsObject:@"pageNumber"]) {
+        NSMutableDictionary *mdic = [NSMutableDictionary dictionaryWithDictionary:dic];
+        mdic = [[NSMutableDictionary alloc] initWithDictionary:dic];
+        [mdic setValue:[NSString stringWithFormat:@"%@", @(page)] forKey:@"pageNumber"];
+        return mdic;
+    }else{
+        return dic;
+    }
+}
+
 @end

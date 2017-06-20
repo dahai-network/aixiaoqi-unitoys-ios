@@ -326,7 +326,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                         //手环电话
                         if ([BlueToothDataManager shareManager].isRegisted) {
                             if (startAction.handle.value) {
-                                [weakSelf callUnitysNumber:startAction.handle.value];
+                                [weakSelf callUnitysNumber:startAction.handle.value FromCallKit:YES];
                             }
                         } else {
                             HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
@@ -486,19 +486,19 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 return;
             }
             
-            if (kSystemVersionValue >= 10.0) {
-                UNContact *contact = [[UNContact alloc] init];
-                contact.phoneNumber = self.currentCallPhone;
-                contact.uniqueIdentifier = @"";
-                [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
-                    //如果CallKit出错,直接调用正常流程
-                    if (error) {
-                        [self callUnitysNumber:self.currentCallPhone];
-                    }
-                }];
-            }else{
-                [self callUnitysNumber:self.currentCallPhone];
-            }
+//            if (kSystemVersionValue >= 10.0) {
+//                UNContact *contact = [[UNContact alloc] init];
+//                contact.phoneNumber = self.currentCallPhone;
+//                contact.uniqueIdentifier = @"";
+//                [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
+//                    //如果CallKit出错,直接调用正常流程
+//                    if (error) {
+//                        [self callUnitysNumber:self.currentCallPhone];
+//                    }
+//                }];
+//            }else{
+                [self callUnitysNumber:self.currentCallPhone FromCallKit:NO];
+//            }
         }else{
             UNDebugLogVerbose(@"当前拨打号码为空");
         }
@@ -1092,7 +1092,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)makeUnitysCallAction:(NSNotification *)notification {
     NSString *phoneNumber = notification.object;
     if (phoneNumber) {
-        [self callUnitysNumber:phoneNumber];
+        [self callUnitysNumber:phoneNumber FromCallKit:NO];
     }
 }
 
@@ -1372,9 +1372,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 -(void) OnCallRinging{
     UNDebugLogVerbose(@"对方振铃...============================");
     [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallRinging;
-    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-    theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
-    theSipEngine->MuteMic(self.muteStatus);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        SipEngine *theSipEngine = [SipEngineManager getSipEngine];
+        theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
+        theSipEngine->MuteMic(self.muteStatus);
+    });
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"对方振铃...")];
 }
 
@@ -1708,7 +1710,19 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 
 //拨打电话
-- (void)callUnitysNumber:(NSString *)strNumber {
+- (void)callUnitysNumber:(NSString *)strNumber FromCallKit:(BOOL)fromCallKit{
+    kWeakSelf
+    //检查麦克风权限
+    [self checkMicAuth:^(BOOL isAuthorized) {
+        if (isAuthorized) {
+            [weakSelf presentCallPhone:strNumber FromCallKit:fromCallKit];
+        }
+    }];
+
+}
+
+- (void)presentCallPhone:(NSString *)strNumber FromCallKit:(BOOL)fromCallKit
+{
 //    if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
 //        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
 //        return;
@@ -1717,6 +1731,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //        HUDNormal(INTERNATIONALSTRING(@"号码格式错误"))
 //        return;
 //    }
+    
     self.maxPhoneCall = -1;
     __block NSString *currentDateStr;
     //是否直接拨打电话
@@ -1758,13 +1773,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             currentDateStr = todayStr;
         }];
     }
-//    if (isHasPackage) {
-//        //如果有套餐,还需判断号码是否符合座机或手机,如果不符合,则需要使用本机电话
-//        if (![self phoneNumberIsVerification:strNumber]) {
-//            UNDebugLogVerbose(@"使用本机电话");
-//            isHasPackage = NO;
-//        }
-//    }
+    //    if (isHasPackage) {
+    //        //如果有套餐,还需判断号码是否符合座机或手机,如果不符合,则需要使用本机电话
+    //        if (![self phoneNumberIsVerification:strNumber]) {
+    //            UNDebugLogVerbose(@"使用本机电话");
+    //            isHasPackage = NO;
+    //        }
+    //    }
     
     //屏蔽省心服务
     if (!ShowConvenienceService) {
@@ -1773,9 +1788,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
     //测试手动设置为NO
     if (isCallPhone) {
-        [self showCallPhoneVc:strNumber IsNetWorkCallPhone:isHasPackage];
+        [self showCallPhoneVc:strNumber IsNetWorkCallPhone:isHasPackage FromCallKit:fromCallKit];
     }else{
-        [self showTipViewWithCurrentDate:currentDateStr StringNumber:strNumber IsNetWorkCallPhone:isHasPackage];
+        [self showTipViewWithCurrentDate:currentDateStr StringNumber:strNumber IsNetWorkCallPhone:isHasPackage FromCallKit:fromCallKit];
     }
 }
 
@@ -1813,6 +1828,54 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//检查麦克风权限
+- (void)checkMicAuth:(void (^)(BOOL isAuthorized))authResult
+{
+    AVAuthorizationStatus videoAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+    if (videoAuthStatus == AVAuthorizationStatusNotDetermined) {
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeAudio completionHandler:^(BOOL granted) {
+            if (authResult) {
+                authResult(granted);
+            }
+        }];
+    }else if(videoAuthStatus == AVAuthorizationStatusRestricted || videoAuthStatus == AVAuthorizationStatusDenied){
+        // 未授权
+        if (authResult) {
+            authResult(NO);
+        }
+        UNDebugLogVerbose(@"弹出权限选择")
+        [self presentMicPhoneAuthView];
+    }else{
+        // 已授权
+        if (authResult) {
+            authResult(YES);
+        }
+    }
+}
+
+- (void)presentMicPhoneAuthView
+{
+    UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:nil message:@"通话过程\n必须开启麦克风权限" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"关闭" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    UIAlertAction *sureAction = [UIAlertAction actionWithTitle:@"去开启" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        UNDebugLogVerbose(@"弹出系统界面");
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]]) {
+//            if (kSystemVersionValue >= 10.0) {
+//                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString] options:@{UIApplicationOpenURLOptionUniversalLinksOnly : @YES} completionHandler:nil];
+//            }else{
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+//            }
+        }else{
+            UNDebugLogVerbose(@"无法弹出系统界面");
+        }
+    }];
+    [alertVc addAction:cancelAction];
+    [alertVc addAction:sureAction];
+    [self.navigationController presentViewController:alertVc animated:YES completion:nil];
+}
+
 //判断是否为固话,仅判断前缀和位数
 - (BOOL)isTelPhone:(NSString *)phone
 {
@@ -1844,7 +1907,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 //弹出提示
-- (void)showTipViewWithCurrentDate:(NSString *)currentDateStr StringNumber:(NSString *)phoneNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone
+- (void)showTipViewWithCurrentDate:(NSString *)currentDateStr StringNumber:(NSString *)phoneNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone FromCallKit:(BOOL)fromCallKit
 {
     //如果点击按钮后不再提示为选中,存储今日时间
     kWeakSelf
@@ -1857,7 +1920,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         if (index == 1) {
             [weakSelf showConvenienceVc];
         }else{
-            [weakSelf showCallPhoneVc:phoneNumber IsNetWorkCallPhone:isNetCallPhone];
+            [weakSelf showCallPhoneVc:phoneNumber IsNetWorkCallPhone:isNetCallPhone FromCallKit:fromCallKit];
         }
     }];
 }
@@ -1873,8 +1936,34 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
-- (void)showCallPhoneVc:(NSString *)strNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone
+- (void)showCallPhoneVc:(NSString *)strNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone  FromCallKit:(BOOL)fromCallKit
 {
+    if (fromCallKit) {
+        [self willPresentCallPhoneVcAndStartCallPhone:strNumber IsNetWorkCallPhone:isNetCallPhone];
+    }else{
+        if (kSystemVersionValue >= 10.0) {
+            UNContact *contact = [[UNContact alloc] init];
+            contact.phoneNumber = self.currentCallPhone;
+            contact.uniqueIdentifier = @"";
+            [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
+                //如果CallKit出错,直接调用正常流程
+                if (error) {
+                    //                [self callUnitysNumber:self.currentCallPhone];
+                    [self willPresentCallPhoneVcAndStartCallPhone:strNumber IsNetWorkCallPhone:isNetCallPhone];
+                }
+            }];
+        }else{
+            [self willPresentCallPhoneVcAndStartCallPhone:strNumber IsNetWorkCallPhone:isNetCallPhone];
+        }
+    }
+}
+
+- (void)willPresentCallPhoneVcAndStartCallPhone:(NSString *)strNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone
+{
+    if (self.nav.presentedViewController && [self.nav.presentedViewController isKindOfClass:[CallingViewController class]]) {
+        return;
+    }
+    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
     if (storyboard) {
         if (strNumber) {
@@ -1882,9 +1971,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
         CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
         if (callingViewController) {
-//            [MobClick event:UMeng_Event_Call];
+            //            [MobClick event:UMeng_Event_Call];
             [MobClick event:UMeng_Event_Call attributes:@{@"callTimes" : @"1"} counter:1];
-//            callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
+            //            callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
             [self.nav presentViewController:callingViewController animated:YES completion:^{
                 callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
                 SipEngine *theSipEngine = [SipEngineManager getSipEngine];
@@ -1960,7 +2049,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
         return self.arrPhoneRecord.count;
     }
-    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

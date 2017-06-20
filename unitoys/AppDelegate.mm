@@ -1964,6 +1964,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 #pragma mark 收到自定义通知
 - (void)networkDidReceiveMessage:(NSNotification *)notification {
     NSDictionary * userInfo = [notification userInfo];
+    UNDebugLogVerbose(@"收到极光推送短信userInfo========%@", userInfo)
     NSString *content = [userInfo valueForKey:@"content"];
     NSString *contentType = userInfo[@"content_type"];
     NSDictionary *extras = [userInfo valueForKey:@"extras"];
@@ -2305,9 +2306,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 // iOS 10 Support,本地通知为notification，接收到通知
 - (void)jpushNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(NSInteger))completionHandler {
-
     // Required
     NSDictionary * userInfo = notification.request.content.userInfo;
+    UNDebugLogVerbose(@"willPresentNotification收到推送通知userInfo========%@", userInfo)
     if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         //刷新页面
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
@@ -2326,6 +2327,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 - (void)jpushNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler {
     // Required
     NSDictionary * userInfo = response.notification.request.content.userInfo;
+    UNDebugLogVerbose(@"didReceiveNotificationResponse收到推送通知userInfo========%@", userInfo)
     if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
     } else {
@@ -2337,6 +2339,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
         // Required, iOS 7 Support
+    UNDebugLogVerbose(@"didReceiveRemoteNotification:fetchCompletionHandler收到推送通知userInfo========%@", userInfo)
     //刷新页面
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdate" object:nil];
     
@@ -2344,15 +2347,13 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     NSString *name = [self checkLinkNameWithPhoneStr:userInfo[@"Tel"]];
     [[UNBlueToothTool shareBlueToothTool] checkNotifiMessage];
     [self addNotificationWithTitle:[NSString stringWithFormat:@"%@%@%@", INTERNATIONALSTRING(@"收到"), name, INTERNATIONALSTRING(@"的短信")] body:userInfo[@"SMSContent"] userInfo:userInfo];
-    
-    UNLogLBEProcess(@"didReceiveRemoteNotification -- %@", userInfo)
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
         // Required,For systems with less than or equal to iOS6
 //        [JPUSHService handleRemoteNotification:userInfo];
 //    application.applicationIconBadgeNumber = 0;
-    
+    UNDebugLogVerbose(@"didReceiveRemoteNotification收到推送通知userInfo========%@", userInfo)
     UNLogLBEProcess(@"收到远程通知")
     
     // 取得 APNs 标准信息内容
@@ -2371,6 +2372,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     UNDebugLogVerbose(@"收到通知了");
+    UNDebugLogVerbose(@"didReceiveLocalNotification收到推送通知userInfo========%@", notification.userInfo)
 //    UIViewController *currentVc = [self currentViewController];
 //    UNDebugLogVerbose(@"%@", NSStringFromClass([[self currentViewController] class]));
 //    if ([NSStringFromClass([currentVc class]) isEqualToString:@"PhoneViewController"]) {
@@ -2545,8 +2547,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
     if ([payload.type isEqualToString:@"PKPushTypeVoIP"]) {
-        
-        
         if (![UNPushKitMessageManager shareManager].isAlreadyInForeground) {
             UNLogLBEProcess(@"isAlreadyInForeground==NO")
             if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
@@ -2574,6 +2574,11 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             }
             return;
         }
+        
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]){
+            return;
+        }
+        
         if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
             UNLogLBEProcess(@"非PushKit状态")
             

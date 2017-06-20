@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface HLLoadingView : UIView
+- (instancetype)initWithWidth:(CGFloat)width;
+
 // 圆形layer
 @property (nonatomic, weak) CAShapeLayer *circleShapeLayer;
 
@@ -19,6 +21,8 @@
 @property (nonatomic, strong) UIColor *borderColor;
 
 @property (nonatomic, readonly, getter=isLoadAnimating) BOOL loadAnimating;
+
+- (void)createLoadingView:(CGFloat)width;
 
 //开始动画
 - (void)startAnimating;

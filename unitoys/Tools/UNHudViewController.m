@@ -29,19 +29,24 @@
 {
     if (!_hudView) {
         _hudView = [[UNHudView alloc] init];
+        [self.view addSubview:_hudView];
         [_hudView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view);
             make.left.equalTo(self.view);
             make.width.equalTo(self.view);
             make.height.equalTo(self.view);
         }];
-        [self.view addSubview:_hudView];
         [_hudView startLoading];
     }
 }
 - (void)hideLoadingView
 {
-    
+    if (_hudView) {
+        [_hudView stopLoading];
+        _hudView.hidden = YES;
+        [_hudView removeFromSuperview];
+        _hudView = nil;
+    }
 }
 
 
@@ -56,6 +61,15 @@
     [MBProgressHUD hideMBHUD];
 }
 
+- (void)showMBMessageSuccessView:(NSString *)message
+{
+    [MBProgressHUD showSuccess:message];
+}
+
+- (void)showMBMessageFailedView:(NSString *)message
+{
+    [MBProgressHUD showError:message];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

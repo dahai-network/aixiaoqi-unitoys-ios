@@ -16,14 +16,25 @@
 
 @property (nonatomic, assign, getter=isLoadAnimating) BOOL loadAnimating;
 
+@property (nonatomic, assign) CGFloat loadingWidth;
 @end
 
 @implementation HLLoadingView
 
+- (instancetype)initWithWidth:(CGFloat)width
+{
+    if (self = [super init]) {
+        UNDebugLogVerbose(@"initWithWidth")
+        [self createLoadingView:width];
+    }
+    return self;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
-        [self createLoadingView];
+        UNDebugLogVerbose(@"initWithFrame")
+        [self createLoadingView:0];
     }
     return self;
 }
@@ -31,14 +42,28 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     if (self = [super initWithCoder:aDecoder]) {
-        [self createLoadingView];
+        UNDebugLogVerbose(@"initWithCoder")
+        [self createLoadingView:0];
     }
     return self;
 }
 
-- (void)createLoadingView
+- (void)createLoadingView:(CGFloat)width
 {
-    CGPoint centerPoint = CGPointMake(CGRectGetWidth(self.frame) * 0.5, CGRectGetHeight(self.frame) * 0.5);
+    if (self.loadingWidth) {
+        return;
+    }
+    UNDebugLogVerbose(@"createLoadingView")
+    self.loadingWidth = width;
+    CGPoint centerPoint;
+    if (width) {
+        centerPoint = CGPointMake(width * 0.5, width * 0.5);
+    }else{
+        centerPoint = CGPointMake(CGRectGetWidth(self.frame) * 0.5, CGRectGetHeight(self.frame) * 0.5);
+    }
+    if (self.circleShapeLayer) {
+        return;
+    }
     //内部Layer
     CAShapeLayer *insideShapeLayer = [CAShapeLayer layer];
     self.circleShapeLayer = insideShapeLayer;
@@ -54,8 +79,7 @@
     //外部Layer
     CAShapeLayer *outsideShapeLayer = [CAShapeLayer layer];
     self.outsideShapeLayer = outsideShapeLayer;
-    CGPathRef outsidePath = [UIBezierPath bezierPathWithArcCenter:centerPoint radius:centerPoint.x + 1
-                                                      startAngle:0 endAngle:M_PI * 2 clockwise:YES].CGPath;
+    CGPathRef outsidePath = [UIBezierPath bezierPathWithArcCenter:centerPoint radius:centerPoint.x + 1 startAngle:0 endAngle:M_PI * 2 clockwise:YES].CGPath;
     outsideShapeLayer.path = outsidePath;
     outsideShapeLayer.strokeColor = kCircleColor.CGColor;
     outsideShapeLayer.fillColor = [UIColor clearColor].CGColor;

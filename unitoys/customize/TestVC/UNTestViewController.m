@@ -13,6 +13,8 @@
 #import "UNReadyActivateController.h"
 #import "UNMessageContentController.h"
 #import "HLLoadingView.h"
+#import "LookLogController.h"
+#import "UNTestTableViewController.h"
 
 @interface UNTestViewController ()
 @property (nonatomic, strong) UNPresentTool *presentTool;
@@ -54,7 +56,7 @@
             //短信界面
 //            [self pushMessageVc];
             //上传日志
-            [self updateLogAction];
+            [self pushLogVC];
         }
             break;
         case 4:
@@ -65,7 +67,7 @@
             break;
         case 5:
         {
-            
+            [self testTableViewVC];
         }
             break;
         case 6:
@@ -115,10 +117,13 @@
     [self.navigationController pushViewController:messageContentVc animated:YES];
 }
 
-- (void)updateLogAction
+- (void)pushLogVC
 {
-    [[UNDDLogManager sharedInstance] updateLogToServerWithLogCount:2];
+    LookLogController *logVc = [[LookLogController alloc] init];
+    [self.navigationController pushViewController:logVc animated:YES];
 }
+
+
 
 - (void)startLoadingAnima
 {
@@ -126,6 +131,13 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.loadingView stopAnimating];
     });
+}
+
+- (void)testTableViewVC
+{
+    UNTestTableViewController *tableVc = [[UNTestTableViewController alloc] initWithUrl:apiSMSLast andParams:@{@"pageNumber" : @"1", @"pageSize" : @"10"}];
+    
+    [self.navigationController pushViewController:tableVc animated:YES];
 }
 
 - (void)initPopView

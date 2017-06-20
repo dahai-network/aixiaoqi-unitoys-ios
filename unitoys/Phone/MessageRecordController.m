@@ -60,6 +60,9 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange) name:@"addressBookChanged" object:@"addressBookChanged"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"UpdateMessageRecordLists" object:nil];
+    
+    //进入前台
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"appEnterForeground" object:@"appEnterForeground"];
     [self createButton];
 }
 
@@ -301,10 +304,8 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
             
             [self loadUnreadMessageStatu];
             
-            if (_arrMessageRecord.count>=20) {
+            if (self.tableView.mj_footer.isHidden) {
                 self.tableView.mj_footer.hidden = NO;
-            }else{
-                self.tableView.mj_footer.hidden = YES;
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
@@ -323,7 +324,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         [self.tableView.mj_footer endRefreshing];
         return;
     }
-    
     NSArray *pageArray = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:(self.page + 1)];
     if (pageArray.count > 0) {
         self.page++;
@@ -415,7 +415,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         
 //        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
         cell.unreadMsgLabel.hidden = YES;
-        
         if (![dicMessageRecord[@"IsRead"] boolValue]) {
             NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
             [mutableDict setObject:@(1) forKey:@"IsRead"];
@@ -451,6 +450,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 //        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
         cell.unreadMsgLabel.hidden = YES;
         [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:@[dicMessageRecord]];
+        [self reloadDataFromDatabase];
     }
     
 //    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];

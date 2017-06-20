@@ -8,6 +8,8 @@
 
 #import "UNDatabaseTools.h"
 
+#define MessagePageSize 20
+
 @interface UNDatabaseTools()
 
 @property (nonatomic, copy) NSString *phoneRecordfilePath;
@@ -762,9 +764,9 @@ static FMDatabaseQueue *_msgDatabase =nil;
                 if (count) {
                     NSString *selectStr;
                     if (isContent) {
-                        selectStr = [NSString stringWithFormat:@"select * from %@ where contactnumber='%@' order by msgtime desc limit '%@',20", apiName, phoneNumber, @(page * 20)];
+                        selectStr = [NSString stringWithFormat:@"select * from %@ where contactnumber='%@' order by msgtime desc limit '%@','%@'", apiName, phoneNumber, @(page * MessagePageSize), @(MessagePageSize)];
                     }else{
-                        selectStr = [NSString stringWithFormat:@"select * from %@ order by msgtime desc limit '%@',20", apiName, @(page * 20)];
+                        selectStr = [NSString stringWithFormat:@"select * from %@ order by msgtime desc limit '%@','%@'", apiName, @(page * MessagePageSize), @(MessagePageSize)];
                     }
                     FMResultSet *nextRs = [db executeQuery:selectStr];
                     while ([nextRs next]) {

@@ -59,4 +59,10 @@
 //获取数据类型
 + (NSString *)mimeTypeForData:(NSData *)data;
 
+//重置第一页数据
++ (NSDictionary *)firstPageParamDictionry:(NSDictionary *)dic;
+
+//转换下一页数据
++ (NSDictionary *)nextPageParamDictionry:(NSDictionary *)dic WithPage:(NSInteger)page;
+
 @end

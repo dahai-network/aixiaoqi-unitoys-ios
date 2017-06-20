@@ -68,7 +68,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>爱小器需要您的位置信息,在境外期间优化路由网络设置,为您提供更优质的通讯服务.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>需要获取麦克风权限以进行语音通话</string>
+	<string>需要获取麦克风权限以进行语音通话,关闭权限将导致通话无声</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App需要您的同意才能访问您的相册</string>
 	<key>UIBackgroundModes</key>

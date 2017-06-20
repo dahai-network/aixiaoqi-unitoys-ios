@@ -129,23 +129,35 @@
 
 - (void)updateImageDataArray:(NSArray *)dataArray
 {
-    [MBProgressHUD showLoadingWithMessage:@"正在上传"];
-    [SSNetworkRequest updateDataRequest:apiUploadUserLog params:nil dataArray:dataArray progress:^(NSProgress *progress) {
-//        [MBProgressHUD showLoadingWithProgress:progress.fractionCompleted ProgressType:UNProgressTypeAnnularDeterminate];
-        UNDebugLogVerbose(@"progress===%.2f", progress.fractionCompleted)
-    } success:^(id responseObj) {
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+////    [MBProgressHUD showLoadingWithMessage:@"正在上传"];
+//    [SSNetworkRequest updateDataRequest:apiUploadUserLog params:nil dataArray:dataArray progress:^(NSProgress *progress) {
+////        [MBProgressHUD showLoadingWithProgress:progress.fractionCompleted ProgressType:UNProgressTypeAnnularDeterminate];
+//        UNDebugLogVerbose(@"progress===%.2f", progress.fractionCompleted)
+//    } success:^(id responseObj) {
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            UNDebugLogVerbose(@"%@", responseObj)
+////            [MBProgressHUD showSuccess:@"上传成功"];
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+////            [MBProgressHUD showSuccess:@"上传失败"];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+////            [MBProgressHUD showError:responseObj[@"msg"]];
+//        }
+//    } failure:^(id dataObj, NSError *error) {
+////        [MBProgressHUD showSuccess:@"上传失败"];
+//    } headers:[UNDataTools sharedInstance].normalHeaders];
+    
+    [UNNetworkManager putUrl:apiUploadUserLog datas:dataArray mimeType:nil progress:^(NSProgress * _Nullable progress) {
+//        UNDebugLogVerbose(@"progress===%.2f", progress.fractionCompleted)
+    } parameters:nil success:^(ResponseType type, id  _Nullable responseObj) {
+        if (type == ResponseTypeSuccess) {
             UNDebugLogVerbose(@"%@", responseObj)
-            [MBProgressHUD showSuccess:@"上传成功"];
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [MBProgressHUD showSuccess:@"上传失败"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            [MBProgressHUD showError:responseObj[@"msg"]];
+        }else if (type == ResponseTypeFailed){
+            UNDebugLogVerbose(@"%@", responseObj)
         }
-    } failure:^(id dataObj, NSError *error) {
-        [MBProgressHUD showSuccess:@"上传失败"];
-    } headers:[UNDataTools sharedInstance].normalHeaders];
+    } failure:^(NSError * _Nonnull error) {
+        
+    }];
 }
 
 
@@ -166,6 +178,14 @@
         UNLogLBEProcess(@"不存在目录");
     }
 
+}
+
+//获取日志数据
+- (NSArray *)getAllLogLists
+{
+    NSArray *fileList = [self.fileLog.logFileManager sortedLogFileNames];
+    NSArray *datas = [self getFileDataWithCount:fileList.count WithFileList:fileList];
+    return datas;
 }
 
 @end

@@ -22,14 +22,13 @@
 {
     if (!_loadingView) {
         _loadingView = [[HLLoadingView alloc] init];
-        [_loadingView setLineWidth:3.0];
-        [_loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(CGSizeMake(30, 30));
-//            make.centerY.equalTo(self);
-            make.center.equalTo(self);
-//            make.right.mas_equalTo(- kMessageInputView_PadingHeight);
-        }];
         [self addSubview:_loadingView];
+        [_loadingView mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(CGSizeMake(40, 40));
+            make.center.mas_equalTo(self.center);
+        }];
+        [_loadingView createLoadingView:40];
+        [_loadingView setLineWidth:3.0];
     }
     return _loadingView;
 }
