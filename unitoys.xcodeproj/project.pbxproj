@@ -85,6 +85,7 @@
 		04AFE6661EC568D700B3BC8F /* ZBRreshViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE6651EC568D700B3BC8F /* ZBRreshViewController.m */; };
 		04AFE6691EC584D100B3BC8F /* ZBTableRreshViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE6681EC584D100B3BC8F /* ZBTableRreshViewController.m */; };
 		04B416511EB35365005E31C9 /* 3des.c in Sources */ = {isa = PBXBuildFile; fileRef = 04B4164F1EB35365005E31C9 /* 3des.c */; };
+		04CC5CB01EFA259300AA31CA /* ThroughLineLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CC5CAF1EFA259300AA31CA /* ThroughLineLabel.m */; };
 		04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */; };
 		04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */; };
 		04DA1B971E12958C00C50904 /* CallComingInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA1B951E12958C00C50904 /* CallComingInViewController.m */; };
@@ -568,6 +569,8 @@
 		04AFE6681EC584D100B3BC8F /* ZBTableRreshViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBTableRreshViewController.m; sourceTree = "<group>"; };
 		04B4164F1EB35365005E31C9 /* 3des.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 3des.c; sourceTree = "<group>"; };
 		04B416501EB35365005E31C9 /* 3des.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3des.h; sourceTree = "<group>"; };
+		04CC5CAE1EFA259300AA31CA /* ThroughLineLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThroughLineLabel.h; sourceTree = "<group>"; };
+		04CC5CAF1EFA259300AA31CA /* ThroughLineLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThroughLineLabel.m; sourceTree = "<group>"; };
 		04D5EED21E9B959D0015B8DA /* ProductCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductCollectionViewCell.h; sourceTree = "<group>"; };
 		04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductCollectionViewCell.m; sourceTree = "<group>"; };
 		04D90E871DEEDC5C00035C46 /* BlueToothDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlueToothDataManager.h; sourceTree = "<group>"; };
@@ -1711,6 +1714,8 @@
 				048AD0001E0A576800421F67 /* NSString+Addition.m */,
 				04226B2C1EBC8D8B004B8365 /* UILabel+Extension.h */,
 				04226B2D1EBC8D8B004B8365 /* UILabel+Extension.m */,
+				04CC5CAE1EFA259300AA31CA /* ThroughLineLabel.h */,
+				04CC5CAF1EFA259300AA31CA /* ThroughLineLabel.m */,
 				95E918671DDCAB9C005DABC0 /* RoundLable.h */,
 				95E918681DDCAB9C005DABC0 /* RoundLable.m */,
 				95D0004D1E0ACBB600283ADC /* NotifyTextField.h */,
@@ -2780,6 +2785,7 @@
 				04AFE6661EC568D700B3BC8F /* ZBRreshViewController.m in Sources */,
 				3CEA93961E5C5A1900205C29 /* NSUserActivity+UnExtension.m in Sources */,
 				3C99A8A11EA9DF9C00C96BE7 /* UNPresentTool.m in Sources */,
+				04CC5CB01EFA259300AA31CA /* ThroughLineLabel.m in Sources */,
 				0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */,
 				3C388A821EC4402D00A04BA8 /* ConvenienceOrderDetailController.m in Sources */,
 				95B099171DC0DA6A00743877 /* SipEngineEventObserver.mm in Sources */,

@@ -45,6 +45,10 @@
         self.lblOrderPrice.text = [NSString stringWithFormat:@"￥%.2f",[[self.dicPackage objectForKey:@"Price"] floatValue]];
         
         self.lblOrderCount.text = [NSString stringWithFormat:@"%ld",(long)self.orderCount];
+        if (self.dicPackage[@"OriginalPrice"] && ![self.dicPackage[@"OriginalPrice"] isEqualToString:@""]) {
+            self.lblOldPrice.hidden = NO;
+            self.lblOldPrice.text = [NSString stringWithFormat:@"原价:￥%@", self.dicPackage[@"OriginalPrice"]];
+        }
         
         [self calcFee];
 

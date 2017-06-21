@@ -1258,12 +1258,18 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             } else if ([errorStr isEqualToString:@"29"]) {
                 //会话id错误
-                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"身份验证失败，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"身份验证失败，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                }
             } else if ([errorStr isEqualToString:@"35"]) {
                 //服务端暂时不可用
-                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"服务端暂时开小差啦，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"服务端暂时开小差啦，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                }
             } else {
-                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                }
             }
         });
         return;
@@ -1467,12 +1473,18 @@
                     UNLogLBEProcess(@"需要重新注册")
                 } else if ([errorStr isEqualToString:@"29"]) {
                     //会话id错误
-                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"身份验证失败，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"身份验证失败，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                    }
                 } else if ([errorStr isEqualToString:@"35"]) {
                     //服务端暂时不可用
-                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"服务端暂时开小差啦，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"服务端暂时开小差啦，请重新注册") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                    }
                 } else {
-                    [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"卡注册失败") message:INTERNATIONALSTRING(@"您的电话卡可能出问题了，请核查号码是否能正常使用") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+                    }
                 }
             }
         } else {

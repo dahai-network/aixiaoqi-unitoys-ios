@@ -7,6 +7,7 @@
 //
 
 #import "BaseTableController.h"
+#import "ThroughLineLabel.h"
 
 /*
 //
@@ -33,6 +34,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblPackageName;
 @property (weak, nonatomic) IBOutlet UILabel *lblExpireDays;
 @property (weak, nonatomic) IBOutlet UILabel *lblPrice;
+@property (weak, nonatomic) IBOutlet ThroughLineLabel *lblOldPrice;
 
 @property (weak, nonatomic) IBOutlet UILabel *lblOrderCount;
 @property (weak, nonatomic) IBOutlet UILabel *lblOrderPrice;

@@ -130,6 +130,12 @@
     cell.lblFlow.text = [dicPackage objectForKey:@"Flow"];
     cell.lblPackageName.text = [dicPackage objectForKey:@"PackageName"];
     [cell.lblPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f",[[dicPackage objectForKey:@"Price"] floatValue]]];
+    if (dicPackage[@"OriginalPrice"] && ![dicPackage[@"OriginalPrice"] isEqualToString:@""]) {
+        cell.lblOldPrice.text = [NSString stringWithFormat:@"原价:￥%@", dicPackage[@"OriginalPrice"]];
+        cell.lblOldPrice.hidden = NO;
+    } else {
+        cell.lblOldPrice.hidden = YES;
+    }
 //    cell.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[dicPackage objectForKey:@"Price"] floatValue]];
 //    cell.Operators.text = [dicPackage objectForKey:@"Operators"];
     

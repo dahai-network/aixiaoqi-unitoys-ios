@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ThroughLineLabel.h"
 
 @interface PackageCell : UITableViewCell
 
@@ -14,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblFlow;
 @property (weak, nonatomic) IBOutlet UILabel *lblPrice;
 @property (weak, nonatomic) IBOutlet UIImageView *imgOrder;
+@property (weak, nonatomic) IBOutlet ThroughLineLabel *lblOldPrice;
 
 
 @end

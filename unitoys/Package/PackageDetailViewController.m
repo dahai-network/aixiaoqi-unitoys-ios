@@ -43,6 +43,10 @@
             
 //            self.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Price"] floatValue]];
             [self.lblPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f",[[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Price"] floatValue]]];
+            if (responseObj[@"data"][@"list"][@"OriginalPrice"] && ![responseObj[@"data"][@"list"][@"OriginalPrice"] isEqualToString:@""]) {
+                self.lblOldPrice.text = [NSString stringWithFormat:@"原价:￥%@", responseObj[@"data"][@"list"][@"OriginalPrice"]];
+                self.lblOldPrice.hidden = NO;
+            }
             self.lblPackageName.text = [[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"PackageName"];
             self.ivPic.image = [[UIImage alloc] initWithData:[[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[[[responseObj objectForKey:@"data"] objectForKey:@"list"] objectForKey:@"Pic"]]]];
             self.dicPackage = [[responseObj objectForKey:@"data"] objectForKey:@"list"];

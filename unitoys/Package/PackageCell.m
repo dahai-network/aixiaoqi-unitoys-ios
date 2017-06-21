@@ -10,4 +10,9 @@
 
 @implementation PackageCell
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    // Initialization code
+}
+
 @end
