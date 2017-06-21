@@ -50,7 +50,7 @@
 
 - (void)createLoadingView:(CGFloat)width
 {
-    if (self.loadingWidth) {
+    if (width == 0 && CGRectGetWidth(self.frame) == 0) {
         return;
     }
     UNDebugLogVerbose(@"createLoadingView")

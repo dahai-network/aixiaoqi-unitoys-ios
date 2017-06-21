@@ -407,6 +407,8 @@
     [VSWManager shareManager].callPort = [BlueToothDataManager shareManager].portFromTcp;
     [[NSUserDefaults standardUserDefaults] setObject:[BlueToothDataManager shareManager].portFromTcp forKey:@"VSWCallPort"];
     [self startJumpDataTimer];
+    
+    [self callPhoneFromCallKit];
 }
 
 - (void)loadBasicConfig {
@@ -1993,6 +1995,15 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         UNDebugLogVerbose(@"结果返回：%@", result);
     };
     [JPUSHService addNotification:request];
+    
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive && kSystemVersionValue < 10.0) {
+        //声音提醒
+//        NSURL *audioPath = [[NSBundle mainBundle] URLForResource:@"ReceivedMessage" withExtension:@"caf"];
+        NSURL *audioPath = [NSURL fileURLWithPath:[NSString stringWithFormat:@"/System/Library/Audio/UISounds/%@.%@",@"sms-received1",@"caf"]];
+        SystemSoundID soundID;
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)(audioPath), &soundID);
+        AudioServicesPlaySystemSound(soundID);
+    }
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
@@ -2279,6 +2290,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     completionHandler();  // 系统要求执行这个方法
 }
 
+//ios8前台收到推送
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
         // Required, iOS 7 Support
     UNDebugLogVerbose(@"didReceiveRemoteNotification:fetchCompletionHandler收到推送通知userInfo========%@", userInfo)
@@ -2451,6 +2463,15 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     return NO;
 }
 
+//通过CallKit拨打电话
+- (void)callPhoneFromCallKit
+{
+    if ([UNPushKitMessageManager shareManager].isSysCallKitPhone && [UNPushKitMessageManager shareManager].callKitHandleString) {
+        UNDebugLogVerbose(@"拨打CallKit电话");
+        [self callPhoneFromCallKitWithHandleString:[[UNPushKitMessageManager shareManager].callKitHandleString copy]];
+    }
+}
+
 - (void)callPhoneFromCallKitWithHandleString:(NSString *)handle
 {
     [UNPushKitMessageManager shareManager].isSysCallKitPhone = NO;
@@ -2517,15 +2538,14 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             return;
         }
         
-        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]){
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] && ![[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]){
+            UNLogLBEProcess(@"开关已关闭")
             return;
         }
         
         if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
             UNLogLBEProcess(@"非PushKit状态")
-            
             NSDictionary *dict = payload.dictionaryPayload;
-            //            NSString *messageType = [dict[@"MessageType"] lowercaseString];
             NSString *servicePushKitData = [dict[@"Data"] lowercaseString];
             NSString *tempStr = [NSString stringWithFormat:@"%@", servicePushKitData];
             if ([tempStr containsString:@"<"]) {

@@ -39,7 +39,7 @@
 - (void)setPullingPercent:(CGFloat)pullingPercent
 {
     [super setPullingPercent:pullingPercent];
-    UNDebugLogVerbose(@"pullingPercent===%.f", pullingPercent)
+//    UNDebugLogVerbose(@"pullingPercent===%.f", pullingPercent)
     if (pullingPercent < 0.96) {
         _circleView.strokeEnd = pullingPercent;
     }else{
@@ -50,7 +50,7 @@
 - (void)setState:(MJRefreshState)state
 {
     MJRefreshCheckState
-    if (state == MJRefreshStatePulling || state == MJRefreshStateRefreshing) {
+    if (state == MJRefreshStateRefreshing) {
         UNDebugLogVerbose(@"startRotateAnimation")
         [_circleView startRotateAnimation];
     } else if (state == MJRefreshStateIdle) {

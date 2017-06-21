@@ -326,6 +326,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                         //手环电话
                         if ([BlueToothDataManager shareManager].isRegisted) {
                             if (startAction.handle.value) {
+                                UNDebugLogVerbose(@"CallKit发起通话回调")
                                 [weakSelf callUnitysNumber:startAction.handle.value FromCallKit:YES];
                             }
                         } else {
@@ -1714,6 +1715,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     kWeakSelf
     //检查麦克风权限
     [self checkMicAuth:^(BOOL isAuthorized) {
+        UNDebugLogVerbose(@"是否开启麦克风权限===%d", isAuthorized)
         if (isAuthorized) {
             [weakSelf presentCallPhone:strNumber FromCallKit:fromCallKit];
         }
@@ -1939,11 +1941,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)showCallPhoneVc:(NSString *)strNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone  FromCallKit:(BOOL)fromCallKit
 {
     if (fromCallKit) {
+        UNDebugLogVerbose(@"FromCallKit拨打电话")
         [self willPresentCallPhoneVcAndStartCallPhone:strNumber IsNetWorkCallPhone:isNetCallPhone];
     }else{
         if (kSystemVersionValue >= 10.0) {
+            UNDebugLogVerbose(@"iOS10,CallKit拨打电话")
             UNContact *contact = [[UNContact alloc] init];
-            contact.phoneNumber = self.currentCallPhone;
+            contact.phoneNumber = strNumber;
             contact.uniqueIdentifier = @"";
             [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
                 //如果CallKit出错,直接调用正常流程
@@ -1962,6 +1966,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 {
     if (self.nav.presentedViewController && [self.nav.presentedViewController isKindOfClass:[CallingViewController class]]) {
         return;
+    }else if (self.nav.presentedViewController){
+        [self.nav.presentedViewController dismissViewControllerAnimated:NO completion:nil];
     }
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
@@ -1971,7 +1977,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         }
         CallingViewController *callingViewController = [storyboard instantiateViewControllerWithIdentifier:@"callingViewController"];
         if (callingViewController) {
-            //            [MobClick event:UMeng_Event_Call];
             [MobClick event:UMeng_Event_Call attributes:@{@"callTimes" : @"1"} counter:1];
             //            callingViewController.lblCallingInfo.text = [self checkLinkNameWithPhoneStr:self.phoneNumber];
             [self.nav presentViewController:callingViewController animated:YES completion:^{

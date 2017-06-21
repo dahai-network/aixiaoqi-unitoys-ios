@@ -469,22 +469,37 @@
 
 - (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr {
     NSString *linkName;
-    if ([phoneStr containsString:@"-"]) {
-        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
-        phoneStr = newStr;
-    }
-    if ([phoneStr containsString:@" "]) {
-        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@" " withString:@""];
-        phoneStr = newStr;
-    }
-    if ([phoneStr containsString:@"+86"]) {
-        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"+86" withString:@""];
-        phoneStr = newStr;
-    }
-    if ([phoneStr containsString:@"#"]) {
-        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"#" withString:@""];
-        phoneStr = newStr;
-    }
+//    if ([phoneStr containsString:@"-"]) {
+//        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
+//        phoneStr = newStr;
+//    }
+//    if ([phoneStr containsString:@" "]) {
+//        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+//        phoneStr = newStr;
+//    }
+//    if ([phoneStr containsString:@"+86"]) {
+//        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+//        phoneStr = newStr;
+//    }
+//    if ([phoneStr containsString:@"#"]) {
+//        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"#" withString:@""];
+//        phoneStr = newStr;
+//    }
+//    if ([phoneStr containsString:@"("]) {
+//        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"(" withString:@""];
+//        phoneStr = newStr;
+//    }
+//    if ([phoneStr containsString:@")"]) {
+//        NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@")" withString:@""];
+//        phoneStr = newStr;
+//    }
+    phoneStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
+    phoneStr = [phoneStr stringByReplacingOccurrencesOfString:@" " withString:@""];
+    phoneStr = [phoneStr stringByReplacingOccurrencesOfString:@"+86" withString:@""];
+    phoneStr = [phoneStr stringByReplacingOccurrencesOfString:@"#" withString:@""];
+    phoneStr = [phoneStr stringByReplacingOccurrencesOfString:@"(" withString:@""];
+    phoneStr = [phoneStr stringByReplacingOccurrencesOfString:@")" withString:@""];
+    
     if ([phoneStr containsString:@","]) {
         NSArray *arr = [phoneStr componentsSeparatedByString:@","];
         for (NSString *str in arr) {
