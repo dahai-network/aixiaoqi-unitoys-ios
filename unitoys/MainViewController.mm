@@ -366,6 +366,8 @@ typedef enum : NSUInteger {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:HOMESTATUETITLE_REGISTING];
         } else {
             DebugUNLog(@"服务未开");
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
         }
 //        self.isNetworkCanUse = YES;
 //        if (![[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] && self.isMainView) {

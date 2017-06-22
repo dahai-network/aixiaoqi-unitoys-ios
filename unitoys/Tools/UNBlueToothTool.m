@@ -82,6 +82,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) int encryptionTimeValue;
 
 @property (nonatomic, copy)NSString *activityCardDataStr;//激活爱小器卡时记录多包的数据
+@property (nonatomic, copy) NSString *appdenStr;//加密数据
 
 @end
 
@@ -950,6 +951,7 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].iccidFromTcp = nil;
     [BlueToothDataManager shareManager].iccidFromBle = nil;
     [BlueToothDataManager shareManager].isDoneRegist = NO;
+    self.appdenStr = nil;
     
     if (self.isKill) {
         return;
@@ -1124,6 +1126,8 @@ static UNBlueToothTool *instance = nil;
                     [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
                 } else {
                     DebugUNLog(@"服务未开");
+                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
                 }
             }
         } else {
@@ -1135,22 +1139,24 @@ static UNBlueToothTool *instance = nil;
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
     //仅钥匙扣能连接
     [BlueToothDataManager shareManager].isSame = NO;
-    NSString *appdenStr;
-    for (int i = 0; i < 8; i++) {
-        int a = arc4random() % 255;
-        NSString *randomNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%d", a]];
-        if (!appdenStr.length) {
-            appdenStr = randomNumStr;
-        } else {
-            appdenStr = [appdenStr stringByAppendingString:randomNumStr];
+    if (!self.appdenStr) {
+        for (int i = 0; i < 8; i++) {
+            int a = arc4random() % 255;
+            NSString *randomNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%d", a]];
+            if (!self.appdenStr.length) {
+                self.appdenStr = randomNumStr;
+            } else {
+                self.appdenStr = [self.appdenStr stringByAppendingString:randomNumStr];
+            }
         }
     }
-//    appdenStr = @"0102030405060708";
-    NSString *encryptStr = [NSString doEncryptBuffer:[self convenStrToCharWithString:appdenStr]];
-    UNLogLBEProcess(@"转换之后的文字 -- %@", appdenStr)
+//    appdenStr  = @"0102030405060708";
+//    appdenStr  = @"e2ebbcecc1cc9f7a";
+    NSString *encryptStr = [NSString doEncryptBuffer:[self convenStrToCharWithString:self.appdenStr]];
+    UNLogLBEProcess(@"转换之后的文字 -- %@", self.appdenStr)
     UNLogLBEProcess(@"加密之后的文字 -- %@", encryptStr)
     [BlueToothDataManager shareManager].checkStr = encryptStr;
-    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:appdenStr];
+    [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:self.appdenStr];
     [self startEncryptionTimer];
 }
 
@@ -1184,6 +1190,8 @@ static UNBlueToothTool *instance = nil;
         [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
     } else {
         DebugUNLog(@"服务未开");
+        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
     }
 }
 
@@ -1269,6 +1277,8 @@ static UNBlueToothTool *instance = nil;
             [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
         } else {
             DebugUNLog(@"服务未开");
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
         }
     }
 }
@@ -1788,6 +1798,8 @@ static UNBlueToothTool *instance = nil;
                     [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
                 } else {
                     DebugUNLog(@"服务未开");
+                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
                 }
                 [self bindBoundDevice];
                 //对卡上电

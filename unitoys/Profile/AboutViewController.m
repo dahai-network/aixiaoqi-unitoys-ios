@@ -233,6 +233,8 @@
             });
         } else {
             DebugUNLog(@"服务未开");
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
         }
     }
 }

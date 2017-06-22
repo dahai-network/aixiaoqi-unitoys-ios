@@ -1055,6 +1055,8 @@
                 });
             } else {
                 DebugUNLog(@"服务未开");
+                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
             }
         }else{
             UNLogLBEProcess(@"正常断开")
@@ -1066,6 +1068,8 @@
                 }
             } else {
                 DebugUNLog(@"服务未开");
+                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
             }
         }
     }
@@ -2143,6 +2147,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             }
         } else {
             UNLogLBEProcess(@"进入前台--服务未开")
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
         }
     } else {
         UNDebugLogVerbose(@"不在线：%s,%d", __FUNCTION__, __LINE__);
