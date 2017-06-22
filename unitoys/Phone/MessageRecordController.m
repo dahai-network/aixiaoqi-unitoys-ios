@@ -54,7 +54,9 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         [self loadMessage];
     }
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"ReceiveNewSMSContentUpdate" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"ReceiveNewSMSContentUpdate" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"ReceiveNewSMSContentUpdateFromPhoneIndex" object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"sendMessageSuccess" object:@"sendMessageSuccess"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contactsInfoChange) name:@"ContactsInfoChange" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(addressBookDidChange) name:@"addressBookChanged" object:@"addressBookChanged"];
@@ -84,14 +86,16 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [self loadMessage];
 }
 
+//- (void)updateUnReadMessageStatu
+//{
+//    [self.tableView.mj_footer resetNoMoreData];
+//    [self reloadDataFromDatabase];
+//}
+
 - (void)reloadDataFromDatabase
 {
     self.page = 0;
     _arrMessageRecord = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:self.page];
-    if (_arrMessageRecord && _arrMessageRecord.count) {
-        [self.tableView reloadData];
-    }
-    
     //添加未读短信
     for (NSDictionary *dicMessageRecord in _arrMessageRecord) {
         if (![dicMessageRecord[@"IsRead"] boolValue]) {
@@ -103,10 +107,28 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
                 //对方发送
                 currentPhone = [dicMessageRecord objectForKey:@"Fm"];
             }
-            if (![[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
-                [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
+            if (_currentSelectPhone && [_currentSelectPhone isEqualToString:currentPhone]) {
+                if ([[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
+                    [[UNDataTools sharedInstance].currentUnreadSMSPhones removeObject:currentPhone];
+                }
+                NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
+                [mutableDict setObject:@(1) forKey:@"IsRead"];
+                [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:@[mutableDict]];
+            }else{
+                if (![[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
+                    [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
+                }
             }
         }
+    }
+    
+    if (_arrMessageRecord && _arrMessageRecord.count) {
+        if (_arrMessageRecord.count >= 20) {
+            self.tableView.mj_footer.hidden = NO;
+        }else{
+            self.tableView.mj_footer.hidden = YES;
+        }
+        [self.tableView reloadData];
     }
 }
 
@@ -303,10 +325,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
             [self reloadDataFromDatabase];
             
             [self loadUnreadMessageStatu];
-            
-            if (self.tableView.mj_footer.isHidden) {
-                self.tableView.mj_footer.hidden = NO;
-            }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{

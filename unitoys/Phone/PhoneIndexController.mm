@@ -290,6 +290,8 @@
         [UNDataTools sharedInstance].isHasUnreadSMS = NO;
     }
     [self phoneTipMessageStatuChange];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdateFromPhoneIndex" object:nil];
 }
 
 //设置tabbar红点

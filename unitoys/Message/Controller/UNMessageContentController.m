@@ -515,6 +515,9 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
             }
+            
+            //更新短信列表
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMessageRecordLists" object:nil];
             UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
