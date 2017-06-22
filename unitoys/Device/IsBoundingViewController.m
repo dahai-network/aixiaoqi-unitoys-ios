@@ -320,7 +320,6 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return self.deviceDataArr.count;
-//    return 5;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(nonnull NSIndexPath *)indexPath{
@@ -363,7 +362,6 @@
     NSString *indexRow = [NSString stringWithFormat:@"%ld", (long)sender.indexPath.row];
     //发送IMEI过去连接
     [[NSNotificationCenter defaultCenter] postNotificationName:@"clickAndConnectingPer" object:indexRow];
-//    HUDNormal(showStr)
 }
 
 

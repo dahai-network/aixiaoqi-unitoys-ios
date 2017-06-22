@@ -468,10 +468,6 @@
 
 - (void)createTCPSocketToBLE:(NSNotification *)noti
 {
-//    [BlueToothDataManager shareManager].isRegisted = NO;
-//    [BlueToothDataManager shareManager].isBeingRegisting = YES;
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatue" object:@"100"];
-//    [BlueToothDataManager shareManager].stepNumber = @"100";
     if (![UNPushKitMessageManager shareManager].iccidString) {
         UNLogLBEProcess(@"ICCID没有了：%s,%d", __FUNCTION__, __LINE__)
         return;

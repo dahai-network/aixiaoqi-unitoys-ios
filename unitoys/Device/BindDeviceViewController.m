@@ -548,7 +548,7 @@
             UNDebugLogVerbose(@"空中升级的请求结果 -- %@", responseObj);
             if (responseObj[@"data"][@"Descr"]) {
                 NSString *infoStr = [NSString stringWithFormat:@"新版本：%@\n%@", responseObj[@"data"][@"Version"], responseObj[@"data"][@"Descr"]];
-                [self dj_alertAction:self alertTitle:@"设备固件有更新" actionTitle:@"升级" message:infoStr alertAction:^{
+                [self dj_alertLeftAlignmentAction:self alertTitle:@"设备固件有更新" actionTitle:@"升级" message:infoStr alertAction:^{
                     //点击升级
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"OTAAction" object:responseObj[@"data"][@"Url"]];
                 }];
@@ -644,6 +644,32 @@
                 break;
         }
     }
+}
+
+- (void)dj_alertLeftAlignmentAction:(UIViewController *)controller alertTitle:(NSString *)alertTitle actionTitle:(NSString *)actionTitle message:(NSString *)message alertAction:(void (^)())alertAction {
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:INTERNATIONALSTRING(alertTitle) message:INTERNATIONALSTRING(message) preferredStyle:UIAlertControllerStyleAlert];
+    [self setAlertMessageTextAlignment:alertVC];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(@"取消") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *certailAction = [UIAlertAction actionWithTitle:INTERNATIONALSTRING(actionTitle) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        alertAction();
+    }];
+    [alertVC addAction:cancelAction];
+    [alertVC addAction:certailAction];
+    [controller presentViewController:alertVC animated:YES completion:nil];
+}
+
+- (void)setAlertMessageTextAlignment:(UIAlertController *)alertController {
+    UIView *subView1 = alertController.view.subviews[0];
+    UIView *subView2 = subView1.subviews[0];
+    UIView *subView3 = subView2.subviews[0];
+    UIView *subView4 = subView3.subviews[0];
+    UIView *subView5 = subView4.subviews[0];
+    NSLog(@"%@",subView5.subviews);
+    //取title和message：
+    //    UILabel *title = subView5.subviews[0];
+    UILabel *message = subView5.subviews[1];
+    message.textAlignment = NSTextAlignmentLeft;
 }
 
 - (void)didReceiveMemoryWarning {

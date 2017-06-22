@@ -229,22 +229,6 @@
     UITapGestureRecognizer *phonePackage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(phonePackageAction)];
     [self.ivTutorial addGestureRecognizer:phonePackage];
     
-    //左边按钮
-//    self.leftButton = [[UIButton alloc]initWithFrame:CGRectMake(0,0,120,30)];//原来宽是100
-//    NSDictionary *userData = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-//    if (userData[@"BraceletIMEI"]) {
-//        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_CONNECTING];
-//    } else {
-//        //未绑定
-//        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTBOUND];
-//    }
-//    self.leftButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-//    self.leftButton.titleLabel.font = [UIFont systemFontOfSize:14];
-//    [self.leftButton setTitleEdgeInsets:UIEdgeInsetsMake(0.0, 3.0, 0.0, 0.0)];
-//    [self.leftButton addTarget:self action:@selector(leftButtonAction) forControlEvents:UIControlEventTouchUpInside];
-//    UIBarButtonItem *left = [[UIBarButtonItem alloc] initWithCustomView:self.leftButton];
-//    self.navigationItem.leftBarButtonItem = left;
-    
     //接收通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(paySuccess) name:@"BuyConfrim" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(boundingConnectedDevice) name:@"boundingDevice" object:@"bound"];//绑定
@@ -1778,7 +1762,11 @@
                 browserViewController.titleStr = title;
                 [self.navigationController pushViewController:browserViewController animated:YES];
             }
+        } else {
+            HUDNormal(@"网络连接出错啦")
         }
+    } else {
+        HUDNormal(@"服务器开小差啦")
     }
 }
 
