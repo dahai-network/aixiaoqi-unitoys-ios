@@ -61,6 +61,9 @@
 @property (nonatomic, assign) CGFloat pageViewHeight;
 @property (nonatomic, assign) BOOL isLogout;//是否已下线
 
+//未读短信列表
+@property (nonatomic, copy) NSArray *unReadMessageList;
+
 + (BOOL)isSaveTodayDateWithKey:(NSString *)key TodayString:(void(^)(NSString *todayStr))block;
 
 

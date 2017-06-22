@@ -165,6 +165,12 @@
             ];
 }
 
+- (NSArray *)unReadMessageList
+{
+    _unReadMessageList = [NSArray array];
+    return _unReadMessageList;
+}
+
 + (BOOL)isSaveTodayDateWithKey:(NSString *)key TodayString:(void(^)(NSString *todayStr))block
 {
     NSString *localDate = [[NSUserDefaults standardUserDefaults] objectForKey:key];
@@ -179,5 +185,6 @@
     }
     return NO;
 }
+
 
 @end

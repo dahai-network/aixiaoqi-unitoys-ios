@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class ContactModel;
+
 //转换格式工具类
 @interface UNConvertFormatTool : NSObject
 
@@ -42,6 +44,18 @@
 
 //通过号码获取昵称
 + (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr;
+
+//短信去除重复组名
++ (NSString *)checkLinkNameWithPhoneStrMergeGroupName:(NSString *)phoneStr;
+
+//短信不显示组名
++ (NSString *)checkLinkNameWithPhoneStrNoGroupName:(NSString *)phoneStr;
+
+//获取联系人信息
++ (ContactModel *)checkContactModelWithPhoneStr:(NSString *)phoneStr;
+
+//去除号码中的特殊字符("-"," ","+86","#","(",")")
++ (NSString *)checkPhoneNumberSpecialString:(NSString *)phoneStr;
 
 //seconds->@"00:00"
 + (NSString *)minSecWithSeconds:(int)seconds;

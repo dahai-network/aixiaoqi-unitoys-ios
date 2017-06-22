@@ -16,6 +16,8 @@
 #import "LookLogController.h"
 #import "UNTestTableViewController.h"
 
+#import "UNAnimateController.h"
+
 @interface UNTestViewController ()
 @property (nonatomic, strong) UNPresentTool *presentTool;
 @property (nonatomic, weak) UNPopTipMsgView *popView;
@@ -72,7 +74,7 @@
             break;
         case 6:
         {
-            
+            [self pushAnimate];
         }
             break;
         case 7:
@@ -123,7 +125,11 @@
     [self.navigationController pushViewController:logVc animated:YES];
 }
 
-
+- (void)pushAnimate
+{
+    UNAnimateController *animateVc = [[UNAnimateController alloc] init];
+    [self.navigationController pushViewController:animateVc animated:YES];
+}
 
 - (void)startLoadingAnima
 {

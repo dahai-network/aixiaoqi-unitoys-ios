@@ -816,7 +816,7 @@ static FMDatabaseQueue *_msgDatabase =nil;
             if ([rs next]) {
                 NSInteger count = [rs intForColumn:@"countNum"];
                 if (count == 0) {
-                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id text PRIMARY KEY, msgtime TimeStamp NOT NULL, data text NOT NULL, contactnumber text NOT NULL)", apiName];
+                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id text PRIMARY KEY, msgtime TimeStamp NOT NULL, data text NOT NULL, contactnumber text NOT NULL, IsRead text NOT NULL)", apiName];
                     BOOL result = [db executeUpdate:sqlString];
                     if (result) {
                         NSLog(@"成功创表");
@@ -827,14 +827,14 @@ static FMDatabaseQueue *_msgDatabase =nil;
                 NSString *selectStr = [NSString stringWithFormat:@"SELECT * FROM %@ where id='%@'", apiName, otherPhone];
                 rs = [db executeQuery:selectStr];
                 if ([rs next]) {
-                    NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET data='%@',msgtime='%@',contactnumber='%@' where id='%@'",apiName,jsonString,messageDict[@"SMSTime"],contactNumber,otherPhone];
+                    NSString *sqlString = [NSString stringWithFormat:@"UPDATE %@ SET data='%@',msgtime='%@',contactnumber='%@',IsRead='%@' where id='%@'",apiName,jsonString,messageDict[@"SMSTime"],contactNumber, messageDict[@"IsRead"],otherPhone];
                     BOOL isSuccess = [db executeUpdate:sqlString];
                     if (!isSuccess) {
                         NSLog(@"更新数据库文件失败");
                         isSuccess = NO;
                     }
                 }else{
-                    NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@ (data, msgtime, id, contactnumber) VALUES ('%@', '%@', '%@', '%@');", apiName, jsonString, messageDict[@"SMSTime"], otherPhone, contactNumber];
+                    NSString *insertStr = [NSString stringWithFormat:@"INSERT INTO %@ (data, msgtime, id, contactnumber, IsRead) VALUES ('%@', '%@', '%@', '%@', '%@');", apiName, jsonString, messageDict[@"SMSTime"], otherPhone, contactNumber, messageDict[@"IsRead"]];
                     BOOL isSuccess = [db executeUpdate:insertStr];
                     if (!isSuccess) {
                         NSLog(@"插入数据库文件失败");
@@ -947,7 +947,7 @@ static FMDatabaseQueue *_msgDatabase =nil;
             if ([rs next]) {
                 NSInteger count = [rs intForColumn:@"countNum"];
                 if (count == 0) {
-                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id text PRIMARY KEY, msgtime TimeStamp NOT NULL, data text NOT NULL, contactnumber text NOT NULL)", apiName];
+                    NSString *sqlString = [NSString stringWithFormat:@"CREATE TABLE %@ (id text PRIMARY KEY, msgtime TimeStamp NOT NULL, data text NOT NULL, contactnumber text NOT NULL, IsRead text NOT NULL)", apiName];
                     BOOL result = [db executeUpdate:sqlString];
                     if (result) {
                         NSLog(@"成功创表");
@@ -982,8 +982,55 @@ static FMDatabaseQueue *_msgDatabase =nil;
     return isSuccess;
 }
 
+#pragma mark ===================================== 获取未读短信列表
+- (NSArray *)getUnReadMessageList
+{
+    if (![self getPhoneStr]) {
+        return [NSArray array];
+    }
+//    [self getMessageListsWithPage:page apiName:@"MessageSessionList" isMessageContent:NO PhoneNumber:nil];
+    return [self getMessageListsWithApiName:@"MessageSessionList" isMessageContent:NO Key:@"IsRead" Value:@"0" PhoneNumber:nil];
+}
 
-
+#pragma mark ===================================== 根据指定Key获取短信操作
+- (NSArray *)getMessageListsWithApiName:(NSString *)apiName isMessageContent:(BOOL)isContent Key:(NSString *)key Value:(id)value PhoneNumber:(NSString *)phoneNumber
+{
+    if (!self.msgDatabase) {
+        return [NSMutableArray array];
+    }
+    //打开数据库
+    __block NSMutableArray *arrayDatas = [NSMutableArray array];
+    [self.msgDatabase inDatabase:^(FMDatabase *db) {
+        //打开数据库
+        if ([db open]) {
+            NSString *existsSql = [NSString stringWithFormat:@"select count(name) as countNum from sqlite_master where type = 'table' and name = '%@'", apiName];
+            FMResultSet *rs = [db executeQuery:existsSql];
+            if ([rs next]) {
+                NSInteger count = [rs intForColumn:@"countNum"];
+                if (count) {
+                    NSString *selectStr;
+                    if (isContent) {
+                        selectStr = [NSString stringWithFormat:@"select * from %@ where contactnumber='%@' and %@='%@'", apiName, phoneNumber, key, value];
+                    }else{
+                        selectStr = [NSString stringWithFormat:@"select * from %@ where %@='%@'", apiName, key, value];
+                    }
+                    FMResultSet *nextRs = [db executeQuery:selectStr];
+                    while ([nextRs next]) {
+                        NSString *dataStr = [nextRs stringForColumn:@"data"];
+                        NSDictionary *dataDict = [self jsonToDictionary:dataStr];
+                        if (dataDict) {
+                            [arrayDatas addObject:dataDict];
+                        }
+                    }
+                    [nextRs close];
+                }
+                [rs close];
+            }
+            [db close];
+        }
+    }];
+    return arrayDatas;
+}
 
 
 #pragma mark ---- 字典转JSON

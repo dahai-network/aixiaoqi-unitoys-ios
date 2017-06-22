@@ -72,7 +72,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(phoneTabbarDoubleClick:) name:@"PhoneTabbarDoubleClick" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(phoneTipMessageStatuChange) name:@"PhoneUnReadMessageStatuChange" object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(initUnreadMessage) name:@"ReceiveNewSMSContentUpdate" object:nil];
 }
 
 - (void)currentStatueChangeAndChangeHeight {
@@ -235,21 +235,52 @@
 
 - (void)initUnreadMessage
 {
-    NSArray *arrMessageRecord = [[UNDatabaseTools sharedFMDBTools] getMessageListsWithPage:0];
-    
-    //添加未读短信
-    for (NSDictionary *dicMessageRecord in arrMessageRecord) {
-        if (![dicMessageRecord[@"IsRead"] boolValue]) {
-            NSString *currentPhone;
-            if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
-                //己方发送
-                currentPhone = [dicMessageRecord objectForKey:@"To"];
-            }else{
-                //对方发送
-                currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+    //更新短信列表
+    NSString *lastTime = [[UNDatabaseTools sharedFMDBTools] getLastTimeWithMessageList];
+    NSDictionary *params;
+    if (lastTime) {
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber",lastTime,@"beginSMSTime", nil];
+    }else{
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber", nil];
+    }
+    [UNNetworkManager getUrl:apiSMSLast parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+        if (type == ResponseTypeSuccess) {
+            if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
+                NSMutableArray *messageArray = [NSMutableArray arrayWithArray:responseObj[@"data"]];
+                [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:messageArray];
             }
-            if (![[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
-                [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
+        }else if (type == ResponseTypeFailed){
+            //数据请求失败
+            UNDebugLogVerbose(@"请求短信数据失败");
+        }
+        //不论是否请求成功,都更新
+        [self updateUnReadStatu];
+    } failure:^(NSError * _Nonnull error) {
+        UNDebugLogVerbose(@"服务器或网络错误");
+        //不论是否请求成功,都更新
+        [self updateUnReadStatu];
+    }];
+}
+
+- (void)updateUnReadStatu
+{
+    //从数据库获取未读短信
+    NSArray *messageList = [[UNDatabaseTools sharedFMDBTools] getUnReadMessageList];
+    UNDebugLogVerbose(@"未读短信-----%@",messageList)
+    if (messageList && messageList.count) {
+        for (NSDictionary *dicMessageRecord in messageList) {
+            if (![dicMessageRecord[@"IsRead"] boolValue]) {
+                NSString *currentPhone;
+                if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+                    //己方发送
+                    currentPhone = [dicMessageRecord objectForKey:@"To"];
+                }else{
+                    //对方发送
+                    currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+                }
+                if (![[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
+                    [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
+                }
             }
         }
     }
@@ -258,7 +289,6 @@
     }else{
         [UNDataTools sharedInstance].isHasUnreadSMS = NO;
     }
-    
     [self phoneTipMessageStatuChange];
 }
 

@@ -267,7 +267,6 @@
 }
 
 -(NSString *) compareCurrentTime:(NSDate*) compareDate
-//
 {
     NSTimeInterval  timeInterval = [compareDate timeIntervalSinceNow];
     timeInterval = -timeInterval;

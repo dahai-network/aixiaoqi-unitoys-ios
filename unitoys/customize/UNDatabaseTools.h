@@ -66,4 +66,7 @@
 //更新指定短信状态
 - (BOOL)updateMessageStatuWithSMSIDDictArray:(NSArray<NSDictionary *> *)smsIds;
 
+//获取未读短信列表
+- (NSArray *)getUnReadMessageList;
+
 @end

@@ -2087,7 +2087,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     
     [JPUSHService resetBadge];
     [application setApplicationIconBadgeNumber:0];
-    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+//    [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"appEnterForeground" object:@"appEnterForeground"];
     
     //进入前台重新注册

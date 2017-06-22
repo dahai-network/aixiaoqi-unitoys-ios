@@ -1348,7 +1348,6 @@
 - (void)messageInputView:(UNMessageInputView *)inputView BottomViewHeightChanged:(CGFloat)BottomViewHeight
 {
     UNDebugLogVerbose(@"%.f", BottomViewHeight);
-//    [self updateTableViewHeightWithBottomViewHeight:BottomViewHeight];
     
     [self updateTabelViewWithInputView:inputView height:BottomViewHeight];
 }
@@ -1394,14 +1393,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     if (scrollView == self.myTableView && !self.myTableView.isEditing) {
-//        DebugUNLog(@"scrollView====contentOffset%.f=======contentSize%.f========bottomHeight%.f", scrollView.contentOffset.y, scrollView.contentSize.height, self.myMsgInputView.bottomHeight);
-        //底部
-        //        scrollView.contentSize.height - scrollView.contentOffset.y == kScreenHeightValue - 64 - 50
-        //        2850----3304
-//        CGFloat newOffset = kScreenHeightValue - 64 - self.myMsgInputView.bottomHeight - (scrollView.contentSize.height - scrollView.contentOffset.y);
-        
         CGFloat offset = kScreenHeightValue - 64 - (scrollView.contentSize.height - (scrollView.contentOffset.y - self.myMsgInputView.bottomHeight));
-        DebugUNLog(@"offset=======%.4f", offset);
         if (offset > 60 && scrollView.contentSize.height > kScreenHeightValue) {
             self.scrollOffset = offset;
             [self.myMsgInputView notAndBecomeFirstResponder];
@@ -1420,11 +1412,7 @@
  */
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-//    DebugUNLog(@"scrollView====contentOffset%.4f=======contentSize%.4f========bottomHeight%.4f========InputHeight%.4f", scrollView.contentOffset.y, scrollView.contentSize.height, self.myMsgInputView.bottomHeight, self.myMsgInputView.un_height);
     if (scrollView == self.myTableView) {
-//        CGFloat newOffset = kScreenHeightValue - 64 - self.myMsgInputView.bottomHeight - (scrollView.contentSize.height - scrollView.contentOffset.y);
-//        DebugUNLog(@"NewOffset=======%.4f", newOffset);
-        
         CGFloat offset = kScreenHeightValue - 64 - (scrollView.contentSize.height - (scrollView.contentOffset.y - self.myMsgInputView.bottomHeight));
         DebugUNLog(@"offset=======%.4f", offset);
         if (offset <= 1 && scrollView.contentSize.height > kScreenHeightValue){

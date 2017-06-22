@@ -171,6 +171,8 @@
 		3C4A07951E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07931E9CDB8900A6DDA9 /* CallDetailsLookAllCell.m */; };
 		3C4A07961E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C4A07941E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib */; };
 		3C4A07991E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C4A07981E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m */; };
+		3C51D7B81EFB544400E3CD8A /* UNProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C51D7B71EFB544400E3CD8A /* UNProgressView.m */; };
+		3C51D7BB1EFB576500E3CD8A /* UNAnimateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C51D7BA1EFB576500E3CD8A /* UNAnimateController.m */; };
 		3C52B1F91E5EB65B001E67C4 /* logo_call.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1F81E5EB65B001E67C4 /* logo_call.png */; };
 		3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */; };
 		3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */; };
@@ -720,6 +722,10 @@
 		3C4A07941E9CDB8900A6DDA9 /* CallDetailsLookAllCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CallDetailsLookAllCell.xib; sourceTree = "<group>"; };
 		3C4A07971E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNPhoneRecordDataTool.h; sourceTree = "<group>"; };
 		3C4A07981E9CDDC700A6DDA9 /* UNPhoneRecordDataTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNPhoneRecordDataTool.m; sourceTree = "<group>"; };
+		3C51D7B61EFB544400E3CD8A /* UNProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNProgressView.h; sourceTree = "<group>"; };
+		3C51D7B71EFB544400E3CD8A /* UNProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNProgressView.m; sourceTree = "<group>"; };
+		3C51D7B91EFB576500E3CD8A /* UNAnimateController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNAnimateController.h; sourceTree = "<group>"; };
+		3C51D7BA1EFB576500E3CD8A /* UNAnimateController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNAnimateController.m; sourceTree = "<group>"; };
 		3C52B1F81E5EB65B001E67C4 /* logo_call.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_call.png; sourceTree = "<group>"; };
 		3C52B1FA1E5ED20E001E67C4 /* logo_callKit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo_callKit.png; sourceTree = "<group>"; };
 		3C52B1FB1E5ED20E001E67C4 /* logo_callKit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo_callKit@2x.png"; sourceTree = "<group>"; };
@@ -1496,6 +1502,8 @@
 				3CC594CA1EF7649D005EF4E4 /* LookLogContentController.xib */,
 				3CC594D01EF7B1A4005EF4E4 /* UNTestTableViewController.h */,
 				3CC594D11EF7B1A4005EF4E4 /* UNTestTableViewController.m */,
+				3C51D7B91EFB576500E3CD8A /* UNAnimateController.h */,
+				3C51D7BA1EFB576500E3CD8A /* UNAnimateController.m */,
 			);
 			path = TestVC;
 			sourceTree = "<group>";
@@ -1762,6 +1770,8 @@
 				3CC594D41EF7D14A005EF4E4 /* HLCircleView.m */,
 				3CC594D61EF7D6DF005EF4E4 /* UNRefreshCircleHeader.h */,
 				3CC594D71EF7D6DF005EF4E4 /* UNRefreshCircleHeader.m */,
+				3C51D7B61EFB544400E3CD8A /* UNProgressView.h */,
+				3C51D7B71EFB544400E3CD8A /* UNProgressView.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -2689,9 +2699,11 @@
 				048AD0011E0A576800421F67 /* NSString+Addition.m in Sources */,
 				3CC594D81EF7D6DF005EF4E4 /* UNRefreshCircleHeader.m in Sources */,
 				95CD34121D9D1C5800EE5DD3 /* OrderDetailViewController.m in Sources */,
+				3C51D7BB1EFB576500E3CD8A /* UNAnimateController.m in Sources */,
 				740FD3911E287F9E009413F1 /* Provider.c in Sources */,
 				952EA1141DD6F02A004738A5 /* QuickSettingViewController.m in Sources */,
 				95938D541D951F63008A0A21 /* ContactsViewController.m in Sources */,
+				3C51D7B81EFB544400E3CD8A /* UNProgressView.m in Sources */,
 				3C20C20E1E6CF3CC008078BB /* UNSipEngineInitialize.mm in Sources */,
 				3C1B341C1EEFD36200DFC56F /* UNDDLogManager.m in Sources */,
 				95938D351D933FFA008A0A21 /* CountryCell.m in Sources */,

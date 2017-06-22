@@ -27,7 +27,7 @@
         _page = 1;
         _autoDownPullRefresh = YES;
         _dataSource = [NSMutableArray array];
-        _loadingType = UNLoadingTypeCustom;
+        _loadingType = UNLoadingTypeMB;
     }
     return self;
 }
