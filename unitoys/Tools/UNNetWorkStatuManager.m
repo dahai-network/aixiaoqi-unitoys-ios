@@ -51,13 +51,12 @@ static UNNetWorkStatuManager *manager = nil;
     }
     Reachability *reach = noti.object;
     NetworkStatus netStatu = [reach currentReachabilityStatus];
-    if (self.currentStatu != netStatu) {
+    if ((netStatu == NotReachable || self.currentStatu == NotReachable) && self.currentStatu != netStatu) {
         self.currentStatu = netStatu;
         if (_netWorkStatuChangeBlock) {
             _netWorkStatuChangeBlock(netStatu);
         }
     }
-
 }
 
 @end

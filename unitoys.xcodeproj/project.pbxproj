@@ -134,6 +134,7 @@
 		3C07E23F1EE25C5A001AB21D /* UNLeftModeTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E23E1EE25C5A001AB21D /* UNLeftModeTextField.m */; };
 		3C07E2421EE2931C001AB21D /* BaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2411EE2931C001AB21D /* BaseModel.m */; };
 		3C07E2451EE29383001AB21D /* UnMessageLinkManModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C07E2441EE29383001AB21D /* UnMessageLinkManModel.m */; };
+		3C0B476D1EFCA6A3004F3674 /* UNCircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C0B476C1EFCA6A3004F3674 /* UNCircleProgressView.m */; };
 		3C116DF81E56CD90006C0641 /* CustomRefreshMessageHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */; };
 		3C15135B1E796CBD00AF48B6 /* AlarmListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */; };
 		3C1B341C1EEFD36200DFC56F /* UNDDLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C1B341B1EEFD36200DFC56F /* UNDDLogManager.m */; };
@@ -660,6 +661,8 @@
 		3C07E2411EE2931C001AB21D /* BaseModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseModel.m; sourceTree = "<group>"; };
 		3C07E2431EE29383001AB21D /* UnMessageLinkManModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnMessageLinkManModel.h; sourceTree = "<group>"; };
 		3C07E2441EE29383001AB21D /* UnMessageLinkManModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnMessageLinkManModel.m; sourceTree = "<group>"; };
+		3C0B476B1EFCA6A3004F3674 /* UNCircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCircleProgressView.h; sourceTree = "<group>"; };
+		3C0B476C1EFCA6A3004F3674 /* UNCircleProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCircleProgressView.m; sourceTree = "<group>"; };
 		3C116DF61E56CD90006C0641 /* CustomRefreshMessageHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomRefreshMessageHeader.h; sourceTree = "<group>"; };
 		3C116DF71E56CD90006C0641 /* CustomRefreshMessageHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomRefreshMessageHeader.m; sourceTree = "<group>"; };
 		3C15135A1E796CBD00AF48B6 /* AlarmListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlarmListViewController.xib; sourceTree = "<group>"; };
@@ -1772,6 +1775,8 @@
 				3CC594D71EF7D6DF005EF4E4 /* UNRefreshCircleHeader.m */,
 				3C51D7B61EFB544400E3CD8A /* UNProgressView.h */,
 				3C51D7B71EFB544400E3CD8A /* UNProgressView.m */,
+				3C0B476B1EFCA6A3004F3674 /* UNCircleProgressView.h */,
+				3C0B476C1EFCA6A3004F3674 /* UNCircleProgressView.m */,
 			);
 			path = customize;
 			sourceTree = "<group>";
@@ -2934,6 +2939,7 @@
 				3C8CFA6E1E55A1CB0035A460 /* UIView+Utils.m in Sources */,
 				95CD33EE1D9CE4F300EE5DD3 /* DataVerifier.m in Sources */,
 				958159501DCCC31D004474FF /* SetValueViewController.m in Sources */,
+				3C0B476D1EFCA6A3004F3674 /* UNCircleProgressView.m in Sources */,
 				3C4A07791E9CC56400A6DDA9 /* ContactsCallDetailsController.m in Sources */,
 				04226B2E1EBC8D8B004B8365 /* UILabel+Extension.m in Sources */,
 				3C07E2361EE2577F001AB21D /* MJMessageCell.m in Sources */,

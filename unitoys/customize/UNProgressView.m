@@ -37,12 +37,19 @@
     UIBezierPath *bezier = [UIBezierPath bezierPath];
     [bezier moveToPoint:CGPointMake(0, 0)];
     [bezier addLineToPoint:CGPointMake(self.frame.size.width, 0)];
-    _shapeLayer.lineWidth = 3.0;
+    _shapeLayer.lineWidth = 4.0;
     _shapeLayer.path = bezier.CGPath;
     _shapeLayer.fillColor = [UIColor whiteColor].CGColor;
     _shapeLayer.strokeColor = DefultColor.CGColor;
     _shapeLayer.strokeEnd = 0;
+    _shapeLayer.lineCap = kCALineCapRound;
     [self.layer addSublayer:_shapeLayer];
+}
+
+- (void)setLineWidth:(CGFloat)lineWidth
+{
+    _lineWidth = lineWidth;
+    self.shapeLayer.lineWidth = lineWidth;
 }
 
 - (void)setProgress:(CGFloat)progress

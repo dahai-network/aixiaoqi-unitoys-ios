@@ -12,4 +12,6 @@
 
 @property (nonatomic, assign) CGFloat progress;
 
+@property (nonatomic, assign) CGFloat lineWidth;
+
 @end
