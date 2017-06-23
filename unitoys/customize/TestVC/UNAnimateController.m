@@ -8,10 +8,12 @@
 
 #import "UNAnimateController.h"
 #import "UNProgressView.h"
+#import "UNCircleProgressView.h"
 
 @interface UNAnimateController ()
 
 @property (nonatomic, strong) UNProgressView *progressView;
+@property (nonatomic, strong) UNCircleProgressView *circleProgressView;
 
 @property (nonatomic, strong) NSTimer *timer;
 
@@ -22,20 +24,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _progressView = [[UNProgressView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue - 2 *30, 30)];
-    _progressView.un_centerX = kScreenWidthValue * 0.5;
-    _progressView.un_centerY = kScreenHeightValue * 0.5;
-    [self.view addSubview:_progressView];
-    
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setTitle:@"开始" forState:UIControlStateNormal];
-    button.un_width = 90;
-    button.un_height = 30;
-    button.un_centerX = kScreenWidthValue * 0.5;
-    button.un_centerY = kScreenHeightValue * 0.5 + 60;
-    [button setBackgroundColor:DefultColor];
-    [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button];
+    [self initCircleProgress];
+    [self initLineProgress];
+    [self initStartButton];
 }
 
 - (void)buttonAction:(UIButton *)button
@@ -47,11 +38,40 @@
     }
 }
 
+- (void)initCircleProgress
+{
+    _circleProgressView = [[UNCircleProgressView alloc] initWithFrame:CGRectMake(0, 50, 50, 50)];
+    _circleProgressView.un_centerX = kScreenWidthValue * 0.5;
+    [self.view addSubview:_circleProgressView];
+}
+
+- (void)initLineProgress
+{
+    _progressView = [[UNProgressView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue - 2 *30, 30)];
+    _progressView.un_centerX = kScreenWidthValue * 0.5;
+    _progressView.un_centerY = kScreenHeightValue * 0.5;
+    [self.view addSubview:_progressView];
+}
+
+- (void)initStartButton
+{
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setTitle:@"开始" forState:UIControlStateNormal];
+    button.un_width = 90;
+    button.un_height = 30;
+    button.un_centerX = kScreenWidthValue * 0.5;
+    button.un_centerY = kScreenHeightValue * 0.5 + 60;
+    [button setBackgroundColor:DefultColor];
+    [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+}
+
 - (void)timeAction:(NSTimer *)timer
 {
     _progress +=0.01;
     if (_progress <= 1.0) {
         self.progressView.progress = _progress;
+        self.circleProgressView.progress = _progress;
     }else{
         _progress = 0;
         [_timer invalidate];

@@ -551,6 +551,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     [SSNetworkRequest postRequest:apiDeletesByTels params:params success:^(id responseObj) {
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             [[UNDatabaseTools sharedFMDBTools] deteleMessageListWithPhoneLists:@[phoneNumber]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateUnReadForDatabase" object:nil];
             UNDebugLogVerbose(@"删除单条短信成功");
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];

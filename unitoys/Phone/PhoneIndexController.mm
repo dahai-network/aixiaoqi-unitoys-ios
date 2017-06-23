@@ -73,6 +73,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(phoneTabbarDoubleClick:) name:@"PhoneTabbarDoubleClick" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(phoneTipMessageStatuChange) name:@"PhoneUnReadMessageStatuChange" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(initUnreadMessage) name:@"ReceiveNewSMSContentUpdate" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUnReadForDatabase) name:@"UpdateUnReadForDatabase" object:nil];
 }
 
 - (void)currentStatueChangeAndChangeHeight {
@@ -264,34 +266,37 @@
 
 - (void)updateUnReadStatu
 {
+    [self updateUnReadForDatabase];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdateFromPhoneIndex" object:nil];
+}
+
+- (void)updateUnReadForDatabase
+{
     //从数据库获取未读短信
     NSArray *messageList = [[UNDatabaseTools sharedFMDBTools] getUnReadMessageList];
     UNDebugLogVerbose(@"未读短信-----%@",messageList)
+    
+    [[UNDataTools sharedInstance].currentUnreadSMSPhones removeAllObjects];
     if (messageList && messageList.count) {
         for (NSDictionary *dicMessageRecord in messageList) {
-            if (![dicMessageRecord[@"IsRead"] boolValue]) {
-                NSString *currentPhone;
-                if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
-                    //己方发送
-                    currentPhone = [dicMessageRecord objectForKey:@"To"];
-                }else{
-                    //对方发送
-                    currentPhone = [dicMessageRecord objectForKey:@"Fm"];
-                }
-                if (![[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
-                    [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
-                }
+            NSString *currentPhone;
+            if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+                //己方发送
+                currentPhone = [dicMessageRecord objectForKey:@"To"];
+            }else{
+                //对方发送
+                currentPhone = [dicMessageRecord objectForKey:@"Fm"];
             }
+            [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
         }
     }
+    
     if ([UNDataTools sharedInstance].currentUnreadSMSPhones.count) {
         [UNDataTools sharedInstance].isHasUnreadSMS = YES;
     }else{
         [UNDataTools sharedInstance].isHasUnreadSMS = NO;
     }
     [self phoneTipMessageStatuChange];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewSMSContentUpdateFromPhoneIndex" object:nil];
 }
 
 //设置tabbar红点

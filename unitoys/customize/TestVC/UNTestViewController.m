@@ -17,6 +17,7 @@
 #import "UNTestTableViewController.h"
 
 #import "UNAnimateController.h"
+#import "MBProgressHUD+UNTip.h"
 
 @interface UNTestViewController ()
 @property (nonatomic, strong) UNPresentTool *presentTool;
@@ -79,7 +80,7 @@
             break;
         case 7:
         {
-            
+            [self startMBProgressAnimate];
         }
             break;
         case 8:
@@ -100,6 +101,19 @@
 //    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Present" style:UIBarButtonItemStyleDone target:self action:@selector(presentVc)];
 }
 
+- (void)startMBProgressAnimate
+{
+    [MBProgressHUD showLoadingWithMessage:@"正在加载"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MBProgressHUD showLoadingWithProgress:0.5 ProgressType:UNProgressTypeDeterminateHorizontalBar];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [MBProgressHUD showSuccess:@"成功"];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [MBProgressHUD showMessage:@"请稍等..."];
+            });
+        });
+    });
+}
 
 //引导激活
 - (void)pushActive

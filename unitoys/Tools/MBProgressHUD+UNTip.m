@@ -17,15 +17,17 @@
 
 + (void)show:(NSString *)text icon:(NSString *)icon view:(UIView *)view
 {
-    [self hideMBHUD];
     if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
     dispatch_async(dispatch_get_main_queue(), ^{
-        MBProgressHUD *iconHud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        MBProgressHUD *iconHud = [MBProgressHUD HUDForView:view];
+        if (!iconHud) {
+            iconHud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        }
+        iconHud.mode = MBProgressHUDModeCustomView;
+        iconHud.minSize = CGSizeMake(100, 100);
         iconHud.label.text = text;
         iconHud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"MBProgressHUD.bundle/%@", icon]]];
-        iconHud.mode = MBProgressHUDModeCustomView;
         iconHud.removeFromSuperViewOnHide = YES;
-//        iconHud.color = hudBackgroundColor;
         [iconHud hideAnimated:YES afterDelay:ShowTime];
     });
 }
@@ -69,11 +71,13 @@
 }
 
 + (void)showMessage:(NSString *)message toView:(UIView *)view isLongText:(BOOL)isLong DelayTime:(CGFloat)time{
-    [self hideMBHUD];
     if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
     // 快速显示一个提示信息
     dispatch_async(dispatch_get_main_queue(), ^{
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:view];
+        if (!hud) {
+            hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        }
         hud.mode = MBProgressHUDModeText;
         if (isLong) {
             hud.detailsLabel.text = message;
@@ -81,10 +85,7 @@
         }else{
             hud.label.text = message;
         }
-//        hud.color = hudBackgroundColor;
         hud.removeFromSuperViewOnHide = YES;
-        // YES代表需要蒙版效果
-        //    hud.dimBackground = YES;
         if (time != 0) {
             [hud hideAnimated:YES afterDelay:time];
         }else{
@@ -105,19 +106,19 @@
 
 + (void)showLoadingMessage:(NSString *)message toView:(UIView *)view
 {
-    [self hideMBHUD];
     if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
     // 快速显示一个提示信息
     dispatch_async(dispatch_get_main_queue(), ^{
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        MBProgressHUD *hud = [MBProgressHUD HUDForView:view];
+        if (!hud) {
+            hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        }
+        hud.mode = MBProgressHUDModeIndeterminate;
         if (message) {
             hud.label.text = message;
         }
-//        hud.bezelView.color = hudBackgroundColor;
         // 隐藏时候从父控件中移除
         hud.removeFromSuperViewOnHide = YES;
-        // YES代表需要蒙版效果
-//        hud.dimBackground = YES;
     });
 
 }
@@ -136,6 +137,9 @@
 {
     if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
     MBProgressHUD *hud = [MBProgressHUD HUDForView:view];
+    if (!hud) {
+        hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+    }
     MBProgressHUDMode modetype;
     switch (type) {
         case UNProgressTypeAnnularDeterminate:
@@ -151,21 +155,9 @@
             modetype = MBProgressHUDModeAnnularDeterminate;
             break;
     }
-    if (hud && hud.mode == modetype) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            hud.progress = progress;
-        });
-    }else{
-        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self hideMBHUD]
-            [hud hideAnimated:NO];
-            MBProgressHUD *progressHud = [MBProgressHUD showHUDAddedTo:view animated:YES];
-            progressHud.mode = modetype;
-            progressHud.progress = progress == 1.0 ? 0.99 : progress;
-            progressHud.removeFromSuperViewOnHide = YES;
-//            progressHud.color = hudBackgroundColor;
-        });
-    }
+    hud.mode = modetype;
+    hud.progress = progress == 1.0 ? 0.99 : progress;
+    hud.removeFromSuperViewOnHide = YES;
 }
 
 + (void)hideMBHUD
