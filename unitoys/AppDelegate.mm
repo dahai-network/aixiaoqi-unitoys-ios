@@ -2983,12 +2983,10 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             UNLogLBEProcess(@"无电话卡")
             return;
         }
-        //                if (![BlueToothDataManager shareManager].isConnected) {
-        //                    UNDebugLogVerbose(@"蓝牙未连接");
-        //                    return;
-        //                }else{
-        //
-        //                }
+        if (![BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isHaveCard) {
+            UNDebugLogVerbose(@"蓝牙未连接");
+            return;
+        }
     }
     
     if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected) {

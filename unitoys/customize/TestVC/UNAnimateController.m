@@ -34,7 +34,7 @@
     if (!_timer) {
         _progress = 0;
         self.progressView.progress = 0;
-        _timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(timeAction:) userInfo:nil repeats:YES];
+        _timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timeAction:) userInfo:nil repeats:YES];
     }
 }
 
@@ -68,14 +68,17 @@
 
 - (void)timeAction:(NSTimer *)timer
 {
-    _progress +=0.01;
-    if (_progress <= 1.0) {
-        self.progressView.progress = _progress;
-        self.circleProgressView.progress = _progress;
-    }else{
+    _progress = _progress + 0.05;
+    NSLog(@"========%.2f", _progress);
+    if (_progress > 1.01) {
+        NSLog(@"bbbbb--%.2f", _progress);
         _progress = 0;
         [_timer invalidate];
         _timer = nil;
+    }else{
+        NSLog(@"aaaaaa--%.2f", _progress);
+        self.progressView.progress = _progress;
+        self.circleProgressView.progress = _progress;
     }
 }
 

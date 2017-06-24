@@ -9,13 +9,9 @@
 #import "UNCircleProgressView.h"
 
 #define CircleColor [UIColor colorWithRed:(0 / 255.0) green:(160 / 255.0) blue:(233 / 255.0) alpha:1.0]
-#define kPadding 4.0
+#define kPadding 3.0
 
 @interface UNCircleProgressView()
-
-//@property (nonatomic, strong) CAShapeLayer *outCircleLayer;
-//
-//@property (nonatomic, strong) CAShapeLayer *inCircleLayer;
 
 @end
 
@@ -37,7 +33,7 @@
 
 - (void)initSubViews
 {
-    
+    self.backgroundColor = [UIColor whiteColor];
 }
 
 - (void)setProgress:(CGFloat)progress
@@ -51,16 +47,21 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGFloat radius = MIN(self.bounds.size.width, self.bounds.size.height) * 0.5;
     CGPoint center = CGPointMake(self.bounds.size.width * 0.5, self.bounds.size.height * 0.5);
-    CGContextAddArc(context, center.x, center.y, radius, 0, 2 * M_PI, YES);
-    [[UIColor whiteColor] set];
-    CGContextDrawPath(context, kCGPathFill);
+    CGContextAddArc(context, center.x, center.y, radius - 1, 0, 2 * M_PI, YES);
+    [CircleColor set];
+    CGContextSetLineWidth(context, 1.0);
+    CGContextDrawPath(context, kCGPathStroke);
     
     if (_progress != 0) {
-        CGFloat progress = 2 * M_PI * _progress;
-        CGContextAddArc(context, center.x, center.y, radius - kPadding, 0, progress, YES);
+        CGContextAddArc(context, center.x, center.y, radius - 1.0, 0, 2 * M_PI, YES);
         [CircleColor set];
-        //    CGContextFillPath(context);
-        CGContextDrawPath(context, kCGPathFillStroke);
+        CGContextDrawPath(context, kCGPathFill);
+        
+        CGFloat progress = 2 * M_PI * _progress - 0.5 * M_PI - 0.00005;
+        CGContextMoveToPoint(context, center.x, center.y);
+        CGContextAddArc(context, center.x, center.y, radius - 1.5, - 0.5 * M_PI, progress, YES);
+        [[UIColor whiteColor] set];
+        CGContextDrawPath(context, kCGPathFill);
     }
     [super drawRect:rect];
 }
