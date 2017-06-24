@@ -951,6 +951,9 @@ static UNBlueToothTool *instance = nil;
     [BlueToothDataManager shareManager].iccidFromTcp = nil;
     [BlueToothDataManager shareManager].iccidFromBle = nil;
     [BlueToothDataManager shareManager].isDoneRegist = NO;
+    [BlueToothDataManager shareManager].operatorType = nil;
+    [BlueToothDataManager shareManager].currentSimCardStatu = 0;
+    [BlueToothDataManager shareManager].isHaveCard = NO;
     self.appdenStr = nil;
     
     if (self.isKill) {
