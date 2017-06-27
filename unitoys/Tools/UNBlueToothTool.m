@@ -1558,6 +1558,7 @@ static UNBlueToothTool *instance = nil;
             UNDebugLogVerbose(@"返回的绑定的设备的结果：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             UNDebugLogVerbose(@"啥都没：%@",[error description]);
+            [self showHudNormalString:@"网络貌似有问题"];
         } headers:self.headers];
     } else {
         UNLogLBEProcess(@"没有搜索到适配的设备,%s%d", __FUNCTION__, __LINE__)
@@ -1793,9 +1794,6 @@ static UNBlueToothTool *instance = nil;
                 [self.boundTimer setFireDate:[NSDate distantFuture]];
                 [BlueToothDataManager shareManager].isAllowToBound = YES;
                 [self sendMessageToBLEWithType:BLEIsBoundSuccess validData:@"01"];
-//                [self hideHud];
-//                [self showHudNormalString:INTERNATIONALSTRING(@"绑定成功")];
-//                [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
                 //请求卡类型和ICCID
                 if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
                     [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
@@ -2791,16 +2789,6 @@ static UNBlueToothTool *instance = nil;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
                                 }
                             }
-                            //取消手动发送ICCID命令
-//                            [self updataToCard];
-//                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                                [self sendICCIDMessage];
-//                            });
-                            
-//减少发送指令间隔时间
-//                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//                                [self sendICCIDMessage];
-//                            });
                         }
                     } else {
                         [self showHudNormalString:INTERNATIONALSTRING(@"电话卡运营商不属于三大运营商")];
@@ -3169,30 +3157,6 @@ static UNBlueToothTool *instance = nil;
         }
     } failure:^(id dataObj, NSError *error) {
         [self showHudNormalString:INTERNATIONALSTRING(@"网络貌似有问题")];
-        
-//        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:@"apiGetRegStatus"];
-//        if (responseObj) {
-//            if ([responseObj[@"data"][@"RegStatus"] intValue] == 1) {
-//                //注册成功
-//                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-//            } else if ([responseObj[@"data"][@"RegStatus"] intValue] == 0) {
-//                //未注册成功
-//                [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
-//                //注册卡
-//                if (![BlueToothDataManager shareManager].isTcpConnected && ![BlueToothDataManager shareManager].isRegisted) {
-//                    
-//                    [self checkUserIsExistAppointPackage];
-//                } else {
-//                    if ([BlueToothDataManager shareManager].isRegisted) {
-//                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
-//                    }else{
-//                        [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
-//                    }
-//                }
-//            } else {
-//                UNDebugLogVerbose(@"注册状态有问题");
-//            }
-//        }
         
         UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
@@ -3751,9 +3715,6 @@ static UNBlueToothTool *instance = nil;
 - (void)dealloc
 {
     UNDebugLogVerbose(@"UNBlueToothTool---dealloc");
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"downElectic" object:@"downElectic"];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"ReceivePushKitMessage" object:nil];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"AnalysisAuthData" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

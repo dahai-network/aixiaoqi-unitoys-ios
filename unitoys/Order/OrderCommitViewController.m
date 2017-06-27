@@ -359,12 +359,15 @@
 }
 
 - (IBAction)addAmount:(id)sender {
-    
-    self.orderCount = self.orderCount+1;
-    
-    self.lblOrderCount.text = [NSString stringWithFormat:@"%ld",(long)self.orderCount];
-    
-    [self calcFee];
+    if ([self.dicPackage[@"IsCanBuyMultiple"] intValue]) {
+        self.orderCount = self.orderCount+1;
+        
+        self.lblOrderCount.text = [NSString stringWithFormat:@"%ld",(long)self.orderCount];
+        
+        [self calcFee];
+    } else {
+        HUDNormal(@"此套餐单次只能购买一个")
+    }
     
 }
 

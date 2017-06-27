@@ -56,10 +56,12 @@ static VSWManager * manager=nil;
     Byte bytes = (Byte)[[self convertHexStrToData:dataStr] bytes];
     
     appEvtSendBuff.pData = [[self convertHexStrToData:dataStr] bytes];//传value
+    UNLogLBEProcess(@"发送给服务器的数据 -- %@", [self convertHexStrToData:dataStr]);
     SimComEvtApp2Drv(&appEvtSendBuff);
 }
 
 - (void)reconnectAction {
+    UNDebugLogVerbose(@"走了不从0开始注册初始化VSW的步骤");
     ST_SIMCOM_APPEVT appEvtSendBuff;
     appEvtSendBuff.chn = 0;
     appEvtSendBuff.evtIndex = EN_APPEVT_CMD_SIMCLR;

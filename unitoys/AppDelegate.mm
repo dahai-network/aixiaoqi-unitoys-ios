@@ -264,19 +264,6 @@
         [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(log) userInfo:nil repeats:YES];
     }
     
-    //创建一个udp
-//    _udpSocket = [[GCDAsyncUdpSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
-//    _udpSocket = [[GCDAsyncUdpSocket alloc]initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-//    [_udpSocket receiveOnce:nil];
-//    //监听接口和接收数据
-//    NSError * error = nil;
-//    [_udpSocket bindToPort:PORT error:&error];
-//    if (error) {//监听错误打印错误信息
-//        UNDebugLogVerbose(@"error:%@",error);
-//    }else {//监听成功则开始接收信息
-//        [_udpSocket beginReceiving:&error];
-//    }
-    
 #warning 先不创建udp,获取imsi
 //    [self setUpUdpSocket];
     if (![[NSUserDefaults standardUserDefaults] objectForKey:@"iosSystemBit"]) {
@@ -751,11 +738,7 @@
 #pragma mark pushkit下发送tcp数据
 - (void)setUpTcppacketFromPushKit
 {
-    //    NSString *tempString = self.tcpStringWithPushKit;
-    //    NSString *tempHex = [self hexTLVLength:[NSString stringWithFormat:@"%lu", tempString.length/2]];
-    //    //    UNDebugLogVerbose(@"最终发送出去的数据包长度为 ---> %lu\n 转换之后的十六进制数 ---> %@", tempString.length/2, tempHex);
-    //    self.tcpPacketStr = [NSString stringWithFormat:@"%@%@0001%@%@", TCPFIRSTSUBNOT, TCPCOMMUNICATEID, tempHex, tempString];
-    //    [self sendMsgWithMessage:self.tcpPacketStr];
+
     
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     NSString *token;
