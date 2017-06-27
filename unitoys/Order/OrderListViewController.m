@@ -21,6 +21,7 @@
 #import "BlueToothDataManager.h"
 #import "UNReadyActivateController.h"
 #import "UNConvertFormatTool.h"
+#import "UNMobileActivateController.h"
 
 @interface OrderListViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -33,6 +34,9 @@
 @property (nonatomic, copy) NSString *statueStr;//记录当前状态
 @property (nonatomic ,strong)NSDictionary *currentInfo;
 
+@property (nonatomic, assign) BOOL isAlreadyActivate;
+@property (nonatomic, copy) NSString *selectDate;
+@property (nonatomic, copy) NSString *orderID;
 @end
 
 @implementation OrderListViewController
@@ -249,19 +253,136 @@
     [super cardInIphone];
     NSLog(@"爱小器卡已放入手机");
     
-    UNReadyActivateController *activate = [[UNReadyActivateController alloc] init];
-    activate.defaultDay = self.currentInfo[@"ExpireDaysInt"];
-    activate.orderID = self.currentInfo[@"OrderID"];
-    //状态有5种,只有为1才不需要激活
-    activate.isAlreadyActivate = [[self.currentInfo objectForKey:@"OrderStatus"] intValue] == 1 ? YES : NO;
-    if ([self.currentInfo[@"OrderStatus"] intValue] != 0) {
-        //只有状态为0才没有时间
-        activate.defaultDate = [UNConvertFormatTool dateStringYMDFromTimeInterval:self.currentInfo[@"ActivationDate"]];
-    }else{
-        activate.lastActivateDate = [self.currentInfo[@"LastCanActivationDate"] doubleValue];
-    }
-    [self.navigationController pushViewController:activate animated:YES];
+    self.isAlreadyActivate = [[self.currentInfo objectForKey:@"OrderStatus"] intValue] == 1 ? YES : NO;
+    self.selectDate = @"";
+    self.orderID = self.currentInfo[@"OrderID"];
+    [self activeSIMCardInPhoneAction];
+    
+//    UNReadyActivateController *activate = [[UNReadyActivateController alloc] init];
+//    activate.defaultDay = self.currentInfo[@"ExpireDaysInt"];
+//    activate.orderID = self.currentInfo[@"OrderID"];
+//    //状态有5种,只有为1才不需要激活
+//    activate.isAlreadyActivate = [[self.currentInfo objectForKey:@"OrderStatus"] intValue] == 1 ? YES : NO;
+//    if ([self.currentInfo[@"OrderStatus"] intValue] != 0) {
+//        //只有状态为0才没有时间
+//        activate.defaultDate = [UNConvertFormatTool dateStringYMDFromTimeInterval:self.currentInfo[@"ActivationDate"]];
+//    }else{
+//        activate.lastActivateDate = [self.currentInfo[@"LastCanActivationDate"] doubleValue];
+//    }
+//    [self.navigationController pushViewController:activate animated:YES];
 }
+
+
+
+- (void)activeSIMCardInPhoneAction
+{
+    if (!self.isAlreadyActivate) {
+        //直接获取卡数据
+        UNLogLBEProcess(@"activeSIMCardInPhoneAction-激活");
+        HUDNoStop1(@"")
+        NSDictionary *info = @{@"OrderID":self.orderID, @"BeginDateTime":self.selectDate};
+        NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderID%@", @"apiOrderActivation", self.orderID];
+        [UNNetworkManager postUrl:apiOrderActivation parameters:info success:^(ResponseType type, id  _Nullable responseObj) {
+            HUDStop
+            if (type == ResponseTypeSuccess) {
+                [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
+                [self activitySuccess];
+            }else if (type == ResponseTypeFailed){
+                HUDNormal(responseObj[@"msg"])
+            }
+        } failure:^(NSError * _Nonnull error) {
+            HUDStop
+            NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+            if (responseObj) {
+                [self activitySuccess];
+            }else{
+                HUDNormal(@"激活失败")
+            }
+        }];
+    }else{
+        //获取激活码
+        [self getActivateCode];
+    }
+}
+
+#pragma mark 激活成功
+- (void)activitySuccess {
+    HUDNoStop1(@"")
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderID, @"OrderID", nil];
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderID%@", @"apiActivationLocalCompleted", self.orderID];
+    [UNNetworkManager postUrl:apiActivationLocalCompleted parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+        HUDStop
+        if (type == ResponseTypeSuccess) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
+            //获取激活码
+            [self getActivateCode];
+        }else if (type == ResponseTypeFailed){
+            UNDebugLogVerbose(@"ResponseTypeFailed----%@", responseObj);
+        }
+    } failure:^(NSError * _Nonnull error) {
+        HUDStop
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            [self getActivateCode];
+        }
+    }];
+}
+
+#pragma mark 查询订单卡数据
+- (void)getActivateCode
+{
+    HUDNoStop1(@"")
+    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.orderID, @"OrderID", nil];
+    NSString *apiNameStr = [NSString stringWithFormat:@"%@OrderID%@", @"apiQueryOrderData", self.orderID];
+    [UNNetworkManager postUrl:apiQueryOrderData parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+        UNDebugLogVerbose(@"%@", responseObj);
+        HUDStop
+        if (type == ResponseTypeSuccess) {
+            [[UNDatabaseTools sharedFMDBTools] insertDataWithAPIName:apiNameStr dictData:responseObj];
+            //粘贴激活码
+            NSString *code = [self convertActivationCode:responseObj[@"data"][@"Data"]];
+            [self pasteCode:code];
+            
+            UNMobileActivateController * activateVc = [[UNMobileActivateController alloc] init];
+            [self.navigationController pushViewController:activateVc animated:YES];
+        }else if (type == ResponseTypeFailed){
+            NSLog(@"请求失败：%@", responseObj[@"msg"]);
+        }
+    } failure:^(NSError * _Nonnull error) {
+        HUDNormal(@"网络貌似有问题")
+        NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
+        if (responseObj) {
+            NSString *code = [self convertActivationCode:responseObj[@"data"][@"Data"]];
+            [self pasteCode:code];
+            UNMobileActivateController * activateVc = [[UNMobileActivateController alloc] init];
+            [self.navigationController pushViewController:activateVc animated:YES];
+        }
+    }];
+}
+
+//转换激活码
+//76372b2f6c35546856465972786a71686e6c43457a704f61367973624263776736717549544238424d3363784a476547304664674b726b465a716c3943556873336578693862337254476f3673686758424a6553383548754c6d737838504149532b3973
+- (NSString *)convertActivationCode:(NSString *)code
+{
+    if (!code || [code isEqualToString:@""]) {
+        return nil;
+    }
+    return [UNConvertFormatTool stringFromHexString:code];
+}
+
+//粘贴激活码
+- (void)pasteCode:(NSString *)code
+{
+    if (code) {
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        [pasteboard setString:code];
+    }
+}
+
+
+
+
+
 
 - (void)cardInDevice {
     [super cardInDevice];

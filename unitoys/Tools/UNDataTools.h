@@ -66,6 +66,7 @@
 
 + (BOOL)isSaveTodayDateWithKey:(NSString *)key TodayString:(void(^)(NSString *todayStr))block;
 
-
+//MD5加密
++ (NSString *)getMD5String:(NSString *)str;
 
 @end

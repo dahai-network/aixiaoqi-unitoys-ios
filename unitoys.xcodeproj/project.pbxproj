@@ -231,6 +231,8 @@
 		3CB305DC1EE80F97004728FB /* UNReadyActivateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CB305DB1EE80F97004728FB /* UNReadyActivateController.m */; };
 		3CB305E01EE81167004728FB /* UNReadyActivateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CB305DE1EE81167004728FB /* UNReadyActivateCell.m */; };
 		3CB305E11EE81167004728FB /* UNReadyActivateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CB305DF1EE81167004728FB /* UNReadyActivateCell.xib */; };
+		3CBF74381F00A22700E39AAE /* UNMessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF74371F00A22700E39AAE /* UNMessageModel.m */; };
+		3CBF743B1F00A23500E39AAE /* UNMessageFrameModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CBF743A1F00A23500E39AAE /* UNMessageFrameModel.m */; };
 		3CC3E0A31E63BE2500A62F8C /* AbroadMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A21E63BE2500A62F8C /* AbroadMessageController.m */; };
 		3CC3E0A71E63C22F00A62F8C /* CustomOrderCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A51E63C22F00A62F8C /* CustomOrderCell.m */; };
 		3CC3E0A81E63C22F00A62F8C /* CustomOrderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CC3E0A61E63C22F00A62F8C /* CustomOrderCell.xib */; };
@@ -827,6 +829,10 @@
 		3CB305DD1EE81167004728FB /* UNReadyActivateCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNReadyActivateCell.h; sourceTree = "<group>"; };
 		3CB305DE1EE81167004728FB /* UNReadyActivateCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNReadyActivateCell.m; sourceTree = "<group>"; };
 		3CB305DF1EE81167004728FB /* UNReadyActivateCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UNReadyActivateCell.xib; sourceTree = "<group>"; };
+		3CBF74361F00A22700E39AAE /* UNMessageModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNMessageModel.h; sourceTree = "<group>"; };
+		3CBF74371F00A22700E39AAE /* UNMessageModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNMessageModel.m; sourceTree = "<group>"; };
+		3CBF74391F00A23500E39AAE /* UNMessageFrameModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNMessageFrameModel.h; sourceTree = "<group>"; };
+		3CBF743A1F00A23500E39AAE /* UNMessageFrameModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNMessageFrameModel.m; sourceTree = "<group>"; };
 		3CC3E0A11E63BE2500A62F8C /* AbroadMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbroadMessageController.h; sourceTree = "<group>"; };
 		3CC3E0A21E63BE2500A62F8C /* AbroadMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbroadMessageController.m; sourceTree = "<group>"; };
 		3CC3E0A41E63C22F00A62F8C /* CustomOrderCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomOrderCell.h; sourceTree = "<group>"; };
@@ -1411,6 +1417,10 @@
 				3C07E2221EE2577F001AB21D /* MJMessageFrame.m */,
 				3C07E2431EE29383001AB21D /* UnMessageLinkManModel.h */,
 				3C07E2441EE29383001AB21D /* UnMessageLinkManModel.m */,
+				3CBF74361F00A22700E39AAE /* UNMessageModel.h */,
+				3CBF74371F00A22700E39AAE /* UNMessageModel.m */,
+				3CBF74391F00A23500E39AAE /* UNMessageFrameModel.h */,
+				3CBF743A1F00A23500E39AAE /* UNMessageFrameModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2890,6 +2900,7 @@
 				048051711E86686700E8AB55 /* PurviewSettingTableViewCell.m in Sources */,
 				95938D4A1D93E522008A0A21 /* FeedbackViewController.m in Sources */,
 				3CD9134C1E70E59F00434465 /* UNBLEDataManager.m in Sources */,
+				3CBF74381F00A22700E39AAE /* UNMessageModel.m in Sources */,
 				3C07E2311EE2577F001AB21D /* MJMessageFrame.m in Sources */,
 				3CE1174A1E616B8F008D5976 /* AddTouchAreaButton.m in Sources */,
 				04F727A31E641CE4002EB54C /* DDNumber.m in Sources */,
@@ -2942,6 +2953,7 @@
 				3C0B476D1EFCA6A3004F3674 /* UNCircleProgressView.m in Sources */,
 				3C4A07791E9CC56400A6DDA9 /* ContactsCallDetailsController.m in Sources */,
 				04226B2E1EBC8D8B004B8365 /* UILabel+Extension.m in Sources */,
+				3CBF743B1F00A23500E39AAE /* UNMessageFrameModel.m in Sources */,
 				3C07E2361EE2577F001AB21D /* MJMessageCell.m in Sources */,
 				954A87E61D9A151500570843 /* OrderCommitViewController.m in Sources */,
 				955CCC401D91758400BC8110 /* HomeViewController.m in Sources */,

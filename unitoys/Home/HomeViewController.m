@@ -105,7 +105,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    UNLogLBEProcess(@"HomeViewController----viewDidLoad");
     if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
         [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
     }
@@ -1814,8 +1814,9 @@
 
 - (void)updateLBEStatuWithPushKit
 {
+    UNLogLBEProcess(@"updateLBEStatuWithPushKit")
     if (!self.isUpdatedLBEInfo) {
-        UNDebugLogVerbose(@"更新蓝牙状态==============================");
+        UNLogLBEProcess(@"更新蓝牙状态==============================");
         self.isPushKitStatu = NO;
         [[UNBlueToothTool shareBlueToothTool] setPushKitStatu:NO];
         [UNPushKitMessageManager shareManager].isQuickLoad = NO;

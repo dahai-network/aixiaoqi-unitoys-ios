@@ -37,6 +37,9 @@
 //判断字符串是否全为数字
 + (BOOL)isAllNumberWithString:(NSString *)str;
 
+//从字符串中提取数字
++ (NSString *)getNumStringWithString:(NSString *)str;
+
 ////字典转JSON
 //+ (NSString *)dictionaryToJson:(NSDictionary *)dic;
 ////JSON转字典

@@ -206,6 +206,14 @@
 //    }
 }
 
+- (void)setIsCanTouch:(BOOL)isCanTouch
+{
+    _isCanTouch = isCanTouch;
+    if (_phoneNumLabel) {
+        _phoneNumLabel.isCanTouch = isCanTouch;
+    }
+}
+
 - (void)callButtonAction:(UCallPhoneButton *)btnSender
 {
     if (btnSender) {

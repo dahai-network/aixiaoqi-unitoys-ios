@@ -10,13 +10,15 @@
 
 @class AddTouchAreaButton;
 typedef void(^PhoneLabelChangeBlock)(NSString *currentText, NSString *currentNum);
+//typedef void(^PhoneLabelChangeWithSystemBlock)(NSString *currentText, NSString *currentNum);
 @interface UCallPhoneNumLabel : UIView
+@property (nonatomic, assign) BOOL isCanTouch;
 
 @property (nonatomic, strong) UILabel *phonelabel;
 @property (nonatomic, strong) AddTouchAreaButton *deleteButton;
 
-@property (nonatomic, copy) PhoneLabelChangeBlock phoneLabelChangeBlock;
 
+@property (nonatomic, copy) PhoneLabelChangeBlock phoneLabelChangeBlock;
 - (void)updatePhoneLabel:(NSString *)phone currentNum:(NSString *)number;
 
 @end

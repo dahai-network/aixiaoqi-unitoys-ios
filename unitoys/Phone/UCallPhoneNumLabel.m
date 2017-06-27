@@ -10,6 +10,7 @@
 #import "UIView+Utils.h"
 #import "AddTouchAreaButton.h"
 #import "global.h"
+#import "UNConvertFormatTool.h"
 
 @implementation UCallPhoneNumLabel
 
@@ -19,6 +20,53 @@
         [self initSubViews];
     }
     return self;
+}
+
+- (void)setIsCanTouch:(BOOL)isCanTouch
+{
+    _isCanTouch = isCanTouch;
+    if (isCanTouch) {
+        _phonelabel.userInteractionEnabled = YES;
+        UILongPressGestureRecognizer *pressRe = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(pressAction:)];
+        [_phonelabel addGestureRecognizer:pressRe];
+    }
+}
+
+- (BOOL)canBecomeFirstResponder{
+    return _isCanTouch;
+}
+
+-(BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    
+    if (action ==@selector(copy:)){
+        return YES;
+    }
+    else if (action ==@selector(paste:)){
+        return YES;
+    }
+    return NO;
+}
+
+- (void)pressAction:(UILongPressGestureRecognizer *)press
+{
+    [self becomeFirstResponder];
+    UIMenuController *menu = [UIMenuController sharedMenuController];
+    [menu setTargetRect:self.frame inView:self.superview];
+    [menu setMenuVisible:YES animated:YES];
+}
+
+-(void)copy:(id)sender{
+    if (_phonelabel.text && ![_phonelabel.text isEqualToString:@""]) {
+        UIPasteboard *pboard = [UIPasteboard generalPasteboard];
+        pboard.string = _phonelabel.text;
+    }
+}
+
+
+- (void)paste:(id)sender{
+    UIPasteboard *pboard = [UIPasteboard generalPasteboard];
+    NSString *pasteString = [UNConvertFormatTool getNumStringWithString:pboard.string];
+    [self updatePhoneLabel:pasteString currentNum:pasteString];
 }
 
 - (void)initSubViews
@@ -46,6 +94,9 @@
 
 - (void)updatePhoneLabel:(NSString *)phone currentNum:(NSString *)number
 {
+    if ([self isFirstResponder]) {
+        [self resignFirstResponder];
+    }
     if (phone) {
         _phonelabel.text = [phone copy];
     }else{
@@ -56,6 +107,11 @@
 
 - (void)deleteAction:(UIButton *)button
 {
+    if ([self isFirstResponder]) {
+        UNDebugLogVerbose(@"当前为第一响应者")
+        [self resignFirstResponder];
+        [[UIMenuController sharedMenuController] setMenuVisible:NO animated:YES];
+    }
     if (_phonelabel.text.length > 1) {
         _phonelabel.text = [_phonelabel.text substringToIndex:_phonelabel.text.length - 1];
     }else{

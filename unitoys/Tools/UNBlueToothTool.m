@@ -173,7 +173,7 @@ static UNBlueToothTool *instance = nil;
 
 - (void)initBlueTooth
 {
-    UNDebugLogVerbose(@"走了初始化蓝牙的方法");
+    UNLogLBEProcess(@"走了初始化蓝牙的方法");
     if (![UNDataTools sharedInstance].isLogout) {
         UNDebugLogVerbose(@"在线：%s,%d", __FUNCTION__, __LINE__);
         if (self.isInitInstance) {
@@ -228,32 +228,32 @@ static UNBlueToothTool *instance = nil;
 - (void)receivePushKitMessage
 {
     if (self.isKill || !self.isInitInstance) {
+        UNLogLBEProcess(@"是否已销毁====%d=====是否已初始化======%d",self.isKill,self.isInitInstance);
         return;
     }
-    
-    UNDebugLogVerbose(@"接收到PushKit消息---receivePushKitMessage");
+    UNLogLBEProcess(@"receivePushKitMessage");
     if ([BlueToothDataManager shareManager].isConnected) {
-        
         if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
-            UNDebugLogVerbose(@"发送pushkit消息到蓝牙");
+            UNLogLBEProcess(@"发送pushkit消息到蓝牙");
             if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect) {
-                UNDebugLogVerbose(@"SIM断开连接消息类型");
+                UNLogLBEProcess(@"SIM断开连接消息类型");
                 [self sendLBEMessageSIMDisConnect];
             }else{
                 if ([UNPushKitMessageManager shareManager].simDataDict) {
                     [self sendLBEMessageWithPushKit];
                 }else{
 //                    [self sendLBEConnectData];
-                    UNDebugLogVerbose(@"必须有simDataDict");
+                    UNLogLBEProcess(@"必须有simDataDict");
                 }
             }
         }else{
-            UNDebugLogVerbose(@"数据错误,必须为PushKit模式");
+            UNLogLBEProcess(@"数据错误,必须为PushKit模式");
         }
         
     }else{
+        UNLogLBEProcess(@"蓝牙未连接");
         if (![BlueToothDataManager shareManager].isLbeConnecting) {
-            UNDebugLogVerbose(@"蓝牙未连接,重连设备");
+            UNLogLBEProcess(@"蓝牙未连接,重连设备");
             [self checkBindedDeviceFromNet];
         }
     }
@@ -462,7 +462,7 @@ static UNBlueToothTool *instance = nil;
         if (firstStr.length/2 <= 15) {
             validStrLength = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)(firstStr.length+typeStr.length)/2]];
             totalStr = [NSString stringWithFormat:@"8880%@%@%@", validStrLength, typeStr, firstStr];
-            UNDebugLogVerbose(@"只有一个包，最终发送的包内容 -> %@", totalStr);
+            UNLogLBEProcess(@"只有一个包，最终发送的包内容 -> %@", totalStr);
             [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
         } else {
             NSString *totalNumber = [NSString stringWithFormat:@"%lu", ((firstStr.length - 15*2)/2)/17 + 2];
@@ -475,7 +475,7 @@ static UNBlueToothTool *instance = nil;
                     currentStrLength = [self hexStringFromString:@"17"];
                     tempStr = [firstStr substringWithRange:NSMakeRange(0, 34 - 4)];//减去类型的两个字节
                     totalStr = [NSString stringWithFormat:@"8800%@%@%@", currentStrLength, typeStr, tempStr];
-                    UNDebugLogVerbose(@"多包第一个，最终发送的包内容 -> %@", totalStr);
+                    UNLogLBEProcess(@"多包第一个，最终发送的包内容 -> %@", totalStr);
                     [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
                 } else if (i == [totalNumber integerValue] - 1) {
                     //最后一个
@@ -483,7 +483,7 @@ static UNBlueToothTool *instance = nil;
                     currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i + 128]];//加上0x80
                     tempStr = [firstStr substringFromIndex:15*2 + 17*2*(i - 1)];
                     totalStr = [NSString stringWithFormat:@"88%@%@%@", currentNumStr, currentStrLength, tempStr];
-                    UNDebugLogVerbose(@"多包最后一个，最终发送的包内容 -> %@", totalStr);
+                    UNLogLBEProcess(@"多包最后一个，最终发送的包内容 -> %@", totalStr);
                     [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
                 } else {
                     //中间的
@@ -491,7 +491,7 @@ static UNBlueToothTool *instance = nil;
                     tempStr = [firstStr substringWithRange:NSMakeRange(15*2+17*2*(i-1), 17*2)];
                     currentNumStr = [self hexStringFromString:[NSString stringWithFormat:@"%ld", (long)i]];
                     totalStr = [NSString stringWithFormat:@"88%@%@%@", currentNumStr, currentStrLength, tempStr];
-                    UNDebugLogVerbose(@"多包中间的，最终发送的包内容 -> %@", totalStr);
+                    UNLogLBEProcess(@"多包中间的，最终发送的包内容 -> %@", totalStr);
                     [self sendConnectingInstructWithData:[self checkNewMessageReuseWithString:totalStr]];
                 }
             }
@@ -517,12 +517,12 @@ static UNBlueToothTool *instance = nil;
             } else if ((self.characteristic.properties & CBCharacteristicPropertyWrite) != 0) {
                 [self.peripheral writeValue:data forCharacteristic:self.characteristic type:CBCharacteristicWriteWithResponse];
             } else {
-                UNDebugLogVerbose(@"No write property on TX characteristic, %ld.",(unsigned long)self.characteristic.properties);
+                UNLogLBEProcess(@"No write property on TX characteristic, %ld.",(unsigned long)self.characteristic.properties);
             }
-            UNDebugLogVerbose(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
+            UNLogLBEProcess(@"连接蓝牙并发送给蓝牙数据 -- %@", data);
         }
     } else {
-        UNDebugLogVerbose(@"蓝牙未连接");
+        UNLogLBEProcess(@"蓝牙未连接");
     }
 }
 
@@ -1217,15 +1217,15 @@ static UNBlueToothTool *instance = nil;
     UNLogLBEProcess(@"sendLBEMessageWithPushKit")
     if ([BlueToothDataManager shareManager].isConnected) {
         UNLogLBEProcess(@"蓝牙连接正常")
-        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
         [self sendMessageToBLEWithType:BLETellBLEIsApple validData:@"01"];
+        [self sendMessageToBLEWithType:BLESystemBaseInfo validData:nil];
         [self sendMessageToBLEWithType:BLEJUSTBOXCANCONNECT validData:nil];
         
         
         [BlueToothDataManager shareManager].isRegisted = NO;
         [BlueToothDataManager shareManager].isBeingRegisting = YES;
-        
         [UNPushKitMessageManager shareManager].isQuickLoad = YES;
+        
         //对卡上电
         UNDebugLogVerbose(@"对卡上电03");
         [self updataToCard];
@@ -1274,6 +1274,7 @@ static UNBlueToothTool *instance = nil;
 
 - (void)sendLBEMessageSIMDisConnect
 {
+    UNLogLBEProcess(@"sendLBEMessageSIMDisConnect")
     if ([BlueToothDataManager shareManager].isConnected) {
         [UNPushKitMessageManager shareManager].isQuickLoad = NO;
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {

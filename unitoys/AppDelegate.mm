@@ -997,9 +997,9 @@
             return;
         }
     } else {
-        if (![[BlueToothDataManager shareManager].cardType isEqualToString:@"2"] || ![BlueToothDataManager shareManager].isHaveCard) {
+        if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"4"] || [[BlueToothDataManager shareManager].operatorType isEqualToString:@"5"] || ![BlueToothDataManager shareManager].isHaveCard) {
             //不是电话卡，断开tcp连接
-            UNLogLBEProcess(@"不是电话卡，断开tcp")
+            UNLogLBEProcess(@"不是电话卡，断开tcp,运营商类型====%@",[BlueToothDataManager shareManager].operatorType);
             [BlueToothDataManager shareManager].isTcpConnected = NO;
             [BlueToothDataManager shareManager].isRegisted = NO;
             return;
@@ -2081,14 +2081,17 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 [self closeTCP];
                 [BlueToothDataManager shareManager].isCheckAndRefreshBLEStatue = NO;
                 [BlueToothDataManager shareManager].bleStatueForCard = 0;
-                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+//                [BlueToothDataManager shareManager].isBeingRegisting = NO;
+//                [BlueToothDataManager shareManager].isRegisted = NO;
                 [BlueToothDataManager shareManager].stepNumber = @"0";
                 self.lessStep = 0;
-                [BlueToothDataManager shareManager].isRegisted = NO;
                 self.tcpPacketStr = nil;
                 [[UNBlueToothTool shareBlueToothTool] fristJumpForeground];
                 //在pushkit里初始化蓝牙
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UNLogLBEProcess(@"发送重置蓝牙状态通知")
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateLBEStatuWithPushKit" object:nil];
+                });
             } else {
                 UNDebugLogVerbose(@"不在线：%s,%d", __FUNCTION__, __LINE__)
             }
@@ -2661,11 +2664,12 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     //                [[UNSipEngineInitialize sharedInstance] initEngine];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[UNSipEngineInitialize sharedInstance] initEngine];
+                        
+                        [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+                        //在pushkit里初始化蓝牙
+                        [self checkCurrentPushKitMessage:serviceTimeData];
                     });
-                    [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
-                    //在pushkit里初始化蓝牙
-                    [self checkCurrentPushKitMessage:serviceTimeData];
-                    
+
                 }else if ([messageType isEqualToString:@"06"]){
                     UNLogLBEProcess(@"06唤醒网络电话PushKit消息");
                     //创建网络电话服务
@@ -2678,15 +2682,19 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                     [UNCreatLocalNoti createLocalNotiMessageString:@"pushKit消息唤醒网络电话"];
                 }else if ([messageType isEqualToString:@"05"]){
                     UNLogLBEProcess(@"05心跳包PushKit消息")
-                    [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
-                    [self checkCurrentPushKitMessage:serviceTimeData];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+                        [self checkCurrentPushKitMessage:serviceTimeData];
+                    });
                 }else if ([messageType isEqualToString:@"0f"]){
                     UNLogLBEProcess(@"0FSIM卡断开连接PushKit消息")
-                    //在pushkit里初始化蓝牙
-                    [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
-                    //创建网络电话服务
-                    [[UNSipEngineInitialize sharedInstance] initEngine];
-                    [self checkCurrentPushKitMessage:serviceTimeData];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        //在pushkit里初始化蓝牙
+                        [[UNBlueToothTool shareBlueToothTool] initBlueTooth];
+                        //创建网络电话服务
+                        [[UNSipEngineInitialize sharedInstance] initEngine];
+                        [self checkCurrentPushKitMessage:serviceTimeData];
+                    });
                 }else{
                     [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
                     UNLogLBEProcess(@"未知PushKit消息---%@", dict)
@@ -2703,7 +2711,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 {
     //存储到队列中
     if ([UNPushKitMessageManager shareManager].pushKitMsgQueue.count > 0) {
-        NSString *timeString = [UNPushKitMessageManager shareManager].pushKitMsgQueue.lastObject[@"time"];
+        NSString *timeString = [UNPushKitMessageManager shareManager].pushKitMsgQueue.firstObject[@"time"];
         
         CGFloat dataTime = [timeString doubleValue];
         NSDate *dataDate = [NSDate dateWithTimeIntervalSince1970:dataTime];
@@ -2727,8 +2735,11 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     UNLogLBEProcess(@"pushkit队列消息数量--%zd", [UNPushKitMessageManager shareManager].pushKitMsgQueue.count)
     if ([UNPushKitMessageManager shareManager].pushKitMsgQueue.count == 1) {
         [self sendPushKitMessage:[UNPushKitMessageManager shareManager].pushKitMsgQueue.firstObject];
-    }else if ([UNPushKitMessageManager shareManager].pushKitMsgQueue.count > 15){
+    }else if ([UNPushKitMessageManager shareManager].pushKitMsgQueue.count > 3){
+        NSDictionary *dict = [UNPushKitMessageManager shareManager].pushKitMsgQueue.lastObject;
         [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
+        [[UNPushKitMessageManager shareManager].pushKitMsgQueue addObject:dict];
+        [self sendPushKitMessage:[UNPushKitMessageManager shareManager].pushKitMsgQueue.firstObject];
     }
 }
 
@@ -2869,7 +2880,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         self.tlvFirstStr = nil;
         [UNPushKitMessageManager shareManager].simDataDict = nil;
         //创建网络电话服务
-        [[UNSipEngineInitialize sharedInstance] initEngine];
+//        [[UNSipEngineInitialize sharedInstance] initEngine];
         //解析并发送当前pushkit
         if ([[servicePushKitData[@"dataString"] substringWithRange:NSMakeRange(28, 2)] isEqualToString:@"01"]) {
             UNLogLBEProcess(@"发送01pushkit消息")
@@ -2895,7 +2906,9 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             //加载蓝牙手环
             if ([UNPushKitMessageManager shareManager].simDataDict) {
                 UNLogLBEProcess(@"发送ReceivePushKitMessage通知")
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceivePushKitMessage" object:nil];
+                });
             }else{
                 if ([UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
                     UNDebugLogVerbose(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);

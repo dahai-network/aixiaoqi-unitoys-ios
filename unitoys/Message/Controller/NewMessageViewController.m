@@ -602,9 +602,9 @@
         [weakSelf longPressActionWithIndex:index Content:content longPressView:longPressView];
     };
     //重发短信
-    cell.repeatSendMessageBlock = ^(MJMessageFrame *messageFrame){
-        [weakSelf repeatSendMessage:messageFrame];
-    };
+//    cell.repeatSendMessageBlock = ^(MJMessageFrame *messageFrame){
+//        [weakSelf repeatSendMessage:messageFrame];
+//    };
     // 3.返回cell
     return cell;
 }

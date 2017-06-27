@@ -10,7 +10,7 @@
 #import "MJRefresh.h"
 #import "NewMessageViewController.h"
 #import "MessageRecordCell.h"
-#import "MJViewController.h"
+//#import "MJViewController.h"
 #import "AddTouchAreaButton.h"
 #import "UITableView+RegisterNib.h"
 #import "UNDataTools.h"
@@ -457,7 +457,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     //消息记录，显示消息
     NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
     if (![dicMessageRecord[@"IsRead"] boolValue]) {

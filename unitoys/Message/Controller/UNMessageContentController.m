@@ -11,7 +11,8 @@
 #import "UNEditMessageView.h"
 #import "CustomRefreshMessageHeader.h"
 #import "NotifyTextField.h"
-#import "MJMessageFrame.h"
+//#import "MJMessageFrame.h"
+#import "UNMessageFrameModel.h"
 #import "ContactsDetailViewController.h"
 #import "ContactsCallDetailsController.h"
 #import "UNDatabaseTools.h"
@@ -348,7 +349,7 @@
     if (self.selectRemoveData.count) {
         UNDebugLogVerbose(@"删除多条短信---%@", self.selectRemoveData);
         NSMutableArray *smsArray = [NSMutableArray array];
-        for (MJMessageFrame *messageFrame in self.selectRemoveData) {
+        for (UNMessageFrameModel *messageFrame in self.selectRemoveData) {
             [smsArray addObject:messageFrame.message.SMSID];
         }
         [self deleteMessageSWithDatas:[self.selectRemoveData copy] SMSIds:[smsArray copy]];
@@ -465,7 +466,7 @@
     NSString *smsId = [extras valueForKey:@"SMSID"];
     __block MJMessageStatu statu = (MJMessageStatu)[[extras valueForKey:@"Status"] integerValue];
     kWeakSelf
-    [_messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(MJMessageFrame *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
+    [_messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(UNMessageFrameModel *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
         if ([messageFrame.message.SMSID isEqualToString:smsId]) {
             if (statu != messageFrame.message.Status) {
                 UNDebugLogVerbose(@"短信状态改变");
@@ -574,7 +575,7 @@
         }
         __block MJMessageStatu statu = (MJMessageStatu)[[dict valueForKey:@"Status"] integerValue];
         kWeakSelf
-        [self.messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(MJMessageFrame *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
+        [self.messageFrames enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(UNMessageFrameModel *messageFrame, NSUInteger idx, BOOL * _Nonnull stop) {
             if ([messageFrame.message.SMSID isEqualToString:smsId]) {
                 if (statu != messageFrame.message.Status) {
                     UNDebugLogVerbose(@"短信状态改变");
@@ -595,34 +596,40 @@
     NSArray *arrMessages = [[tempArray reverseObjectEnumerator] allObjects];
     for (NSDictionary *dict in arrMessages){
         UNDebugLogVerbose(@"%@", dict[@"SMSID"]);
-        if ([[dict objectForKey:@"IsSend"] boolValue]) {
-            //己方发送
-            [resultArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
-        }else{
-            //对方发送
-            [resultArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
-        }
+//        if ([[dict objectForKey:@"IsSend"] boolValue]) {
+//            //己方发送
+//            [resultArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"0",@"type",dict[@"Status"],@"Status", [dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//        }else{
+//            //对方发送
+//            [resultArray addObject:[[NSDictionary alloc] initWithObjectsAndKeys:[dict objectForKey:@"SMSContent"],@"text",[[UNDataTools sharedInstance] compareCurrentTimeStringWithRecord:dict[@"SMSTime"]],@"time",@"1",@"type",dict[@"Status"], @"Status" ,[dict objectForKey:@"SMSID"],@"SMSID",nil]];
+//        }
+        [resultArray addObject:[UNMessageModel modelWithDict:dict]];
     }
     
     NSMutableArray *mfArray = [NSMutableArray array];
-    for (NSDictionary *dict in resultArray) {
-        // 消息模型
-        MJMessage *msg = [MJMessage messageWithDict:dict];
-        
-        // 取出上一个模型
-        MJMessageFrame *lastMf = [mfArray lastObject];
-        MJMessage *lastMsg = lastMf.message;
-        
-        // 判断两个消息的时间是否一致
-        msg.hideTime = [msg.time isEqualToString:lastMsg.time];
-        
-        // frame模型
-        MJMessageFrame *mf = [[MJMessageFrame alloc] init];
-        mf.message = msg;
-        
-        // 添加模型
+    for (UNMessageModel *dict in resultArray) {
+        UNMessageFrameModel *mf = [UNMessageFrameModel modelWithMessage:dict lastMessage:((UNMessageFrameModel *)mfArray.lastObject).message];
         [mfArray addObject:mf];
     }
+    
+//    for (NSDictionary *dict in resultArray) {
+//        // 消息模型
+//        MJMessage *msg = [MJMessage messageWithDict:dict];
+//
+//        // 取出上一个模型
+//        MJMessageFrame *lastMf = [mfArray lastObject];
+//        MJMessage *lastMsg = lastMf.message;
+//
+//        // 判断两个消息的时间是否一致
+//        msg.hideTime = [msg.time isEqualToString:lastMsg.time];
+//
+//        // frame模型
+//        MJMessageFrame *mf = [[MJMessageFrame alloc] init];
+//        mf.message = msg;
+//
+//        // 添加模型
+//        [mfArray addObject:mf];
+//    }
     return mfArray;
 }
 
@@ -688,7 +695,7 @@
     };
     
     //重发短信
-    cell.repeatSendMessageBlock = ^(MJMessageFrame *messageFrame){
+    cell.repeatSendMessageBlock = ^(UNMessageFrameModel *messageFrame){
         [weakSelf repeatSendMessage:messageFrame];
     };
     // 3.返回cell
@@ -698,13 +705,13 @@
 #pragma mark - 代理方法
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    MJMessageFrame *mf = self.messageFrames[indexPath.row];
+    UNMessageFrameModel *mf = self.messageFrames[indexPath.row];
     return mf.cellHeight;
 }
 
 //禁止编辑状态缩进
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    MJMessageFrame *messageFrame = self.messageFrames[indexPath.row];
+    UNMessageFrameModel *messageFrame = self.messageFrames[indexPath.row];
     if (messageFrame.message.type == MJMessageTypeOther) {
         return YES;
     }else{
@@ -766,7 +773,7 @@
 }
 
 
-- (void)repeatSendMessage:(MJMessageFrame *)messageFrame
+- (void)repeatSendMessage:(UNMessageFrameModel *)messageFrame
 {
     self.checkToken = YES;
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:messageFrame.message.SMSID,@"SMSID", nil];
@@ -1200,7 +1207,7 @@
 - (void)deleteText:(id)sender
 {
     if (_currentIndex < self.messageFrames.count) {
-        MJMessageFrame *messageFrame = self.messageFrames[_currentIndex];
+        UNMessageFrameModel *messageFrame = self.messageFrames[_currentIndex];
         UNDebugLogVerbose(@"当前删除短信%@", messageFrame);
         [self deleteMessageWithSMSId:messageFrame.message.SMSID Index:_currentIndex];
     }
@@ -1293,7 +1300,7 @@
             
             //防止数据不同步
             NSMutableArray *tempArray = [NSMutableArray array];
-            for (MJMessageFrame *messageFrame in Datas) {
+            for (UNMessageFrameModel *messageFrame in Datas) {
                 if ([weakSelf.messageFrames containsObject:messageFrame]) {
                     [tempArray addObject:messageFrame];
                 }
@@ -1320,7 +1327,7 @@
             
             //防止数据不同步
             NSMutableArray *tempArray = [NSMutableArray array];
-            for (MJMessageFrame *messageFrame in Datas) {
+            for (UNMessageFrameModel *messageFrame in Datas) {
                 if ([weakSelf.messageFrames containsObject:messageFrame]) {
                     [tempArray addObject:messageFrame];
                 }

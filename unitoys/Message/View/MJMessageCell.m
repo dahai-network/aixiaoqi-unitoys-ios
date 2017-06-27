@@ -7,8 +7,9 @@
 //
 
 #import "MJMessageCell.h"
-#import "MJMessageFrame.h"
-#import "MJMessage.h"
+//#import "MJMessageFrame.h"
+//#import "MJMessage.h"
+#import "UNMessageFrameModel.h"
 
 #import "UIImage+Extension.h"
 #import "global.h"
@@ -159,20 +160,21 @@
     }
 }
 
-- (void)setMessageFrame:(MJMessageFrame *)messageFrame
+- (void)setMessageFrame:(UNMessageFrameModel *)messageFrame
 {
     _messageFrame = messageFrame;
     
-    MJMessage *message = messageFrame.message;
+//    MJMessage *message = messageFrame.message;
+    UNMessageModel *message = messageFrame.message;
     
     // 1.时间
     self.timeView.frame = messageFrame.timeF;
-    self.timeView.text = message.time;
+    self.timeView.text = message.SMSTime;
     
     self.containerView.frame = messageFrame.containerViewF;
     self.bgImageView.frame = self.containerView.bounds;
     self.contentLabel.frame = CGRectMake(messageFrame.contentEdge.left, messageFrame.contentEdge.top, messageFrame.containerViewF.size.width - messageFrame.contentEdge.left - messageFrame.contentEdge.right, messageFrame.containerViewF.size.height - messageFrame.contentEdge.top - messageFrame.contentEdge.bottom);
-    self.contentLabel.text = message.text;
+    self.contentLabel.text = message.SMSContent;
     
     if (message.type == MJMessageTypeMe) {
 //        self.bgImageView.tintColor = DefultColor;

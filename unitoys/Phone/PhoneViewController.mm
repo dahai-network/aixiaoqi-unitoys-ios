@@ -15,7 +15,8 @@
 
 #import "CallingViewController.h"
 
-#import "MJViewController.h"
+//#import "MJViewController.h"
+#import "UNMessageContentController.h"
 
 #import "SipEngineManager.h"
 
@@ -2476,23 +2477,34 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     } else {
         //消息记录，显示消息
         NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-        if (storyboard) {
-//            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
-            MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
-            if (MJViewController) {
-                if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
-                    MJViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
-                    MJViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
-                } else {
-                    MJViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
-//                    MJViewController.title = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"To"]];
-                    MJViewController.toTelephone = [dicMessageRecord objectForKey:@"To"];
-                }
-                MJViewController.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:MJViewController animated:YES];
-            }
+        UNMessageContentController *messageVC = [[UNMessageContentController alloc] init];
+        if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
+            messageVC.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
+            messageVC.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
+        } else {
+            messageVC.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
+            messageVC.toTelephone = [dicMessageRecord objectForKey:@"To"];
         }
+        messageVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:messageVC animated:YES];
+        
+//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+//        if (storyboard) {
+////            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
+//            MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
+//            if (MJViewController) {
+//                if ([dicMessageRecord[@"To"] isEqualToString:self.userInfo[@"Tel"]]) {
+//                    MJViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"Fm"]];
+//                    MJViewController.toTelephone = [dicMessageRecord objectForKey:@"Fm"];
+//                } else {
+//                    MJViewController.title = [self checkLinkNameWithPhoneStrMergeGroupName:[dicMessageRecord objectForKey:@"To"]];
+////                    MJViewController.title = [self checkLinkNameWithPhoneStr:[dicMessageRecord objectForKey:@"To"]];
+//                    MJViewController.toTelephone = [dicMessageRecord objectForKey:@"To"];
+//                }
+//                MJViewController.hidesBottomBarWhenPushed = YES;
+//                [self.navigationController pushViewController:MJViewController animated:YES];
+//            }
+//        }
     }
 }
 

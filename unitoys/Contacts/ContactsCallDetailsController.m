@@ -14,7 +14,8 @@
 #import "CallDetailsRecordCell.h"
 #import "CallDetailsLookAllCell.h"
 #import "UNPhoneRecordDataTool.h"
-#import "MJViewController.h"
+//#import "MJViewController.h"
+#import "UNMessageContentController.h"
 //#import "CallActionView.h"
 #import "BlueToothDataManager.h"
 #import "UNDataTools.h"
@@ -471,16 +472,22 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
 
 - (void)sendMessage
 {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-    if (storyboard) {
-        MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
-        if (MJViewController) {
-            MJViewController.title = [self checkLinkNameWithPhoneStr:[self formatPhoneNum:self.phoneNumber]];
-            MJViewController.toTelephone = self.phoneNumber;
-            MJViewController.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:MJViewController animated:YES];
-        }
-    }
+//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+//    if (storyboard) {
+//        MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
+//        if (MJViewController) {
+//            MJViewController.title = [self checkLinkNameWithPhoneStr:[self formatPhoneNum:self.phoneNumber]];
+//            MJViewController.toTelephone = self.phoneNumber;
+//            MJViewController.hidesBottomBarWhenPushed = YES;
+//            [self.navigationController pushViewController:MJViewController animated:YES];
+//        }
+//    }
+    UNMessageContentController *messageVC = [[UNMessageContentController alloc] init];
+    messageVC.toTelephone = self.phoneNumber;
+    messageVC.toPhoneName = [self checkLinkNameWithPhoneStr:[self formatPhoneNum:self.phoneNumber]];
+    messageVC.title = messageVC.toPhoneName;
+    messageVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:messageVC animated:YES];
 }
 
 //- (void)callPhone

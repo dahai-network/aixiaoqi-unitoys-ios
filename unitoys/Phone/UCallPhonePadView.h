@@ -23,6 +23,9 @@
 
 @property (nonatomic, assign) BOOL isHideDelLabel;
 
+//是否能够点击(弹出复制粘贴功能)
+@property (nonatomic, assign) BOOL isCanTouch;
+
 //typedef void (^UCallInputCompletedBlock)(NSString *btnText,NSInteger btnTag);
 typedef void (^UCallInputCompletedBlock)(NSString *btnText, NSString *currentNum);
 @property (nonatomic,copy)UCallInputCompletedBlock completeBlock;

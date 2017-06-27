@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@class MJMessageFrame;
+@class UNMessageFrameModel;
 
 typedef void(^LongPressCellBlock)(NSInteger index, NSString *content, UIView *longPressView);
-typedef void(^RepeatSendMessageBlock)(MJMessageFrame *messageFrame);
+typedef void(^RepeatSendMessageBlock)(UNMessageFrameModel *messageFrame);
 
 @interface MJMessageCell : UITableViewCell
 
 + (instancetype)cellWithTableView:(UITableView *)tableView;
 
-@property (nonatomic, strong) MJMessageFrame *messageFrame;
+@property (nonatomic, strong) UNMessageFrameModel *messageFrame;
 
 @property (nonatomic, copy) LongPressCellBlock longPressCellBlock;
 

@@ -131,6 +131,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     kWeakSelf
     self.phonePadView = [[UCallPhonePadView alloc] initWithFrame:CGRectMake(0, kScreenHeightValue - 64, kScreenWidthValue, 225)];
+    self.phonePadView.isCanTouch = YES;
     [self.view addSubview:self.phonePadView];
     self.phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum){
         if (btnText.length>0){

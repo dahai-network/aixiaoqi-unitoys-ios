@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MJExtension/MJExtension/MJExtension.h"
 
 @interface BaseModel : NSObject
 

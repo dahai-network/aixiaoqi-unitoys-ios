@@ -95,6 +95,26 @@
 //    return NO;
 }
 
++ (NSString *)getNumStringWithString:(NSString *)str
+{
+    NSMutableArray *characters = [NSMutableArray array];
+    NSMutableString *mutStr = [NSMutableString string];
+    for (int i = 0; i < str.length; i ++) {
+        NSString *subString = [str substringToIndex:i + 1];
+        subString = [subString substringFromIndex:i];
+        [characters addObject:subString];
+    }
+    // 利用正则表达式，匹配数组中的每个元素，判断是否是数字，将数字拼接在可变字符串mutStr中
+    for (NSString *b in characters) {
+        NSString *regex = @"^[0-9]*$";
+        NSPredicate *pre = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];// 谓词
+        BOOL isShu = [pre evaluateWithObject:b];// 对b进行谓词运算
+        if (isShu) {
+            [mutStr appendString:b];
+        }
+    }
+    return mutStr;
+}
 
 //短信去除重复组名
 + (NSString *)checkLinkNameWithPhoneStrMergeGroupName:(NSString *)phoneStr {
@@ -271,8 +291,8 @@
 {
     NSString *callduration = @"00:00";
     if (seconds > 0) {
-        int min = (int)seconds / 60;
-        int sec = (int)seconds % 60;
+        int min = (int)(seconds / 60);
+        int sec = (int)(seconds % 60);
         NSString *minStr;
         if (min < 10) {
             minStr = [NSString stringWithFormat:@"0%d",min];
@@ -381,5 +401,6 @@
         return dic;
     }
 }
+
 
 @end

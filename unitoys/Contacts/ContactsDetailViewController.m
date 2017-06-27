@@ -8,7 +8,8 @@
 
 #import "ContactsDetailViewController.h"
 #import "ContactPhoneCell.h"
-#import "MJViewController.h"
+//#import "MJViewController.h"
+#import "UNMessageContentController.h"
 #import <AddressBook/AddressBook.h>
 #import "BlueToothDataManager.h"
 #import <AddressBookUI/AddressBookUI.h>
@@ -297,17 +298,24 @@
 - (IBAction)rewriteMessage:(id)sender {
     NSString *number = [self.arrNumbers objectAtIndex:[(UIButton *)sender tag]];
     if (number) {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-        if (storyboard) {
-            MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
-            if (MJViewController) {
-                MJViewController.title = [self checkLinkNameWithPhoneStr:[self formatPhoneNum:number]];
-                MJViewController.toTelephone = number;
-                MJViewController.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:MJViewController animated:YES];
-                
-            }
-        }
+        UNMessageContentController *messageVC = [[UNMessageContentController alloc] init];
+        messageVC.toTelephone = number;
+        messageVC.toPhoneName = [self checkLinkNameWithPhoneStr:[self formatPhoneNum:number]];
+        messageVC.title = messageVC.toPhoneName;
+        messageVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:messageVC animated:YES];
+        
+//        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
+//        if (storyboard) {
+//            MJViewController *MJViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
+//            if (MJViewController) {
+//                MJViewController.title = [self checkLinkNameWithPhoneStr:[self formatPhoneNum:number]];
+//                MJViewController.toTelephone = number;
+//                MJViewController.hidesBottomBarWhenPushed = YES;
+//                [self.navigationController pushViewController:MJViewController animated:YES];
+//                
+//            }
+//        }
     }
     
 }

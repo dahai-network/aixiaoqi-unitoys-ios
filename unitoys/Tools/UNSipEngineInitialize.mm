@@ -89,7 +89,7 @@
     BOOL isRegister = self.sipRegisterStatu == SipRegisterStatuCleared || self.sipRegisterStatu == SipRegisterStatuFailed;
     BOOL isCallPhone = self.sipCallPhoneStatu != SipCallPhoneStatuNewCall && self.sipCallPhoneStatu != SipCallPhoneStatuCallProcessing && self.sipCallPhoneStatu != SipCallPhoneStatuCallRinging && self.sipCallPhoneStatu != SipCallPhoneStatuCallConnected && self.sipCallPhoneStatu != SipCallPhoneStatuCallStreamsRunning;
     if (isRegister && isCallPhone) {
-        NSLog(@"sipRegisterStatu=%zd===sipCallPhoneStatu=%zd", self.sipRegisterStatu, self.sipCallPhoneStatu);
+        UNLogLBEProcess(@"sipRegisterStatu=%zd===sipCallPhoneStatu=%zd", self.sipRegisterStatu, self.sipCallPhoneStatu);
         [self doRegister];
     }
     
