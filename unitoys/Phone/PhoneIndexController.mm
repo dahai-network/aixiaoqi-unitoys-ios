@@ -290,7 +290,6 @@
             [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
         }
     }
-    
     if ([UNDataTools sharedInstance].currentUnreadSMSPhones.count) {
         [UNDataTools sharedInstance].isHasUnreadSMS = YES;
     }else{

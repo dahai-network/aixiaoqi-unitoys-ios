@@ -205,7 +205,7 @@ void screenLockFunction(){
         _phonePadView.completeBlock = ^(NSString *btnText, NSString *currentNum) {
             UNDebugLogVerbose(@"总字符---%@=====当前字符-----%@", btnText, currentNum);
             weakSelf.lbName.text = btnText;
-            if ([currentNum isEqualToString:@"DEL"]) {
+            if([currentNum isEqualToString:@"DEL"]) {
                 UNDebugLogVerbose(@"输入异常");
             }else{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"CallPhoneKeyBoard" object:currentNum];

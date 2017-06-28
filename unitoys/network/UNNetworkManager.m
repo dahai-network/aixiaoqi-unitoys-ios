@@ -25,7 +25,7 @@
 
 + (void)getUrl:(NSString *)urlString parameters:(id)parameters success:(void (^)(ResponseType, id _Nullable))success failure:(void (^)(NSError * _Nonnull))failure
 {
-    [[self getManager:urlString] GET:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[self getManager:urlString RequestType:NO] GET:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         ResponseType type;
         if ([[responseObject objectForKey:@"status"] intValue] == 1) {
             type = ResponseTypeSuccess;
@@ -47,9 +47,7 @@
 
 + (void)getJsonUrl:(NSString *)urlString parameters:(id)parameters success:(void (^)(ResponseType, id _Nullable))success failure:(void (^)(NSError * _Nonnull))failure
 {
-    UNHTTPSessionManager *manager = [self getManager:urlString];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [manager GET:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[self getManager:urlString RequestType:YES] GET:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         ResponseType type;
         if ([[responseObject objectForKey:@"status"] intValue] == 1) {
             type = ResponseTypeSuccess;
@@ -72,9 +70,7 @@
 
 + (void)postUrl:(NSString *)urlString parameters:(id)parameters success:(void (^)(ResponseType,id _Nullable))success failure:(void (^)(NSError * _Nonnull))failure
 {
-    UNHTTPSessionManager *manager = [self getManager:urlString];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [manager POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [[self getManager:urlString RequestType:NO] POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         ResponseType type;
         if ([[responseObject objectForKey:@"status"] intValue] == 1) {
             type = ResponseTypeSuccess;
@@ -99,7 +95,7 @@
     if (!mimeType) {
         mimeType = @"application/octet-stream";
     }
-    [[self getManager:urlString] POST:urlString parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    [[self getManager:urlString RequestType:NO] POST:urlString parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         for (int i=0; i<[datas count]; i++) {
             [formData appendPartWithFileData:[datas objectAtIndex:i][@"data"] name:[NSString stringWithFormat:@"file%d",i ] fileName:[datas objectAtIndex:i][@"name"] mimeType:mimeType];
         }
@@ -127,16 +123,16 @@
     }];
 }
 
-+ (UNHTTPSessionManager *)getManager:(NSString *)urlString
++ (UNHTTPSessionManager *)getManager:(NSString *)urlString RequestType:(BOOL)isRequestJson
 {
     if (urlString) {
         if ([[UNDataTools sharedInstance].notokenUrls containsObject:urlString]) {
-            return [UNHTTPSessionManager shareSessionManagerWithHeaders:[UNDataTools sharedInstance].notokenHeaders];
+            return [UNHTTPSessionManager shareSessionManagerWithHeaders:[UNDataTools sharedInstance].notokenHeaders RequestType:isRequestJson];
         }else{
-            return [UNHTTPSessionManager shareSessionManagerWithHeaders:[UNDataTools sharedInstance].normalHeaders];
+            return [UNHTTPSessionManager shareSessionManagerWithHeaders:[UNDataTools sharedInstance].normalHeaders RequestType:isRequestJson];
         }
     }else{
-        return [UNHTTPSessionManager shareSessionManagerWithHeaders:[UNDataTools sharedInstance].normalHeaders];
+        return [UNHTTPSessionManager shareSessionManagerWithHeaders:[UNDataTools sharedInstance].normalHeaders RequestType:isRequestJson];
     }
 }
 

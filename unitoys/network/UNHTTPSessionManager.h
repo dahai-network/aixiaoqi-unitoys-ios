@@ -10,6 +10,6 @@
 
 @interface UNHTTPSessionManager : AFHTTPSessionManager
 
-+ (UNHTTPSessionManager *)shareSessionManagerWithHeaders:(NSDictionary *)headers;
++ (UNHTTPSessionManager *)shareSessionManagerWithHeaders:(NSDictionary *)headers RequestType:(BOOL)isRequestJson;
 
 @end

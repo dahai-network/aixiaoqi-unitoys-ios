@@ -172,6 +172,7 @@
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
         }
     } failure:^(NSError * _Nonnull error) {
+        HUDStop
         HUDNormal(@"网络貌似有问题")
         NSDictionary *responseObj = [[UNDatabaseTools sharedFMDBTools] getResponseWithAPIName:apiNameStr];
         if (responseObj) {

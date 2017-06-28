@@ -16,6 +16,7 @@
 #import "ActivateGiftCardViewController.h"
 
 @interface OrderCommitViewController ()
+
 @property (nonatomic, copy)NSString *orderID;
 @property (nonatomic, assign)int packageCategory;
 @property (weak, nonatomic) IBOutlet UIButton *paymentButton;
@@ -75,7 +76,14 @@
         self.checkDataPickWindow.windowLevel = UIWindowLevelStatusBar;
         self.checkDataPickWindow.backgroundColor = [UIColor colorWithRed:32/255 green:34/255 blue:42/255 alpha:0.2];
         
-        UIDatePicker *pickerview = [[UIDatePicker alloc] initWithFrame: CGRectMake(0,kScreenHeightValue-143,kScreenWidthValue,105)];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 40)];
+        titleLabel.backgroundColor = [UIColor whiteColor];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        titleLabel.text = INTERNATIONALSTRING(@"生效日期");
+        [self.checkDataPickWindow addSubview:titleLabel];
+        self.titleLabel = titleLabel;
+        
+        UIDatePicker *pickerview = [[UIDatePicker alloc] initWithFrame: CGRectMake(0,CGRectGetMaxY(titleLabel.frame) + 1,kScreenWidthValue,210)];
         pickerview.datePickerMode = UIDatePickerModeDate;
         pickerview.minimumDate = [NSDate date];
         
@@ -94,14 +102,7 @@
         [self.checkDataPickWindow addSubview:pickerview];
         self.pickerView = pickerview;
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(pickerview.frame) - 41, self.view.bounds.size.width, 40)];
-        titleLabel.backgroundColor = [UIColor whiteColor];
-        titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.text = INTERNATIONALSTRING(@"生效日期");
-        [self.checkDataPickWindow addSubview:titleLabel];
-        self.titleLabel = titleLabel;
-        
-        UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(pickerview.frame) + 3, self.view.bounds.size.width, 35)];
+        UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,self.checkDataPickWindow.un_height - 35 , self.view.bounds.size.width, 35)];
 //        btnOK.hidden = NO;
         [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];

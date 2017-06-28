@@ -10,9 +10,12 @@
 
 @implementation UNHTTPSessionManager
 
-+ (UNHTTPSessionManager *)shareSessionManagerWithHeaders:(NSDictionary *)headers
++ (UNHTTPSessionManager *)shareSessionManagerWithHeaders:(NSDictionary *)headers RequestType:(BOOL)isRequestJson
 {
     UNHTTPSessionManager *manager = [self manager];
+    if (isRequestJson) {
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    }
     manager.requestSerializer.timeoutInterval = 20;
     if (headers) {
         NSEnumerator *enumerator = [headers keyEnumerator];
