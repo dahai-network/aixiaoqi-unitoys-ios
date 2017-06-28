@@ -360,7 +360,7 @@ typedef enum : NSUInteger {
 //        }
     } else {
         //有网络
-        NSLog(@"当前网络可用");
+        UNLogLBEProcess(@"当前网络可用");
 //        NSString *statuesLabelStr = @"注册中";
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatuesViewLable" object:HOMESTATUETITLE_REGISTING];
@@ -428,13 +428,13 @@ typedef enum : NSUInteger {
     
     if (phoneViewController) {
         [phoneViewController unregister];  //注销电话登入账号
-        NSLog(@"电话注销了");
+        UNLogLBEProcess(@"电话注销了");
     }
 }
 
 //退出登录
 - (void)reloginAction {
-    NSLog(@"调用reloginAction方法");
+    UNLogLBEProcess(@"调用reloginAction方法");
     [UNDataTools sharedInstance].isLogout = YES;
 //    [UNBlueToothTool shareBlueToothTool].isKill = YES;
     //删除存储的绑定信息
@@ -488,7 +488,7 @@ typedef enum : NSUInteger {
     
     UIApplication *application = [UIApplication sharedApplication];
     if ([application.keyWindow.rootViewController isKindOfClass:[UNLoginViewController class]]) {
-        NSLog(@"dismissViewControllerAnimated");
+        UNLogLBEProcess(@"dismissViewControllerAnimated");
         [self dismissViewControllerAnimated:YES completion:nil];
     }else{
 //        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -503,7 +503,7 @@ typedef enum : NSUInteger {
 //            }
 //        }
         UNLoginViewController *loginVc = [[UNLoginViewController alloc] init];
-        NSLog(@"UNLoginViewController");
+        UNLogLBEProcess(@"UNLoginViewController");
         if (loginVc) {
             application.keyWindow.rootViewController = loginVc;
             [application.keyWindow makeKeyAndVisible];

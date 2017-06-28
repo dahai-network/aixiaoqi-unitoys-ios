@@ -55,6 +55,8 @@
 #import "UNLoginViewController.h"
 #import "UNDataTools.h"
 
+#import "UNCheckPhoneAuth.h"
+
 #endif
 // 如果需要使 idfa功能所需要引 的头 件(可选) #import <AdSupport/AdSupport.h>
 
@@ -295,6 +297,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cleanPackageData) name:@"reloginNotify" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(otaSuccessAndReConnected) name:@"OTASuccessAndReConnectedNotif" object:@"OTASuccessAndReConnectedNotif"];
     
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [UNCheckPhoneAuth checkCurrentAuth];
+    });
+    
     return YES;
 }
 
@@ -425,18 +431,13 @@
 
 
 - (void)showLaunchView {
-//    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     if (storyboard) {
         UIViewController *launchScreen = [storyboard instantiateViewControllerWithIdentifier:@"launchScreen"];
         if (launchScreen) {
             self.window.rootViewController = launchScreen;
-            
             [self.window makeKeyAndVisible];
-            
             self.currentNumber = 8;
-            
             self.communicateID = @"00000000";
         }
     }
@@ -447,7 +448,6 @@
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [[VSWManager shareManager] simActionWithSimType:noti.object];
 //        [[VSWManager shareManager] registAndInit];
-        
     });
     UNLogLBEProcess(@"创建udp")
     [self setUpUdpSocket];
@@ -529,7 +529,6 @@
         [self.sendTcpSocket disconnect];
         self.sendTcpSocket = nil;
     }
-    
     [BlueToothDataManager shareManager].isTcpConnected = NO;
     [BlueToothDataManager shareManager].isBeingRegisting = NO;
     [BlueToothDataManager shareManager].isRegisted = NO;
@@ -888,22 +887,25 @@
         }
     }else if ([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeSimDisconnect){
             UNLogLBEProcess(@"2tcp数据----%@", self.tcpPacketStr)
-            if (self.tcpPacketStr) {
-                self.communicateID = @"00000000";
-                UNDebugLogVerbose(@"tcp连接成功");
-                [BlueToothDataManager shareManager].isTcpConnected = YES;
-                // 等待数据来啊
-                [sock readDataWithTimeout:-1 tag:200];
-                UNLogLBEProcess(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr)
-                [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", self.tcpPacketStr]];
-                //发送数据
-                [self sendMsgWithMessage:self.tcpPacketStr];
-                
-                UNDebugLogVerbose(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
-                UNLogLBEProcess(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices)
-                [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
-                [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
-            }
+        if (!self.tcpPacketStr && [BlueToothDataManager shareManager].isConnected && [UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+            self.tcpPacketStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"PushKitTCPPacketStr"];
+        }
+        if (self.tcpPacketStr) {
+            self.communicateID = @"00000000";
+            UNDebugLogVerbose(@"tcp连接成功");
+            [BlueToothDataManager shareManager].isTcpConnected = YES;
+            // 等待数据来啊
+            [sock readDataWithTimeout:-1 tag:200];
+            UNLogLBEProcess(@"最终发送给tcp的数据 -- %@", self.tcpPacketStr)
+            [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", self.tcpPacketStr]];
+            //发送数据
+            [self sendMsgWithMessage:self.tcpPacketStr];
+            
+            UNDebugLogVerbose(@"删除前当前队列消息====%@", [UNPushKitMessageManager shareManager].pushKitMsgQueue);
+            UNLogLBEProcess(@"需要删除的队列消息====%@", [UNPushKitMessageManager shareManager].receivePushKitDataFormServices)
+            [self checkPushKitMessage:[UNPushKitMessageManager shareManager].receivePushKitDataFormServices];
+            [UNPushKitMessageManager shareManager].pushKitMsgType = PushKitMessageTypeNone;
+        }
     }else if([UNPushKitMessageManager shareManager].pushKitMsgType == PushKitMessageTypeAuthSimData){
         if ([UNPushKitMessageManager shareManager].PushKitAuthDataType == 1) {
             UNLogLBEProcess(@"PushKitAuthDataType1")
@@ -1688,7 +1690,7 @@
     NSString *dataStr = [NSString stringWithFormat:@"%@:%@",self.currentPacketNumber, sender.object];
     UNDebugLogVerbose(@"最终发送的数据 -> %@", dataStr);
     NSData *data = [dataStr dataUsingEncoding:NSUTF8StringEncoding];
-    UNDebugLogVerbose(@"最终发送的数据包 : %@", data);
+    UNLogLBEProcess(@"最终发送的数据包 : %@", data);
     
     //开始发送
     //改函数只是启动一次发送 它本身不进行数据的发送, 而是让后台的线程慢慢的发送 也就是说这个函数调用完成后,数据并没有立刻发送,异步发送
@@ -2533,7 +2535,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             if ([dict[@"Data"] integerValue] == 100) {
                 [[UNDDLogManager sharedInstance] clearAllLog];
             }else{
-                [[UNDDLogManager sharedInstance] updateLogToServerWithLogCount:[dict[@"Data"] integerValue]];
+                [[UNDDLogManager sharedInstance] updateLogToServerWithLogCount:[dict[@"Data"] integerValue] Finished:nil];
             }
             return;
         }
@@ -2657,10 +2659,8 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                 NSString *timeString = [NSString stringWithFormat:@"%f", time];
                 NSDictionary *serviceTimeData = @{@"time" : timeString, @"dataString" : servicePushKitData, @"MessageType" : messageType};
                 [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"收到服务器---%@",servicePushKitData]];
-                
                 if ([messageType isEqualToString:@"10"]) {
                     UNLogLBEProcess(@"10鉴权数据PushKit消息")
-                    
                     //                [[UNSipEngineInitialize sharedInstance] initEngine];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[UNSipEngineInitialize sharedInstance] initEngine];
@@ -2825,8 +2825,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
-
-
 - (void)checkPushKitMessage:(NSDictionary *)servicePushKitData
 {
     if (!servicePushKitData) {
@@ -2980,7 +2978,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             return;
         }
         if (![BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isHaveCard) {
-            UNDebugLogVerbose(@"蓝牙未连接");
+            UNLogLBEProcess(@"蓝牙未连接");
             return;
         }
     }

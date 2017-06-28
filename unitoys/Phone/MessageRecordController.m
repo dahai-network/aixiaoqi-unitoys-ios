@@ -37,9 +37,6 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     UNLogLBEProcess(@"MessageRecordController-")
-//    DDLogVerbose((@"[文件名:%s]" "[函数名:%s]" "[行号:%d]" format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);
-//    DDLogVerbose([NSString stringWithFormat:@"[文件名:%s] [函数名:%s] [行号:%d]", __FILE__, __FUNCTION__, __LINE__], ##__VA_ARGS__);
-//    UNDebugLogVerbose(@"%s(%d): %@", __FUNCTION__, __LINE__, [NSString stringWithFormat:(@""), ##__VA_ARGS__])
     
     [self initTableView];
     [self initNoDataLabel];
@@ -277,18 +274,15 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
 - (void)loadMessage {
     NSString *lastTime = [[UNDatabaseTools sharedFMDBTools] getLastTimeWithMessageList];
-    self.checkToken = YES;
     NSDictionary *params;
     if (lastTime) {
         params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber",lastTime,@"beginSMSTime", nil];
     }else{
         params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber", nil];
     }
-    [self getBasicHeader];
-    [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
-        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
+    [UNNetworkManager getUrl:apiSMSLast parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
         [self.tableView.mj_header endRefreshing];
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+        if (type == ResponseTypeSuccess) {
             if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
                 NSMutableArray *messageArray = [NSMutableArray arrayWithArray:responseObj[@"data"]];
                 for (NSDictionary *dicMessageRecord in responseObj[@"data"]) {
@@ -325,15 +319,65 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
             [self reloadDataFromDatabase];
             
             [self loadUnreadMessageStatu];
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
+        }else if (type == ResponseTypeFailed){
             //数据请求失败
             UNDebugLogVerbose(@"请求短信数据失败");
         }
-    } failure:^(id dataObj, NSError *error) {
+    } failure:^(NSError * _Nonnull error) {
         [self.tableView.mj_header endRefreshing];
-    } headers:self.headers];
+    }];
+    
+//    self.checkToken = YES;
+//    [self getBasicHeader];
+//    [SSNetworkRequest getRequest:apiSMSLast params:params success:^(id responseObj) {
+//        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
+//        [self.tableView.mj_header endRefreshing];
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
+//                NSMutableArray *messageArray = [NSMutableArray arrayWithArray:responseObj[@"data"]];
+//                for (NSDictionary *dicMessageRecord in responseObj[@"data"]) {
+//                    
+//                    if (![dicMessageRecord[@"IsRead"] boolValue]) {
+//                        NSString *currentPhone;
+//                        if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+//                            //己方发送
+//                            currentPhone = [dicMessageRecord objectForKey:@"To"];
+//                        }else{
+//                            //对方发送
+//                            currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+//                        }
+//                        if (_currentSelectPhone && [_currentSelectPhone isEqualToString:currentPhone]) {
+//                            NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
+//                            [mutableDict setObject:@(1) forKey:@"IsRead"];
+//                            if ([messageArray containsObject:dicMessageRecord]) {
+//                                [messageArray removeObject:dicMessageRecord];
+//                            }
+//                            [messageArray addObject:mutableDict];
+//                            
+//                            if ([[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
+//                                [[UNDataTools sharedInstance].currentUnreadSMSPhones removeObject:currentPhone];
+//                            }
+//                        }else{
+//                            if (![[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
+//                                [[UNDataTools sharedInstance].currentUnreadSMSPhones addObject:currentPhone];
+//                            }
+//                        }
+//                    }
+//                }
+//                [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:messageArray];
+//            }
+//            [self reloadDataFromDatabase];
+//            
+//            [self loadUnreadMessageStatu];
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//            UNDebugLogVerbose(@"请求短信数据失败");
+//        }
+//    } failure:^(id dataObj, NSError *error) {
+//        [self.tableView.mj_header endRefreshing];
+//    } headers:self.headers];
 }
 
 //短信加载更多数据
@@ -546,21 +590,34 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 - (void)deleteMessageWithPhoneNumber:(NSString *)phoneNumber
 {
     NSDictionary *params = @{@"Tels" : @[phoneNumber]};
-    [self getBasicHeader];
-    [SSNetworkRequest postRequest:apiDeletesByTels params:params success:^(id responseObj) {
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+    [UNNetworkManager postUrl:apiDeletesByTels parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+        if (type == ResponseTypeSuccess) {
             [[UNDatabaseTools sharedFMDBTools] deteleMessageListWithPhoneLists:@[phoneNumber]];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateUnReadForDatabase" object:nil];
             UNDebugLogVerbose(@"删除单条短信成功");
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
+        }else if (type == ResponseTypeFailed){
             //数据请求失败
             UNDebugLogVerbose(@"删除单条短信失败");
         }
-    } failure:^(id dataObj, NSError *error) {
+    } failure:^(NSError * _Nonnull error) {
         UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
-    } headers:self.headers];
+    }];
+    
+//    [self getBasicHeader];
+//    [SSNetworkRequest postRequest:apiDeletesByTels params:params success:^(id responseObj) {
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            [[UNDatabaseTools sharedFMDBTools] deteleMessageListWithPhoneLists:@[phoneNumber]];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateUnReadForDatabase" object:nil];
+//            UNDebugLogVerbose(@"删除单条短信成功");
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//            UNDebugLogVerbose(@"删除单条短信失败");
+//        }
+//    } failure:^(id dataObj, NSError *error) {
+//        UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
+//    } headers:self.headers];
 }
 
 - (void)dealloc {

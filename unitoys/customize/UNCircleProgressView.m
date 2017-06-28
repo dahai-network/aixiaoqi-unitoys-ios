@@ -66,15 +66,4 @@
     [super drawRect:rect];
 }
 
-//- (void)drawRect:(CGRect)rect
-//{
-//        CGFloat radius = (MIN(CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds)) / 2) - kPadding;
-//        CGPoint center = CGPointMake(CGRectGetWidth(self.bounds) / 2, CGRectGetHeight(self.bounds) / 2);
-//        UIBezierPath *coverPath = [UIBezierPath bezierPath]; //empty path
-//        [coverPath setLineWidth:kPadding];
-//        [coverPath addArcWithCenter:center radius:radius startAngle:0 endAngle:2 * M_PI clockwise:YES]; //add the arc
-//        [CircleColor set];
-//        [coverPath stroke];
-//}
-
 @end

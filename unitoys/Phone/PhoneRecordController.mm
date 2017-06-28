@@ -1099,22 +1099,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (void)getMaxPhoneCall {
-    self.checkToken = YES;
-    [SSNetworkRequest getRequest:apiGetMaxmimumPhoneCallTime params:nil success:^(id responseObj) {
-        //        UNDebugLogVerbose(@"有数据：%@",responseObj);
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            
+    [UNNetworkManager getUrl:apiGetMaxmimumPhoneCallTime parameters:nil success:^(ResponseType type, id  _Nullable responseObj) {
+        if (type == ResponseTypeSuccess) {
             self.maxPhoneCall = [[[responseObj objectForKey:@"data"]  objectForKey:@"maximumPhoneCallTime"] intValue];
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
         }
-    } failure:^(id dataObj, NSError *error) {
+    } failure:^(NSError * _Nonnull error) {
         UNDebugLogVerbose(@"有异常：%@",[error description]);
-    } headers:self.headers];
+    }];
 }
 
 - (void)callingAction:(NSNotification *)notification {
@@ -1522,11 +1513,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         theSipEngine->DeRegisterSipAccount();
         __block SipEngine *callEngine = theSipEngine;
         
-        self.checkToken = YES;
-        [self getBasicHeader];
-        [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            //            UNDebugLogVerbose(@"有数据：%@",responseObj);
-            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+        [UNNetworkManager getUrl:apiGetSecrityConfig parameters:nil success:^(ResponseType type, id  _Nullable responseObj) {
+            if (type == ResponseTypeSuccess) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
                     [VSWManager shareManager].vswPort = [responseObj[@"data"][@"VswServer"][@"Port"] intValue];
@@ -1548,29 +1536,56 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
                 //域名
                 //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [@"asterisk.unitoys.com" UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-                
-                
-            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-            }else{
-                //数据请求失败
             }
-            
-            
-        } failure:^(id dataObj, NSError *error) {
+        } failure:^(NSError * _Nonnull error) {
             UNDebugLogVerbose(@"有异常：%@",[error description]);
-        } headers:self.headers];
+        }];
+        
+        
+//        self.checkToken = YES;
+//        [self getBasicHeader];
+//        [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
+//            //            UNDebugLogVerbose(@"有数据：%@",responseObj);
+//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//                if (responseObj[@"data"][@"VswServer"]) {
+//                    [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
+//                    [VSWManager shareManager].vswPort = [responseObj[@"data"][@"VswServer"][@"Port"] intValue];
+//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Ip"] forKey:@"VSWServerIp"];
+//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Port"] forKey:@"VSWServerPort"];
+//                }
+//                
+//                NSString *secpwd = [super md5:[[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"] stringByAppendingString:@"voipcc2015"]];
+//                
+//                NSString *thirdpwd = [super md5:secpwd];
+//                
+//                NSString *userName = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"] objectForKey:@"Tel"];
+//                
+//                
+//                self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
+//                UNLogLBEProcess(@"注册网络电话secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
+//                callEngine->SetEnCrypt(NO, NO);
+//                //IP地址
+//                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
+//                //域名
+//                //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [@"asterisk.unitoys.com" UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
+//                
+//                
+//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//                
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//            }else{
+//                //数据请求失败
+//            }
+//            
+//            
+//        } failure:^(id dataObj, NSError *error) {
+//            UNDebugLogVerbose(@"有异常：%@",[error description]);
+//        } headers:self.headers];
         
     }else{
-        
         __block SipEngine *callEngine = theSipEngine;
-        
-        self.checkToken = YES;
-        [self getBasicHeader];
-        [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-            
-            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+        [UNNetworkManager getUrl:apiGetSecrityConfig parameters:nil success:^(ResponseType type, id  _Nullable responseObj) {
+            if (type == ResponseTypeSuccess) {
                 if (responseObj[@"data"][@"VswServer"]) {
                     [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
                     [VSWManager shareManager].vswPort = [responseObj[@"data"][@"VswServer"][@"Port"] intValue];
@@ -1594,21 +1609,56 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 
                 callEngine->SetEnCrypt(NO, NO);
                 UNLogLBEProcess(@"注册网络电话secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName)
-
+                
                 callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-                
-            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-            }else{
-                //数据请求失败
             }
-            
-            
-            
-        } failure:^(id dataObj, NSError *error) {
+        } failure:^(NSError * _Nonnull error) {
             UNDebugLogVerbose(@"有异常：%@",[error description]);
-        } headers:self.headers];
+        }];
+        
+//        self.checkToken = YES;
+//        [self getBasicHeader];
+//        [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
+//            
+//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//                if (responseObj[@"data"][@"VswServer"]) {
+//                    [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
+//                    [VSWManager shareManager].vswPort = [responseObj[@"data"][@"VswServer"][@"Port"] intValue];
+//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Ip"] forKey:@"VSWServerIp"];
+//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Port"] forKey:@"VSWServerPort"];
+//                }
+//                
+//                NSString *secpwd = [super md5:[[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"] stringByAppendingString:@"voipcc2015"]];
+//                /*
+//                 secpwd = [super md5:@"e38632c0f035e45efe57125bd0ebe8cevoipcc2015"];*/
+//                //去年替换方案
+//                
+//                NSString *thirdpwd = [super md5:secpwd];
+//                
+//                NSString *userName = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"] objectForKey:@"Tel"];
+//                //[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"]
+//                
+//                //callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String],"", "121.46.3.20", 65061,1800);
+//                
+//                self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
+//                
+//                callEngine->SetEnCrypt(NO, NO);
+//                UNLogLBEProcess(@"注册网络电话secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName)
+//
+//                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
+//                
+//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//                
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//            }else{
+//                //数据请求失败
+//            }
+//            
+//            
+//            
+//        } failure:^(id dataObj, NSError *error) {
+//            UNDebugLogVerbose(@"有异常：%@",[error description]);
+//        } headers:self.headers];
     }
 }
 

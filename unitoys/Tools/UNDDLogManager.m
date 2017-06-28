@@ -68,8 +68,6 @@
 #else
     DDFileLogger *fileLog = [[DDFileLogger alloc] init];
     _fileLog = fileLog;
-    //    fileLog.rollingFrequency = 60 * 60 * 24;
-    //    fileLog.logFileManager.maximumNumberOfLogFiles = 2;
     fileLog.rollingFrequency = 60 * 60 * 12;
     fileLog.logFileManager.maximumNumberOfLogFiles = 3;
     [DDLog addLogger:fileLog];
@@ -77,17 +75,17 @@
 }
 
 //上传最后一个日志
-- (void)updateLastLogToServer
+- (void)updateLastLogToServerFinished:(void (^)(BOOL isSuccess))finished
 {
-    [self updateLogToServerWithLogCount:1];
+    [self updateLogToServerWithLogCount:1 Finished:finished];
 }
 //上传所有日志
-- (void)updateAllLogToServer
+- (void)updateAllLogToServerFinished:(void (^)(BOOL isSuccess))finished
 {
-    [self updateLogToServerWithLogCount:0];
+    [self updateLogToServerWithLogCount:0 Finished:finished];
 }
 //上传指定日志数量
-- (void)updateLogToServerWithLogCount:(NSInteger)logCount
+- (void)updateLogToServerWithLogCount:(NSInteger)logCount Finished:(void (^)(BOOL isSuccess))finished
 {
     if ([self.fileManager fileExistsAtPath:self.defaultFilePath]) {
         NSArray *fileList = [self.fileLog.logFileManager sortedLogFileNames];
@@ -103,12 +101,22 @@
             }
             if (updateCount) {
                 NSArray *datas = [self getFileDataWithCount:updateCount WithFileList:fileList];
-//                UNLogLBEProcess(@"需要上传的数据datas==%@", datas);
-                [self updateImageDataArray:datas];
+                [self updateImageDataArray:datas Finished:finished];
+            }else{
+                if (finished) {
+                    finished(NO);
+                }
+            }
+        }else{
+            if (finished) {
+                finished(NO);
             }
         }
     }else{
         UNDebugLogVerbose(@"不存在目录");
+        if (finished) {
+            finished(NO);
+        }
     }
 }
 
@@ -127,36 +135,31 @@
     return dataArray;
 }
 
-- (void)updateImageDataArray:(NSArray *)dataArray
+- (void)updateImageDataArray:(NSArray *)dataArray Finished:(void (^)(BOOL isSuccess))finished
 {
-////    [MBProgressHUD showLoadingWithMessage:@"正在上传"];
-//    [SSNetworkRequest updateDataRequest:apiUploadUserLog params:nil dataArray:dataArray progress:^(NSProgress *progress) {
-////        [MBProgressHUD showLoadingWithProgress:progress.fractionCompleted ProgressType:UNProgressTypeAnnularDeterminate];
-//        UNDebugLogVerbose(@"progress===%.2f", progress.fractionCompleted)
-//    } success:^(id responseObj) {
-//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//            UNDebugLogVerbose(@"%@", responseObj)
-////            [MBProgressHUD showSuccess:@"上传成功"];
-//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-////            [MBProgressHUD showSuccess:@"上传失败"];
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//        }else{
-////            [MBProgressHUD showError:responseObj[@"msg"]];
-//        }
-//    } failure:^(id dataObj, NSError *error) {
-////        [MBProgressHUD showSuccess:@"上传失败"];
-//    } headers:[UNDataTools sharedInstance].normalHeaders];
-    
     [UNNetworkManager putUrl:apiUploadUserLog datas:dataArray mimeType:nil progress:^(NSProgress * _Nullable progress) {
 //        UNDebugLogVerbose(@"progress===%.2f", progress.fractionCompleted)
     } parameters:nil success:^(ResponseType type, id  _Nullable responseObj) {
         if (type == ResponseTypeSuccess) {
             UNDebugLogVerbose(@"%@", responseObj)
+            if (finished) {
+                finished(YES);
+            }
         }else if (type == ResponseTypeFailed){
+            if (finished) {
+                finished(NO);
+            }
             UNDebugLogVerbose(@"%@", responseObj)
+        }else{
+            if (finished) {
+                finished(NO);
+            }
         }
     } failure:^(NSError * _Nonnull error) {
-        
+        UNDebugLogVerbose(@"%@",error)
+        if (finished) {
+            finished(NO);
+        }
     }];
 }
 

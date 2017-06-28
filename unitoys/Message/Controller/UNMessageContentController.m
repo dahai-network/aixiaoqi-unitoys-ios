@@ -489,14 +489,15 @@
         }else{
             params = [[NSDictionary alloc] initWithObjectsAndKeys:@"0",@"pageSize",@"0",@"pageNumber", self.toTelephone,@"Tel", nil];
         }
-        self.checkToken = YES;
-        [self getBasicHeader];
         kWeakSelf
-        [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
-            if ([[responseObj objectForKey:@"status"] intValue]==1) {
-                
+        [UNNetworkManager getUrl:apiSMSByTel parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
+            if (type == ResponseTypeSuccess) {
                 if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
                     [[UNDatabaseTools sharedFMDBTools] insertMessageContentWithMessageContent:responseObj[@"data"] Phone:weakSelf.toTelephone];
+                    
+                    //更新短信列表
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMessageRecordLists" object:nil];
                 }
                 NSArray *arrMessages = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:0 Phone:self.toTelephone];
                 _messageFrames = [weakSelf changeDictToMessage:arrMessages];
@@ -512,18 +513,49 @@
                 }
                 //                [self updateMessageList];
                 [weakSelf getMessageStatuFromServer:arrMessages];
-            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-            }else{
+
             }
-            
-            //更新短信列表
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMessageRecordLists" object:nil];
-            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
-        } failure:^(id dataObj, NSError *error) {
+        } failure:^(NSError * _Nonnull error) {
             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
             UNDebugLogVerbose(@"啥都没：%@",[error description]);
-        } headers:self.headers];
+        }];
+        
+//        self.checkToken = YES;
+//        [self getBasicHeader];
+//        [SSNetworkRequest getRequest:apiSMSByTel params:params success:^(id responseObj) {
+//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//                if ([responseObj[@"data"] count] && ![[responseObj[@"data"] lastObject][@"SMSTime"] isEqualToString:lastTime]) {
+//                    [[UNDatabaseTools sharedFMDBTools] insertMessageContentWithMessageContent:responseObj[@"data"] Phone:weakSelf.toTelephone];
+//                    
+//                    //更新短信列表
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMessageRecordLists" object:nil];
+//                }
+//                NSArray *arrMessages = [[UNDatabaseTools sharedFMDBTools] getMessageContentWithPage:0 Phone:self.toTelephone];
+//                _messageFrames = [weakSelf changeDictToMessage:arrMessages];
+//                
+//                weakSelf.page = 0;
+//                [weakSelf.myTableView reloadData];
+//                if (!weakSelf.isFristSend) {
+//                    //自动滚动到底部
+//                    [weakSelf scrollTableViewToBottomWithAnimated:NO];
+//                    [weakSelf.myTableView reloadData];
+//                }else{
+//                    weakSelf.isFristSend = YES;
+//                }
+//                //                [self updateMessageList];
+//                [weakSelf getMessageStatuFromServer:arrMessages];
+//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//            }else{
+//            }
+//            
+////            //更新短信列表
+////            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMessageRecordLists" object:nil];
+//            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
+//        } failure:^(id dataObj, NSError *error) {
+//            HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
+//            UNDebugLogVerbose(@"啥都没：%@",[error description]);
+//        } headers:self.headers];
     }
 }
 
@@ -542,24 +574,38 @@
     }
     if (smsIdArray.count) {
         //从服务器更新
-        self.checkToken = YES;
-        [self getBasicHeader];
         NSDictionary *params = @{@"Ids" : smsIdArray};
-        [SSNetworkRequest getJsonRequest:apiSMSGets params:params success:^(id responseObj) {
-            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+        
+        [UNNetworkManager getJsonUrl:apiSMSGets parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
+            if (type == ResponseTypeSuccess) {
                 if ([responseObj[@"data"][@"list"] count]) {
                     [[UNDatabaseTools sharedFMDBTools] updateMessageStatuWithSMSIDDictArray:responseObj[@"data"][@"list"]];
                     [self updateCellMessageStatu:responseObj[@"data"][@"list"]];
                 }
-            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-            }else{
             }
-            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
-        } failure:^(id dataObj, NSError *error) {
+        } failure:^(NSError * _Nonnull error) {
             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
             UNDebugLogVerbose(@"啥都没：%@",[error description]);
-        } headers:self.headers];
+        }];
+        
+//        self.checkToken = YES;
+//        [self getBasicHeader];
+//        [SSNetworkRequest getJsonRequest:apiSMSGets params:params success:^(id responseObj) {
+//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//                if ([responseObj[@"data"][@"list"] count]) {
+//                    [[UNDatabaseTools sharedFMDBTools] updateMessageStatuWithSMSIDDictArray:responseObj[@"data"][@"list"]];
+//                    [self updateCellMessageStatu:responseObj[@"data"][@"list"]];
+//                }
+//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//            }else{
+//            }
+//            UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
+//        } failure:^(id dataObj, NSError *error) {
+//            HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
+//            UNDebugLogVerbose(@"啥都没：%@",[error description]);
+//        } headers:self.headers];
     }
 }
 
@@ -775,31 +821,45 @@
 
 - (void)repeatSendMessage:(UNMessageFrameModel *)messageFrame
 {
-    self.checkToken = YES;
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:messageFrame.message.SMSID,@"SMSID", nil];
     
-    [self getBasicHeader];
-    [SSNetworkRequest postRequest:apiSendRetryForError params:params success:^(id responseObj) {
+    [UNNetworkManager postUrl:apiSendRetryForError parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
         UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
-        
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+        if (type == ResponseTypeSuccess) {
             _messageFrames = nil;
-            
             [self loadMessages];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
+        }else if (type == ResponseTypeFailed){
             //数据请求失败
             HUDNormalTop(responseObj[@"msg"])
         }
-        
-    } failure:^(id dataObj, NSError *error) {
-        //
+    } failure:^(NSError * _Nonnull error) {
         UNDebugLogVerbose(@"啥都没：%@",[error description]);
-    } headers:self.headers];
+    }];
+    
+//    self.checkToken = YES;
+//    [self getBasicHeader];
+//    [SSNetworkRequest postRequest:apiSendRetryForError params:params success:^(id responseObj) {
+//        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
+//        
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            _messageFrames = nil;
+//            
+//            [self loadMessages];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
+//            
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//            HUDNormalTop(responseObj[@"msg"])
+//        }
+//        
+//    } failure:^(id dataObj, NSError *error) {
+//        //
+//        UNDebugLogVerbose(@"啥都没：%@",[error description]);
+//    } headers:self.headers];
 }
 
 //点击发送消息
@@ -838,11 +898,9 @@
         }
         NSString *receiveNumbers = self.toTelephone;
         NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:receiveNumbers,@"To",message,@"SMSContent", nil];
-        self.checkToken = YES;
-        [self getBasicHeader];
-        [SSNetworkRequest postRequest:apiSMSSend params:params success:^(id responseObj) {
-            UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
-            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+        
+        [UNNetworkManager postUrl:apiSMSSend parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+            if (type == ResponseTypeSuccess) {
                 if (self.isNewMessage) {
                     if (!self.myTableView.mj_header) {
                         self.myTableView.mj_header = [CustomRefreshMessageHeader headerWithRefreshingBlock:^{
@@ -871,20 +929,64 @@
                 _messageFrames = nil;
                 [self loadMessages];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
-            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-                [self.myMsgInputView sendMessageField];
             }else{
                 //数据请求失败
                 HUDNormalTop(responseObj[@"msg"])
                 [self.myMsgInputView sendMessageField];
             }
-            
-        } failure:^(id dataObj, NSError *error) {
+        } failure:^(NSError * _Nonnull error) {
             HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
             UNDebugLogVerbose(@"啥都没：%@",[error description]);
             [self.myMsgInputView sendMessageField];
-        } headers:self.headers];
+        }];
+        
+//        self.checkToken = YES;
+//        [self getBasicHeader];
+//        [SSNetworkRequest postRequest:apiSMSSend params:params success:^(id responseObj) {
+//            UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
+//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//                if (self.isNewMessage) {
+//                    if (!self.myTableView.mj_header) {
+//                        self.myTableView.mj_header = [CustomRefreshMessageHeader headerWithRefreshingBlock:^{
+//                            if (self.toTelephone && self.toTelephone.length) {
+//                                [self cancelEdit];
+//                                [self loadMoreMessage];
+//                            }else{
+//                                [self.myTableView.mj_header endRefreshing];
+//                            }
+//                        }];
+//                    }
+//                    if (self.toPhoneName) {
+//                        self.title = self.toPhoneName;
+//                    }
+//                    //隐藏新建短信控件
+//                    self.topEditLinkManView.hidden = YES;
+//                    [self.topEditLinkManView removeFromSuperview];
+//                    self.isNewMessage = NO;
+//                    if (self.navigationItem.rightBarButtonItem != self.defaultRightItem) {
+//                        self.navigationItem.rightBarButtonItem = self.defaultRightItem;
+//                    }
+//                }
+//                
+//                
+//                [self.myMsgInputView sendMessageSuccess];
+//                _messageFrames = nil;
+//                [self loadMessages];
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
+//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//                [self.myMsgInputView sendMessageField];
+//            }else{
+//                //数据请求失败
+//                HUDNormalTop(responseObj[@"msg"])
+//                [self.myMsgInputView sendMessageField];
+//            }
+//            
+//        } failure:^(id dataObj, NSError *error) {
+//            HUDNormalTop(INTERNATIONALSTRING(@"网络貌似有问题"))
+//            UNDebugLogVerbose(@"啥都没：%@",[error description]);
+//            [self.myMsgInputView sendMessageField];
+//        } headers:self.headers];
     }else{
         return NO;
     }
@@ -1241,9 +1343,8 @@
 {
     kWeakSelf
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: @[smsId] ,@"Ids",nil];
-    [self getBasicHeader];
-    [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+    [UNNetworkManager postUrl:apiDeletes parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+        if (type == ResponseTypeSuccess) {
             [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:@[smsId] WithPhone:self.toTelephone];
             if ((weakSelf.messageFrames.count == index + 1) || weakSelf.messageFrames.count == 1) {
                 //刷新外部界面
@@ -1259,9 +1360,7 @@
                     [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
             }
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
+        }else if (type == ResponseTypeFailed){
             //数据请求失败
             UNDebugLogVerbose(@"删除单条短信失败--%@", responseObj[@"msg"]);
             
@@ -1281,18 +1380,61 @@
                 });
             }
         }
-    } failure:^(id dataObj, NSError *error) {
+    } failure:^(NSError * _Nonnull error) {
         UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
-    } headers:self.headers];
+    }];
+    
+//    [self getBasicHeader];
+//    [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:@[smsId] WithPhone:self.toTelephone];
+//            if ((weakSelf.messageFrames.count == index + 1) || weakSelf.messageFrames.count == 1) {
+//                //刷新外部界面
+//                [weakSelf updateMessageList];
+//            }
+//            UNDebugLogVerbose(@"删除单条短信成功");
+//            if (weakSelf.messageFrames.count > index) {
+//                [weakSelf.messageFrames removeObjectAtIndex:index];
+//            }
+//            [weakSelf.myTableView reloadData];
+//            if (!weakSelf.messageFrames.count) {
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    [weakSelf.navigationController popViewControllerAnimated:YES];
+//                });
+//            }
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//            UNDebugLogVerbose(@"删除单条短信失败--%@", responseObj[@"msg"]);
+//            
+//            [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:@[smsId] WithPhone:self.toTelephone];
+//            if ((weakSelf.messageFrames.count == index + 1) || weakSelf.messageFrames.count == 1) {
+//                //刷新外部界面
+//                [weakSelf updateMessageList];
+//            }
+//            UNDebugLogVerbose(@"删除单条短信成功");
+//            if (weakSelf.messageFrames.count > index) {
+//                [weakSelf.messageFrames removeObjectAtIndex:index];
+//            }
+//            [weakSelf.myTableView reloadData];
+//            if (!weakSelf.messageFrames.count) {
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    [weakSelf.navigationController popViewControllerAnimated:YES];
+//                });
+//            }
+//        }
+//    } failure:^(id dataObj, NSError *error) {
+//        UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
+//    } headers:self.headers];
 }
 
 - (void)deleteMessageSWithDatas:(NSArray *)Datas SMSIds:(NSArray *)smsIds
 {
     kWeakSelf
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys: smsIds ,@"Ids",nil];
-    [self getBasicHeader];
-    [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+    [UNNetworkManager postUrl:apiDeletes parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
+        if (type == ResponseTypeSuccess) {
             UNDebugLogVerbose(@"删除多条短信成功");
             [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:smsIds WithPhone:self.toTelephone];
             //刷新外部界面
@@ -1316,9 +1458,7 @@
                     [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
             }
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
+        }else if (type == ResponseTypeFailed){
             //数据请求失败
             UNDebugLogVerbose(@"删除多条短信失败--%@", responseObj[@"msg"]);
             [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:smsIds WithPhone:self.toTelephone];
@@ -1344,9 +1484,68 @@
                 });
             }
         }
-    } failure:^(id dataObj, NSError *error) {
+    } failure:^(NSError * _Nonnull error) {
         UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
-    } headers:self.headers];
+    }];
+    
+    
+//    [self getBasicHeader];
+//    [SSNetworkRequest postRequest:apiDeletes params:params success:^(id responseObj) {
+//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+//            UNDebugLogVerbose(@"删除多条短信成功");
+//            [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:smsIds WithPhone:self.toTelephone];
+//            //刷新外部界面
+//            [weakSelf updateMessageList];
+//            
+//            //防止数据不同步
+//            NSMutableArray *tempArray = [NSMutableArray array];
+//            for (UNMessageFrameModel *messageFrame in Datas) {
+//                if ([weakSelf.messageFrames containsObject:messageFrame]) {
+//                    [tempArray addObject:messageFrame];
+//                }
+//            }
+//            if (tempArray.count) {
+//                [weakSelf.messageFrames removeObjectsInArray:tempArray];
+//            }
+//            [weakSelf.myTableView reloadData];
+//            //自动滚动到底部
+//            //            [self scrollTableViewToBottomWithAnimated:NO];
+//            if (!weakSelf.messageFrames.count) {
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    [weakSelf.navigationController popViewControllerAnimated:YES];
+//                });
+//            }
+//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+//        }else{
+//            //数据请求失败
+//            UNDebugLogVerbose(@"删除多条短信失败--%@", responseObj[@"msg"]);
+//            [[UNDatabaseTools sharedFMDBTools] deteleMessageContentWithSMSIDLists:smsIds WithPhone:self.toTelephone];
+//            //刷新外部界面
+//            [weakSelf updateMessageList];
+//            
+//            //防止数据不同步
+//            NSMutableArray *tempArray = [NSMutableArray array];
+//            for (UNMessageFrameModel *messageFrame in Datas) {
+//                if ([weakSelf.messageFrames containsObject:messageFrame]) {
+//                    [tempArray addObject:messageFrame];
+//                }
+//            }
+//            if (tempArray.count) {
+//                [weakSelf.messageFrames removeObjectsInArray:tempArray];
+//            }
+//            [weakSelf.myTableView reloadData];
+//            //自动滚动到底部
+//            //            [self scrollTableViewToBottomWithAnimated:NO];
+//            if (!weakSelf.messageFrames.count) {
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                    [weakSelf.navigationController popViewControllerAnimated:YES];
+//                });
+//            }
+//        }
+//    } failure:^(id dataObj, NSError *error) {
+//        UNDebugLogVerbose(@"删除单条短信异常：%@",[error description]);
+//    } headers:self.headers];
 }
 
 //发送文字

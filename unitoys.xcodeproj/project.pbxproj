@@ -187,6 +187,7 @@
 		3C62E2D81EF53F710021358B /* UNTestViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3C62E2D51EF53F710021358B /* UNTestViewController.xib */; };
 		3C6668C51EA078860050FA66 /* UNDataTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6668C41EA078860050FA66 /* UNDataTools.m */; };
 		3C66D0DD1E66714F00A7B125 /* UNDatabaseTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */; };
+		3C6F43CA1F03506A0002A1A7 /* UNCheckPhoneAuth.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C6F43C91F03506A0002A1A7 /* UNCheckPhoneAuth.m */; };
 		3C74D51E1EAD94EC009FE12D /* UNCustomTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C74D51D1EAD94EC009FE12D /* UNCustomTabBar.m */; };
 		3C7DECCE1EC2BB7C00CDCE34 /* UNConvertFormatTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECCD1EC2BB7C00CDCE34 /* UNConvertFormatTool.m */; };
 		3C7DECD11EC2C62B00CDCE34 /* ConvenienceServiceController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3C7DECD01EC2C62B00CDCE34 /* ConvenienceServiceController.m */; };
@@ -755,6 +756,8 @@
 		3C6668C41EA078860050FA66 /* UNDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDataTools.m; sourceTree = "<group>"; };
 		3C66D0DB1E66714F00A7B125 /* UNDatabaseTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNDatabaseTools.h; sourceTree = "<group>"; };
 		3C66D0DC1E66714F00A7B125 /* UNDatabaseTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNDatabaseTools.m; sourceTree = "<group>"; };
+		3C6F43C81F03506A0002A1A7 /* UNCheckPhoneAuth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCheckPhoneAuth.h; sourceTree = "<group>"; };
+		3C6F43C91F03506A0002A1A7 /* UNCheckPhoneAuth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCheckPhoneAuth.m; sourceTree = "<group>"; };
 		3C74D51C1EAD94EC009FE12D /* UNCustomTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNCustomTabBar.h; sourceTree = "<group>"; };
 		3C74D51D1EAD94EC009FE12D /* UNCustomTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNCustomTabBar.m; sourceTree = "<group>"; };
 		3C7DECCC1EC2BB7C00CDCE34 /* UNConvertFormatTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNConvertFormatTool.h; sourceTree = "<group>"; };
@@ -1582,6 +1585,8 @@
 				3C62E2C91EF4DE9C0021358B /* UNHudView.m */,
 				3CC594CD1EF77570005EF4E4 /* UNBaseTableViewController.h */,
 				3CC594CE1EF77570005EF4E4 /* UNBaseTableViewController.m */,
+				3C6F43C81F03506A0002A1A7 /* UNCheckPhoneAuth.h */,
+				3C6F43C91F03506A0002A1A7 /* UNCheckPhoneAuth.m */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -2874,6 +2879,7 @@
 				95E9185A1DDC7EB6005DABC0 /* BeforeOutViewController.m in Sources */,
 				04F727AB1E641CE4002EB54C /* MultipartMessageHeaderField.m in Sources */,
 				95CD33F01D9CE4F300EE5DD3 /* NSDataEx.m in Sources */,
+				3C6F43CA1F03506A0002A1A7 /* UNCheckPhoneAuth.m in Sources */,
 				3C62E2D71EF53F710021358B /* UNTestViewController.m in Sources */,
 				3C7DECE21EC2FE6C00CDCE34 /* OpenServiceCell.m in Sources */,
 				3CA898771E8DF33F00C38387 /* MBProgressHUD+UNTip.m in Sources */,

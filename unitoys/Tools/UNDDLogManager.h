@@ -16,9 +16,7 @@
 static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 //static const DDLogLevel ddLogLevel = DDLogLevelWarning;
 
-//#define UNLogLBEProcess(format, ...) DDLogWarn((@"[Function:%s]" "[Line:%d]" format), __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #define UNLogLBEProcess(format, ...) DDLogWarn(format, ##__VA_ARGS__);
-//#define UNDebugLogVerbose(format, ...) DDLogVerbose((@"[%s][%d]" format), __FUNCTION__, __LINE__, ##__VA_ARGS__);
 #define UNDebugLogVerbose(format, ...) DDLogVerbose(format, ##__VA_ARGS__);
 
 #else
@@ -36,11 +34,11 @@ static const DDLogLevel ddLogLevel = DDLogLevelWarning;
 - (void)enabelUNLog;
 
 //上传最后一个日志
-- (void)updateLastLogToServer;
+- (void)updateLastLogToServerFinished:(void (^)(BOOL isSuccess))finished;
 //上传所有日志
-- (void)updateAllLogToServer;
+- (void)updateAllLogToServerFinished:(void (^)(BOOL isSuccess))finished;
 //上传指定日志数量
-- (void)updateLogToServerWithLogCount:(NSInteger)logCount;
+- (void)updateLogToServerWithLogCount:(NSInteger)logCount Finished:(void (^)(BOOL isSuccess))finished;
 //删除所有日志
 - (void)clearAllLog;
 

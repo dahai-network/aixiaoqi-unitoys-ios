@@ -181,7 +181,7 @@ static UNBlueToothTool *instance = nil;
             return;
         }
         UNLogLBEProcess(@"初始化蓝牙")
-        UNDebugLogVerbose(@"当前初始化线程======%@", [NSThread currentThread]);
+        UNLogLBEProcess(@"当前初始化线程======%@", [NSThread currentThread]);
         
         self.isKill = NO;
         self.isInitInstance = YES;
@@ -194,7 +194,7 @@ static UNBlueToothTool *instance = nil;
             [BlueToothDataManager shareManager].operatorType = [[NSUserDefaults standardUserDefaults] objectForKey:@"operatorType"];
         }
         self.simtype = [self checkSimType];
-        UNDebugLogVerbose(@"卡类型--%@", self.simtype);
+        UNLogLBEProcess(@"卡类型--%@", self.simtype);
         
         [BlueToothDataManager shareManager].isNeedToResert = YES;
         [BlueToothDataManager shareManager].currentStep = @"0";
@@ -209,7 +209,7 @@ static UNBlueToothTool *instance = nil;
 - (void)initObserverAction
 {
 //    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    UNDebugLogVerbose(@"注册监听");
+    UNLogLBEProcess(@"initObserverAction==注册监听");
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(downElectToCard) name:@"downElectic" object:@"downElectic"];//对卡断电
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivePushKitMessage) name:@"ReceivePushKitMessage" object:nil];//接收PushKit消息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(analysisAuthData:) name:@"AnalysisAuthData" object:nil];//解析鉴权数据

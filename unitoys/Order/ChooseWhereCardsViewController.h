@@ -12,4 +12,6 @@
 //@property (nonatomic, strong) NSDictionary *orderInfoDic;
 @property (nonatomic, copy) NSString *orderID;
 
+@property (nonatomic, assign) BOOL isAlreadyActivate;
+
 @end

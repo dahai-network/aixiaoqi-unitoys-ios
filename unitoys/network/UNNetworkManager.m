@@ -45,9 +45,36 @@
     }];
 }
 
++ (void)getJsonUrl:(NSString *)urlString parameters:(id)parameters success:(void (^)(ResponseType, id _Nullable))success failure:(void (^)(NSError * _Nonnull))failure
+{
+    UNHTTPSessionManager *manager = [self getManager:urlString];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager GET:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        ResponseType type;
+        if ([[responseObject objectForKey:@"status"] intValue] == 1) {
+            type = ResponseTypeSuccess;
+        }else if ([[responseObject objectForKey:@"status"] intValue] == -999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+            type = ResponseTypeRelogin;
+        }else{
+            type = ResponseTypeFailed;
+        }
+        if (success) {
+            success(type, responseObject);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+
+
 + (void)postUrl:(NSString *)urlString parameters:(id)parameters success:(void (^)(ResponseType,id _Nullable))success failure:(void (^)(NSError * _Nonnull))failure
 {
-    [[self getManager:urlString] POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    UNHTTPSessionManager *manager = [self getManager:urlString];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager POST:urlString parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         ResponseType type;
         if ([[responseObject objectForKey:@"status"] intValue] == 1) {
             type = ResponseTypeSuccess;

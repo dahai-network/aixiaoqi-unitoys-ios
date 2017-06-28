@@ -30,6 +30,16 @@ typedef NS_ENUM(NSUInteger, ResponseType) {
 
 
 /**
+ GETJson请求
+ 
+ @param urlString url
+ @param parameters parameters
+ @param success 成功回调
+ @param failure 失败回调
+ */
++ (void)getJsonUrl:(NSString *_Nonnull)urlString parameters:(id _Nullable)parameters success:(void (^_Nullable)(ResponseType type,id _Nullable responseObj))success failure:(void (^_Nullable)(NSError * _Nonnull error))failure;
+
+/**
  POST请求
  
  @param urlString url

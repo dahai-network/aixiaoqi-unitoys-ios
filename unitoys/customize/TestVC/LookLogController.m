@@ -8,6 +8,7 @@
 
 #import "LookLogController.h"
 #import "LookLogContentController.h"
+#import "MBProgressHUD+UNTip.h"
 
 @interface LookLogController ()<UITableViewDataSource, UITableViewDelegate>
 
@@ -78,7 +79,14 @@
 
 - (void)updateLogAction
 {
-    [[UNDDLogManager sharedInstance] updateLogToServerWithLogCount:2];
+    [MBProgressHUD showLoading];
+    [[UNDDLogManager sharedInstance] updateLogToServerWithLogCount:2 Finished:^(BOOL isSuccess) {
+        if (isSuccess) {
+            [MBProgressHUD showSuccess:@"上传成功"];
+        }else{
+            [MBProgressHUD showSuccess:@"上传失败"];
+        }
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
