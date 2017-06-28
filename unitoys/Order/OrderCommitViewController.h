@@ -57,6 +57,7 @@
 
 @property (readwrite) NSArray *arrMethod;
 @property (readwrite) UIButton *btnMethod;
+@property (weak, nonatomic) IBOutlet UILabel *lblStartUse;
 
 //@property (strong,nonatomic) ToyProduct *product;
 - (IBAction)decAmount:(id)sender;

@@ -18,9 +18,11 @@
 #import "ExplainDetailsChildController.h"
 
 #import "HTTPServer.h"
-#import "UNReadyActivateController.h"
+//#import "UNReadyActivateController.h"
 #import "UNConvertFormatTool.h"
 #import "UNMobileActivateController.h"
+
+#import "ChooseWhereCardsViewController.h"
 
 
 @interface ActivateGiftCardViewController ()<UITableViewDelegate, UITableViewDataSource>
@@ -655,7 +657,10 @@
 
 #pragma mark 激活按钮点击事件 //0流量/1通话/2大王卡/3双卡双待
 - (IBAction)avtivateAction:(UIButton *)sender {
-    [self showChooseAlert];
+//    [self showChooseAlert];
+    ChooseWhereCardsViewController *chooseCardsVC = [[ChooseWhereCardsViewController alloc] init];
+    chooseCardsVC.orderID = self.dicOrderDetail[@"OrderID"];
+    [self.navigationController pushViewController:chooseCardsVC animated:YES];
 }
 
 - (void)startToActiviteCard {

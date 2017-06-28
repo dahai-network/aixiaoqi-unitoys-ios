@@ -20,6 +20,10 @@
 @property (nonatomic, assign)int packageCategory;
 @property (weak, nonatomic) IBOutlet UIButton *paymentButton;
 @property (nonatomic, strong)UIWindow *paySuccessWindow;
+@property (nonatomic, strong)UIDatePicker *pickerView;
+@property (nonatomic, strong)UILabel *titleLabel;
+@property (nonatomic, strong)UIView *valueView;
+@property (nonatomic, copy)NSString *selectedDateString;
 
 @end
 
@@ -39,7 +43,7 @@
         [self.ivPackagePic setImage:[UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[self.dicPackage objectForKey:@"LogoPic"]]]]];
 //        self.lblPrice.text = [NSString stringWithFormat:@"￥%.2f",[[self.dicPackage objectForKey:@"Price"] floatValue]];
         [self.lblPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f",[[self.dicPackage objectForKey:@"Price"] floatValue]]];
-//        self.lblExpireDays.text = [NSString stringWithFormat:@"有效期：%@",[self.dicPackage objectForKey:@"ExpireDays"]];
+        self.lblExpireDays.text = [NSString stringWithFormat:@"有效期：%@天",[self.dicPackage objectForKey:@"ExpireDays"]];
         self.lblPackageName.text = [self.dicPackage objectForKey:@"PackageName"];
         
         self.lblOrderPrice.text = [NSString stringWithFormat:@"￥%.2f",[[self.dicPackage objectForKey:@"Price"] floatValue]];
@@ -55,6 +59,7 @@
     }
     
     [self loadAmmount];
+    [self addDataPickView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alipayComplete:) name:@"AlipayComplete" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(weipayComplete:) name:@"WeipayComplete" object:nil];
@@ -62,6 +67,75 @@
     
     self.arrMethod = [NSArray arrayWithObjects:self.btnAccountpay,self.btnWeipay,self.btnAlipay, nil];
     self.btnMethod = self.btnAccountpay;
+}
+
+- (void)addDataPickView {
+    UIView *valueView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    valueView.backgroundColor = [UIColor colorWithRed:32/255 green:34/255 blue:42/255 alpha:0.2];
+    
+    UIDatePicker *pickerview = [[UIDatePicker alloc] initWithFrame: CGRectMake(0,self.view.bounds.size.height-210,self.view.bounds.size.width,105)];
+    pickerview.datePickerMode = UIDatePickerModeDate;
+    pickerview.minimumDate = [NSDate date];
+    
+    NSTimeInterval time=[self.dicPackage[@"LastCanActivationDate"] doubleValue];
+    NSDate *lasteddate=[NSDate dateWithTimeIntervalSince1970:time];
+    pickerview.maximumDate = lasteddate;
+    
+    self.lblStartUse.text = @"---- -- --";
+    //    [self setDateForSelectedWithSelected:[NSDate date]];
+    NSDate *defaultDate = [NSDate date];
+    pickerview.date = defaultDate;//设置UIDatePicker默认显示时间
+    
+    [pickerview setBackgroundColor:[UIColor whiteColor]];
+    [valueView addSubview:pickerview];
+    self.pickerView = pickerview;
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(pickerview.frame) - 41, self.view.bounds.size.width, 40)];
+    titleLabel.backgroundColor = [UIColor whiteColor];
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.text = INTERNATIONALSTRING(@"生效日期");
+    [valueView addSubview:titleLabel];
+    self.titleLabel = titleLabel;
+    
+    UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(pickerview.frame) + 3, self.view.bounds.size.width, 35)];
+    btnOK.hidden = NO;
+    [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
+    [btnOK setBackgroundColor:[UIColor whiteColor]];
+    
+    [btnOK addTarget:self action:@selector(selectValue) forControlEvents:UIControlEventTouchUpInside];
+    [valueView addSubview:btnOK];
+    
+    [self.view addSubview:valueView];
+    valueView.hidden = YES;
+    self.valueView = valueView;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
+    [self.valueView addGestureRecognizer:tap];
+}
+
+- (void)selectValue {
+    self.valueView.hidden = YES;
+    [self setDateForSelectedWithSelected:self.pickerView.date];
+}
+
+- (void)setDateForSelectedWithSelected:(NSDate *)date {
+    NSDateFormatter *forma = [[NSDateFormatter alloc]init];
+    NSDateFormatter *forma1 = [[NSDateFormatter alloc]init];
+    [forma setDateFormat:@"YYYY-MM-dd 00:00:00"];
+    [forma1 setDateFormat:@"YYYY-MM-dd"];
+    NSString *str = [forma stringFromDate:date]; //UIDatePicker显示的时间
+    self.lblStartUse.text = [forma1 stringFromDate:date];
+    NSLog(@"time===%@",str);
+    NSDate *tempDate = [forma dateFromString:str];
+    NSString *convertTime = [NSString stringWithFormat:@"%ld", (long)[tempDate timeIntervalSince1970]/*+ 8*3600*/];
+    NSLog(@"timeSp:%@",convertTime); //时间戳的值
+    self.selectedDateString = convertTime;
+}
+
+- (void)tapAction {
+    if (!self.valueView.hidden) {
+        self.valueView.hidden = YES;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -77,6 +151,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1 && indexPath.row == 0) {
+        self.valueView.hidden = NO;
+    }
     if (indexPath.section == 2) {
         switch (indexPath.row) {
             case 0:
@@ -350,7 +427,7 @@
         self.orderCount = self.orderCount-1;
         
         self.lblOrderCount.text = [NSString stringWithFormat:@"%ld",(long)self.orderCount];
-        
+        [self changeExpireDays];
         [self calcFee];
     } else {
         HUDNormal(INTERNATIONALSTRING(@"已经不能再少了!"))
@@ -363,12 +440,17 @@
         self.orderCount = self.orderCount+1;
         
         self.lblOrderCount.text = [NSString stringWithFormat:@"%ld",(long)self.orderCount];
-        
+        [self changeExpireDays];
         [self calcFee];
     } else {
         HUDNormal(@"此套餐单次只能购买一个")
     }
     
+}
+
+- (void)changeExpireDays {
+    int expireDaysStr = [self.dicPackage[@"ExpireDays"] intValue] * (int)self.orderCount;
+    self.lblExpireDays.text = [NSString stringWithFormat:@"有效期：%d天",expireDaysStr];
 }
 
 - (IBAction)switchPayment:(id)sender {
@@ -406,11 +488,11 @@
     
     
     if (self.btnAlipay.tag==1) {
-        params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"1",@"PaymentMethod", nil];
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"1",@"PaymentMethod", self.lblStartUse.text, @"BeginDateTime", nil];
     } else if(self.btnWeipay.tag==1) {
-        params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"2",@"PaymentMethod", nil];
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"2",@"PaymentMethod", self.lblStartUse.text, @"BeginDateTime", nil];
     } else {
-        params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"3",@"PaymentMethod", nil];
+        params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"3",@"PaymentMethod", self.lblStartUse.text, @"BeginDateTime", nil];
     }
     HUDNoStop1(INTERNATIONALSTRING(@"正在提交订单..."))
     [self getBasicHeader];
@@ -440,60 +522,6 @@
         
     } headers:self.headers];
     return YES;
-}
-
-
-- (void)callbackOrder {
-    self.checkToken = YES;
-    //    ;
-    //
-    NSDictionary *params;
-    
-    
-    
-    params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"1",@"PaymentMethod", nil];
-    
-    
-    
-    [self getBasicHeader];
-//    NSLog(@"表演头：%@",self.headers);
-    
-    [SSNetworkRequest postRequest:apiPayNotifyAnsync params:params success:^(id responseObj) {
-        //
-        //KV来存放数组，所以要用枚举器来处理
-        /*
-         NSEnumerator *enumerator = [[responseObj objectForKey:@"data"] keyEnumerator];
-         id key;
-         while ((key = [enumerator nextObject])) {
-         [manager.requestSerializer setValue:[headers objectForKey:key] forHTTPHeaderField:key];
-         }*/
-        
-        
-        NSLog(@"查询到的订单数据：%@",responseObj);
-        
-        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-            
-            self.dicOrder = [[responseObj objectForKey:@"data"] objectForKey:@"order"];
-        
-            [self payAction];
-            
-        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-        }else{
-            //数据请求失败
-        }
-        
-        
-        /*
-         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
-        
-    } failure:^(id dataObj, NSError *error) {
-        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-        NSLog(@"啥都没：%@",[error description]);
-        
-    } headers:self.headers];
-    
 }
 
 - (void)payAction {
@@ -568,17 +596,11 @@
 }
 
 - (IBAction)payment:(id)sender {
-    [self commitOrder];
-    
-    /*
-    if ([self commitOrder]) {
-        if (self.btnAlipay.tag==1) {
-            [self alipay];
-        }else{
-            [self weipay];
-        }
+    if (![self.lblStartUse.text isEqualToString:@"---- -- --"]) {
+        [self commitOrder];
+    } else {
+        HUDNormal(@"请选择使用日期")
     }
-    */
     
 }
 

@@ -87,6 +87,10 @@
 		04B416511EB35365005E31C9 /* 3des.c in Sources */ = {isa = PBXBuildFile; fileRef = 04B4164F1EB35365005E31C9 /* 3des.c */; };
 		04CC5CB01EFA259300AA31CA /* ThroughLineLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CC5CAF1EFA259300AA31CA /* ThroughLineLabel.m */; };
 		04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */; };
+		04D835D71F035AF0008E096A /* ChooseWhereCardsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D835D51F035AF0008E096A /* ChooseWhereCardsViewController.m */; };
+		04D835D81F035AF0008E096A /* ChooseWhereCardsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04D835D61F035AF0008E096A /* ChooseWhereCardsViewController.xib */; };
+		04D835DC1F035B1F008E096A /* ChooseWhereCardsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D835DA1F035B1F008E096A /* ChooseWhereCardsTableViewCell.m */; };
+		04D835DD1F035B1F008E096A /* ChooseWhereCardsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04D835DB1F035B1F008E096A /* ChooseWhereCardsTableViewCell.xib */; };
 		04D90E891DEEDC5C00035C46 /* BlueToothDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */; };
 		04DA1B971E12958C00C50904 /* CallComingInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04DA1B951E12958C00C50904 /* CallComingInViewController.m */; };
 		04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */ = {isa = PBXBuildFile; fileRef = 04DA1BF01E164A6400C50904 /* appleCallComing.wav */; };
@@ -578,6 +582,12 @@
 		04CC5CAF1EFA259300AA31CA /* ThroughLineLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThroughLineLabel.m; sourceTree = "<group>"; };
 		04D5EED21E9B959D0015B8DA /* ProductCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductCollectionViewCell.h; sourceTree = "<group>"; };
 		04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductCollectionViewCell.m; sourceTree = "<group>"; };
+		04D835D41F035AF0008E096A /* ChooseWhereCardsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseWhereCardsViewController.h; sourceTree = "<group>"; };
+		04D835D51F035AF0008E096A /* ChooseWhereCardsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseWhereCardsViewController.m; sourceTree = "<group>"; };
+		04D835D61F035AF0008E096A /* ChooseWhereCardsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChooseWhereCardsViewController.xib; sourceTree = "<group>"; };
+		04D835D91F035B1F008E096A /* ChooseWhereCardsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseWhereCardsTableViewCell.h; sourceTree = "<group>"; };
+		04D835DA1F035B1F008E096A /* ChooseWhereCardsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseWhereCardsTableViewCell.m; sourceTree = "<group>"; };
+		04D835DB1F035B1F008E096A /* ChooseWhereCardsTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChooseWhereCardsTableViewCell.xib; sourceTree = "<group>"; };
 		04D90E871DEEDC5C00035C46 /* BlueToothDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlueToothDataManager.h; sourceTree = "<group>"; };
 		04D90E881DEEDC5C00035C46 /* BlueToothDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlueToothDataManager.m; sourceTree = "<group>"; };
 		04DA1B941E12958C00C50904 /* CallComingInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CallComingInViewController.h; sourceTree = "<group>"; };
@@ -1977,6 +1987,12 @@
 				04472ABB1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.h */,
 				04472ABC1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.m */,
 				04472ABD1E1CC9280042CEE1 /* ActivateGiftCardTableViewCell.xib */,
+				04D835D41F035AF0008E096A /* ChooseWhereCardsViewController.h */,
+				04D835D51F035AF0008E096A /* ChooseWhereCardsViewController.m */,
+				04D835D61F035AF0008E096A /* ChooseWhereCardsViewController.xib */,
+				04D835D91F035B1F008E096A /* ChooseWhereCardsTableViewCell.h */,
+				04D835DA1F035B1F008E096A /* ChooseWhereCardsTableViewCell.m */,
+				04D835DB1F035B1F008E096A /* ChooseWhereCardsTableViewCell.xib */,
 				0436C35D1E1F86180033A8F1 /* CommunicatePackageViewController.h */,
 				0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */,
 				0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */,
@@ -2597,6 +2613,7 @@
 				04440D141E779CF900206877 /* Device.storyboard in Resources */,
 				3C52B1FC1E5ED20E001E67C4 /* logo_callKit.png in Resources */,
 				3C388A8C1EC44BA400A04BA8 /* ConvenienceOrder2Cell.xib in Resources */,
+				04D835DD1F035B1F008E096A /* ChooseWhereCardsTableViewCell.xib in Resources */,
 				952AB0061DF8DA6F00C5A927 /* PhoneOperationPad.xib in Resources */,
 				043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */,
 				3C8CFA731E55AF4E0035A460 /* SearchContactsCell.xib in Resources */,
@@ -2622,6 +2639,7 @@
 				3C4863601E8CF111006FD87C /* number_location.zip in Resources */,
 				04440D451E77CEE000206877 /* BindGiftBagCardViewController.xib in Resources */,
 				3C62E2D81EF53F710021358B /* UNTestViewController.xib in Resources */,
+				04D835D81F035AF0008E096A /* ChooseWhereCardsViewController.xib in Resources */,
 				04A9497E1E826875007611F7 /* WristbandSettingViewController.xib in Resources */,
 				0436C3661E1F90460033A8F1 /* CommunicatePackageTableViewCell.xib in Resources */,
 				95F337241D853256000B5461 /* Assets.xcassets in Resources */,
@@ -2738,6 +2756,7 @@
 				95938D411D93ABF0008A0A21 /* PackageDetailViewController.m in Sources */,
 				95BAED651D87A5D4005A6402 /* BaseViewController.m in Sources */,
 				3C4A078B1E9CD87800A6DDA9 /* CallDetailsNumberCell.m in Sources */,
+				04D835D71F035AF0008E096A /* ChooseWhereCardsViewController.m in Sources */,
 				3CD0C8A01E864BDB00ABD21B /* UNPushKitMessageManager.m in Sources */,
 				0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */,
 				952B2AEE1DC224F4006A7C69 /* UIImage+Extension.m in Sources */,
@@ -2814,6 +2833,7 @@
 				3C99A8A11EA9DF9C00C96BE7 /* UNPresentTool.m in Sources */,
 				04CC5CB01EFA259300AA31CA /* ThroughLineLabel.m in Sources */,
 				0436F95B1E1E3DDC00A57E67 /* BGTask.m in Sources */,
+				04D835DC1F035B1F008E096A /* ChooseWhereCardsTableViewCell.m in Sources */,
 				3C388A821EC4402D00A04BA8 /* ConvenienceOrderDetailController.m in Sources */,
 				95B099171DC0DA6A00743877 /* SipEngineEventObserver.mm in Sources */,
 				3C4A07811E9CD54B00A6DDA9 /* CallDetailsActionCell.m in Sources */,

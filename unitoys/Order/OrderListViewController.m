@@ -22,6 +22,8 @@
 #import "UNReadyActivateController.h"
 #import "UNConvertFormatTool.h"
 #import "UNMobileActivateController.h"
+#import "ChooseWhereCardsViewController.h"
+
 
 @interface OrderListViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -244,8 +246,10 @@
 }
 
 - (void)activityActionNow:(CutomButton *)sender {
-    self.currentInfo = self.dataSourceArray[sender.indexPath.row];
-    [self showChooseAlert];
+    NSDictionary *info = self.dataSourceArray[sender.indexPath.row];
+    ChooseWhereCardsViewController *chooseWhereCardVC = [[ChooseWhereCardsViewController alloc] init];
+    chooseWhereCardVC.orderID = info[@"OrderID"];
+    [self.navigationController pushViewController:chooseWhereCardVC animated:YES];
 }
 
 #pragma mark 在手机里
@@ -418,7 +422,6 @@
         HUDNormal(INTERNATIONALSTRING(@"请连接蓝牙"))
     }
 }
-
 
 
 - (void)didReceiveMemoryWarning {
