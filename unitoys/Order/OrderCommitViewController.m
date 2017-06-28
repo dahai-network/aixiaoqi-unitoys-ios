@@ -22,8 +22,9 @@
 @property (nonatomic, strong)UIWindow *paySuccessWindow;
 @property (nonatomic, strong)UIDatePicker *pickerView;
 @property (nonatomic, strong)UILabel *titleLabel;
-@property (nonatomic, strong)UIView *valueView;
-@property (nonatomic, copy)NSString *selectedDateString;
+//@property (nonatomic, copy)NSString *selectedDateString;
+@property (nonatomic, strong) NSDate *selectedDate;
+@property (nonatomic, strong) UIWindow *checkDataPickWindow;
 
 @end
 
@@ -59,7 +60,6 @@
     }
     
     [self loadAmmount];
-    [self addDataPickView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alipayComplete:) name:@"AlipayComplete" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(weipayComplete:) name:@"WeipayComplete" object:nil];
@@ -70,52 +70,59 @@
 }
 
 - (void)addDataPickView {
-    UIView *valueView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    valueView.backgroundColor = [UIColor colorWithRed:32/255 green:34/255 blue:42/255 alpha:0.2];
-    
-    UIDatePicker *pickerview = [[UIDatePicker alloc] initWithFrame: CGRectMake(0,self.view.bounds.size.height-210,self.view.bounds.size.width,105)];
-    pickerview.datePickerMode = UIDatePickerModeDate;
-    pickerview.minimumDate = [NSDate date];
-    
-    NSTimeInterval time=[self.dicPackage[@"LastCanActivationDate"] doubleValue];
-    NSDate *lasteddate=[NSDate dateWithTimeIntervalSince1970:time];
-    pickerview.maximumDate = lasteddate;
-    
-    self.lblStartUse.text = @"---- -- --";
-    //    [self setDateForSelectedWithSelected:[NSDate date]];
-    NSDate *defaultDate = [NSDate date];
-    pickerview.date = defaultDate;//设置UIDatePicker默认显示时间
-    
-    [pickerview setBackgroundColor:[UIColor whiteColor]];
-    [valueView addSubview:pickerview];
-    self.pickerView = pickerview;
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(pickerview.frame) - 41, self.view.bounds.size.width, 40)];
-    titleLabel.backgroundColor = [UIColor whiteColor];
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.text = INTERNATIONALSTRING(@"生效日期");
-    [valueView addSubview:titleLabel];
-    self.titleLabel = titleLabel;
-    
-    UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(pickerview.frame) + 3, self.view.bounds.size.width, 35)];
-    btnOK.hidden = NO;
-    [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
-    [btnOK setBackgroundColor:[UIColor whiteColor]];
-    
-    [btnOK addTarget:self action:@selector(selectValue) forControlEvents:UIControlEventTouchUpInside];
-    [valueView addSubview:btnOK];
-    
-    [self.view addSubview:valueView];
-    valueView.hidden = YES;
-    self.valueView = valueView;
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
-    [self.valueView addGestureRecognizer:tap];
+    if (!self.checkDataPickWindow) {
+        self.checkDataPickWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        self.checkDataPickWindow.windowLevel = UIWindowLevelStatusBar;
+        self.checkDataPickWindow.backgroundColor = [UIColor colorWithRed:32/255 green:34/255 blue:42/255 alpha:0.2];
+        
+        UIDatePicker *pickerview = [[UIDatePicker alloc] initWithFrame: CGRectMake(0,kScreenHeightValue-143,kScreenWidthValue,105)];
+        pickerview.datePickerMode = UIDatePickerModeDate;
+        pickerview.minimumDate = [NSDate date];
+        
+        NSTimeInterval time=[self.dicPackage[@"LastCanActivationDate"] doubleValue];
+        NSDate *lasteddate=[NSDate dateWithTimeIntervalSince1970:time];
+        pickerview.maximumDate = lasteddate;
+        
+        if ([self.lblStartUse.text isEqualToString:@"---- -- --"]) {
+            NSDate *defaultDate = [NSDate date];
+            pickerview.date = defaultDate;//设置UIDatePicker默认显示时间
+        } else {
+            pickerview.date = self.selectedDate;
+        }
+        
+        [pickerview setBackgroundColor:[UIColor whiteColor]];
+        [self.checkDataPickWindow addSubview:pickerview];
+        self.pickerView = pickerview;
+        
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMinY(pickerview.frame) - 41, self.view.bounds.size.width, 40)];
+        titleLabel.backgroundColor = [UIColor whiteColor];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        titleLabel.text = INTERNATIONALSTRING(@"生效日期");
+        [self.checkDataPickWindow addSubview:titleLabel];
+        self.titleLabel = titleLabel;
+        
+        UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(pickerview.frame) + 3, self.view.bounds.size.width, 35)];
+//        btnOK.hidden = NO;
+        [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
+        [btnOK setBackgroundColor:[UIColor whiteColor]];
+        
+        [btnOK addTarget:self action:@selector(selectValue) forControlEvents:UIControlEventTouchUpInside];
+        [self.checkDataPickWindow addSubview:btnOK];
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
+        [self.checkDataPickWindow addGestureRecognizer:tap];
+        
+        [self.checkDataPickWindow makeKeyAndVisible];
+    }
 }
 
 - (void)selectValue {
-    self.valueView.hidden = YES;
     [self setDateForSelectedWithSelected:self.pickerView.date];
+    if (self.self.checkDataPickWindow) {
+        self.checkDataPickWindow = nil;
+        self.checkDataPickWindow.hidden = YES;
+    }
 }
 
 - (void)setDateForSelectedWithSelected:(NSDate *)date {
@@ -126,15 +133,16 @@
     NSString *str = [forma stringFromDate:date]; //UIDatePicker显示的时间
     self.lblStartUse.text = [forma1 stringFromDate:date];
     NSLog(@"time===%@",str);
-    NSDate *tempDate = [forma dateFromString:str];
-    NSString *convertTime = [NSString stringWithFormat:@"%ld", (long)[tempDate timeIntervalSince1970]/*+ 8*3600*/];
-    NSLog(@"timeSp:%@",convertTime); //时间戳的值
-    self.selectedDateString = convertTime;
+    self.selectedDate = [forma dateFromString:str];
+//    NSString *convertTime = [NSString stringWithFormat:@"%ld", (long)[tempDate timeIntervalSince1970]/*+ 8*3600*/];
+//    NSLog(@"timeSp:%@",convertTime); //时间戳的值
+//    self.selectedDateString = convertTime;
 }
 
 - (void)tapAction {
-    if (!self.valueView.hidden) {
-        self.valueView.hidden = YES;
+    if (self.self.checkDataPickWindow) {
+        self.checkDataPickWindow = nil;
+        self.checkDataPickWindow.hidden = YES;
     }
 }
 
@@ -152,7 +160,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1 && indexPath.row == 0) {
-        self.valueView.hidden = NO;
+        [self addDataPickView];
     }
     if (indexPath.section == 2) {
         switch (indexPath.row) {

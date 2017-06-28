@@ -89,44 +89,6 @@
     // Do any additional setup after loading the view from its nib.
 }
 
-//- (void)cardInIphone {
-//    [super cardInIphone];
-//    NSLog(@"爱小器卡已放入手机");
-//    self.isPaySuccess = NO;
-//    
-//    self.isAlreadyActivate = [[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 1 ? YES : NO;
-//    self.selectDate = @"";
-//    self.orderID = self.dicOrderDetail[@"OrderID"];
-//    
-//    [self activeSIMCardInPhoneAction];
-////    UNReadyActivateController *activate = [[UNReadyActivateController alloc] init];
-////    activate.defaultDay = self.dicOrderDetail[@"ExpireDaysInt"];
-////    activate.orderID = self.dicOrderDetail[@"OrderID"];
-////    //状态有5种,只有为1才不需要激活
-////    activate.isAlreadyActivate = [[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 1 ? YES : NO;
-////    if ([self.dicOrderDetail[@"OrderStatus"] intValue] != 0) {
-////        //只有状态为0才没有时间
-//////        activate.defaultDate = self.dicOrderDetail[@"ActivationDate"];
-////        activate.defaultDate = [UNConvertFormatTool dateStringYMDFromTimeInterval:self.dicOrderDetail[@"ActivationDate"]];
-////    }else{
-////        activate.lastActivateDate = [self.dicOrderDetail[@"LastCanActivationDate"] doubleValue];
-////    }
-////    [self.navigationController pushViewController:activate animated:YES];
-//}
-
-
-
-
-
-- (void)cardInDevice {
-    [super cardInDevice];
-    [self startToActiviteCard];
-}
-
-- (void)whatIsAixiaoqiCard {
-    self.isPaySuccess = NO;
-    [super whatIsAixiaoqiCard];
-}
 
 - (void)leftButtonAction {
     if (self.isPaySuccess) {
@@ -553,6 +515,7 @@
 #pragma mark 激活按钮点击事件 //0流量/1通话/2大王卡/3双卡双待
 - (IBAction)avtivateAction:(UIButton *)sender {
 //    [self showChooseAlert];
+    self.isPaySuccess = NO;
     ChooseWhereCardsViewController *chooseCardsVC = [[ChooseWhereCardsViewController alloc] init];
     chooseCardsVC.isAlreadyActivate = [[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 1 ? YES : NO;
     chooseCardsVC.orderID = self.dicOrderDetail[@"OrderID"];

@@ -83,7 +83,6 @@
 
 #pragma mark 爱小器卡在手机中
 - (void)simCardInPhoneAction {
-    HUDNormal(@"在手机中");
     UNDebugLogVerbose(@"爱小器卡已放入手机");
     [self activeSIMCardInPhoneAction];
 }
