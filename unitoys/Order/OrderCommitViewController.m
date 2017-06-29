@@ -75,15 +75,20 @@
         self.checkDataPickWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.checkDataPickWindow.windowLevel = UIWindowLevelStatusBar;
         self.checkDataPickWindow.backgroundColor = [UIColor colorWithRed:32/255 green:34/255 blue:42/255 alpha:0.2];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
+        [self.checkDataPickWindow addGestureRecognizer:tap];
         
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 40)];
-        titleLabel.backgroundColor = [UIColor whiteColor];
-        titleLabel.textAlignment = NSTextAlignmentCenter;
-        titleLabel.text = INTERNATIONALSTRING(@"生效日期");
-        [self.checkDataPickWindow addSubview:titleLabel];
-        self.titleLabel = titleLabel;
+        UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,kScreenHeightValue - 35 , kScreenWidthValue, 35)];
+        [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
+        [btnOK setBackgroundColor:[UIColor whiteColor]];
         
-        UIDatePicker *pickerview = [[UIDatePicker alloc] initWithFrame: CGRectMake(0,CGRectGetMaxY(titleLabel.frame) + 1,kScreenWidthValue,210)];
+        [btnOK addTarget:self action:@selector(selectValue) forControlEvents:UIControlEventTouchUpInside];
+        [self.checkDataPickWindow addSubview:btnOK];
+        
+        
+        UIDatePicker *pickerview = [[UIDatePicker alloc] initWithFrame: CGRectMake(0,0,kScreenWidthValue,105)];
+        pickerview.un_bottom = btnOK.un_top - 1;
         pickerview.datePickerMode = UIDatePickerModeDate;
         pickerview.minimumDate = [NSDate date];
         
@@ -102,17 +107,13 @@
         [self.checkDataPickWindow addSubview:pickerview];
         self.pickerView = pickerview;
         
-        UIButton *btnOK = [[UIButton alloc] initWithFrame:CGRectMake(0,self.checkDataPickWindow.un_height - 35 , self.view.bounds.size.width, 35)];
-//        btnOK.hidden = NO;
-        [btnOK setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [btnOK setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
-        [btnOK setBackgroundColor:[UIColor whiteColor]];
-        
-        [btnOK addTarget:self action:@selector(selectValue) forControlEvents:UIControlEventTouchUpInside];
-        [self.checkDataPickWindow addSubview:btnOK];
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
-        [self.checkDataPickWindow addGestureRecognizer:tap];
+        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, 40)];
+        titleLabel.un_bottom = pickerview.un_top - 1;
+        titleLabel.backgroundColor = [UIColor whiteColor];
+        titleLabel.textAlignment = NSTextAlignmentCenter;
+        titleLabel.text = INTERNATIONALSTRING(@"生效日期");
+        [self.checkDataPickWindow addSubview:titleLabel];
+        self.titleLabel = titleLabel;
         
         [self.checkDataPickWindow makeKeyAndVisible];
     }
