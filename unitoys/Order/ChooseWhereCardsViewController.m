@@ -16,6 +16,8 @@
 #import "UNConvertFormatTool.h"
 
 @interface ChooseWhereCardsViewController ()
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) ChooseWhereCardsTableViewCell *cell;
 
 @end
 
@@ -24,7 +26,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"爱小器SIM卡在哪里";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionActivitySuccess) name:@"actionOrderSuccess" object:@"actionOrderSuccess"];//激活成功
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshBLEStatueTableView) name:@"changeStatueAll" object:nil];//蓝牙状态改变
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)refreshBLEStatueTableView {
+    self.cell.lblDeviceStatue.text = @"已连接";
+    self.cell.lblSimCardStatue.text = @"已插入爱小器卡";
+    [self.tableView reloadData];
+}
+
+- (void)actionActivitySuccess {
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - tableView代理方法
@@ -41,22 +55,22 @@
 #pragma mark 返回cell内容
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *identifier=@"ChooseWhereCardsTableViewCell";
-    ChooseWhereCardsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-    if (!cell) {
-        cell=[[[NSBundle mainBundle] loadNibNamed:@"ChooseWhereCardsTableViewCell" owner:nil options:nil] firstObject];
-        [cell.btnSimInDevice addTarget:self action:@selector(simInDeviceAction) forControlEvents:UIControlEventTouchUpInside];
-        [cell.btnSimCardInPhone addTarget:self action:@selector(simCardInPhoneAction) forControlEvents:UIControlEventTouchUpInside];
+    self.cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    if (!self.cell) {
+        self.cell=[[[NSBundle mainBundle] loadNibNamed:@"ChooseWhereCardsTableViewCell" owner:nil options:nil] firstObject];
+        [self.cell.btnSimInDevice addTarget:self action:@selector(simInDeviceAction) forControlEvents:UIControlEventTouchUpInside];
+        [self.cell.btnSimCardInPhone addTarget:self action:@selector(simCardInPhoneAction) forControlEvents:UIControlEventTouchUpInside];
     }
     if (![BlueToothDataManager shareManager].isConnected) {
-        cell.lblDeviceStatue.text = @"未连接";
+        self.cell.lblDeviceStatue.text = @"未连接";
     }
     if (![BlueToothDataManager shareManager].isBounded) {
-        cell.lblDeviceStatue.text = @"未绑定";
+        self.cell.lblDeviceStatue.text = @"未绑定";
     }
     if (![BlueToothDataManager shareManager].isHaveCard || ![[BlueToothDataManager shareManager].cardType isEqualToString:@"1"]) {
-        cell.lblSimCardStatue.text = @"请插入爱小器卡";
+        self.cell.lblSimCardStatue.text = @"请插入爱小器卡";
     }
-    return cell;
+    return self.cell;
 }
 
 #pragma mark 爱小器卡在设备中
