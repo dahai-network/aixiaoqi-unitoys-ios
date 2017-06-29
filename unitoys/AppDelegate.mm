@@ -1331,10 +1331,26 @@
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 self.communicateID = @"00000000";
                 if ([BlueToothDataManager shareManager].isConnected) {
+                    
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_REGISTING];
                     [BlueToothDataManager shareManager].isBeingRegisting = YES;
-                    //发送数据
-                    [self sendMsgWithMessage:self.tcpPacketStr];
+                    
+                    if (!self.sendTcpSocket.isConnected || !self.sendTcpSocket) {
+                        UNLogLBEProcess(@"重连TCP")
+                        [UNPushKitMessageManager shareManager].isTcpConnecting = NO;
+                        [BlueToothDataManager shareManager].isTcpConnected = NO;
+                        if (![UNPushKitMessageManager shareManager].isPushKitFromAppDelegate) {
+                            UNLogLBEProcess(@"不在PushKit下")
+                            if (self.sendTcpSocket) {
+                                [self reConnectTcp];
+                            }else{
+                                [self creatAsocketTcp];
+                            }
+                        }
+                    }else{
+                        //发送数据
+                        [self sendMsgWithMessage:self.tcpPacketStr];
+                    }
                 }else{
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:HOMESTATUETITLE_NOSIGNAL];
                 }
