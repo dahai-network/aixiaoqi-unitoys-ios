@@ -138,6 +138,9 @@
     
     [UNNetWorkStatuManager shareManager].netWorkStatuChangeBlock = ^(NetworkStatus currentStatu){
         if (currentStatu != NotReachable) {
+            //清除网络断开连接通知
+            [UNCreatLocalNoti clearNETDisConnectNoti];
+            
             UNLogLBEProcess(@"有网络")
             [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_REGISTING;
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -453,6 +456,7 @@
     [self setUpUdpSocket];
 }
 
+//收到蓝牙通知创建TCP
 - (void)createTCPSocketToBLE:(NSNotification *)noti
 {
     if (![UNPushKitMessageManager shareManager].iccidString) {
@@ -474,7 +478,7 @@
     [self groupPacket];
 }
 
-
+//创建UDP
 - (void)setUpUdpSocket
 {
     _udpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
@@ -521,6 +525,7 @@
     }
 }
 
+//关闭TCP
 - (void)closeTCP {
     // 关闭套接字
     UNLogLBEProcess(@"手动关闭TCP")
@@ -615,6 +620,7 @@
     }
 }
 
+//从SDK收到注册数据
 - (void)receiveTcpPacket:(NSNotification *)sender {
 //    UNDebugLogVerbose(@"app里面收到数据了 -- %@", sender.object);
     UNLogLBEProcess(@"receiveTcpPacket====%@", sender.object)
@@ -1056,6 +1062,7 @@
     }
 }
 
+//TCP重连定时器
 - (void)tcpReconnectTimerAction
 {
     UNLogLBEProcess(@"重连tcp定时器")
@@ -1202,6 +1209,7 @@
     }
 }
 
+//处理粘包
 - (void)checkManyPacketString:(NSString *)tempStr
 {
     UNLogLBEProcess(@"处理数据包")
@@ -1506,6 +1514,7 @@
     });
 }
 
+//处理PushKit数据
 - (void)checkPacketDetailWithStringFromPushKit:(NSDictionary *)dictString
 {
     UNLogLBEProcess(@"PushKit数据包消息-----%@",dictString)
@@ -1607,6 +1616,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
 }
 
+//发送TCP数据
 - (void)sendMsgWithMessage:(NSString *)message {
     if (message) {
         // 写这里代码
@@ -2376,6 +2386,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     return @"Test User attachment";
 }
 
+//处理号码
 - (NSString *)checkLinkNameWithPhoneStr:(NSString *)phoneStr {
     NSString *linkName;
     NSString *tempStr;
@@ -2474,6 +2485,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
+//拨打CallKit电话
 - (void)callPhoneFromCallKitWithHandleString:(NSString *)handle
 {
     [UNPushKitMessageManager shareManager].isSysCallKitPhone = NO;
@@ -2509,6 +2521,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     //T : 202
     [UNPushKitMessageManager shareManager].pushKitTokenString = [NSString stringWithFormat:@"ca%@%@", newTokenlength, newToken];
 }
+
 
 - (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type {
     if ([payload.type isEqualToString:@"PKPushTypeVoIP"]) {
@@ -2707,6 +2720,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 }
 
+//处理当前PushKit消息
 - (void)checkCurrentPushKitMessage:(NSDictionary *)serviceTimeData
 {
     //存储到队列中
@@ -2722,7 +2736,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
             [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
             [UNPushKitMessageManager shareManager].simDataDict = nil;
         }else{
-            if (timeValue > 150.0){
+            if (timeValue > 20.0){
                 UNLogLBEProcess(@"时间太久,清空PushKit数据")
                 [[UNPushKitMessageManager shareManager].pushKitMsgQueue removeAllObjects];
                 [UNPushKitMessageManager shareManager].simDataDict = nil;
@@ -2743,6 +2757,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
+//重连TCP
 - (void)reConnectTcp
 {
     DebugUNLog(@"reConnectTcp");
@@ -2825,6 +2840,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
+//处理PushKit消息
 - (void)checkPushKitMessage:(NSDictionary *)servicePushKitData
 {
     if (!servicePushKitData) {
@@ -2857,6 +2873,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
+//处理PushKit消息
 - (void)sendPushKitMessage:(NSDictionary *)servicePushKitData
 {
     UNLogLBEProcess(@"当前队列需要发送的pushkit消息=====%@", servicePushKitData[@"dataString"])
@@ -2963,7 +2980,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
-
+//重连服务器(注册)
 - (void)reconnectToServer
 {
     UNLogLBEProcess(@"已创建TCP")
@@ -2973,7 +2990,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
         return;
     }else{
         if (![BlueToothDataManager shareManager].isHaveCard && [BlueToothDataManager shareManager].currentSimCardStatu == 1) {
-                [UNCreatLocalNoti createLBEDisConnectNoti];
+            [UNCreatLocalNoti createLBEDisConnectNoti];
             UNLogLBEProcess(@"无电话卡")
             return;
         }
@@ -3024,6 +3041,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     }
 }
 
+//清理过期PushKit数据
 - (void)clearTimeoutPushKitMessage
 {
     UNLogLBEProcess(@"清除超时数据")
@@ -3061,7 +3079,6 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 
 #pragma mark 判断系统是否是32位
 - (BOOL)is32bit
-
 {
     
 #if defined(__LP64__) && __LP64__

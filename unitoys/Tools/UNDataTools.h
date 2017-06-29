@@ -12,6 +12,7 @@
 
 + (UNDataTools *)sharedInstance;
 
+//比较当前记录时间
 - (NSString *)compareCurrentTimeStringWithRecord:(NSString *)compareDateString;
 
 //黑名单列表

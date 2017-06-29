@@ -10,6 +10,7 @@
 
 @interface UNCheckPhoneAuth : NSObject
 
+//检查权限
 + (void)checkCurrentAuth;
 
 @end

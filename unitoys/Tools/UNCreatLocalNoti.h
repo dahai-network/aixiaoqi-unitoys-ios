@@ -21,4 +21,14 @@
 //网络断开或较差通知
 + (void)createNETDisConnectNoti;
 
+//清除所有提示通知
++ (void)clearAllNoti;
+
+//清除蓝牙关闭通知
++ (void)clearLBECloseNoti;
+//清除蓝牙断开连接通知
++ (void)clearLBEDisConnectNoti;
+//清除网络断开或较差通知
++ (void)clearNETDisConnectNoti;
+
 @end

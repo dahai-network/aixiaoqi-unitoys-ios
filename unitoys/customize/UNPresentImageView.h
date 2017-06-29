@@ -11,6 +11,7 @@
 @interface UNPresentImageView : UIView
 typedef void(^ImageViewTapBlock)();
 
+//弹出图片
 + (instancetype)sharePresentImageViewWithImageUrl:(NSString *)imageUrl cancelImageName:(NSString *)cancelName imageTap:(ImageViewTapBlock)imageBlock;
 
 - (instancetype)initPresentImageViewWithImageUrl:(NSString *)imageUrl cancelImageName:(NSString *)cancelName imageTap:(ImageViewTapBlock)imageBlock;

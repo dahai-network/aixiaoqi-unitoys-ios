@@ -10,7 +10,7 @@
 
 typedef void(^PopTipButtonAction)(NSInteger type);
 @interface UNPopTipMsgView : UIView
-
+//弹出自定义视图
 + (instancetype)sharePopTipMsgViewTitle:(NSString *)title detailTitle:(NSString *)detail;
 - (instancetype)initPopTipMsgViewTitle:(NSString *)title detailTitle:(NSString *)detail;
 

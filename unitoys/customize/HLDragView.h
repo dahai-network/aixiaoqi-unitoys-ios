@@ -9,8 +9,9 @@
 #import "AddTouchAreaButton.h"
 
 @interface HLDragButton : AddTouchAreaButton
-
+//开始拖拽位置
 @property (nonatomic, assign) CGPoint startPoint;
+//中心位置
 @property (nonatomic, assign) CGPoint startCenter;
 
 @end

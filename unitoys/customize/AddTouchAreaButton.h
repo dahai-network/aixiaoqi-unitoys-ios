@@ -10,6 +10,7 @@
 
 @interface AddTouchAreaButton : UIButton
 
+//扩大点击区域距离
 @property (nonatomic, assign) UIEdgeInsets touchEdgeInset;
 
 @end

@@ -11,6 +11,7 @@
 
 @interface UNGetSimData : NSObject
 
+//解析鉴权数据
 + (UNSimCardAuthenticationModel *)getModelWithAuthenticationString:(NSString *)authenticationString;
 
 @end

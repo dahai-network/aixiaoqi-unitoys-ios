@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface UNCircleProgressView : UIView
-
+//进度
 @property (nonatomic, assign) CGFloat progress;
 
 @end

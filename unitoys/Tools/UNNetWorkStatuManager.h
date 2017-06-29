@@ -10,7 +10,7 @@
 #import "Reachability.h"
 
 typedef void(^NetWorkStatuChangeBlock)(NetworkStatus currentStatu);
-//
+
 @interface UNNetWorkStatuManager : NSObject
 
 + (UNNetWorkStatuManager *)shareManager;

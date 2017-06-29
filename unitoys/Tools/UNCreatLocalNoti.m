@@ -81,13 +81,22 @@
         NSString *timeString = [NSString stringWithFormat:@"%f", time];
         [[NSUserDefaults standardUserDefaults] setObject:timeString forKey:typeString];
         //发送通知
-        [self creatErrorNoti:noteString];
+        [self creatErrorNoti:noteString NotiTypeString:typeString];
     }
 }
 
-+ (void)creatErrorNoti:(NSString *)errorString
++ (void)creatErrorNoti:(NSString *)errorString NotiTypeString:(NSString *)typeString
 {
-    NSDictionary *infoDic = [NSDictionary dictionaryWithObject:errorString forKey:@"DisConnect"];
+    NSArray *notiArray = [[UIApplication sharedApplication] scheduledLocalNotifications];
+    for (UILocalNotification *localNoti in notiArray) {
+        NSDictionary *userInfo = localNoti.userInfo;
+        if ([userInfo[@"DisConnect"] isEqualToString:typeString]) {
+            UNLogLBEProcess(@"当前本地通知已存在,不重复发送")
+            return;
+        }
+    }
+    
+    NSDictionary *infoDic = [NSDictionary dictionaryWithObject:typeString forKey:@"DisConnect"];
     UILocalNotification *backgroudMsg = [[UILocalNotification alloc] init];
     if (backgroudMsg) {
         NSLog(@"发送通知");
@@ -99,6 +108,42 @@
         //标记通知信息
         backgroudMsg.userInfo = infoDic;
         [[UIApplication sharedApplication] scheduleLocalNotification:backgroudMsg];
+    }
+}
+
++ (void)clearAllNoti
+{
+    [self clearLBECloseNoti];
+    [self clearLBEDisConnectNoti];
+    [self clearNETDisConnectNoti];
+}
+
+//清除蓝牙关闭通知
++ (void)clearLBECloseNoti
+{
+    [self clearNotiWithTypeString:@"LBECloseTime"];
+}
+//清除蓝牙断开连接通知
++ (void)clearLBEDisConnectNoti
+{
+    [self clearNotiWithTypeString:@"LBEDisConnectTime"];
+}
+//清除网络断开或较差通知
++ (void)clearNETDisConnectNoti
+{
+    [self clearNotiWithTypeString:@"NETDisConnectTime"];
+}
+
++ (void)clearNotiWithTypeString:(NSString *)typeString
+{
+    NSArray *notiArray = [[UIApplication sharedApplication] scheduledLocalNotifications];
+    for (UILocalNotification *localNoti in notiArray) {
+        NSDictionary *userInfo = localNoti.userInfo;
+        if ([userInfo[@"DisConnect"] isEqualToString:typeString]) {
+            [[UIApplication sharedApplication] cancelLocalNotification:localNoti];
+            UNLogLBEProcess(@"当前清除通知====%@",typeString)
+//            break;
+        }
     }
 }
 

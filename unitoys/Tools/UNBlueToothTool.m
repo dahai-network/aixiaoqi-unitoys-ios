@@ -646,6 +646,7 @@ static UNBlueToothTool *instance = nil;
         {
             UNLogLBEProcess(@"当前蓝牙状态CBManagerStatePoweredOn")
             UNDebugLogVerbose(@"蓝牙设备开着");
+            [UNCreatLocalNoti clearLBECloseNoti];
             [BlueToothDataManager shareManager].bleStatueForCard = 0;
             [self.peripherals removeAllObjects];
             [BlueToothDataManager shareManager].isOpened = YES;
@@ -867,6 +868,8 @@ static UNBlueToothTool *instance = nil;
 #pragma mark 连接到某个外设的时候调用
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral
 {
+    //清除蓝牙断开连接通知
+    [UNCreatLocalNoti clearLBEDisConnectNoti];
     [BlueToothDataManager shareManager].isConnected = YES;
     [BlueToothDataManager shareManager].isLbeConnecting = NO;
     [self.mgr stopScan];
@@ -1610,6 +1613,7 @@ static UNBlueToothTool *instance = nil;
 //初始化ICCID指令
 - (void)sendICCIDMessage
 {
+    UNLogLBEProcess(@"sendICCIDMessage")
     [BlueToothDataManager shareManager].isRegisted = NO;
     [BlueToothDataManager shareManager].isBeingRegisting = YES;
     [BlueToothDataManager shareManager].bleStatueForCard = 2;
@@ -1864,7 +1868,7 @@ static UNBlueToothTool *instance = nil;
                 } else if ([BlueToothDataManager shareManager].bleStatueForCard == 1) {
                     UNLogLBEProcess(@"错误的数据状态,这是sim卡的数据2")
                 } else if ([BlueToothDataManager shareManager].bleStatueForCard == 2) {
-                    UNLogLBEProcess(@"接收到sim注册数据")
+                    UNLogLBEProcess(@"接收到sim注册数据----%@",contentStr)
                     //注册手机卡状态
                     //注册电话卡的步骤
                     NSString *totalString = contentStr;
@@ -1891,7 +1895,7 @@ static UNBlueToothTool *instance = nil;
                                     }
                                 }
                             }
-                            UNDebugLogVerbose(@"最终发送的数据包字符为：%@", self.totalString);
+                            UNLogLBEProcess(@"最终发送的数据包字符为：%@", self.totalString);
                             if ([UNPushKitMessageManager shareManager].sendICCIDIndex < [UNPushKitMessageManager shareManager].sendICCIDCommands.count) {
                                 [UNPushKitMessageManager shareManager].sendICCIDIndex++;
                                 if ([UNPushKitMessageManager shareManager].sendICCIDIndex == [UNPushKitMessageManager shareManager].sendICCIDCommands.count) {
@@ -1899,7 +1903,7 @@ static UNBlueToothTool *instance = nil;
                                     [UNPushKitMessageManager shareManager].iccidString = [self getIccidWithString:self.totalString];
                                     
                                     NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
-                                    UNDebugLogVerbose(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
+                                    UNLogLBEProcess(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
                                     if (dict) {
                                         //创建tcp,建立连接
                                         [BlueToothDataManager shareManager].isFirstRegist = NO;
@@ -1927,24 +1931,23 @@ static UNBlueToothTool *instance = nil;
                                         if (self.authenticationModel.isAddSendData) {
                                             if ([currentSendStr isEqualToString:@"a0c0000003"] || [currentSendStr isEqualToString:@"a0c000000c"]) {
                                                 //最后一条额外数据
-                                                UNDebugLogVerbose(@"====1111111====");
-                                                UNDebugLogVerbose(@"最后一条额外数据");
+                                                UNLogLBEProcess(@"====1111111====");
                                                 [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:2];
                                                 NSString *sendTcpStr = [self getStringToTcp];
                                                 [self sendTcpString:sendTcpStr];
-                                                UNDebugLogVerbose(@"sendTcpStr====%@", sendTcpStr);
                                             }else if([currentSendStr isEqualToString:self.authenticationModel.simData]){
-                                                UNDebugLogVerbose(@"====2222222====");
+                                                UNLogLBEProcess(@"====2222222====");
                                                 [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
                                                 self.currentSendIndex += 1;
                                                 [self sendDataToLBEWithIndex:self.currentSendIndex];
                                             }else{
-                                                UNDebugLogVerbose(@"====3333333====");
+                                                UNLogLBEProcess(@"====3333333====");
                                                 self.currentSendIndex += 1;
                                                 [self sendDataToLBEWithIndex:self.currentSendIndex];
                                             }
                                         }else{
                                             //如果不是a088,到这里结束
+                                            UNLogLBEProcess(@"如果不是a088,到这里结束")
                                             if ([currentSendStr isEqualToString:self.authenticationModel.simData]) {
                                                 [[UNBLEDataManager sharedInstance] receiveDataFromBLE:self.totalString WithType:1];
                                                 NSString *sendTcpStr = [self getStringToTcp];
@@ -1955,13 +1958,18 @@ static UNBlueToothTool *instance = nil;
                                                 [self sendDataToLBEWithIndex:self.currentSendIndex];
                                             }
                                         }
+                                    }else{
+                                        UNLogLBEProcess(@"needSendDatas无数据")
                                     }
-                                    
                                 }
                             }
                             [self.dataPacketArray removeAllObjects];
                             self.totalString = nil;
+                        }else{
+                            UNLogLBEProcess(@"数据包出现问题=====%@", self.dataPacketArray)
                         }
+                    }else{
+                        UNLogLBEProcess(@"数据包错误")
                     }
                 } else {
                     //状态有问题
@@ -2735,17 +2743,22 @@ static UNBlueToothTool *instance = nil;
 //将组合的数据发送到tcp服务器
 - (void)sendTcpString:(NSString *)string
 {
-    if ([UNPushKitMessageManager shareManager].isQuickLoad) {
-        UNDebugLogVerbose(@"SendTcpDataFromPushKit");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"SendTcpDataFromPushKit" object:nil userInfo:@{@"tcpString" : string}];
-    }else{
-        UNDebugLogVerbose(@"receiveNewDataStr");
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDataStr" object:string];
-    }
     self.authenticationModel = nil;
     [UNPushKitMessageManager shareManager].simDataDict = nil;
     [self.needSendDatas removeAllObjects];
     self.currentSendIndex = 0;
+    
+    if ([UNPushKitMessageManager shareManager].isQuickLoad) {
+        UNLogLBEProcess(@"SendTcpDataFromPushKit");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SendTcpDataFromPushKit" object:nil userInfo:@{@"tcpString" : string}];
+    }else{
+        UNLogLBEProcess(@"receiveNewDataStr");
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"receiveNewDataStr" object:string];
+    }
+    
+    
+    [self.dataPacketArray removeAllObjects];
+    self.totalString = nil;
 }
 
 #pragma mark 判断用户是否存在指定套餐
