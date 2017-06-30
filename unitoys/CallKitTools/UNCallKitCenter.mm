@@ -52,6 +52,7 @@
     return instance;
 }
 
+//配置CallKit
 - (void)configurationCallProvider
 {
     NSString *localName = INTERNATIONALSTRING(@"爱小器");
@@ -161,7 +162,7 @@
     [self.callController requestTransaction:[CXTransaction transactionWithActions:@[action]] completion:completion];
 }
 
-
+//扩音,只要点击系统扩音会自动扩音,无需处理
 - (void)hold:(BOOL)hold callUUID:(NSUUID *)callUUID completion:(UNCallKitCenterCompletion)completion
 {
 //    if (!callUUID) {
@@ -324,11 +325,13 @@
 - (void)provider:(CXProvider *)provider performSetGroupCallAction:(CXSetGroupCallAction *)action{
     UNDebugLogVerbose(@"performSetGroupCallAction---%s", __func__);
 }
-//双频多音功能
+
+//DTMF功能
 - (void)provider:(CXProvider *)provider performPlayDTMFCallAction:(CXPlayDTMFCallAction *)action{
     UNDebugLogVerbose(@"performPlayDTMFCallAction---%@", action.digits);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallPhoneKeyBoard" object:action.digits];
 }
+
 //超时时调用
 - (void)provider:(CXProvider *)provider timedOutPerformingAction:(CXAction *)action{
     UNDebugLogVerbose(@"timedOutPerformingAction---%s", __func__);

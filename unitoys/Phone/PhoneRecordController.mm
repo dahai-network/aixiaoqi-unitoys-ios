@@ -169,11 +169,10 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (void)registerNetWorkCallPhone
 {
-//    [self unregister];
     [self registerSipServer];
 }
 
-
+//无数据占位显示
 - (void)initNoDataLabel
 {
     if (!_noDataLabel) {
@@ -220,6 +219,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//注册网络电话服务
 - (void)registerSipServer
 {
     [[SipEngineManager instance] Init];
@@ -235,15 +235,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 
+//初始化网络电话
 - (BOOL)initEngine {
     UNLogLBEProcess(@"PhoneRecordController---initEngine")
-//    [[SipEngineManager instance] Init];
-//    [[SipEngineManager instance] LoadConfig];
-//    [[SipEngineManager instance] setCallDelegate:self];
-//    [[SipEngineManager instance] setRegistrationDelegate:self];
-//    [self doRegister];
-//    [self getMaxPhoneCall];
-    
     [self registerSipServer];
     
     //读取本地缓存的账号信息
@@ -281,10 +275,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                         NSNotification *noti = [[NSNotification alloc] initWithName:@"CallingAction" object:@"Answer" userInfo:nil];
                         [weakSelf callingAction:noti];
                     });
-                    
-                    //                SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-                    //                theSipEngine->AnswerCall();
-                    //                theSipEngine->StopRinging();
                 }
                     break;
                 case UNCallActionTypeEnd:
@@ -296,7 +286,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
                     if(theSipEngine->InCalling())
                         theSipEngine->TerminateCall();
-//                    weakSelf.callStopTime = [NSDate date];
                     weakSelf.hostHungup = @"source";
                 }
                     break;
@@ -411,60 +400,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 
-
-
-
-//- (void)initCallActionView
-//{
-//    if (!self.callActionView){
-//        self.callActionView = [[CallActionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, kScreenHeightValue)];
-//        __weak typeof(self) weakSelf = self;
-//        
-//        self.callActionView.cancelBlock = ^(){
-//            [weakSelf.callActionView hideActionView];
-//        };
-//        
-//        self.callActionView.actionBlock = ^(NSInteger callType){
-//            [weakSelf.callActionView hideActionView];
-//            
-//            [weakSelf.phonePadView hideCallView];
-//            [weakSelf switchNumberPad:YES];
-//            
-//            //        weakSelf.callView.hidden = YES;
-//            //清空搜索状态
-//            weakSelf.isSearchStatu = NO;
-//            [weakSelf.searchLists removeAllObjects];
-//            [weakSelf.tableView reloadData];
-//            
-//            if (callType==1) {
-//                //网络电话
-//                //电话记录，拨打电话
-//                if (weakSelf.currentCallPhone) {
-//                    [weakSelf callNumber:weakSelf.currentCallPhone];
-//                }else{
-//                    UNDebugLogVerbose(@"当前拨打号码为空");
-//                }
-//            }else if (callType==2){
-//                //手环电话
-//                if ([BlueToothDataManager shareManager].isRegisted) {
-//                    //电话记录，拨打电话
-//                    if (weakSelf.currentCallPhone) {
-//                        [weakSelf callUnitysNumber:weakSelf.currentCallPhone];
-//                    }else{
-//                        UNDebugLogVerbose(@"当前拨打号码为空");
-//                    }
-//                } else {
-//                    HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
-//                    if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
-//                        [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
-//                    }
-//                }
-//            }
-//        };
-//        
-//    }
-//}
-
 - (void)startCallPhoneAction
 {
     //手环电话
@@ -488,19 +423,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 return;
             }
             
-//            if (kSystemVersionValue >= 10.0) {
-//                UNContact *contact = [[UNContact alloc] init];
-//                contact.phoneNumber = self.currentCallPhone;
-//                contact.uniqueIdentifier = @"";
-//                [[UNCallKitCenter sharedInstance] startRequestCalllWithContact:contact completion:^(NSError * _Nullable error) {
-//                    //如果CallKit出错,直接调用正常流程
-//                    if (error) {
-//                        [self callUnitysNumber:self.currentCallPhone];
-//                    }
-//                }];
-//            }else{
-                [self callUnitysNumber:self.currentCallPhone FromCallKit:NO];
-//            }
+            [self callUnitysNumber:self.currentCallPhone FromCallKit:NO];
         }else{
             UNDebugLogVerbose(@"当前拨打号码为空");
         }
@@ -546,13 +469,13 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//创建弹出键盘按钮
 - (void)createButton{
     if (_phonePadButton) {
         return;
     }
     _phonePadButton = [HLDragButton buttonWithType:UIButtonTypeCustom];
     [_phonePadButton setImage:[UIImage imageNamed:@"phonepad_btn_nor"] forState:UIControlStateNormal];
-//    [_phonePadButton setImage:[UIImage imageNamed:@"phonepad_btn_pre"] forState:UIControlStateSelected];
     [_phonePadButton addTarget:self action:@selector(showPhonePadView:) forControlEvents:UIControlEventTouchUpInside];
     [_phonePadButton sizeToFit];
     _phonePadButton.un_right = kScreenWidthValue - 10;
@@ -573,7 +496,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         NSArray *nibContents = [[NSBundle mainBundle] loadNibNamed:@"PhoneOperationPad" owner:nil options:nil];
         
         PhoneOperationPad *callView = [nibContents lastObject];
-//        [callView setFrame:self.nav.tabBarController.tabBar.bounds];
         CGRect tabbarRect = self.nav.tabBarController.tabBar.bounds;
         [callView setFrame:CGRectMake(0, tabbarRect.size.height - 100, tabbarRect.size.width, 100)];
         callView.hidden = NO;
@@ -599,7 +521,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)searchInfoWithString:(NSString *)searchText
 {
     NSString *searchString = [NSString stringWithUTF8String:searchText.UTF8String];
-    //    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[c] %@", searchString];
     NSPredicate *contactsPredicate = [NSPredicate predicateWithFormat:@"phoneNumber CONTAINS[c] %@ || allPinyinNumber CONTAINS[c] %@ || headerPinyinNumber CONTAINS[c] %@", searchString, searchString, searchString];
     NSPredicate *recordsPredicate = [NSPredicate predicateWithFormat:@"hostnumber CONTAINS[c] %@ || destnumber CONTAINS[c] %@", searchString, searchString];
     //用predicateWithFormat创建一个谓词，name作为键路径
@@ -642,35 +563,27 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 - (void)selectCallPhoneType:(NSString *)phoneNumber
 {
     self.currentCallPhone = phoneNumber;
-//    [self.callActionView showActionView];
     [self startCallPhoneAction];
 }
 
-
+//改变键盘状态
 - (void)switchNumberPad :(BOOL)hidden {
     if (hidden) {
         UNDebugLogVerbose(@"关闭键盘");
         self.phonePadButton.hidden = NO;
-//        self.phonePadView.top = kScreenHeightValue - 64 - 49;
-//        self.phonePadView.top = kScreenHeightValue - 64;
         self.phonePadView.un_top = self.view.un_height;
         self.callView.hidden = YES;
         self.isSearchStatu = NO;
         self.phonePadView.inputedPhoneNumber = nil;
         [self setTitleViewIsHidden:YES];
-//        self.tableView.height = kScreenHeightValue - (64 + 49);
         self.tableView.un_height = self.view.un_height;
     }else{
         UNDebugLogVerbose(@"打开键盘");
         self.phonePadButton.hidden = YES;
-//        self.phonePadView.top = kScreenHeightValue - 64 - 49 - 225;
-//        self.phonePadView.top = kScreenHeightValue - 64 - 100 - 225;
         self.phonePadView.un_top = self.view.un_height - (100 - 49) - 225;
         [self showOperation];
         self.isSearchStatu = YES;
         [self setTitleViewIsHidden:NO];
-//        self.tableView.height = kScreenHeightValue - (64 + 49) - 225 - 70;
-//        self.tableView.height = kScreenHeightValue - (64 + 100) - 225;
         self.tableView.un_height = self.phonePadView.un_top;
     }
 }
@@ -792,7 +705,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //    self.searchRecordVC.searchText = searchText;
 //}
 
-
+//加载通话记录
 - (void)loadPhoneRecord {
     self.checkToken = YES;
     
@@ -804,7 +717,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *path = [paths objectAtIndex:0];
     
-    //    path = [path stringByAppendingPathComponent:@"callrecord.db"];
     path = [path stringByAppendingPathComponent:@"callrecord2.db"];
     FMDatabase *db = [FMDatabase databaseWithPath:path];
     if (![db open]) {
@@ -825,7 +737,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 FMResultSet *rs = [db executeQuery:dataSql];
                 while ([rs next]) {
                     //添加数据到arrPhoneCallRecord
-                    //                    (datas, calltime, dataid)
                     NSString *jsonStr1 = [rs stringForColumn:@"datas"];
                     NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
                     NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
@@ -858,11 +769,11 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self.tableView reloadData];
 }
 
+//添加通话记录到数据库(建议封装到工具类中)
 - (BOOL)addPhoneRecordWithHostcid:(NSString *)hostcid Destcid:(NSString *)destcid Calltime:(NSDate *)calltime Calltype:(NSString *)calltype CallDuration:(int)duration CallStatus:(NSInteger)callStatu{
     //status,来电是否接听
     NSTimeInterval a = [calltime timeIntervalSince1970];
     NSString *timestemp = [NSString stringWithFormat:@"%ld", (long)a];
-    //    NSTimeInterval callTimeNumber = [calltime timeIntervalSince1970];
     
     NSMutableDictionary *dicPhoneRecord = [[NSMutableDictionary alloc] initWithObjectsAndKeys:timestemp,@"calltime",calltype,@"calltype",[self numberFromCid:hostcid],@"hostnumber",[self numberFromCid:destcid],@"destnumber",@(callStatu),@"status", @(duration),@"callduration", nil];  //时间写入记录时不需要转成字符
     [dicPhoneRecord setObject:@"未知" forKey:@"location"];
@@ -978,7 +889,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     db = [FMDatabase databaseWithPath:path];
     
     if (![db open]) {
-//        [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
         return FALSE;
     }else{
         [self insertSqlData:dicPhoneRecord dataBase:db Calltime:timestemp];
@@ -986,6 +896,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     return YES;
 }
 
+//插入数据库
 - (void)insertSqlData:(NSDictionary *)dicPhoneRecord dataBase:(FMDatabase *)db Calltime:(NSString *)calltime
 {
     NSMutableString *dataId = [NSMutableString string];
@@ -1005,36 +916,35 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         if (count == 0) {
             [db executeUpdate:@"CREATE TABLE CallRecord (datas Text, calltime TimeStamp, dataid text)"];
         }
-//        if (count == 1) {
-            UNDebugLogVerbose(@"log_keepers table is existed.");
-            //添加记录
+        UNDebugLogVerbose(@"log_keepers table is existed.");
+        //添加记录
+        
+        //查询是否包含数据
+        
+        rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM CallRecord where dataid='%@'",dataId]];
+        if ([rs next]) {
+            //如果能打开说明已存在,获取数据
+            NSString *jsonStr1 = [rs stringForColumn:@"datas"];
+            NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
+            NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
+            muteArray = [NSMutableArray arrayWithArray:dataArray];
+            [muteArray insertObject:dicPhoneRecord atIndex:0];
             
-            //查询是否包含数据
+            NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
+            NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
             
-            rs = [db executeQuery:[NSString stringWithFormat:@"SELECT * FROM CallRecord where dataid='%@'",dataId]];
-            if ([rs next]) {
-                //如果能打开说明已存在,获取数据
-                NSString *jsonStr1 = [rs stringForColumn:@"datas"];
-                NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
-                NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
-                muteArray = [NSMutableArray arrayWithArray:dataArray];
-                [muteArray insertObject:dicPhoneRecord atIndex:0];
-                
-                NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
-                NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
-                
-                BOOL isSuccess = [db executeUpdate:[NSString stringWithFormat:@"UPDATE CallRecord SET datas='%@',calltime='%@' where dataid ='%@'", jsonStr2, calltime, dataId]];
-                if (!isSuccess) {
-                    UNDebugLogVerbose(@"更新通话记录失败！%@",dicPhoneRecord);
-                }
-            }else{
-                NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:muteArray options:NSJSONWritingPrettyPrinted error:nil];
-                NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
-                BOOL isSuccess = [db executeUpdate:@"INSERT INTO CallRecord (datas, calltime, dataid) VALUES (?, ?, ?)", jsonStr2, calltime, dataId];
-                if (!isSuccess) {
-                    UNDebugLogVerbose(@"添加通话记录失败！%@",dicPhoneRecord);
-                }
+            BOOL isSuccess = [db executeUpdate:[NSString stringWithFormat:@"UPDATE CallRecord SET datas='%@',calltime='%@' where dataid ='%@'", jsonStr2, calltime, dataId]];
+            if (!isSuccess) {
+                UNDebugLogVerbose(@"更新通话记录失败！%@",dicPhoneRecord);
             }
+        }else{
+            NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:muteArray options:NSJSONWritingPrettyPrinted error:nil];
+            NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
+            BOOL isSuccess = [db executeUpdate:@"INSERT INTO CallRecord (datas, calltime, dataid) VALUES (?, ?, ?)", jsonStr2, calltime, dataId];
+            if (!isSuccess) {
+                UNDebugLogVerbose(@"添加通话记录失败！%@",dicPhoneRecord);
+            }
+        }
         UNDebugLogVerbose(@"log_keepers is not existed.");
         //创建表
         //[membersDB executeUpdate:@"CREATE TABLE PersonList (Name text, Age integer, Sex integer,Phone text, Address text, Photo blob)"];
@@ -1091,6 +1001,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//手动拨打电话通知
 - (void)makeUnitysCallAction:(NSNotification *)notification {
     NSString *phoneNumber = notification.object;
     if (phoneNumber) {
@@ -1108,6 +1019,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }];
 }
 
+//通话状态改变
 - (void)callingAction:(NSNotification *)notification {
     if (notification.object) {
         NSString *action = notification.object;
@@ -1124,9 +1036,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                 [[UNCallKitCenter sharedInstance]  endCall:nil completion:^(NSError * _Nullable error) {
                 }];
             }
-//            self.callStopTime = [NSDate date];
             self.hostHungup = @"source";
-            //            [self endingCallOut];
         }else if ([action isEqualToString:@"SwitchSound"]){
             //保存扩音状态,在未接通时修改扩音状态无效,因此保存此状态,在接通时更新.
             if (notification.userInfo) {
@@ -1155,53 +1065,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             //            self.muteStatus = !self.muteStatus;
             //            theSipEngine->MuteMic(self.muteStatus);
         }else if ([action isEqualToString:@"Answer"]){
-//            //选择最后一条，更新为
-//            NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//            NSString *path = [paths objectAtIndex:0];
-//            
-//            //            path = [path stringByAppendingPathComponent:@"callrecord.db"];
-//            path = [path stringByAppendingPathComponent:@"callrecord2.db"];
-//            
-//            FMDatabase *db = [FMDatabase databaseWithPath:path];
-//            if (![db open]) {
-//                [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"创建通话记录失败") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil] show];
-//            }else{
-//                //查找出错
-//                //                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime asc limit 0,1"];
-//                //降序,更新最后一条数据
-//                FMResultSet *rs = [db executeQuery:@"select * from CallRecord order by calltime desc limit 0,1"];
-//                if ([rs next]) {
-//                    //如果能打开说明已存在,获取数据
-//                    NSString *jsonStr1 = [rs stringForColumn:@"datas"];
-//                    NSData *jsonData1 = [jsonStr1 dataUsingEncoding:NSUTF8StringEncoding];
-//                    NSArray *dataArray=[NSJSONSerialization JSONObjectWithData:jsonData1 options:NSJSONReadingAllowFragments error:nil];
-//                    NSMutableArray *muteArray = [NSMutableArray arrayWithArray:dataArray];
-//                    NSMutableDictionary *dictRecord;
-//                    if (dataArray.count) {
-//                        dictRecord = [NSMutableDictionary dictionaryWithDictionary:dataArray.firstObject];
-//                    }
-//                    [dictRecord setObject:@1 forKey:@"status"];
-//                    [muteArray replaceObjectAtIndex:0 withObject:dictRecord];
-//                    
-//                    NSData *jsonData2 = [NSJSONSerialization dataWithJSONObject:[muteArray copy] options:NSJSONWritingPrettyPrinted error:nil];
-//                    NSString *jsonStr2 = [[NSString alloc] initWithData:jsonData2 encoding:NSUTF8StringEncoding];
-//                    BOOL isUpdate = [db executeUpdate:[NSString stringWithFormat:@"update CallRecord SET datas='%@' WHERE calltime='%@'", jsonStr2, [rs stringForColumn:@"calltime"]]];
-//                    if (!isUpdate) {
-//                        UNDebugLogVerbose(@"更新通话记录接通状态失败");
-//                    }
-//                    //                    BOOL isSuccess = [db executeUpdate:@"UPDATE CallRecord set datas='%@' calltime='%@' where dataid ='%@'", jsonStr2, timestemp, dataId];
-//                    //                    if (!isSuccess) {
-//                    //                        UNDebugLogVerbose(@"更新通话记录失败！%@",dicPhoneRecord);
-//                    //                    }
-//                    //                    [db executeUpdate:@"update CallRecord set status=1 where calltime=?",[rs stringForColumn:@"calltime"]];
-//                    [rs close];
-//                    [db close];
-//                }
-//                
-//            }
-//            [self loadPhoneRecord];
-//            [self.tableView reloadData];
-            
             //初始化扩音
             theSipEngine->SetLoudspeakerStatus(NO);
             
@@ -1219,6 +1082,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//在通话界面发送DTMF消息
 - (void)callPhoneKeyBoard:(NSNotification *)noti
 {
     NSString *numer = [noti object];
@@ -1228,6 +1092,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//验证dtmf
 - (BOOL)verificationNumber:(NSString *)numer
 {
     NSArray *allNumber = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"*",@"0",@"#"];
@@ -1270,8 +1135,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         
-        NSUUID * callUUID=[[UNCallKitCenter sharedInstance] reportIncomingCallWithContact:contact completion:^(NSError * _Nullable error)
-                           {
+        NSUUID * callUUID=[[UNCallKitCenter sharedInstance] reportIncomingCallWithContact:contact completion:^(NSError * _Nullable error) {
                                if (error == nil) {
                                    UNDebugLogVerbose(@"%s success", __func__);
                                }else{
@@ -1284,11 +1148,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 
+//来电或去电会调用此代理
 -(void) OnNewCall:(CallDir)dir
  withPeerCallerID:(NSString*)cid
         withVideo:(BOOL)video_call{
     [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuNewCall;
-    UNDebugLogVerbose(@"新呼叫");
+    UNLogLBEProcess(@"新呼叫");
     NSString *newcid;
 //    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     if (dir == CallIncoming){
@@ -1305,10 +1170,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             cid = newcid;
         }
         self.currentCid = cid;
-//        [self addPhoneRecordWithHostcid:cid Destcid:[userdata objectForKey:@"Tel"] Calltime:[NSDate date] Calltype:@"来电" CallDuration:0 CallStatus:0];
         
         if ([[UNDataTools sharedInstance].blackLists containsObject:cid]) {
-            UNDebugLogVerbose(@"在黑名单内,挂断电话");
+            UNLogLBEProcess(@"在黑名单内,挂断电话");
             [self hungupPhone];
         }else{
             [[NSNotificationCenter defaultCenter] postNotificationName:@"NewCallInComing" object:nil];
@@ -1331,18 +1195,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             }
         }
         
-        /*
-         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-         theSipEngine->start*/
-        //[mBtnDial setTitle:@"接听" forState:UIControlStateNormal];
     }else{
-        //        msg = [NSString stringWithFormat:@"新去电 %@",cid];
         self.currentCid = cid;
-//        [self addPhoneRecordWithHostcid:[userdata objectForKey:@"Tel"] Destcid:cid Calltime:[NSDate date] Calltype:@"去电" CallDuration:0 CallStatus:0];
     }
-    //    [mStatus setText:msg];
 }
 
+//挂断电话
 - (void)hungupPhone
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1350,7 +1208,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         SipEngine *theSipEngine = [SipEngineManager getSipEngine];
         if(theSipEngine->InCalling())
             theSipEngine->TerminateCall();
-//        self.callStopTime = [NSDate date];
         self.hostHungup = @"source";
     });
 }
@@ -1376,17 +1233,12 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 /*呼叫接通*/
 -(void) OnCallStreamsRunning:(bool)is_video_call{
     UNDebugLogVerbose(@"正在通话...============================");
-//    SipEngine *theSipEngine = [SipEngineManager getSipEngine];
-//    theSipEngine->SetLoudspeakerStatus(self.speakerStatus);
-//    theSipEngine->MuteMic(self.muteStatus);
-    
     [UNSipEngineInitialize sharedInstance].sipCallPhoneStatu = SipCallPhoneStatuCallStreamsRunning;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
 -(void) OnCallMediaStreamsConnected:(MediaTransMode)mode{
     UNDebugLogVerbose(@"呼叫连接类型...============================");
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在呼叫...")];
 }
 
 -(void) OnCallResume {
@@ -1417,6 +1269,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"正在通话")];
 }
 
+//话单详情
 //typedef struct _CallReport{
 //    char calling[128];
 //    char called[128];
@@ -1435,14 +1288,16 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //        CallMissed, /**< The call was missed (unanswered)*/
 //        CallDeclined /**< The call was declined, either locally or by remote end*/
 //    } CallStatus;
-/*话单*/
+/*
+ 话单
+ 通话完成会调用此方法
+ */
 -(void) OnCallReport:(CallReport *)cdr
 {
     if (cdr->status == CallSuccess && cdr->dir == CallOutgoing) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMaximumPhoneCallTime" object:nil userInfo:@{@"CallTime" : @(cdr->duration)}];
     }
     UNDebugLogVerbose(@"话单=====时间:%zd=====状态:%zd", cdr->duration,cdr->status);
-//    UNDebugLogVerbose(@"话单=====状态:%zd", cdr->status);
     NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
     NSString *destcid, *hostcid, *callType;
     NSInteger callStatu = 1;
@@ -1462,6 +1317,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             [self addMissPhoneRecord];
         }
     }
+    //添加通话信息到数据库
     [self addPhoneRecordWithHostcid:hostcid Destcid:destcid Calltime:[NSDate date] Calltype:callType CallDuration:cdr->duration CallStatus:callStatu];
 }
 
@@ -1473,12 +1329,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self loadPhoneRecord];
     self.speakerStatus = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"CallingMessage" object:INTERNATIONALSTRING(@"通话结束")];
-    
-    /*
-     //移除来电页面
-     if (self.callCominginVC) {
-     [self.callCominginVC dismissViewControllerAnimated:YES completion:nil];
-     }*/
 }
 
 /*呼叫失败，并返回错误代码，代码对应的含义，请参考common_types.h*/
@@ -1496,15 +1346,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 //    }
 }
 
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
+
+//注册网络电话
 -(void)doRegister{
     SipEngine *theSipEngine = [SipEngineManager getSipEngine];
     
@@ -1541,47 +1384,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             UNDebugLogVerbose(@"有异常：%@",[error description]);
         }];
         
-        
-//        self.checkToken = YES;
-//        [self getBasicHeader];
-//        [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-//            //            UNDebugLogVerbose(@"有数据：%@",responseObj);
-//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//                if (responseObj[@"data"][@"VswServer"]) {
-//                    [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
-//                    [VSWManager shareManager].vswPort = [responseObj[@"data"][@"VswServer"][@"Port"] intValue];
-//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Ip"] forKey:@"VSWServerIp"];
-//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Port"] forKey:@"VSWServerPort"];
-//                }
-//                
-//                NSString *secpwd = [super md5:[[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"] stringByAppendingString:@"voipcc2015"]];
-//                
-//                NSString *thirdpwd = [super md5:secpwd];
-//                
-//                NSString *userName = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"] objectForKey:@"Tel"];
-//                
-//                
-//                self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
-//                UNLogLBEProcess(@"注册网络电话secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName);
-//                callEngine->SetEnCrypt(NO, NO);
-//                //IP地址
-//                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-//                //域名
-//                //                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [@"asterisk.unitoys.com" UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-//                
-//                
-//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//                
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//            }else{
-//                //数据请求失败
-//            }
-//            
-//            
-//        } failure:^(id dataObj, NSError *error) {
-//            UNDebugLogVerbose(@"有异常：%@",[error description]);
-//        } headers:self.headers];
-        
     }else{
         __block SipEngine *callEngine = theSipEngine;
         [UNNetworkManager getUrl:apiGetSecrityConfig parameters:nil success:^(ResponseType type, id  _Nullable responseObj) {
@@ -1615,50 +1417,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         } failure:^(NSError * _Nonnull error) {
             UNDebugLogVerbose(@"有异常：%@",[error description]);
         }];
-        
-//        self.checkToken = YES;
-//        [self getBasicHeader];
-//        [SSNetworkRequest getRequest:apiGetSecrityConfig params:nil success:^(id responseObj) {
-//            
-//            if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//                if (responseObj[@"data"][@"VswServer"]) {
-//                    [VSWManager shareManager].vswIp = responseObj[@"data"][@"VswServer"][@"Ip"];
-//                    [VSWManager shareManager].vswPort = [responseObj[@"data"][@"VswServer"][@"Port"] intValue];
-//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Ip"] forKey:@"VSWServerIp"];
-//                    [[NSUserDefaults standardUserDefaults] setObject:responseObj[@"data"][@"VswServer"][@"Port"] forKey:@"VSWServerPort"];
-//                }
-//                
-//                NSString *secpwd = [super md5:[[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"] stringByAppendingString:@"voipcc2015"]];
-//                /*
-//                 secpwd = [super md5:@"e38632c0f035e45efe57125bd0ebe8cevoipcc2015"];*/
-//                //去年替换方案
-//                
-//                NSString *thirdpwd = [super md5:secpwd];
-//                
-//                NSString *userName = [[[NSUserDefaults standardUserDefaults] objectForKey:@"userData"] objectForKey:@"Tel"];
-//                //[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"PublicPassword"]
-//                
-//                //callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String],"", "121.46.3.20", 65061,1800);
-//                
-//                self.outIP = [[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"];
-//                
-//                callEngine->SetEnCrypt(NO, NO);
-//                UNLogLBEProcess(@"注册网络电话secpwd===%@,thirdpwd====%@,userName====%@", secpwd, thirdpwd, userName)
-//
-//                callEngine->RegisterSipAccount([userName UTF8String], [thirdpwd UTF8String], "", [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskIp"] UTF8String], [[[[responseObj objectForKey:@"data"] objectForKey:@"Out"] objectForKey:@"AsteriskPort"] intValue]);
-//                
-//            }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//                
-//                [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//            }else{
-//                //数据请求失败
-//            }
-//            
-//            
-//            
-//        } failure:^(id dataObj, NSError *error) {
-//            UNDebugLogVerbose(@"有异常：%@",[error description]);
-//        } headers:self.headers];
     }
 }
 
@@ -1690,7 +1448,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
         [SipEngineManager instance].resignStatue = 0;
         [UNSipEngineInitialize sharedInstance].sipRegisterStatu = SipRegisterStatuFailed;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"NetWorkPhoneRegisterFailed" object:nil];
-        //        [mBtnRegister setTitle:@"注册" forState:UIControlStateNormal];
     }
     
     //    [mStatus setText:msg];
@@ -1699,7 +1456,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 - (NSString *)formatPhoneNum:(NSString *)phone
 {
-    
     phone = [phone stringByReplacingOccurrencesOfString:@"-" withString:@""];
     phone = [phone stringByReplacingOccurrencesOfString:@" " withString:@""];
     if ([phone hasPrefix:@"86"]) {
@@ -1761,7 +1517,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 
-//拨打电话
+//拨打电话(在拨打电话时需要调用CallKit将通话记录保存到系统中,需要通过fromCallKit判断是否从CallKit回调过来的,如果是,直接拨打电话,否则再次调用CallKit会导致循环调用异常)
 - (void)callUnitysNumber:(NSString *)strNumber FromCallKit:(BOOL)fromCallKit{
     kWeakSelf
     //检查麦克风权限
@@ -1774,17 +1530,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 
 }
 
+//判断是否有套餐(此版本已屏蔽网络电话,根据需求开启)
 - (void)presentCallPhone:(NSString *)strNumber FromCallKit:(BOOL)fromCallKit
 {
-//    if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
-//        HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
-//        return;
-//    }
-//    if (![UNConvertFormatTool isAllNumberWithString:strNumber]) {
-//        HUDNormal(INTERNATIONALSTRING(@"号码格式错误"))
-//        return;
-//    }
-    
     self.maxPhoneCall = -1;
     __block NSString *currentDateStr;
     //是否直接拨打电话
@@ -1906,6 +1654,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//弹出麦克风权限提醒
 - (void)presentMicPhoneAuthView
 {
     UIAlertController *alertVc = [UIAlertController alertControllerWithTitle:nil message:@"通话过程\n必须开启麦克风权限" preferredStyle:UIAlertControllerStyleAlert];
@@ -1978,6 +1727,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }];
 }
 
+//跳转省心服务界面(暂时已屏蔽)
 - (void)showConvenienceVc
 {
     ConvenienceServiceController *convenienceVC = [[ConvenienceServiceController alloc] init];
@@ -1989,6 +1739,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//调用CallKit
 - (void)showCallPhoneVc:(NSString *)strNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone  FromCallKit:(BOOL)fromCallKit
 {
     if (fromCallKit) {
@@ -2013,6 +1764,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//调用网络电话SDK
 - (void)willPresentCallPhoneVcAndStartCallPhone:(NSString *)strNumber IsNetWorkCallPhone:(BOOL)isNetCallPhone
 {
     if (self.nav.presentedViewController && [self.nav.presentedViewController isKindOfClass:[CallingViewController class]]) {
@@ -2055,37 +1807,6 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 
-- (void)endingCallOut {
-//    self.checkToken = YES;
-//    int dat = [self.callStopTime timeIntervalSinceReferenceDate]-[self.callStartTime timeIntervalSinceReferenceDate];
-    
-//    NSDictionary *userdata = [[NSUserDefaults standardUserDefaults] objectForKey:@"userData"];
-//    NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:[userdata objectForKey:@"Tel"],@"DeviceName",self.calledTelNum,@"calledTelNum",[self formatTime:self.callStartTime],@"callStartTime", [self formatTime:self.callStopTime],@"callStopTime",[NSString stringWithFormat:@"%d",dat],@"callSessionTime",self.outIP,@"callSourceIp",self.outIP,@"callServerIp",self.hostHungup,@"acctterminatedirection",nil];
-//    
-//    [self getBasicHeader];
-//    //    UNDebugLogVerbose(@"表演头：%@",self.headers);
-//    [SSNetworkRequest postRequest:apiAddSpeakRecord params:params success:^(id responseObj) {
-//        
-//        
-//        UNDebugLogVerbose(@"查询到的记录添加：%@",responseObj);
-//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//            
-//            //            [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];
-//            UNDebugLogVerbose(@"通话记录添加成功");
-//            
-//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//            
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//        }else{
-//            //数据请求失败
-//        }
-//    } failure:^(id dataObj, NSError *error) {
-//        //
-//        UNDebugLogVerbose(@"啥都没：%@",[error description]);
-//    } headers:self.headers];
-}
-
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -2108,6 +1829,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    //判断是否为搜索状态
     if (self.isSearchStatu && self.phonePadView.inputedPhoneNumber && self.phonePadView.inputedPhoneNumber.length) {
         id model;
         if ([self.searchLists count] > indexPath.row ) {
@@ -2196,6 +1918,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             return cell;
         }
     }else{
+        //正常通话记录
         PhoneRecordCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"PhoneRecordCell"];
         NSArray *records = [self.arrPhoneRecord objectAtIndex:indexPath.row];
         
@@ -2372,6 +2095,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     }
 }
 
+//删除数据
 - (void)deleteDatabaseWithIndex:(NSIndexPath *)indexPath tableView:(UITableView *)tableView
 {
     NSArray *records = [self.arrPhoneRecord objectAtIndex:indexPath.row];
@@ -2456,6 +2180,8 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self updateMissCall];
 }
 
+
+//增加未接来电
 - (void)addMissPhoneRecord
 {
     NSString *missNumberStr = [[NSUserDefaults standardUserDefaults] objectForKey:@"MissPhoneRecord"];
@@ -2466,6 +2192,7 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
     [self updateMissCall];
 }
 
+//更新小红点
 - (void)updateMissCall
 {
     NSString *missNumber = [[NSUserDefaults standardUserDefaults] objectForKey:@"MissPhoneRecord"];

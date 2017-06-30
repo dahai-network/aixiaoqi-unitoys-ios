@@ -120,11 +120,6 @@
         _myMsgInputView.hidden = NO;
         [_myMsgInputView prepareToShowWithAnimate:NO];
     }
-//    if (self.isNewMessage) {
-//        self.navigationController.interactivePopGestureRecognizer.enabled = NO;
-//    }else{
-//        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-//    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -143,11 +138,9 @@
         _myMsgInputView.hidden = YES;
         [_myMsgInputView prepareToDismissWithAnimate:YES];
     }
-//    if (self.isNewMessage) {
-//        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-//    }
 }
 
+//加载导航栏
 - (void)loadNavigationBar
 {
     if (self.isNewMessage) {
@@ -159,6 +152,7 @@
     }
 }
 
+//初始化导航栏显示
 - (void)initAllItems
 {
     self.defaultLeftItem = self.navigationItem.leftBarButtonItem;
@@ -168,6 +162,7 @@
     self.editRightItem = [[UIBarButtonItem alloc] initWithTitle:INTERNATIONALSTRING(@"全选") style:UIBarButtonItemStyleDone target:self action:@selector(selectAllCell)];
 }
 
+//初始化数据
 - (void)initMessageData
 {
     _selectRemoveData = [NSMutableArray array];
@@ -175,8 +170,6 @@
     [self createTaleView];
     [self createMessageInputView];
     [self loadData];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewFontChange) name:@"KTAutoHeightTextViewFontChange" object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow) name:@"KeyboardWillShowFinished" object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sendMessageStatuChange:) name:@"SendMessageStatuChange" object:@"MessageStatu"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSMSAction) name:@"ReceiveNewSMSContentUpdate" object:nil];
@@ -186,6 +179,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSMSAction) name:@"appEnterForeground" object:@"appEnterForeground"];
 }
 
+//创建TaleView
 - (void)createTaleView
 {
     self.myTableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -199,6 +193,7 @@
     [self.view addSubview:self.myTableView];
 }
 
+//输入短信
 - (void)createMessageInputView
 {
     _myMsgInputView = [UNMessageInputView messageInputViewWithPlaceHolder:@"输入短信"];
@@ -210,6 +205,7 @@
     self.myTableView.scrollIndicatorInsets = contentInsets;
 }
 
+//加载数据
 - (void)loadData
 {
     if (self.isNewMessage) {
@@ -236,6 +232,7 @@
     }
 }
 
+//创建新建短信选择栏
 - (void)createTxtLinkman
 {
     _topEditLinkManView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidthValue, 50)];
@@ -288,6 +285,7 @@
     button.enabled = YES;
 }
 
+//全选功能
 - (void)selectAllCell
 {
     if (self.selectRemoveData.count == self.messageFrames.count) {
@@ -308,6 +306,7 @@
     }
 }
 
+//进入编辑模式
 - (void)beComeEditMode
 {
 //    self.myMsgInputView.hidden = YES;
@@ -324,6 +323,7 @@
     [self.myTableView setEditing:YES animated:YES];
 }
 
+//取消编辑模式
 - (void)cancelEdit
 {
     if (_bottomView == nil) {
@@ -344,6 +344,7 @@
     [self.myTableView setEditing:NO animated:YES];
 }
 
+//删除选中短信
 - (void)deleteSelectSMS
 {
     if (self.selectRemoveData.count) {
@@ -385,13 +386,14 @@
     }];
 }
 
-
+//接收到新短信
 - (void)receiveNewSMSAction
 {
     _messageFrames = nil;
     [self loadMessages];
 }
 
+//联系人详情(多个联系人需要区别跳转)
 - (void)rightBarButtonAction
 {
     if ([self.toTelephone containsString:@","]) {
@@ -403,13 +405,11 @@
         if (!contactsDetailViewController) {
             return;
         }
-//        kWeakSelf
         contactsDetailViewController.contactMan = self.toPhoneName;
         contactsDetailViewController.phoneNumbers = self.toTelephone;
         contactsDetailViewController.isMessagePush = YES;
         [self.navigationController pushViewController:contactsDetailViewController animated:YES];
     }else{
-//        kWeakSelf
         ContactsCallDetailsController *callDetailsVc = [[ContactsCallDetailsController alloc] init];
         callDetailsVc.contactModel = [self checkContactModelWithPhoneStr:self.toTelephone];
         callDetailsVc.nickName = self.title;
@@ -419,8 +419,7 @@
     }
 }
 
-
-
+//当前发送消息状态改变(极光推送通知)
 - (void)sendMessageStatuChange:(NSNotification *)noti
 {
     NSDictionary *userInfo = noti.userInfo;
@@ -442,6 +441,7 @@
     [self updateMessageList];
 }
 
+//刷新短信内容
 - (void)loadMessages{
     if (_messageFrames == nil || !_messageFrames.count || self.toTelephone) {
         NSString *lastTime = [[UNDatabaseTools sharedFMDBTools] getLastTimeMessageContentWithPhone:self.toTelephone];
@@ -485,23 +485,18 @@
     }
 }
 
-//从服务器更新短信状态
+//从服务器更新短信状态(判断短信中是否有正在发送的,如果有则需要从服务器更新状态)
 - (void)getMessageStatuFromServer:(NSArray *)messageArray
 {
-    //    if (self.isHasSuccessMsg) {
-    //        return;
-    //    }
     NSMutableArray *smsIdArray = [NSMutableArray array];
     for (NSDictionary *dict in messageArray) {
         if ([dict[@"Status"] isEqualToString:@"0"]) {
             [smsIdArray addObject:dict[@"SMSID"]];
-            //            [messageStatus addObject:@{@"SMSID" : dict[@"SMSID"] , @"Status" : dict[@"Status"]}];
         }
     }
     if (smsIdArray.count) {
         //从服务器更新
         NSDictionary *params = @{@"Ids" : smsIdArray};
-        
         [UNNetworkManager getJsonUrl:apiSMSGets parameters:params success:^(ResponseType type, id  _Nullable responseObj) {
             UNDebugLogVerbose(@"查询到的消息数据：%@",responseObj);
             if (type == ResponseTypeSuccess) {
@@ -574,8 +569,6 @@
         if (mfArray.count>0) {
             self.page = self.page + 1;
             NSIndexSet *indexs = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, mfArray.count)];
-            //                _messageDict = [NSMutableArray arrayWithArray:messages];
-            //                [_messageDict insertObjects:pageArray atIndexes:indexs];
             [_messageFrames insertObjects:mfArray atIndexes:indexs];
             
             [self.myTableView.mj_header endRefreshing];
@@ -599,7 +592,6 @@
     if ([self.messageFrames count]) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.messageFrames.count - 1 inSection:0];
         [self.myTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:animated];
-        //         [self.tableView setContentOffset:CGPointMake(0, self.tableView.contentSize.height -self.tableView.bounds.size.height) animated:animated];
     }
 }
 
@@ -696,12 +688,9 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //    if (editingStyle == (UITableViewCellEditingStyleDelete | UITableViewCellEditingStyleInsert)) {
-    //
-    //    }
 }
 
-
+//点击发送失败的短信重发
 - (void)repeatSendMessage:(UNMessageFrameModel *)messageFrame
 {
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:messageFrame.message.SMSID,@"SMSID", nil];
@@ -719,30 +708,6 @@
     } failure:^(NSError * _Nonnull error) {
         UNDebugLogVerbose(@"啥都没：%@",[error description]);
     }];
-    
-//    self.checkToken = YES;
-//    [self getBasicHeader];
-//    [SSNetworkRequest postRequest:apiSendRetryForError params:params success:^(id responseObj) {
-//        UNDebugLogVerbose(@"查询到的用户数据：%@",responseObj);
-//        
-//        if ([[responseObj objectForKey:@"status"] intValue]==1) {
-//            _messageFrames = nil;
-//            
-//            [self loadMessages];
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"sendMessageSuccess" object:@"sendMessageSuccess"];
-//            
-//        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-//            
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
-//        }else{
-//            //数据请求失败
-//            HUDNormalTop(responseObj[@"msg"])
-//        }
-//        
-//    } failure:^(id dataObj, NSError *error) {
-//        //
-//        UNDebugLogVerbose(@"啥都没：%@",[error description]);
-//    } headers:self.headers];
 }
 
 //点击发送消息
@@ -830,7 +795,7 @@
 
 
 #pragma mark ======== NotifyTextFieldDelegate ========
-//删除文字
+//删除文字(暂时只允许从最后删除,如有需要,可自定义删除位置,注释代码只完成了部分功能,需要自行处理)
 - (BOOL)unTextFieldDeleteBackward:(UITextField *)textField ChangeRange:(NSRange)range
 {
     UNDebugLogVerbose(@"unTextFieldDeleteBackward--text%@---range%@", textField.text, NSStringFromRange(range));
@@ -1054,6 +1019,7 @@
 }
 
 #pragma mark --PhoneNumberSelectDelegate
+//通过通讯录选择号码回调
 - (void)didSelectPhoneNumber:(NSString *)phoneNumber {
     UNDebugLogVerbose(@"选择号码");
     //    UNDebugLogVerbose(@"添加联系人：%@",phoneNumber);
@@ -1082,8 +1048,6 @@
     }
     [self updateEditLinkManData];
 }
-
-
 
 //设置响应
 -(BOOL)canBecomeFirstResponder
@@ -1140,7 +1104,7 @@
         [pasteboard setString:self.cellContent];
     }
 }
-
+//删除
 - (void)deleteText:(id)sender
 {
     if (_currentIndex < self.messageFrames.count) {
@@ -1168,6 +1132,7 @@
     }
 }
 
+//更新短信列表
 - (void)updateMessageList
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateMessageRecordLists" object:nil];
@@ -1220,6 +1185,7 @@
     }];
 }
 
+//批量删除
 - (void)deleteMessageSWithDatas:(NSArray *)Datas SMSIds:(NSArray *)smsIds
 {
     kWeakSelf
@@ -1321,11 +1287,9 @@
             keyboard_down_InputViewHeight = CGRectGetHeight(inputView.frame);
         }
         keyboard_is_down = NO;
-        
         CGPoint contentOffset = keyboard_down_ContentOffset;
         CGFloat spaceHeight = MAX(0, CGRectGetHeight(self.myTableView.frame) - self.myTableView.contentSize.height - keyboard_down_InputViewHeight);
         contentOffset.y += MAX(0, BottomViewHeight - keyboard_down_InputViewHeight - spaceHeight);
-        UNDebugLogVerbose(@"\nspaceHeight:%.2f heightToBottom:%.2f diff:%.2f Y:%.2f", spaceHeight, BottomViewHeight, MAX(0, BottomViewHeight - CGRectGetHeight(inputView.frame) - spaceHeight), contentOffset.y);
         self.myTableView.contentOffset = contentOffset;
     }else{
         keyboard_is_down = YES;
@@ -1346,7 +1310,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     self.scrollOffset = 0;
-    DebugUNLog(@"scrollViewDidEndDecelerating");
+    UNDebugLogVerbose(@"scrollViewDidEndDecelerating");
 }
 
 /**
@@ -1356,7 +1320,7 @@
 {
     if (scrollView == self.myTableView) {
         CGFloat offset = kScreenHeightValue - 64 - (scrollView.contentSize.height - (scrollView.contentOffset.y - self.myMsgInputView.bottomHeight));
-        DebugUNLog(@"offset=======%.4f", offset);
+        UNDebugLogVerbose(@"offset=======%.4f", offset);
         if (offset <= 1 && scrollView.contentSize.height > kScreenHeightValue){
             UNDebugLogVerbose(@"注销第一响应者");
             if (_myMsgInputView) {

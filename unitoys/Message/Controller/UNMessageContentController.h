@@ -8,6 +8,8 @@
 
 #import "BaseViewController.h"
 
+//短信内容和新建短信类整合(MJViewController,NewMessageViewController已废弃)
+
 @interface UNMessageContentController : BaseViewController
 //是否新建短信
 @property (nonatomic, assign) BOOL isNewMessage;

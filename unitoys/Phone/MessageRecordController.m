@@ -89,6 +89,7 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 //    [self reloadDataFromDatabase];
 //}
 
+//从数据库更新数据
 - (void)reloadDataFromDatabase
 {
     self.page = 0;
