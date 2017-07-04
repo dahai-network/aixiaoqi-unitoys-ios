@@ -221,11 +221,12 @@
                 return 2;
                 break;
             default:
-                if ([[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 0) {
-                    return 3;
-                } else {
-                    return 2;
-                }
+//                if ([[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 0) {
+//                    return 2;
+//                } else {
+//                    return 1;
+//                }
+                return 1;
                 break;
         }
     } else if (self.packageCategory == 1) {
@@ -379,7 +380,7 @@
             if ([[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue] == 0) {
                 if (indexPath.row == 0) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
-                    self.secondCell.lblContent.text = self.dicOrderDetail[@"ExpireDays"];
+                    self.secondCell.lblContent.text = self.dicOrderDetail[@"LastCanActivationDate"];
                 } else if (indexPath.row == 1) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"最晚激活日期");
                     self.secondCell.lblContent.text = [self convertDateWithString:self.dicOrderDetail[@"LastCanActivationDate"]];
@@ -389,6 +390,7 @@
                 }
                 return self.secondCell;
             } else {
+                [self checkStatueWithLabel:self.secondCell.lblContent Statue:[[self.dicOrderDetail objectForKey:@"OrderStatus"] intValue]];
                 if (indexPath.row == 0) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"有效期");
                     self.secondCell.lblContent.text = self.dicOrderDetail[@"ExpireDays"];
@@ -479,7 +481,8 @@
             break;
         case 4:
             [label setText:INTERNATIONALSTRING(@"激活失败")];
-            [self.activateButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
+//            [self.activateButton setTitle:INTERNATIONALSTRING(@"重新激活") forState:UIControlStateNormal];
+            [self.activateButton setTitle:INTERNATIONALSTRING(@"立即激活") forState:UIControlStateNormal];
             self.activateButton.hidden = NO;
             self.cancelButton.hidden = YES;
             break;

@@ -185,7 +185,7 @@
     }else{
         [info setValue:@(self.CurrentPage) forKey:@"PageNumber"];
         [info setValue:@"20" forKey:@"PageSize"];
-        [info setValue:statue forKey:@"OrderStatus"];
+//        [info setValue:statue forKey:@"OrderStatus"];
         
         apiNameStr = [NSString stringWithFormat:@"%@PackageCategory", @"apiOrderList"];
     }

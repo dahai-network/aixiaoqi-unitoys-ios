@@ -14,6 +14,7 @@
 
 #import "PaySuccessViewController.h"
 #import "ActivateGiftCardViewController.h"
+#import "BlueToothDataManager.h"
 
 @interface OrderCommitViewController ()
 
@@ -301,6 +302,7 @@
 }
 
 - (void)showPaySuccessWindow {
+    [BlueToothDataManager shareManager].isShowHud = NO;
     if (!self.paySuccessWindow) {
         self.paySuccessWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.paySuccessWindow.windowLevel = UIWindowLevelStatusBar;
@@ -504,6 +506,7 @@
     } else {
         params = [[NSDictionary alloc] initWithObjectsAndKeys:[self.dicPackage objectForKey:@"PackageId"],@"PackageID",[NSString stringWithFormat:@"%ld", self.orderCount],@"Quantity",@"3",@"PaymentMethod", self.lblStartUse.text, @"BeginDateTime", nil];
     }
+    [BlueToothDataManager shareManager].isShowHud = YES;
     HUDNoStop1(INTERNATIONALSTRING(@"正在提交订单..."))
     [self getBasicHeader];
 //    NSLog(@"表演头：%@",self.headers);
@@ -516,10 +519,11 @@
             self.packageCategory = [self.dicOrder[@"PackageCategory"] intValue];
             [self payAction];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
-            
+            [BlueToothDataManager shareManager].isShowHud = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
         }else{
             //数据请求失败
+            [BlueToothDataManager shareManager].isShowHud = NO;
         }
         
         
@@ -527,6 +531,7 @@
         [[[UIAlertView alloc] initWithTitle:@"系统提示" message:[responseObj objectForKey:@"msg"] delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil] show];*/
         
     } failure:^(id dataObj, NSError *error) {
+        [BlueToothDataManager shareManager].isShowHud = NO;
         HUDNormal(INTERNATIONALSTRING(@"网络貌似有问题"))
         NSLog(@"啥都没：%@",[error description]);
         
