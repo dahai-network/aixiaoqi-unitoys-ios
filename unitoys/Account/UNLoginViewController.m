@@ -688,6 +688,49 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self.view endEditing:YES];
+    switch (textField.tag) {
+        case 101:
+            if (self.currentStatuType == LoginVCStatuTypeLogin) {
+                //当前为登录界面
+                [self.passWordField becomeFirstResponder];
+            }else if (self.currentStatuType == LoginVCStatuTypeRegister){
+                
+                //当前为注册界面
+                [self.reCaptchaField becomeFirstResponder];
+                
+            }else{
+                //当前为忘记密码界面
+                [self.reCaptchaField becomeFirstResponder];
+                
+            }
+            break;
+        case 102:
+            [self.passWordField becomeFirstResponder];
+            break;
+        case 103:
+            
+            if (self.currentStatuType == LoginVCStatuTypeLogin) {
+                //当前为登录界面
+                if ([self validateParams] == NO) break;
+                //根据当前选择登陆或注册进行下一步
+                [self loginRequest];
+            }else if (self.currentStatuType == LoginVCStatuTypeRegister){
+                if ([self validateParams] == NO) break;
+                //当前为注册界面
+                [self registerRrequest];
+                
+            }else{
+                if ([self validateParams] == NO) break;
+                //当前为忘记密码界面
+                [self forgetRrequest];
+                
+            }
+            
+            break;
+        default:
+            break;
+    }
+    
     return YES;
 }
 
