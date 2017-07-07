@@ -531,6 +531,7 @@ static NSString *callDetailsLookAllCellId = @"CallDetailsLookAllCell";
             [[NSNotificationCenter defaultCenter] postNotificationName:@"MakeUnitysCallAction" object:[self formatPhoneNum:self.phoneNumber]];
         }
     } else {
+        if ([self checkBLEStatueAndAlert]) return;
         HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
     }
 }

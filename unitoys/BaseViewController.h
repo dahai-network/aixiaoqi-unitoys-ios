@@ -125,4 +125,16 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 - (void)setStatuesLabelTextWithLabel:(UILabel *)label String:(NSString *)string;
 
+
+/**
+ 是否显示状态栏
+ */
+- (BOOL)isNeedToShowBLEStatue;
+
+
+/**
+ 拨打电话的时候显示提示
+ */
+- (BOOL)checkBLEStatueAndAlert;
+
 @end

@@ -321,7 +321,6 @@
 
 //客服邮箱
 #define EMAIL @"service@unitoys.com"
-//#define EMAIL @"630893613@qq.com"
 
 //客服电话
 #define TELEPHONE @"075529988454"
@@ -384,7 +383,7 @@
 #define HOMESTATUETITLE_NOPACKAGE @"无套餐"
 #define HOMESTATUE_NOPACKAGE @"homeStatue_noPackge"
 //注册失败
-#define HOMESTATUETITLE_NOSIGNAL @"注册失败"
+#define HOMESTATUETITLE_NOSIGNAL @"注册到运营商失败"
 #define HOMESTATUE_NOSIGNAL @"homeStatue_noSignal"
 //信号强
 #define HOMESTATUETITLE_SIGNALSTRONG @"信号强"
@@ -441,7 +440,7 @@
 #define UMeng_Event_CloseService @"event_closeService"
 
 
-#define LBEUUID @"F9D77679-66D1-15A7-1052-EAD426D72C61"
+//#define LBEUUID @"F9D77679-66D1-15A7-1052-EAD426D72C61"
 
 //#ifndef __OPTIMIZE__
 //

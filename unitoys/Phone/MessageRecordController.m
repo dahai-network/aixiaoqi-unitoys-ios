@@ -62,6 +62,8 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
     
     //进入前台
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"appEnterForeground" object:@"appEnterForeground"];
+    //删除成功，通知刷新列表界面
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMessageStatu) name:@"deleteSuccessAndRefreshList" object:@"deleteSuccessAndRefreshList"];
     [self createButton];
 }
 
@@ -126,8 +128,8 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
         }else{
             self.tableView.mj_footer.hidden = YES;
         }
-        [self.tableView reloadData];
     }
+    [self.tableView reloadData];
 }
 
 //- (void)updateMessgeList
@@ -502,61 +504,40 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //消息记录，显示消息
-    NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
-    if (![dicMessageRecord[@"IsRead"] boolValue]) {
-        NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
-        [mutableDict setObject:@(1) forKey:@"IsRead"];
-        dicMessageRecord = mutableDict;
-        MessageRecordCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-//        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
-        cell.unreadMsgLabel.hidden = YES;
-        [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:@[dicMessageRecord]];
-        [self reloadDataFromDatabase];
-    }
-    
-//    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Phone" bundle:nil];
-//    if (storyboard) {
-//        //            self.phoneNumber= self.phonePadView.lblPhoneNumber.text;
-//        MJViewController *mjViewController = [storyboard instantiateViewControllerWithIdentifier:@"MJViewController"];
-//        if (mjViewController) {
-//            NSString *currentPhone;
-//            if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
-//                //己方发送
-//                currentPhone = [dicMessageRecord objectForKey:@"To"];
-//            }else{
-//                //对方发送
-//                currentPhone = [dicMessageRecord objectForKey:@"Fm"];
-//            }
-//            self.currentSelectPhone = currentPhone;
-//            NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
-//            mjViewController.title = titleName;
-//            mjViewController.titleName = titleName;
-//            mjViewController.toTelephone = currentPhone;
-//            mjViewController.hidesBottomBarWhenPushed = YES;
-//            [self.nav pushViewController:mjViewController animated:YES];
-//        }
-//    }
-    
-    UNMessageContentController *messageVc = [[UNMessageContentController alloc] init];
-    NSString *currentPhone;
-    if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
-        //己方发送
-        currentPhone = [dicMessageRecord objectForKey:@"To"];
-    }else{
-        //对方发送
-        currentPhone = [dicMessageRecord objectForKey:@"Fm"];
-    }
-    self.currentSelectPhone = currentPhone;
-    NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
-    messageVc.title = titleName;
-    messageVc.toPhoneName = titleName;
-    messageVc.toTelephone = currentPhone;
-    messageVc.hidesBottomBarWhenPushed = YES;
-    [self.nav pushViewController:messageVc animated:YES];
-    
-    if ([[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
-        [[UNDataTools sharedInstance].currentUnreadSMSPhones removeObject:currentPhone];
+    if (_arrMessageRecord.count) {
+        //消息记录，显示消息
+        NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
+        if (![dicMessageRecord[@"IsRead"] boolValue]) {
+            NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:dicMessageRecord];
+            [mutableDict setObject:@(1) forKey:@"IsRead"];
+            dicMessageRecord = mutableDict;
+            MessageRecordCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            //        [cell.lblPhoneNumber setTextColor:UIColorFromRGB(0x333333)];
+            cell.unreadMsgLabel.hidden = YES;
+            [[UNDatabaseTools sharedFMDBTools] insertMessageListWithMessageLists:@[dicMessageRecord]];
+            [self reloadDataFromDatabase];
+        }
+        
+        UNMessageContentController *messageVc = [[UNMessageContentController alloc] init];
+        NSString *currentPhone;
+        if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+            //己方发送
+            currentPhone = [dicMessageRecord objectForKey:@"To"];
+        }else{
+            //对方发送
+            currentPhone = [dicMessageRecord objectForKey:@"Fm"];
+        }
+        self.currentSelectPhone = currentPhone;
+        NSString *titleName = [self checkLinkNameWithPhoneStrMergeGroupName:currentPhone];
+        messageVc.title = titleName;
+        messageVc.toPhoneName = titleName;
+        messageVc.toTelephone = currentPhone;
+        messageVc.hidesBottomBarWhenPushed = YES;
+        [self.nav pushViewController:messageVc animated:YES];
+        
+        if ([[UNDataTools sharedInstance].currentUnreadSMSPhones containsObject:currentPhone]) {
+            [[UNDataTools sharedInstance].currentUnreadSMSPhones removeObject:currentPhone];
+        }
     }
     [self loadUnreadMessageStatu];
 }
@@ -571,19 +552,23 @@ static NSString *strMessageRecordCell = @"MessageRecordCell";
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
-        NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_arrMessageRecord];
-        [tempArray removeObjectAtIndex:indexPath.row];
-        _arrMessageRecord = [tempArray copy];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        
-        //从服务器删除数据
-        if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
-            //己方发送
-            [self deleteMessageWithPhoneNumber:dicMessageRecord[@"To"]];
-        }else{
-            //对方发送
-            [self deleteMessageWithPhoneNumber:dicMessageRecord[@"Fm"]];
+        if (_arrMessageRecord.count) {
+            NSDictionary *dicMessageRecord = [_arrMessageRecord objectAtIndex:indexPath.row];
+            NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_arrMessageRecord];
+            [tempArray removeObjectAtIndex:indexPath.row];
+            _arrMessageRecord = [tempArray copy];
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            
+            //从服务器删除数据
+            if ([[dicMessageRecord objectForKey:@"IsSend"] boolValue]) {
+                //己方发送
+                [self deleteMessageWithPhoneNumber:dicMessageRecord[@"To"]];
+            }else{
+                //对方发送
+                [self deleteMessageWithPhoneNumber:dicMessageRecord[@"Fm"]];
+            }
+        } else {
+            [self updateMessageStatu];
         }
     }
 }

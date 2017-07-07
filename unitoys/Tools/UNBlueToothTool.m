@@ -218,11 +218,52 @@ static UNBlueToothTool *instance = nil;
 
 - (void)receiveIMEIToConnecting:(NSNotification *)sender {
     int index = [sender.object intValue];
-    self.strongestRssiPeripheral = self.peripherals[index];
-    if (self.strongestRssiPeripheral) {
-        self.peripheral = self.strongestRssiPeripheral;
-        [self.mgr connectPeripheral:self.peripheral options:nil];
+    if (self.peripherals.count) {
+        [self checkIsBoundByOthers:self.peripherals[index]];
+    } else {
+        DebugUNLog(@"没有设备");
     }
+}
+
+- (void)checkIsBoundByOthers:(CBPeripheral *)peripheral {
+    [self showHudNormalTop1String:@""];
+    NSString *nameStr;
+    NSString *macStr;
+    if (peripheral.name) {
+        UNDebugLogVerbose(@"发现设备名称：%@", peripheral.name);
+        nameStr = peripheral.name;
+        if ([peripheral.name containsString:MYDEVICENAMEUNITOYS]) {
+            nameStr = MYDEVICENAMEUNITOYS;
+        }
+        if ([peripheral.name containsString:MYDEVICENAMEUNIBOX]) {
+            nameStr = MYDEVICENAMEUNIBOX;
+        }
+    }
+    if (peripheral.name.length > nameStr.length+1) {
+        macStr = [self conventMACAddressFromNetWithStr:[peripheral.name substringFromIndex:nameStr.length+1]];
+    } else {
+        DebugUNLog(@"mac地址格式不正确");
+    }
+    self.checkToken = YES;
+    [self getBasicHeader];
+    NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:macStr,@"IMEI", nil];
+    [SSNetworkRequest getRequest:apiIsBind params:info success:^(id responseObj) {
+        if ([[responseObj objectForKey:@"status"] intValue]==1) {
+            self.strongestRssiPeripheral = peripheral;
+            if (self.strongestRssiPeripheral) {
+                self.peripheral = self.strongestRssiPeripheral;
+                [self.mgr connectPeripheral:self.peripheral options:nil];
+            }
+        }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
+        }else{
+            //数据请求失败
+            [self showHudNormalString:responseObj[@"msg"]];
+        }
+    } failure:^(id dataObj, NSError *error) {
+        [self showHudNormalString:INTERNATIONALSTRING(@"网络貌似有问题")];
+        UNDebugLogVerbose(@"啥都没：%@",[error description]);
+    } headers:self.headers];
 }
 
 - (void)receivePushKitMessage
@@ -1558,11 +1599,23 @@ static UNBlueToothTool *instance = nil;
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];
             }else{
                 UNDebugLogVerbose(@"返回的状态码异常,%s,%d", __FUNCTION__, __LINE__);
+                NSMutableArray *deviceInfoArr = [NSMutableArray array];
+                for (NSString *imei in imeiArr) {
+                    NSMutableDictionary *deviceDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:imei.lowercaseString, @"mac", @"0", @"isAlreadyBind", nil];
+                    [deviceInfoArr addObject:deviceDict];
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBoundDeviceInfo" object:deviceInfoArr];
             }
             UNDebugLogVerbose(@"返回的绑定的设备的结果：%@",responseObj);
         } failure:^(id dataObj, NSError *error) {
             UNDebugLogVerbose(@"啥都没：%@",[error description]);
             [self showHudNormalString:@"网络貌似有问题"];
+            NSMutableArray *deviceInfoArr = [NSMutableArray array];
+            for (NSString *imei in imeiArr) {
+                NSMutableDictionary *deviceDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:imei.lowercaseString, @"mac", @"0", @"isAlreadyBind", nil];
+                [deviceInfoArr addObject:deviceDict];
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"checkBoundDeviceInfo" object:deviceInfoArr];
         } headers:self.headers];
     } else {
         UNLogLBEProcess(@"没有搜索到适配的设备,%s%d", __FUNCTION__, __LINE__)
@@ -2922,7 +2975,6 @@ static UNBlueToothTool *instance = nil;
 - (void)checkDeviceIsBound {
     self.checkToken = YES;
     [self getBasicHeader];
-//    UNDebugLogVerbose(@"表头：%@",self.headers);
     NSDictionary *info = [[NSDictionary alloc] initWithObjectsAndKeys:[BlueToothDataManager shareManager].deviceMacAddress,@"IMEI", nil];
     if (!info[@"IMEI"]) {
         [self showAlertViewWithMessage:@"没有搜索到可连接的设备"];
@@ -2932,8 +2984,6 @@ static UNBlueToothTool *instance = nil;
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
             UNDebugLogVerbose(@"手环是否已被绑定 -- %@", responseObj[@"data"][@"BindStatus"]);
             if ([responseObj[@"data"][@"BindStatus"] isEqualToString:@"0"]) {
-                //未绑定
-//                [self bindBoundDevice];
                 //先绑定蓝牙再走绑定接口
                 if (self.strongestRssiPeripheral) {
                     self.peripheral = self.strongestRssiPeripheral;

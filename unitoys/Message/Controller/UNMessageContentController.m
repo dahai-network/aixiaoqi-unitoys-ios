@@ -1160,6 +1160,8 @@
                     [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
             }
+            //删除成功，通知刷新列表界面
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteSuccessAndRefreshList" object:@"deleteSuccessAndRefreshList"];
         }else if (type == ResponseTypeFailed){
             //数据请求失败
             UNDebugLogVerbose(@"删除单条短信失败--%@", responseObj[@"msg"]);
@@ -1215,6 +1217,8 @@
                     [weakSelf.navigationController popViewControllerAnimated:YES];
                 });
             }
+            //删除成功，通知刷新列表界面
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"deleteSuccessAndRefreshList" object:@"deleteSuccessAndRefreshList"];
         }else if (type == ResponseTypeFailed){
             //数据请求失败
             UNDebugLogVerbose(@"删除多条短信失败--%@", responseObj[@"msg"]);

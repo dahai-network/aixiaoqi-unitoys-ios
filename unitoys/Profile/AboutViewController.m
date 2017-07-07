@@ -94,7 +94,7 @@
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
     [self.statuesView addSubview:self.statuesLabel];
-    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
+    if (![self isNeedToShowBLEStatue]) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
         self.footView.un_height = 0;
@@ -161,7 +161,7 @@
 
 - (void)changeStatueViewHeightWithString:(NSString *)statueStr {
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
-    if ([statueStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
+    if (![self isNeedToShowBLEStatue]) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
     } else {

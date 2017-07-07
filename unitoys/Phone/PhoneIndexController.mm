@@ -83,7 +83,7 @@
 
 - (void)changeStatueViewHeightWithString:(NSString *)statueStr {
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
-    if ([statueStr isEqualToString:HOMESTATUETITLE_SIGNALSTRONG] || ![BlueToothDataManager shareManager].isShowStatuesView) {
+    if (![self isNeedToShowBLEStatue]) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
     } else {
@@ -140,7 +140,7 @@
     [self.statuesView addSubview:self.statuesLabel];
     self.statuesView.clipsToBounds = YES;
     [self.view addSubview:self.statuesView];
-    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]  || ![BlueToothDataManager shareManager].isShowStatuesView) {
+    if (![self isNeedToShowBLEStatue]) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
         [UNDataTools sharedInstance].tipStatusHeight = self.statuesView.un_height;

@@ -13,6 +13,7 @@
 #import "WXApi.h"
 #import "UIBarButtonItem+Extension.h"
 #import "BrowserViewController.h"
+#import "BlueToothDataManager.h"
 
 @implementation BaseViewController
 
@@ -677,6 +678,34 @@
         label.text = @"电话卡正在连接运营商，请稍后。";
     } else {
         label.text = string;
+    }
+}
+
+#pragma mark 是否显示状态栏
+- (BOOL)isNeedToShowBLEStatue {
+    if (([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NETWORKCANNOTUSE] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_BLNOTOPEN] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTCONNECTED] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_READCARDFAIL] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOSIGNAL] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) && [BlueToothDataManager shareManager].isShowStatuesView) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+#pragma mark 拨打电话的时候提示
+- (BOOL)checkBLEStatueAndAlert {
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
+        HUDNormal(@"请先绑定爱小器智能通讯硬件，才可使用通话短信功能！")
+        return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTSERVICE]) {
+        HUDNormal(@"您关闭了通话短信服务，请在“我的”页面重新开启该服务！")
+        return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
+        HUDNormal(@"未检测到“设备”内有电话卡，请确认是否插卡或插卡方向是否有误！")
+        return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
+        HUDNormal(@"您设备内为爱小器国际上网卡，不支持通话和短信服务！")
+        return YES;
+    } else {
+        return NO;
     }
 }
 
