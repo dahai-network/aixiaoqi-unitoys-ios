@@ -14,6 +14,7 @@
 #import "UNDatabaseTools.h"
 #import "UNMobileActivateController.h"
 #import "UNConvertFormatTool.h"
+#import "ActivityInPhoneViewController.h"
 
 @interface ChooseWhereCardsViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -98,7 +99,9 @@
 #pragma mark 爱小器卡在手机中
 - (void)simCardInPhoneAction {
     UNDebugLogVerbose(@"爱小器卡已放入手机");
-    [self activeSIMCardInPhoneAction];
+//    [self activeSIMCardInPhoneAction];
+    ActivityInPhoneViewController *activityInPhoneVC = [[ActivityInPhoneViewController alloc] init];
+    [self presentViewController:activityInPhoneVC animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {

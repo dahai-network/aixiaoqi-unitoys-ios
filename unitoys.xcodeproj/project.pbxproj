@@ -64,6 +64,8 @@
 		046BD6461E0B7C3F008A958A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD6451E0B7C3F008A958A /* CoreFoundation.framework */; };
 		046BD6481E0B7C5F008A958A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 046BD6471E0B7C5F008A958A /* CFNetwork.framework */; };
 		046BF7001E27A544008C10C7 /* YBPopupMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 046BF6FF1E27A544008C10C7 /* YBPopupMenu.m */; };
+		047479181F10CB2500B8F14E /* ActivityInPhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 047479161F10CB2500B8F14E /* ActivityInPhoneViewController.m */; };
+		047479191F10CB2500B8F14E /* ActivityInPhoneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 047479171F10CB2500B8F14E /* ActivityInPhoneViewController.xib */; };
 		0480516C1E86682F00E8AB55 /* PurviewSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0480516A1E86682F00E8AB55 /* PurviewSettingViewController.m */; };
 		0480516D1E86682F00E8AB55 /* PurviewSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0480516B1E86682F00E8AB55 /* PurviewSettingViewController.xib */; };
 		048051711E86686700E8AB55 /* PurviewSettingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0480516F1E86686700E8AB55 /* PurviewSettingTableViewCell.m */; };
@@ -529,6 +531,9 @@
 		046BD6491E0B7DBC008A958A /* unitoys.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = unitoys.entitlements; sourceTree = "<group>"; };
 		046BF6FE1E27A544008C10C7 /* YBPopupMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBPopupMenu.h; sourceTree = "<group>"; };
 		046BF6FF1E27A544008C10C7 /* YBPopupMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBPopupMenu.m; sourceTree = "<group>"; };
+		047479151F10CB2500B8F14E /* ActivityInPhoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityInPhoneViewController.h; sourceTree = "<group>"; };
+		047479161F10CB2500B8F14E /* ActivityInPhoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityInPhoneViewController.m; sourceTree = "<group>"; };
+		047479171F10CB2500B8F14E /* ActivityInPhoneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ActivityInPhoneViewController.xib; sourceTree = "<group>"; };
 		048051691E86682F00E8AB55 /* PurviewSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PurviewSettingViewController.h; sourceTree = "<group>"; };
 		0480516A1E86682F00E8AB55 /* PurviewSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PurviewSettingViewController.m; sourceTree = "<group>"; };
 		0480516B1E86682F00E8AB55 /* PurviewSettingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PurviewSettingViewController.xib; sourceTree = "<group>"; };
@@ -1998,6 +2003,9 @@
 				04D835D91F035B1F008E096A /* ChooseWhereCardsTableViewCell.h */,
 				04D835DA1F035B1F008E096A /* ChooseWhereCardsTableViewCell.m */,
 				04D835DB1F035B1F008E096A /* ChooseWhereCardsTableViewCell.xib */,
+				047479151F10CB2500B8F14E /* ActivityInPhoneViewController.h */,
+				047479161F10CB2500B8F14E /* ActivityInPhoneViewController.m */,
+				047479171F10CB2500B8F14E /* ActivityInPhoneViewController.xib */,
 				0436C35D1E1F86180033A8F1 /* CommunicatePackageViewController.h */,
 				0436C35E1E1F86180033A8F1 /* CommunicatePackageViewController.m */,
 				0436C35F1E1F86180033A8F1 /* CommunicatePackageViewController.xib */,
@@ -2575,6 +2583,7 @@
 				3CC3E0A81E63C22F00A62F8C /* CustomOrderCell.xib in Resources */,
 				955CCC311D90075D00BC8110 /* https.cer in Resources */,
 				04440D0D1E779B5D00206877 /* Phone.storyboard in Resources */,
+				047479191F10CB2500B8F14E /* ActivityInPhoneViewController.xib in Resources */,
 				04F727B51E641CE4002EB54C /* Debug.xcconfig in Resources */,
 				043638DC1EB1A4AF0064207E /* StatuesViewDetailViewController.xib in Resources */,
 				0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */,
@@ -2786,6 +2795,7 @@
 				3C07E2321EE2577F001AB21D /* MessagePhoneDetailCell.m in Sources */,
 				95B099181DC0DA6A00743877 /* SipEngineManager.mm in Sources */,
 				0436F95A1E1E3DDC00A57E67 /* BGLogation.m in Sources */,
+				047479181F10CB2500B8F14E /* ActivityInPhoneViewController.m in Sources */,
 				3C20C20D1E6CF3CC008078BB /* UNDataTransformation.m in Sources */,
 				95CD340F1D9D1B1900EE5DD3 /* OrderListViewController.m in Sources */,
 				95938D441D93DF87008A0A21 /* AgreementViewController.m in Sources */,

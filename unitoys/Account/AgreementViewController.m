@@ -36,7 +36,7 @@
 #pragma mark - 网络请求
 - (void)loadWebViewWithUrl {
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:[[NSUserDefaults standardUserDefaults] objectForKey:@"userAgreementUrl"]]];
-//    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.baidu.com"]];
+//    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.ugogolife.com/mobile/"]];
     
     [self.loadWebView loadRequest:request];
 }
