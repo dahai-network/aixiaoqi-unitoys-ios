@@ -17,6 +17,10 @@
 		04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04127F661EA5F69100C18201 /* OrderListTableViewCell.xib */; };
 		041BB4B91E5C1F05001C4841 /* TTRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 041BB4B71E5C1F05001C4841 /* TTRangeSlider.m */; };
 		04226B2E1EBC8D8B004B8365 /* UILabel+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 04226B2D1EBC8D8B004B8365 /* UILabel+Extension.m */; };
+		0428D4421F14AAEB00479CF8 /* HelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0428D4401F14AAEB00479CF8 /* HelpViewController.m */; };
+		0428D4431F14AAEB00479CF8 /* HelpViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0428D4411F14AAEB00479CF8 /* HelpViewController.xib */; };
+		0428D4471F14ABD200479CF8 /* HelpTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0428D4451F14ABD200479CF8 /* HelpTableViewCell.m */; };
+		0428D4481F14ABD200479CF8 /* HelpTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0428D4461F14ABD200479CF8 /* HelpTableViewCell.xib */; };
 		043638D61EB0A62F0064207E /* AbordSaveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D41EB0A62F0064207E /* AbordSaveViewController.m */; };
 		043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043638D51EB0A62F0064207E /* AbordSaveViewController.xib */; };
 		043638DB1EB1A4AF0064207E /* StatuesViewDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D91EB1A4AF0064207E /* StatuesViewDetailViewController.m */; };
@@ -431,6 +435,12 @@
 		041BB4B81E5C1F05001C4841 /* TTRangeSliderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTRangeSliderDelegate.h; sourceTree = "<group>"; };
 		04226B2C1EBC8D8B004B8365 /* UILabel+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+Extension.h"; sourceTree = "<group>"; };
 		04226B2D1EBC8D8B004B8365 /* UILabel+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+Extension.m"; sourceTree = "<group>"; };
+		0428D43F1F14AAEB00479CF8 /* HelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpViewController.h; sourceTree = "<group>"; };
+		0428D4401F14AAEB00479CF8 /* HelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpViewController.m; sourceTree = "<group>"; };
+		0428D4411F14AAEB00479CF8 /* HelpViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HelpViewController.xib; sourceTree = "<group>"; };
+		0428D4441F14ABD200479CF8 /* HelpTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpTableViewCell.h; sourceTree = "<group>"; };
+		0428D4451F14ABD200479CF8 /* HelpTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpTableViewCell.m; sourceTree = "<group>"; };
+		0428D4461F14ABD200479CF8 /* HelpTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HelpTableViewCell.xib; sourceTree = "<group>"; };
 		043638D31EB0A62F0064207E /* AbordSaveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbordSaveViewController.h; sourceTree = "<group>"; };
 		043638D41EB0A62F0064207E /* AbordSaveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbordSaveViewController.m; sourceTree = "<group>"; };
 		043638D51EB0A62F0064207E /* AbordSaveViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AbordSaveViewController.xib; sourceTree = "<group>"; };
@@ -2361,6 +2371,12 @@
 				04001D3A1EE50C820084BF67 /* IsBoundingTableViewCell.xib */,
 				95E918541DDC7AA8005DABC0 /* BindDeviceViewController.h */,
 				95E918551DDC7AA8005DABC0 /* BindDeviceViewController.m */,
+				0428D43F1F14AAEB00479CF8 /* HelpViewController.h */,
+				0428D4401F14AAEB00479CF8 /* HelpViewController.m */,
+				0428D4411F14AAEB00479CF8 /* HelpViewController.xib */,
+				0428D4441F14ABD200479CF8 /* HelpTableViewCell.h */,
+				0428D4451F14ABD200479CF8 /* HelpTableViewCell.m */,
+				0428D4461F14ABD200479CF8 /* HelpTableViewCell.xib */,
 				04553F2D1E70EE980025CA34 /* ChooseDeviceTypeViewController.h */,
 				04553F2E1E70EE980025CA34 /* ChooseDeviceTypeViewController.m */,
 				04553F2F1E70EE980025CA34 /* ChooseDeviceTypeViewController.xib */,
@@ -2584,6 +2600,7 @@
 				955CCC311D90075D00BC8110 /* https.cer in Resources */,
 				04440D0D1E779B5D00206877 /* Phone.storyboard in Resources */,
 				047479191F10CB2500B8F14E /* ActivityInPhoneViewController.xib in Resources */,
+				0428D4481F14ABD200479CF8 /* HelpTableViewCell.xib in Resources */,
 				04F727B51E641CE4002EB54C /* Debug.xcconfig in Resources */,
 				043638DC1EB1A4AF0064207E /* StatuesViewDetailViewController.xib in Resources */,
 				0436C3611E1F86180033A8F1 /* CommunicatePackageViewController.xib in Resources */,
@@ -2663,6 +2680,7 @@
 				3C388A7F1EC4186500A04BA8 /* ReceivePhoneTimeController.xib in Resources */,
 				3C7DECE81EC300A100CDCE34 /* OpenServiceMonthCell.xib in Resources */,
 				3C15135B1E796CBD00AF48B6 /* AlarmListViewController.xib in Resources */,
+				0428D4431F14AAEB00479CF8 /* HelpViewController.xib in Resources */,
 				04440D221E77C4C400206877 /* BindChargeCardViewController.xib in Resources */,
 				04F727B31E641CE4002EB54C /* index.html in Resources */,
 				04F727B41E641CE4002EB54C /* Base.xcconfig in Resources */,
@@ -2781,6 +2799,7 @@
 				48EFF6471E37F27600874FC6 /* CallActionView.m in Sources */,
 				95CD33EF1D9CE4F300EE5DD3 /* MD5DataSigner.m in Sources */,
 				740FD3901E287F9E009413F1 /* Makefile in Sources */,
+				0428D4471F14ABD200479CF8 /* HelpTableViewCell.m in Sources */,
 				3CCA72D11E65458900931B20 /* AbroadPackageExplainCell.m in Sources */,
 				954A87B11D98BA6500570843 /* ContactDataHelper.m in Sources */,
 				74A91C651DF7E9A9002B4FCE /* headCollectionReusableView.m in Sources */,
@@ -2819,6 +2838,7 @@
 				95CD33F21D9CE4F300EE5DD3 /* RSADataSigner.m in Sources */,
 				0436C3601E1F86180033A8F1 /* CommunicatePackageViewController.m in Sources */,
 				04A949821E82691F007611F7 /* WristbandSettingTableViewCell.m in Sources */,
+				0428D4421F14AAEB00479CF8 /* HelpViewController.m in Sources */,
 				3CB305E01EE81167004728FB /* UNReadyActivateCell.m in Sources */,
 				3C7DECD51EC2E41000CDCE34 /* ConvenienceServiceCell.m in Sources */,
 				9581594A1DCB7DB8004474FF /* ProfileViewController.m in Sources */,

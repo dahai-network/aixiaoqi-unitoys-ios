@@ -14,6 +14,7 @@
 #import "BindDeviceViewController.h"
 #import "UNBlueToothTool.h"
 #import "IsBoundingTableViewCell.h"
+#import "HelpViewController.h"
 
 #define ANIMATIONTIME 0.6
 
@@ -39,6 +40,7 @@
 @property (weak, nonatomic) IBOutlet UIView *topView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *searchViewCenter;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *searchButtonBottom;
+@property (nonatomic, assign) BOOL isclickedHelpBtn;
 
 @end
 
@@ -53,7 +55,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     //添加接收者
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectedSuccess) name:@"boundSuccess" object:@"boundSuccess"];//绑定成功
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectFail) name:@"connectFail" object:@"connectFail"];//绑定失败
@@ -69,10 +70,11 @@
 - (void)refreshBoundDeviceInfo:(NSNotification *)sender {
     self.isShowBackButton = YES;
     [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
+    [self setRightButton:@"帮助"];
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
     self.deviceDataArr = sender.object;
     if (sender) {
-        [self.cancelButton setTitle:@"首选连接" forState:UIControlStateNormal];
+        [self.cancelButton setTitle:@"重新搜索" forState:UIControlStateNormal];
         [self changeFrame];
         UNDebugLogVerbose(@"传过来的设备数组:%@", self.deviceDataArr);
     } else {
@@ -88,11 +90,30 @@
     }
 }
 
+- (void)rightButtonClick {
+    if (self.isShowBackButton) {
+        self.isclickedHelpBtn = YES;
+        HelpViewController *helpVC = [[HelpViewController alloc] init];
+        [self.navigationController pushViewController:helpVC animated:YES];
+    }
+}
+
 - (void)searchNoDevice {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    if (!self.isclickedHelpBtn) {
+        [self beginToScan];
+    } else {
+        self.isclickedHelpBtn = NO;
+    }
+}
+
+#pragma mark 开始扫描
+- (void)beginToScan {
+    [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
     self.handupImg.hidden = YES;
     [self returnFrame];
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_by_z"];
@@ -133,6 +154,7 @@
 
 - (void)returnFrame {
     [self setLeftButton:@""];
+    [self setRightButton:@""];
     self.title = @"";
     self.topView.hidden = NO;
     self.isShowBackButton = NO;
@@ -160,24 +182,17 @@
 
 #pragma mark 取消扫描
 - (IBAction)cancelScanAction:(UIButton *)sender {
-    if ([sender.titleLabel.text isEqualToString:@"首选连接"]) {
-        //首选连接
-        for (int i = 0; i < self.deviceDataArr.count; i++) {
-            NSDictionary *info = self.deviceDataArr[i];
-            if ([info[@"isAlreadyBind"] isEqualToString:@"0"]) {
-                NSString *indexRow = [NSString stringWithFormat:@"%d", i];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"clickAndConnectingPer" object:indexRow];
-                UNDebugLogVerbose(@"发送过去连接的是第几个：%@", indexRow);
-                return;
-            }
-        }
+    if ([sender.titleLabel.text isEqualToString:@"重新搜索"]) {
+        //重新搜索
+        [self beginToScan];
     } else if ([sender.titleLabel.text isEqualToString:@"暂不绑定"]) {
         self.handupImg.hidden = YES;
         [self.handupImg stopAnimating];
         [[UNBlueToothTool shareBlueToothTool] cancelToBound];
         self.isShowBackButton = YES;
-        [self.cancelButton setTitle:@"首选连接" forState:UIControlStateNormal];
+        [self.cancelButton setTitle:@"重新搜索" forState:UIControlStateNormal];
         [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
+        [self setRightButton:@"帮助"];
         //            self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
         [self changeFrame];
     } else if ([sender.titleLabel.text isEqualToString:@"暂不搜索"]) {

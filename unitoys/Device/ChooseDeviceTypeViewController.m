@@ -85,8 +85,8 @@
         if (!self.isBoundingVC) {
             self.isBoundingVC = [[IsBoundingViewController alloc] init];
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
-        [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
+//        [BlueToothDataManager shareManager].isNeedToBoundDevice = YES;
         [self.navigationController pushViewController:self.isBoundingVC animated:YES];
     } else {
         HUDNormal(INTERNATIONALSTRING(@"请开启蓝牙"))
