@@ -39,7 +39,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="四步轻松激活流量卡" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SRW-9M-sWu">
-                    <rect key="frame" x="69" y="91" width="237.5" height="31.5"/>
+                    <rect key="frame" x="69" y="74" width="237.5" height="31.5"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="31.5" id="J4J-d4-HXj"/>
                     </constraints>
@@ -48,7 +48,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设置-&gt;SIM卡应用程序-&gt;激活-&gt;长按粘贴后发送-&gt;激活成功后点接受-&gt;接受返回爱小器" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K5H-OG-hLJ">
-                    <rect key="frame" x="20" y="136.5" width="335" height="37"/>
+                    <rect key="frame" x="20" y="110.5" width="335" height="37"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="37" id="Hya-02-Ky2"/>
                     </constraints>
@@ -57,7 +57,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PKF-tZ-V17">
-                    <rect key="frame" x="20" y="584" width="335" height="47"/>
+                    <rect key="frame" x="20" y="600" width="335" height="47"/>
                     <color key="backgroundColor" red="0.0" green="0.87450980392156863" blue="0.41568627450980389" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="47" id="zDF-0G-RdK"/>
@@ -72,38 +72,54 @@
                             <integer key="value" value="5"/>
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="goToSystemSetView:" destination="-1" eventType="touchUpInside" id="GdH-2H-JVf"/>
+                    </connections>
                 </button>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="set_afteroutstep3" translatesAutoresizingMaskIntoConstraints="NO" id="X3V-Nq-NvM">
-                    <rect key="frame" x="66" y="208.5" width="242" height="325.5"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7BE-4e-1Jw">
+                    <rect key="frame" x="0.0" y="147.5" width="375" height="452.5"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="set_afteroutstep3" translatesAutoresizingMaskIntoConstraints="NO" id="X3V-Nq-NvM">
+                            <rect key="frame" x="53" y="44" width="269" height="365"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="269" id="PRd-YT-d2G"/>
+                                <constraint firstAttribute="height" constant="365" id="pwx-4t-HKC"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="5"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </imageView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="X3V-Nq-NvM" secondAttribute="height" multiplier="245:330" id="pIH-Fe-L1V"/>
+                        <constraint firstItem="X3V-Nq-NvM" firstAttribute="centerY" secondItem="7BE-4e-1Jw" secondAttribute="centerY" id="LYB-c3-nsO"/>
+                        <constraint firstItem="X3V-Nq-NvM" firstAttribute="centerX" secondItem="7BE-4e-1Jw" secondAttribute="centerX" id="kDC-qc-TvN"/>
                     </constraints>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                            <integer key="value" value="5"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </imageView>
+                </view>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.62745098039215685" blue="0.9137254901960784" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="K5H-OG-hLJ" firstAttribute="top" secondItem="SRW-9M-sWu" secondAttribute="bottom" constant="14" id="53r-0f-p1q"/>
-                <constraint firstItem="SRW-9M-sWu" firstAttribute="top" secondItem="WXV-iU-0ZE" secondAttribute="bottom" constant="27" id="ARO-z5-KPc"/>
+                <constraint firstItem="K5H-OG-hLJ" firstAttribute="top" secondItem="SRW-9M-sWu" secondAttribute="bottom" constant="5" id="53r-0f-p1q"/>
+                <constraint firstItem="SRW-9M-sWu" firstAttribute="top" secondItem="WXV-iU-0ZE" secondAttribute="bottom" constant="10" id="ARO-z5-KPc"/>
+                <constraint firstItem="7BE-4e-1Jw" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="BqH-5z-0wx"/>
                 <constraint firstAttribute="trailing" secondItem="PKF-tZ-V17" secondAttribute="trailing" constant="20" id="FfF-xn-4JQ"/>
+                <constraint firstAttribute="trailing" secondItem="7BE-4e-1Jw" secondAttribute="trailing" id="HoV-r9-UXW"/>
+                <constraint firstItem="7BE-4e-1Jw" firstAttribute="top" secondItem="K5H-OG-hLJ" secondAttribute="bottom" id="I79-1I-Ig3"/>
                 <constraint firstAttribute="trailing" secondItem="K5H-OG-hLJ" secondAttribute="trailing" constant="20" id="J2S-rT-Ibv"/>
-                <constraint firstItem="PKF-tZ-V17" firstAttribute="top" secondItem="X3V-Nq-NvM" secondAttribute="bottom" constant="50" id="MgV-Wj-89a"/>
+                <constraint firstItem="PKF-tZ-V17" firstAttribute="top" secondItem="7BE-4e-1Jw" secondAttribute="bottom" id="JAG-vI-Btv"/>
                 <constraint firstItem="K5H-OG-hLJ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="UgX-VA-Xhu"/>
                 <constraint firstItem="PKF-tZ-V17" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="YhM-Ft-4xv"/>
                 <constraint firstItem="7vD-SY-URH" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="aoE-7V-bdx"/>
-                <constraint firstItem="X3V-Nq-NvM" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="eGn-23-vWI"/>
                 <constraint firstItem="WXV-iU-0ZE" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="5" id="gbd-iT-QEg"/>
-                <constraint firstAttribute="bottom" secondItem="PKF-tZ-V17" secondAttribute="bottom" constant="36" id="iX8-aT-EPo"/>
+                <constraint firstAttribute="bottom" secondItem="PKF-tZ-V17" secondAttribute="bottom" constant="20" id="iX8-aT-EPo"/>
                 <constraint firstItem="WXV-iU-0ZE" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="20" id="o7b-FO-3U3"/>
-                <constraint firstItem="X3V-Nq-NvM" firstAttribute="top" secondItem="K5H-OG-hLJ" secondAttribute="bottom" constant="35" id="oRi-3c-lWb"/>
                 <constraint firstItem="7vD-SY-URH" firstAttribute="centerY" secondItem="WXV-iU-0ZE" secondAttribute="centerY" id="ojN-7f-a70"/>
                 <constraint firstItem="SRW-9M-sWu" firstAttribute="centerX" secondItem="7vD-SY-URH" secondAttribute="centerX" id="uVX-NG-Y7q"/>
             </constraints>
+            <point key="canvasLocation" x="33.5" y="53.5"/>
         </view>
     </objects>
     <resources>

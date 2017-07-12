@@ -99,9 +99,9 @@
 #pragma mark 爱小器卡在手机中
 - (void)simCardInPhoneAction {
     UNDebugLogVerbose(@"爱小器卡已放入手机");
-//    [self activeSIMCardInPhoneAction];
-    ActivityInPhoneViewController *activityInPhoneVC = [[ActivityInPhoneViewController alloc] init];
-    [self presentViewController:activityInPhoneVC animated:YES completion:nil];
+    [self activeSIMCardInPhoneAction];
+//    ActivityInPhoneViewController *activityInPhoneVC = [[ActivityInPhoneViewController alloc] init];
+//    [self presentViewController:activityInPhoneVC animated:YES completion:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -183,8 +183,10 @@
             NSString *code = [self convertActivationCode:responseObj[@"data"][@"Data"]];
             [self pasteCode:code];
             
-            UNMobileActivateController * activateVc = [[UNMobileActivateController alloc] init];
-            [self.navigationController pushViewController:activateVc animated:YES];
+//            UNMobileActivateController * activateVc = [[UNMobileActivateController alloc] init];
+//            [self.navigationController pushViewController:activateVc animated:YES];
+            ActivityInPhoneViewController *activityInPhoneVC = [[ActivityInPhoneViewController alloc] init];
+            [self presentViewController:activityInPhoneVC animated:YES completion:nil];
         }else if (type == ResponseTypeFailed){
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
         }

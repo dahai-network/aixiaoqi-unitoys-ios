@@ -57,7 +57,7 @@
 }
 
 - (void)viewDidLoad {
-    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_SIGNALSTRONG]   || ![BlueToothDataManager shareManager].isShowStatuesView) {
+    if (![self isNeedToShowBLEStatue]) {
         [UNDataTools sharedInstance].tipStatusHeight = 0;
     }else{
         [UNDataTools sharedInstance].tipStatusHeight = STATUESVIEWHEIGHT;
@@ -146,7 +146,7 @@
         [UNDataTools sharedInstance].tipStatusHeight = self.statuesView.un_height;
     }
     
-    self.pageViewController.view.frame = CGRectMake(0, self.statuesView.frame.size.height, kScreenWidthValue, kScreenHeightValue-49-self.statuesView.frame.size.height);
+    self.pageViewController.view.frame = CGRectMake(0, self.statuesView.un_height, kScreenWidthValue, kScreenHeightValue-49-self.statuesView.un_height);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statuBarHeightChange:) name:@"changeStatuesViewLable" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比

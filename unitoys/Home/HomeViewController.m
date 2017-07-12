@@ -1664,7 +1664,7 @@
         }
             break;
         case 4:
-            HUDNormal(@"敬请期待")
+//            HUDNormal(@"敬请期待")
             break;
         default:
             break;

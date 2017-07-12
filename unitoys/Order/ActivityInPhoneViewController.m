@@ -23,6 +23,16 @@
 - (IBAction)dismissToBackView:(UIButton *)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+- (IBAction)goToSystemSetView:(UIButton *)sender {
+    if (kSystemVersionValue >= 8.0) {
+        if (kSystemVersionValue >= 10.0) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-Prefs:root=Phone"] options:@{}     completionHandler:nil];
+        }else{
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-Prefs:root=Phone"]];
+        }
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

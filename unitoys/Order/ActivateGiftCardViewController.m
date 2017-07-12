@@ -49,6 +49,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnHowToUseAbord;
 //回国后恢复设置按钮
 @property (weak, nonatomic) IBOutlet UIButton *btnResetGoBack;
+@property (nonatomic, assign) BOOL isPushedNextView;
 
 
 @property (nonatomic, strong) HTTPServer *localHttpServer;//本地服务器
@@ -102,7 +103,9 @@
     if (self.isPaySuccess) {
         [self.navigationController popToRootViewControllerAnimated:YES];
     }
-    self.isPaySuccess = YES;
+    if (!self.isPushedNextView) {
+        self.isPaySuccess = YES;
+    }
 }
 
 
@@ -142,7 +145,7 @@
             
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
 //            self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
-            [self.firstCell.lblOrderPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]]];
+            [self.firstCell.lblOrderPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f", [responseObj[@"data"][@"list"][@"UnitPrice"] floatValue]]];
             [self.tableView reloadData];
             self.cancelButton.enabled = YES;
             self.activateButton.enabled = YES;
@@ -166,7 +169,7 @@
             
             self.firstCell.lblOrderName.text = responseObj[@"data"][@"list"][@"PackageName"];
 //            self.firstCell.lblOrderPrice.text = [NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]];
-            [self.firstCell.lblOrderPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%@", responseObj[@"data"][@"list"][@"UnitPrice"]]];
+            [self.firstCell.lblOrderPrice changeLabelTexeFontWithString:[NSString stringWithFormat:@"￥%.2f", [responseObj[@"data"][@"list"][@"UnitPrice"] floatValue]]];
             self.apnName = responseObj[@"data"][@"list"][@"PackageApnName"];
             [self.tableView reloadData];
         }else{
@@ -326,7 +329,7 @@
                     self.secondCell.lblContent.text = [self checkPaymentModelWithPayment:self.dicOrderDetail[@"PaymentMethod"]];
                 } else if (indexPath.row == 1) {
                     self.secondCell.lblContentName.text = INTERNATIONALSTRING(@"总价");
-                    self.secondCell.lblContent.text = [NSString stringWithFormat:@"￥%@", self.dicOrderDetail[@"TotalPrice"]];
+                    self.secondCell.lblContent.text = [NSString stringWithFormat:@"￥%.2f", [self.dicOrderDetail[@"TotalPrice"] floatValue]];
                 } else {
                     NSLog(@"又出问题了");
                 }
@@ -420,6 +423,7 @@
                     packageDetailViewController.currentTitle = self.packageName;
                     packageDetailViewController.isSupport4G = [self.IsSupport4G boolValue];
                     packageDetailViewController.isApn = [self.IsApn boolValue];
+                    self.isPushedNextView = YES;
                     [self.navigationController pushViewController:packageDetailViewController animated:YES];
                 }
                 break;

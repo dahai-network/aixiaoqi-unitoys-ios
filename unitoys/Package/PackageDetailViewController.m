@@ -19,7 +19,7 @@
     
     if (self.isAbroadMessage) {
 //        self.title = self.currentTitle;
-        [self setRightButton:INTERNATIONALSTRING(@"使用教程")];
+//        [self setRightButton:INTERNATIONALSTRING(@"使用教程")];
     }else{
         self.title = INTERNATIONALSTRING(@"套餐详情");
     }
