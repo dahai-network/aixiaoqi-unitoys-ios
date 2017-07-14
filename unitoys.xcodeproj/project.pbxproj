@@ -21,6 +21,8 @@
 		0428D4431F14AAEB00479CF8 /* HelpViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0428D4411F14AAEB00479CF8 /* HelpViewController.xib */; };
 		0428D4471F14ABD200479CF8 /* HelpTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0428D4451F14ABD200479CF8 /* HelpTableViewCell.m */; };
 		0428D4481F14ABD200479CF8 /* HelpTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0428D4461F14ABD200479CF8 /* HelpTableViewCell.xib */; };
+		0428D44A1F17226900479CF8 /* activityInPhone.gif in Resources */ = {isa = PBXBuildFile; fileRef = 0428D4491F17226900479CF8 /* activityInPhone.gif */; };
+		0428D4501F17551C00479CF8 /* 手机内激活0713.mov in Resources */ = {isa = PBXBuildFile; fileRef = 0428D44F1F17551C00479CF8 /* 手机内激活0713.mov */; };
 		043638D61EB0A62F0064207E /* AbordSaveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D41EB0A62F0064207E /* AbordSaveViewController.m */; };
 		043638D71EB0A62F0064207E /* AbordSaveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 043638D51EB0A62F0064207E /* AbordSaveViewController.xib */; };
 		043638DB1EB1A4AF0064207E /* StatuesViewDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 043638D91EB1A4AF0064207E /* StatuesViewDetailViewController.m */; };
@@ -441,6 +443,9 @@
 		0428D4441F14ABD200479CF8 /* HelpTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpTableViewCell.h; sourceTree = "<group>"; };
 		0428D4451F14ABD200479CF8 /* HelpTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpTableViewCell.m; sourceTree = "<group>"; };
 		0428D4461F14ABD200479CF8 /* HelpTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HelpTableViewCell.xib; sourceTree = "<group>"; };
+		0428D4491F17226900479CF8 /* activityInPhone.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = activityInPhone.gif; sourceTree = "<group>"; };
+		0428D44E1F17500600479CF8 /* 手机内激活0713.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "手机内激活0713.mp4"; sourceTree = "<group>"; };
+		0428D44F1F17551C00479CF8 /* 手机内激活0713.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "手机内激活0713.mov"; sourceTree = "<group>"; };
 		043638D31EB0A62F0064207E /* AbordSaveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbordSaveViewController.h; sourceTree = "<group>"; };
 		043638D41EB0A62F0064207E /* AbordSaveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbordSaveViewController.m; sourceTree = "<group>"; };
 		043638D51EB0A62F0064207E /* AbordSaveViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AbordSaveViewController.xib; sourceTree = "<group>"; };
@@ -2362,6 +2367,9 @@
 		95E918531DDC7A97005DABC0 /* Device */ = {
 			isa = PBXGroup;
 			children = (
+				0428D44F1F17551C00479CF8 /* 手机内激活0713.mov */,
+				0428D44E1F17500600479CF8 /* 手机内激活0713.mp4 */,
+				0428D4491F17226900479CF8 /* activityInPhone.gif */,
 				04553F371E73FB840025CA34 /* scan.gif */,
 				043965C11E07DF9D00B67989 /* IsBoundingViewController.h */,
 				043965C21E07DF9D00B67989 /* IsBoundingViewController.m */,
@@ -2619,6 +2627,7 @@
 				04440D291E77C6BA00206877 /* ExplainDetailsChildController.xib in Resources */,
 				3C7DECD61EC2E41000CDCE34 /* ConvenienceServiceCell.xib in Resources */,
 				3CCA72D21E65458900931B20 /* AbroadPackageExplainCell.xib in Resources */,
+				0428D4501F17551C00479CF8 /* 手机内激活0713.mov in Resources */,
 				04AFE6631EC435C800B3BC8F /* HavePackageDetailTableViewCell.xib in Resources */,
 				04440CFF1E77910F00206877 /* Package.storyboard in Resources */,
 				3C52B1FD1E5ED20E001E67C4 /* logo_callKit@2x.png in Resources */,
@@ -2639,6 +2648,7 @@
 				3C7DECF21EC31EE600CDCE34 /* OpenServiceBottomView.xib in Resources */,
 				04F727B61E641CE4002EB54C /* ReadMe.txt in Resources */,
 				04127F681EA5F69100C18201 /* OrderListTableViewCell.xib in Resources */,
+				0428D44A1F17226900479CF8 /* activityInPhone.gif in Resources */,
 				04DA1BF11E164A6400C50904 /* appleCallComing.wav in Resources */,
 				3CF1A69B1EBD7FCC00E765AF /* Default-568h@2x.png in Resources */,
 				04440D141E779CF900206877 /* Device.storyboard in Resources */,

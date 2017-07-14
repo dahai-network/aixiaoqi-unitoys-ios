@@ -1702,6 +1702,7 @@
 -(void)startBgTask
 {
     [_task beginNewBackgroundTask];
+    
 }
 
 void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void *context) {

@@ -65,6 +65,8 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 
 @interface BaseViewController : UIViewController
 
+@property (nonatomic, weak) UIButton * closeItem;
+
 @property (strong,nonatomic) NSMutableDictionary *params;
 
 @property (strong,nonatomic) NSMutableDictionary *headers;
@@ -97,6 +99,10 @@ hud.mode = MBProgressHUDModeIndeterminate;}
 -(void)setLeftButton:(id)LeftButton;
 
 -(void)leftButtonClick;
+
+-(void)setLeftView;
+-(void)back;
+- (void)clickedCloseItem:(UIButton *)btn;
 
 - (BOOL)isShowLeftButton;
 

@@ -16,14 +16,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    [self setLeftView];
     if (self.titleStr && ![self.titleStr isEqualToString:@"null"]) {
         self.title = self.titleStr;
     } else {
         self.title = INTERNATIONALSTRING(@"广告");
     }
     self.webview.delegate = self;
+    //清除UIWebView的缓存
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [self.webview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.loadUrl]]];
     // Do any additional setup after loading the view.
+}
+
+- (void)back {
+    if (self.webview.canGoBack) {
+        [self.webview goBack];
+        self.closeItem.hidden = NO;
+    }else{
+        [self clickedCloseItem:nil];
+    }
 }
 
 #pragma mark - 代理方法
@@ -46,6 +60,17 @@
     [act startAnimating];
 }
 
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
+    
+    
+    NSLog(@"url: %@", request.URL.absoluteURL.description);
+    
+    if (self.webview.canGoBack) {
+        self.closeItem.hidden = NO;
+    }
+    return YES;
+}
+
 #pragma mark 加载失败的时候调用
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     //    取消View
@@ -64,6 +89,10 @@
     [act stopAnimating];
     UIView *view = [self.view viewWithTag:108];
     [view removeFromSuperview];
+    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+    if (self.webview.canGoBack) {
+        self.closeItem.hidden = NO;
+    }
 }
 
 - (void)showAlertWithMessage:(NSString *)message {

@@ -185,8 +185,17 @@
             
 //            UNMobileActivateController * activateVc = [[UNMobileActivateController alloc] init];
 //            [self.navigationController pushViewController:activateVc animated:YES];
+            
             ActivityInPhoneViewController *activityInPhoneVC = [[ActivityInPhoneViewController alloc] init];
-            [self presentViewController:activityInPhoneVC animated:YES completion:nil];
+            
+            CATransition *transition = [CATransition animation];
+            transition.duration = 0.3f;
+            transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+            transition.type = kCATransitionMoveIn;
+            transition.subtype = kCATransitionFromTop;
+            [self.navigationController.view.layer addAnimation:transition forKey:nil];
+            [self.navigationController pushViewController:activityInPhoneVC animated:NO];
+            
         }else if (type == ResponseTypeFailed){
             NSLog(@"请求失败：%@", responseObj[@"msg"]);
         }

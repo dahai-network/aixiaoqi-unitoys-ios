@@ -30,6 +30,42 @@
 //    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"btn_back"] imageWithRenderingMode:/*去除渲染效果*/UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(leftButtonAction)];
 }
 
+-(void)setLeftView{
+    UIButton *CustomView=[[UIButton alloc]initWithFrame:CGRectMake(0, 10, 100, 30)];
+    
+    UIButton * backItem = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 56, 30)];
+    [backItem setImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
+    [backItem setImageEdgeInsets:UIEdgeInsetsMake(-2, 0, 0, 0)];
+    [backItem setTitle:@"返回" forState:UIControlStateNormal];
+    [backItem setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+    backItem.titleLabel.font = [UIFont systemFontOfSize:16.5];
+    [backItem setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [backItem addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
+    [CustomView addSubview:backItem];
+    
+    UIButton * closeItem = [[UIButton alloc]initWithFrame:CGRectMake(backItem.un_width, 0, 44, 30)];
+    [closeItem setTitle:@"关闭" forState:UIControlStateNormal];
+    closeItem.titleLabel.font = [UIFont systemFontOfSize:16.5];
+    [closeItem setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [closeItem addTarget:self action:@selector(clickedCloseItem:) forControlEvents:UIControlEventTouchUpInside];
+    closeItem.hidden = YES;
+    self.closeItem = closeItem;
+    [CustomView addSubview:closeItem];
+    
+    self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc]initWithCustomView:CustomView];
+    
+}
+
+#pragma mark------返回
+-(void)back{
+    
+}
+
+#pragma mark - clickedCloseItem
+- (void)clickedCloseItem:(UIButton *)btn{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)leftButtonAction {
     [self.navigationController popViewControllerAnimated:YES];
 }
