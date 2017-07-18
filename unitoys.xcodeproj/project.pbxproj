@@ -444,7 +444,6 @@
 		0428D4451F14ABD200479CF8 /* HelpTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpTableViewCell.m; sourceTree = "<group>"; };
 		0428D4461F14ABD200479CF8 /* HelpTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HelpTableViewCell.xib; sourceTree = "<group>"; };
 		0428D4491F17226900479CF8 /* activityInPhone.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = activityInPhone.gif; sourceTree = "<group>"; };
-		0428D44E1F17500600479CF8 /* 手机内激活0713.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "手机内激活0713.mp4"; sourceTree = "<group>"; };
 		0428D44F1F17551C00479CF8 /* 手机内激活0713.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = "手机内激活0713.mov"; sourceTree = "<group>"; };
 		043638D31EB0A62F0064207E /* AbordSaveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbordSaveViewController.h; sourceTree = "<group>"; };
 		043638D41EB0A62F0064207E /* AbordSaveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbordSaveViewController.m; sourceTree = "<group>"; };
@@ -2368,7 +2367,6 @@
 			isa = PBXGroup;
 			children = (
 				0428D44F1F17551C00479CF8 /* 手机内激活0713.mov */,
-				0428D44E1F17500600479CF8 /* 手机内激活0713.mp4 */,
 				0428D4491F17226900479CF8 /* activityInPhone.gif */,
 				04553F371E73FB840025CA34 /* scan.gif */,
 				043965C11E07DF9D00B67989 /* IsBoundingViewController.h */,

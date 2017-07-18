@@ -18,6 +18,7 @@
 #import "UNPushKitMessageManager.h"
 #import "NSString+Extension.h"
 #import "UNDataTools.h"
+#import "UNNetWorkStatuManager.h"
 
 #import "UNCreatLocalNoti.h"
 
@@ -665,7 +666,8 @@ static UNBlueToothTool *instance = nil;
             [self.mgr stopScan];
             [BlueToothDataManager shareManager].isShowStatuesView = YES;
             //蓝牙未开
-            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_BLNOTOPEN];
+//            [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_BLNOTOPEN];
+            [self changeBleStatue];
             if (![BlueToothDataManager shareManager].isOpened) {
                 if ([BlueToothDataManager shareManager].executeNum < 3) {
                     //第一次什么都不执行
@@ -1125,6 +1127,7 @@ static UNBlueToothTool *instance = nil;
         [self updataToCard];
         [BlueToothDataManager shareManager].isRegisted = NO;
         [BlueToothDataManager shareManager].isBeingRegisting = YES;
+        [BlueToothDataManager shareManager].isRegistedFail = NO;
         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
         [self sendDataToVSW:self.normalAuthSimString];
         self.normalAuthSimString = nil;
@@ -1173,7 +1176,8 @@ static UNBlueToothTool *instance = nil;
                     [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
                 } else {
                     DebugUNLog(@"服务未开");
-                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+//                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                    [self changeBleStatue];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
                 }
             }
@@ -1237,7 +1241,8 @@ static UNBlueToothTool *instance = nil;
         [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
     } else {
         DebugUNLog(@"服务未开");
-        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+//        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+        [self changeBleStatue];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
     }
 }
@@ -1325,7 +1330,8 @@ static UNBlueToothTool *instance = nil;
             [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
         } else {
             DebugUNLog(@"服务未开");
-            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+//            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+            [self changeBleStatue];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
         }
     }
@@ -1688,6 +1694,7 @@ static UNBlueToothTool *instance = nil;
 {
     if ([BlueToothDataManager shareManager].isConnected) {
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+            [BlueToothDataManager shareManager].isRegistedFail = NO;
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
         } else {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTSERVICE];
@@ -1703,6 +1710,7 @@ static UNBlueToothTool *instance = nil;
         if (![BlueToothDataManager shareManager].isHaveCard) {
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOTINSERTCARD];
         } else {
+            [BlueToothDataManager shareManager].isRegistedFail = NO;
             [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
         }
     } else {
@@ -1857,7 +1865,8 @@ static UNBlueToothTool *instance = nil;
                     [self sendMessageToBLEWithType:BLECardTypeAndICCID validData:nil];
                 } else {
                     DebugUNLog(@"服务未开");
-                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+//                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                    [self changeBleStatue];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
                 }
                 [self bindBoundDevice];
@@ -2061,6 +2070,7 @@ static UNBlueToothTool *instance = nil;
                         [self phoneCardToOutageNew];
                         UNLogLBEProcess(@"不是大王卡")
                         [BlueToothDataManager shareManager].cardType = @"2";
+                        [BlueToothDataManager shareManager].isRegistedFail = NO;
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
                         //判断是否有指定套餐，并创建连接
                         [BlueToothDataManager shareManager].bleStatueForCard = 2;
@@ -2345,8 +2355,8 @@ static UNBlueToothTool *instance = nil;
                                 if ([[BlueToothDataManager shareManager].iccidFromTcp isEqualToString:[BlueToothDataManager shareManager].iccidFromBle] && dict) {
                                     //在线
                                     UNLogLBEProcess(@"同一张卡在线%s,%d", __FUNCTION__, __LINE__)
-                                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
                                     [BlueToothDataManager shareManager].isRegisted = YES;
+                                    [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_SIGNALSTRONG];
                                     [UNPushKitMessageManager shareManager].iccidString = [BlueToothDataManager shareManager].iccidFromTcp;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"isAlreadOnlineAndSendJumpDataNotifi" object:@"isAlreadOnlineAndSendJumpDataNotifi"];
                                 } else {
@@ -2402,6 +2412,7 @@ static UNBlueToothTool *instance = nil;
 }
 
 - (void)registSimCardStep {
+    [BlueToothDataManager shareManager].isRegistedFail = NO;
     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_REGISTING];
     //判断是否有指定套餐，并创建连接
     [BlueToothDataManager shareManager].bleStatueForCard = 2;
@@ -2437,6 +2448,7 @@ static UNBlueToothTool *instance = nil;
                         [self checkUserIsExistAppointPackage];
                     }
                 }else{
+                    [BlueToothDataManager shareManager].isRegistedFail = YES;
                     [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
                 }
                 
@@ -2859,6 +2871,7 @@ static UNBlueToothTool *instance = nil;
                         }
                     } else {
                         [self showHudNormalString:INTERNATIONALSTRING(@"电话卡运营商不属于三大运营商")];
+                        [BlueToothDataManager shareManager].isRegistedFail = YES;
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
                     }
                 });
@@ -2890,6 +2903,7 @@ static UNBlueToothTool *instance = nil;
                         }
                     } else {
                         [self showHudNormalString:INTERNATIONALSTRING(@"电话卡运营商不属于三大运营商")];
+                        [BlueToothDataManager shareManager].isRegistedFail = YES;
                         [self setButtonImageAndTitleWithTitle:HOMESTATUETITLE_NOSIGNAL];
                     }
                 });
@@ -3773,6 +3787,71 @@ static UNBlueToothTool *instance = nil;
         //
         UNDebugLogVerbose(@"啥都没：%@",[error description]);
     } headers:self.headers];
+}
+
+- (void)changeBleStatue {
+    if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
+        //无网络
+        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NETWORKCANNOTUSE;
+    } else {
+        if (![BlueToothDataManager shareManager].isBounded) {
+            //未绑定
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTBOUND;
+        } else {
+            if (![BlueToothDataManager shareManager].isOpened) {
+                //蓝牙未开
+                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_BLNOTOPEN;
+            } else {
+                if (![BlueToothDataManager shareManager].isConnected) {
+                    //未连接
+                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTCONNECTED;
+                } else {
+                    if ([BlueToothDataManager shareManager].isLbeConnecting) {
+                        //连接中
+                        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_CONNECTING;
+                    } else {
+                        if ([[BlueToothDataManager shareManager].operatorType intValue] == 4) {
+                            //爱小器卡
+                            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_AIXIAOQICARD;
+                        } else {
+                            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                                if ([[BlueToothDataManager shareManager].operatorType intValue] == 5) {
+                                    //未插卡
+                                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTINSERTCARD;
+                                } else {
+                                    if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"0"]) {
+                                        //读取卡失败
+                                        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_READCARDFAIL;
+                                    } else {
+                                        if ([BlueToothDataManager shareManager].isBeingRegisting) {
+                                            //注册中
+                                            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_REGISTING;
+                                        } else {
+                                            if ([BlueToothDataManager shareManager].isRegisted) {
+                                                //信号强
+                                                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_SIGNALSTRONG;
+                                            } else {
+                                                if ([BlueToothDataManager shareManager].isRegistedFail) {
+                                                    //注册失败
+                                                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOSIGNAL;
+                                                } else {
+                                                    //默认
+                                                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_REGISTING;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                //服务关闭
+                                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 

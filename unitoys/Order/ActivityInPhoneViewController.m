@@ -15,6 +15,13 @@
 @interface ActivityInPhoneViewController ()
 @property (weak, nonatomic) IBOutlet UIImageView *gifView;
 @property (nonatomic, strong) AVPlayer *player;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topDistance;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *subtopDistance;
+@property (weak, nonatomic) IBOutlet UILabel *subtitle;
+@property (weak, nonatomic) IBOutlet UILabel *detailLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomDistance;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *detailLabelHeight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageViewY;
 
 @end
 
@@ -23,15 +30,46 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"手机内激活";
+    [self layoutViewDistance];
     self.player = [self player];
     
     [self setLeftButton:[UIImage imageNamed:@"x"]];
     
-    [self setRightButton:@"帮助"];
+//    [self setRightButton:@"帮助"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restartPlay) name:@"appEnterForeground" object:@"appEnterForeground"];
     
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)layoutViewDistance {
+    if (kScreenHeightValue <= 568) {
+        self.topDistance.constant = 0;
+        self.subtopDistance.constant = 5;
+        self.bottomDistance.constant = 20;
+        self.subtitle.font = [UIFont systemFontOfSize:18];
+        self.detailLabel.font = [UIFont systemFontOfSize:12];
+        self.detailLabelHeight.constant = 29;
+    } else if (kScreenHeightValue > 568 && kScreenHeightValue <= 667) {
+        self.topDistance.constant = 15;
+        self.subtopDistance.constant = 20;
+        self.bottomDistance.constant = 36;
+        self.subtitle.font = [UIFont systemFontOfSize:26];
+        self.detailLabel.font = [UIFont systemFontOfSize:14];
+        self.detailLabelHeight.constant = 40;
+        [UILabel changeLineSpaceForLabel:self.detailLabel WithSpace:5];
+    } else if (kScreenHeightValue > 667 && kScreenHeightValue <= 736) {
+        self.topDistance.constant = 30;
+        self.subtopDistance.constant = 20;
+        self.bottomDistance.constant = 36;
+        self.subtitle.font = [UIFont systemFontOfSize:26];
+        self.detailLabel.font = [UIFont systemFontOfSize:14];
+        self.detailLabelHeight.constant = 40;
+        [UILabel changeLineSpaceForLabel:self.detailLabel WithSpace:5];
+        self.imageViewY.constant = -10;
+    } else {
+        DebugUNLog(@"这是什么尺寸");
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

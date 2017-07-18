@@ -160,7 +160,9 @@
 }
 
 - (void)changeStatueViewHeightWithString:(NSString *)statueStr {
-    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
+    [self changeBleStatue];
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:[BlueToothDataManager shareManager].statuesTitleString];
+//    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
     if (![self isNeedToShowBLEStatue]) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
@@ -175,6 +177,7 @@
 }
 
 - (void)showRegistProgress:(NSNotification *)sender {
+    [self changeBleStatue];
     NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
     NSLog(@"接收到传过来的通知 -- %@", senderStr);
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {
@@ -233,7 +236,8 @@
             });
         } else {
             DebugUNLog(@"服务未开");
-            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+//            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+            [self changeBleStatue];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
         }
     }
@@ -411,6 +415,7 @@
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     [self checkPackageResidue];
     [self checkBLEStatue];
+    [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
 }
 
 - (void)checkBLEStatue {
@@ -613,7 +618,8 @@
                 if ([BlueToothDataManager shareManager].isConnected && [BlueToothDataManager shareManager].isTcpConnected) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"closeServiceNotifi" object:@"closeServiceNotifi"];
                 }
-                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+//                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                [self changeBleStatue];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:HOMESTATUETITLE_NOTSERVICE];
             }];
         }

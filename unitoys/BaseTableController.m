@@ -13,6 +13,7 @@
 #import "WXApi.h"
 #import "UIBarButtonItem+Extension.h"
 #import "BlueToothDataManager.h"
+#import "UNNetWorkStatuManager.h"
 
 @implementation BaseTableController
 
@@ -588,15 +589,19 @@ withDateFormat:(NSString *)format
 
 - (void)setStatuesLabelTextWithLabel:(UILabel *)label String:(NSString *)string {
     if ([string isEqualToString:HOMESTATUETITLE_NETWORKCANNOTUSE]) {
-        label.text = @"当前网络不可用，请检查你的网络设置。";
-    } else if ([string isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
-        label.text = @"请先绑定爱小器智能通讯硬件。";
+        label.text = @"当前网络不可用";
+    } else if ([string isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
+        label.text = @"手机蓝牙未开启";
     } else if ([string isEqualToString:HOMESTATUETITLE_NOTCONNECTED]) {
-        label.text = @"未连上爱小器智能通讯硬件，请检查周围的设备是否有电。";
-    } else if ([string isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
-        label.text = @"爱小器智能通讯硬件设备中未插入电话卡，或插入的卡无效。";
+        label.text = @"未连接设备";
+    } else if ([string isEqualToString:HOMESTATUETITLE_READCARDFAIL]) {
+        label.text = @"读取“设备”内卡失败";
     } else if ([string isEqualToString:HOMESTATUETITLE_REGISTING]) {
-        label.text = @"电话卡正在连接运营商，请稍后。";
+        label.text = @"电话卡正在连接运营商，请稍后!";
+    } else if ([string isEqualToString:HOMESTATUETITLE_READCARDFAIL]) {
+        label.text = @"电话卡注册到运营商失败！";
+    } else if ([string isEqualToString:HOMESTATUETITLE_NOTSERVICE]) {
+        label.text = @"通话短信服务已关闭";
     } else {
         label.text = string;
     }
@@ -604,7 +609,7 @@ withDateFormat:(NSString *)format
 
 #pragma mark 是否显示状态栏
 - (BOOL)isNeedToShowBLEStatue {
-    if (([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NETWORKCANNOTUSE] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_BLNOTOPEN] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTCONNECTED] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_READCARDFAIL] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOSIGNAL] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) && [BlueToothDataManager shareManager].isShowStatuesView) {
+    if (([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NETWORKCANNOTUSE] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_BLNOTOPEN] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTCONNECTED] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_READCARDFAIL] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOSIGNAL] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING] || [[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTSERVICE]) && [BlueToothDataManager shareManager].isShowStatuesView) {
         return YES;
     } else {
         return NO;
@@ -613,20 +618,129 @@ withDateFormat:(NSString *)format
 
 #pragma mark 拨打电话的时候提示
 - (BOOL)checkBLEStatueAndAlert {
-    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NETWORKCANNOTUSE]) {
+        HUDNormal(@"当前网络不可用，请检查你的网络设置！")
+        return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
         HUDNormal(@"请先绑定爱小器智能通讯硬件，才可使用通话短信功能！")
+        return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
+        HUDNormal(@"手机蓝牙未打开，请先开启！")
+        return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTCONNECTED]) {
+        HUDNormal(@"未连上您的设备，请检查它是否在附近或有电！")
         return YES;
     } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTSERVICE]) {
         HUDNormal(@"您关闭了通话短信服务，请在“我的”页面重新开启该服务！")
         return YES;
     } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
-        HUDNormal(@"未检测到“设备”内有电话卡，请确认是否插卡或插卡方向是否有误！")
+        HUDNormal(@"未检测到设备内有电话卡，请确认是否插卡或插卡方向是否有误！")
         return YES;
     } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
         HUDNormal(@"您设备内为爱小器国际上网卡，不支持通话和短信服务！")
         return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_READCARDFAIL]) {
+        HUDNormal(@"读取设备内电话卡失败，请确认您插入的电话卡是否有效！")
+        return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
+        HUDNormal(@"设备内电话卡正在注册到运营商，请稍候！")
+        return YES;
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOSIGNAL]) {
+        HUDNormal(@"设备内电话卡注册到运营商失败，请检查您的当前网络是否稳定！")
+        return YES;
     } else {
         return NO;
+    }
+}
+
+- (void)showAlertMessageToCall {
+    if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NETWORKCANNOTUSE]) {
+        HUDNormal(@"当前网络不可用，请检查你的网络设置！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
+        HUDNormal(@"请先绑定爱小器智能通讯硬件，才可使用通话短信功能！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_BLNOTOPEN]) {
+        HUDNormal(@"手机蓝牙未打开，请先开启！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTCONNECTED]) {
+        HUDNormal(@"未连上您的设备，请检查它是否在附近或有电！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTSERVICE]) {
+        HUDNormal(@"您关闭了通话短信服务，请在“我的”页面重新开启该服务！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
+        HUDNormal(@"未检测到设备内有电话卡，请确认是否插卡或插卡方向是否有误！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
+        HUDNormal(@"您设备内为爱小器国际上网卡，不支持通话和短信服务！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_READCARDFAIL]) {
+        HUDNormal(@"读取设备内电话卡失败，请确认您插入的电话卡是否有效！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_REGISTING]) {
+        HUDNormal(@"设备内电话卡正在注册到运营商，请稍候！")
+    } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOSIGNAL]) {
+        HUDNormal(@"设备内电话卡注册到运营商失败，请检查您的当前网络是否稳定！")
+    } else {
+        HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
+    }
+}
+
+- (void)changeBleStatue {
+    if ([UNNetWorkStatuManager shareManager].currentStatu == NotReachable) {
+        //无网络
+        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NETWORKCANNOTUSE;
+    } else {
+        if (![BlueToothDataManager shareManager].isBounded) {
+            //未绑定
+            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTBOUND;
+        } else {
+            if (![BlueToothDataManager shareManager].isOpened) {
+                //蓝牙未开
+                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_BLNOTOPEN;
+            } else {
+                if (![BlueToothDataManager shareManager].isConnected) {
+                    //未连接
+                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTCONNECTED;
+                } else {
+                    if ([BlueToothDataManager shareManager].isLbeConnecting) {
+                        //连接中
+                        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_CONNECTING;
+                    } else {
+                        if ([[BlueToothDataManager shareManager].operatorType intValue] == 4) {
+                            //爱小器卡
+                            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_AIXIAOQICARD;
+                        } else {
+                            if (![[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"offsetStatue"] isEqualToString:@"on"]) {
+                                if ([[BlueToothDataManager shareManager].operatorType intValue] == 5) {
+                                    //未插卡
+                                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTINSERTCARD;
+                                } else {
+                                    if ([[BlueToothDataManager shareManager].operatorType isEqualToString:@"0"]) {
+                                        //读取卡失败
+                                        [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_READCARDFAIL;
+                                    } else {
+                                        if ([BlueToothDataManager shareManager].isBeingRegisting) {
+                                            //注册中
+                                            [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_REGISTING;
+                                        } else {
+                                            if ([BlueToothDataManager shareManager].isRegisted) {
+                                                //信号强
+                                                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_SIGNALSTRONG;
+                                            } else {
+                                                if ([BlueToothDataManager shareManager].isRegistedFail) {
+                                                    //注册失败
+                                                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOSIGNAL;
+                                                } else {
+                                                    //默认
+                                                    [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_REGISTING;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                //服务关闭
+                                [BlueToothDataManager shareManager].statuesTitleString = HOMESTATUETITLE_NOTSERVICE;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

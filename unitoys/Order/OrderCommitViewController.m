@@ -34,6 +34,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    if (self.btnAlipay.tag==1 || self.btnWeipay.tag==1) {
+        [BlueToothDataManager shareManager].isShowHud = NO;
+        HUDStop;
+    }
 }
 
 - (void)viewDidLoad {
@@ -65,10 +69,18 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alipayComplete:) name:@"AlipayComplete" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(weipayComplete:) name:@"WeipayComplete" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshButtonStatueForPayBtn) name:@"appEnterForeground" object:@"appEnterForeground"];
     // Do any additional setup after loading the view.
     
     self.arrMethod = [NSArray arrayWithObjects:self.btnAccountpay,self.btnWeipay,self.btnAlipay, nil];
     self.btnMethod = self.btnAccountpay;
+}
+
+- (void)refreshButtonStatueForPayBtn {
+    if (self.btnAlipay.tag==1 || self.btnWeipay.tag==1) {
+        [BlueToothDataManager shareManager].isShowHud = NO;
+        HUDStop;
+    }
 }
 
 - (void)addDataPickView {
@@ -545,6 +557,9 @@
     }else if(self.btnWeipay.tag==1){
         if ([self isWXAppInstalled]) {
             [self weipay];
+        } else {
+            [BlueToothDataManager shareManager].isShowHud = NO;
+            HUDStop;
         }
     }else{
         [self ammountpay];
@@ -721,6 +736,11 @@
 //        [tableView deselectRowAtIndexPath:indexPath animated:YES];
         return;
     }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [BlueToothDataManager shareManager].isShowHud = NO;
+        HUDStop;
+    });
     
     /*
      *生成订单信息及签名

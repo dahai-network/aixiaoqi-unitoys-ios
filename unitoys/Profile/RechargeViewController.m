@@ -389,6 +389,8 @@
             }else{
                 if ([self isWXAppInstalled]) {
                   [self weipay];
+                } else {
+                    self.payButton.enabled = YES;
                 }
             }
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
@@ -521,7 +523,9 @@
         //        [tableView deselectRowAtIndexPath:indexPath animated:YES];
         return;
     }
-    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.payButton.enabled = YES;
+    });
     /*
      *生成订单信息及签名
      */

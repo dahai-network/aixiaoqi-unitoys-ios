@@ -23,7 +23,7 @@
  */
 #define HUDNormal(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.mode = MBProgressHUDModeText;\
-hud.minShowTime=1;\
+hud.minShowTime=2;\
 hud.detailsLabel.text= msg;\
 hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
 [hud hideAnimated:YES afterDelay:1];\
@@ -35,7 +35,7 @@ hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
  */
 #define HUDNormalTop(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.mode = MBProgressHUDModeText;\
-hud.minShowTime=1;\
+hud.minShowTime=2;\
 hud.detailsLabel.text= msg;\
 hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
 hud.yOffset =  -70;\
@@ -142,5 +142,9 @@ hud.mode = MBProgressHUDModeIndeterminate;}
  拨打电话的时候显示提示
  */
 - (BOOL)checkBLEStatueAndAlert;
+
+- (void)showAlertMessageToCall;
+
+- (void)changeBleStatue;
 
 @end

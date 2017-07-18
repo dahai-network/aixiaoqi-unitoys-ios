@@ -81,8 +81,14 @@
     [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
+}
+
 - (void)changeStatueViewHeightWithString:(NSString *)statueStr {
-    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
+    [self changeBleStatue];
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:[BlueToothDataManager shareManager].statuesTitleString];
+//    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
     if (![self isNeedToShowBLEStatue]) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
@@ -134,6 +140,7 @@
     //添加label
     self.statuesLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(leftImg.frame)+5, 0, kScreenWidthValue-30-leftImg.frame.size.width, STATUESVIEWHEIGHT)];
 //    self.statuesLabel.text = [BlueToothDataManager shareManager].statuesTitleString;
+    [self changeBleStatue];
     [self setStatuesLabelTextWithLabel:self.statuesLabel String:[BlueToothDataManager shareManager].statuesTitleString];
     self.statuesLabel.font = [UIFont systemFontOfSize:14];
     self.statuesLabel.textColor = UIColorFromRGB(0x999999);
@@ -179,6 +186,7 @@
 }
 
 - (void)showRegistProgress:(NSNotification *)sender {
+    [self changeBleStatue];
     NSString *senderStr = [NSString stringWithFormat:@"%@", sender.object];
     UNDebugLogVerbose(@"状态栏文字 --> %@, %s, %d", senderStr, __FUNCTION__, __LINE__);
     if (![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isBeingRegisting) {

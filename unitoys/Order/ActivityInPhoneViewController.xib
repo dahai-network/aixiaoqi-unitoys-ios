@@ -11,7 +11,14 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ActivityInPhoneViewController">
             <connections>
+                <outlet property="bottomDistance" destination="iX8-aT-EPo" id="sC6-SM-L1f"/>
+                <outlet property="detailLabel" destination="K5H-OG-hLJ" id="mjt-db-pIZ"/>
+                <outlet property="detailLabelHeight" destination="OF1-aK-by0" id="pgc-HV-L6r"/>
                 <outlet property="gifView" destination="X3V-Nq-NvM" id="7jB-tb-SvQ"/>
+                <outlet property="imageViewY" destination="LYB-c3-nsO" id="vVm-RS-fMG"/>
+                <outlet property="subtitle" destination="SRW-9M-sWu" id="JZD-Z8-VUa"/>
+                <outlet property="subtopDistance" destination="53r-0f-p1q" id="xju-U7-myh"/>
+                <outlet property="topDistance" destination="sth-hd-yNA" id="mgi-Iu-2K7"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -29,7 +36,7 @@
                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设置-&gt;SIM卡应用程序-&gt;激活-&gt;长按粘贴后发送-&gt;激活成功后点接受-&gt;接受返回爱小器" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K5H-OG-hLJ">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="设置-&gt;SIM卡应用程序-&gt;激活-&gt;长按粘贴后发送-&gt;激活成功后点接受-&gt;返回爱小器" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K5H-OG-hLJ">
                     <rect key="frame" x="20" y="26" width="335" height="29"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="29" id="OF1-aK-by0"/>

@@ -55,6 +55,7 @@
 @property (nonatomic, assign) BOOL isBeingOTA;//是否正在进行空中升级
 @property (nonatomic, copy) NSString *statuesTitleString;//记录当前状态
 @property (nonatomic, assign) BOOL isNeedToCheckStatue;//是否需要查询注册状态
+@property (nonatomic, assign) BOOL isRegistedFail;//是否注册失败
 //@property (nonatomic, assign) BOOL isAccordTocheckCard;//是否主动查询是否有卡
 //@property (nonatomic, assign) int blutoothStatue;//蓝牙状态 0:蓝牙未开 1:蓝牙已开启但未连接 2: 蓝牙已连接但未绑定 3:蓝牙已绑定设备但未插卡 4:设备已插卡
 

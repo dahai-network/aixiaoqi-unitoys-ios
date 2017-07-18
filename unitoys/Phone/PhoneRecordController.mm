@@ -320,18 +320,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
                                 [weakSelf callUnitysNumber:startAction.handle.value FromCallKit:YES];
                             }
                         } else {
-                            if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
-                                HUDNormal(@"请先绑定爱小器智能通讯硬件，才可使用通话短信功能！")
-                            } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTSERVICE]) {
-                                HUDNormal(@"您关闭了通话短信服务，请在“我的”页面重新开启该服务！")
-                            } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
-                                HUDNormal(@"未检测到“设备”内有电话卡，请确认是否插卡或插卡方向是否有误！")
-                            } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
-                                HUDNormal(@"您设备内为爱小器国际上网卡，不支持通话和短信服务！")
-                            } else {
-                                HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
-                            }
+                            [weakSelf showAlertMessageToCall];
                             if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+                                [BlueToothDataManager shareManager].isRegistedFail = NO;
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
                             }
                         }
@@ -438,18 +429,9 @@ static NSString *searchContactsCellID = @"SearchContactsCell";
             UNDebugLogVerbose(@"当前拨打号码为空");
         }
     } else {
-        if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTBOUND]) {
-            HUDNormal(@"请先绑定爱小器智能通讯硬件，才可使用通话短信功能！")
-        } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTSERVICE]) {
-            HUDNormal(@"您关闭了通话短信服务，请在“我的”页面重新开启该服务！")
-        } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_NOTINSERTCARD]) {
-            HUDNormal(@"未检测到“设备”内有电话卡，请确认是否插卡或插卡方向是否有误！")
-        } else if ([[BlueToothDataManager shareManager].statuesTitleString isEqualToString:HOMESTATUETITLE_AIXIAOQICARD]) {
-            HUDNormal(@"您设备内为爱小器国际上网卡，不支持通话和短信服务！")
-        } else {
-            HUDNormal(INTERNATIONALSTRING(@"设备内sim卡未注册或已掉线"))
-        }
+        [self showAlertMessageToCall];
         if ([[BlueToothDataManager shareManager].homeVCLeftTitle isEqualToString:INTERNATIONALSTRING(HOMESTATUETITLE_SIGNALSTRONG)]) {
+            [BlueToothDataManager shareManager].isRegistedFail = NO;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"homeStatueChanged" object:INTERNATIONALSTRING(HOMESTATUETITLE_REGISTING)];
         }
     }

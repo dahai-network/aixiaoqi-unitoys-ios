@@ -327,7 +327,8 @@
 }
 
 - (void)changeStatueViewHeightWithString:(NSString *)statuesStr {
-    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statuesStr];
+    [self changeBleStatue];
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:[BlueToothDataManager shareManager].statuesTitleString];
     if (![self isNeedToShowBLEStatue]) {
         self.statuesView.un_height = 0;
         self.registProgressView.un_width = 0;
@@ -822,7 +823,8 @@
 - (void)setButtonImageAndTitleWithTitle:(NSString *)title {
     [self.leftButton setTitle:INTERNATIONALSTRING(title) forState:UIControlStateNormal];
     [BlueToothDataManager shareManager].homeVCLeftTitle = INTERNATIONALSTRING(title);
-    [BlueToothDataManager shareManager].statuesTitleString = title;
+//    [BlueToothDataManager shareManager].statuesTitleString = title;
+    [self changeBleStatue];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeStatueAll" object:title];
 }
 

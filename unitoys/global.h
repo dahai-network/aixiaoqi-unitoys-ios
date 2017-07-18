@@ -52,6 +52,11 @@
 //状态栏中图片高度
 #define STATUESVIEWIMAGEHEIGHT 20
 
+//移动联通注册总步数
+//#define Steps_CMCCAndUnic 280
+//电信注册总步数
+//#define Steps_CDMA 340
+
 //显示低电量提示框的电量标准
 #define LOWELECTYNUM 20
 

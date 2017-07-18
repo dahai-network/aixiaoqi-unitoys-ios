@@ -189,8 +189,14 @@ UISearchBarDelegate,UISearchDisplayDelegate,ABNewPersonViewControllerDelegate, C
     [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [self changeStatueViewHeightWithString:[BlueToothDataManager shareManager].statuesTitleString];
+}
+
 - (void)changeStatueViewHeightWithString:(NSString *)statueStr {
-    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
+    [self changeBleStatue];
+    [self setStatuesLabelTextWithLabel:self.statuesLabel String:[BlueToothDataManager shareManager].statuesTitleString];
+//    [self setStatuesLabelTextWithLabel:self.statuesLabel String:statueStr];
     if (![self isNeedToShowBLEStatue]) {
         if (self.statuesView.un_height == STATUESVIEWHEIGHT) {
             _searchBar.frame = CGRectOffset(_searchBar.frame, 0, -STATUESVIEWHEIGHT);
