@@ -23,6 +23,9 @@
  */
 #define HUDNormal(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.mode = MBProgressHUDModeText;\
+hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;\
+hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:0.66f];\
+hud.contentColor = [UIColor whiteColor];\
 hud.minShowTime=2;\
 hud.detailsLabel.text= msg;\
 hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
@@ -35,6 +38,9 @@ hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
  */
 #define HUDNormalTop(msg) {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.mode = MBProgressHUDModeText;\
+hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;\
+hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:0.66f];\
+hud.contentColor = [UIColor whiteColor];\
 hud.minShowTime=2;\
 hud.detailsLabel.text= msg;\
 hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
@@ -49,6 +55,9 @@ hud.yOffset =  -70;\
 #define HUDNoStop1(msg)    {MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];\
 hud.detailsLabel.text = msg;\
 hud.detailsLabel.font = [UIFont systemFontOfSize:17];\
+hud.bezelView.style = MBProgressHUDBackgroundStyleSolidColor;\
+hud.bezelView.color = [UIColor colorWithWhite:0.f alpha:0.66f];\
+hud.contentColor = [UIColor whiteColor];\
 hud.mode = MBProgressHUDModeIndeterminate;}
 
 

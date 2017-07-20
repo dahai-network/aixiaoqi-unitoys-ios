@@ -425,6 +425,9 @@
     if ([phoneStr containsString:@"-"]) {
         NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@"-" withString:@""];
         phoneStr = newStr;
+        
+//        MBProgressHUD *hud=[MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication].delegate window] animated:NO];
+//        hud.contentColor = [UIColor whiteColor];
     }
     if ([phoneStr containsString:@" "]) {
         NSString *newStr = [phoneStr stringByReplacingOccurrencesOfString:@" " withString:@""];

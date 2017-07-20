@@ -65,12 +65,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    if (self.isAbroadMessage) {
-        self.title = INTERNATIONALSTRING(@"已购套餐详情");
-    }else{
-        self.title = INTERNATIONALSTRING(@"套餐详情");
-    }
+    self.title = INTERNATIONALSTRING(@"订单详情");
+//    if (self.isAbroadMessage) {
+//        self.title = INTERNATIONALSTRING(@"已购套餐详情");
+//    }else{
+//        self.title = INTERNATIONALSTRING(@"订单详情");
+//    }
     
 //    if (self.packageCategory != 2 && self.packageCategory != 3) {
 //        [self setRightButton:INTERNATIONALSTRING(@"使用教程")];
@@ -420,7 +420,7 @@
                 if (packageDetailViewController) {
                     packageDetailViewController.isAbroadMessage = YES;
                     packageDetailViewController.idPackage = self.packageId;
-                    packageDetailViewController.currentTitle = self.packageName;
+//                    packageDetailViewController.currentTitle = self.packageName;
                     packageDetailViewController.isSupport4G = [self.IsSupport4G boolValue];
                     packageDetailViewController.isApn = [self.IsApn boolValue];
                     self.isPushedNextView = YES;

@@ -129,7 +129,20 @@
     
     
     _phoneNumLabel = [[UCallPhoneNumLabel alloc] initWithFrame:CGRectMake(0, - (PhoneLabelHeigth - 1), kScreenWidthValue, PhoneLabelHeigth - 1)];
+//    _phoneNumLabel.backgroundColor = [UIColor clearColor];
+    [_phoneNumLabel notShowView];
     _phoneNumLabel.hidden = YES;
+    
+    _placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, - (PhoneLabelHeigth - 1), kScreenWidthValue, PhoneLabelHeigth - 1)];
+    _placeholderLabel.numberOfLines = 1;
+    _placeholderLabel.backgroundColor = [UIColor whiteColor];
+    _placeholderLabel.text = @"直接拨号或开始搜索";
+    _placeholderLabel.font = [UIFont systemFontOfSize:16];
+    _placeholderLabel.textColor = UIColorFromRGB(0xcfcfcf);
+    _placeholderLabel.textAlignment = NSTextAlignmentCenter;
+    _placeholderLabel.hidden = YES;
+    [self addSubview:_placeholderLabel];
+    
     kWeakSelf
     _phoneNumLabel.phoneLabelChangeBlock = ^(NSString *currentText, NSString *currentNum){
         weakSelf.inputedPhoneNumber = currentText;
@@ -138,9 +151,13 @@
         }
         if (!weakSelf.isHideDelLabel) {
             if (!currentText || !currentText.length) {
-                weakSelf.phoneNumLabel.hidden = YES;
+//                weakSelf.phoneNumLabel.hidden = YES;
+//                weakSelf.phoneNumLabel.backgroundColor = [UIColor clearColor];
+                [weakSelf.phoneNumLabel notShowView];
             }else{
-                weakSelf.phoneNumLabel.hidden = NO;
+//                weakSelf.phoneNumLabel.hidden = NO;
+//                weakSelf.phoneNumLabel.backgroundColor = [UIColor whiteColor];
+                [weakSelf.phoneNumLabel showView];
             }
         }
     };
@@ -231,14 +248,20 @@
 {
     self.inputedPhoneNumber = @"";
     self.phoneNumLabel.phonelabel.text = @"";
-    self.phoneNumLabel.hidden = NO;
+//    self.phoneNumLabel.hidden = NO;
+//    self.phoneNumLabel.backgroundColor = [UIColor whiteColor];
+    [self.phoneNumLabel showView];
+    self.placeholderLabel.hidden = NO;
 }
 
 - (void)hideCallView
 {
     self.inputedPhoneNumber = @"";
     self.phoneNumLabel.phonelabel.text = @"";
-    self.phoneNumLabel.hidden = YES;
+//    self.phoneNumLabel.hidden = YES;
+//    self.phoneNumLabel.backgroundColor = [UIColor clearColor];
+    [self.phoneNumLabel notShowView];
+    self.placeholderLabel.hidden = YES;
 }
 
 - (void)showCallViewNoDelLabel
@@ -247,6 +270,9 @@
     self.phoneNumLabel.phonelabel.text = @"";
     self.isHideDelLabel = YES;
     self.phoneNumLabel.hidden = YES;
+//    self.phoneNumLabel.backgroundColor = [UIColor clearColor];
+//    [self.phoneNumLabel notShowView];
+    self.placeholderLabel.hidden = YES;
     self.hidden = NO;
 }
 
@@ -254,6 +280,7 @@
 {
     self.inputedPhoneNumber = @"";
     self.phoneNumLabel.phonelabel.text = @"";
+    self.placeholderLabel.hidden = YES;
     self.hidden = YES;
 }
 

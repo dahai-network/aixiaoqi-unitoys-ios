@@ -23,6 +23,8 @@
 
 @property (nonatomic, assign) BOOL isHideDelLabel;
 
+@property (nonatomic, strong) UILabel *placeholderLabel;
+
 //是否能够点击(弹出复制粘贴功能)
 @property (nonatomic, assign) BOOL isCanTouch;
 

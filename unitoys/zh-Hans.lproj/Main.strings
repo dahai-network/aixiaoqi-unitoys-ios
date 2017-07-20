@@ -69,7 +69,7 @@
 "DOA-nY-aqS.normalTitle" = "11月11";
 
 /* Class = "UINavigationController"; title = "首页"; ObjectID = "DbG-xP-2CW"; */
-"DbG-xP-2CW.title" = "商城";
+"DbG-xP-2CW.title" = "推荐";
 
 /* Class = "UIButton"; normalTitle = "无状态"; ObjectID = "Ehm-fa-WTq"; */
 "Ehm-fa-WTq.normalTitle" = "无状态";
@@ -171,7 +171,7 @@
 "fXT-FG-dwB.text" = "|";
 
 /* Class = "UINavigationItem"; title = "首页"; ObjectID = "fZh-Fu-1Mz"; */
-"fZh-Fu-1Mz.title" = "商城";
+"fZh-Fu-1Mz.title" = "推荐";
 
 /* Class = "UILabel"; text = "00:00-23:59 活动"; ObjectID = "fnw-Ya-1fG"; */
 "fnw-Ya-1fG.text" = "00:00-23:59 活动";
@@ -195,7 +195,7 @@
 "iCF-nU-x9b.text" = "NickName";
 
 /* Class = "UITabBarItem"; title = "首页"; ObjectID = "iJW-Ui-4cG"; */
-"iJW-Ui-4cG.title" = "商城";
+"iJW-Ui-4cG.title" = "推荐";
 
 /* Class = "UILabel"; text = "0"; ObjectID = "jnn-tt-EJg"; */
 "jnn-tt-EJg.text" = "0";

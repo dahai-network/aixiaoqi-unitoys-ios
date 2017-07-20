@@ -137,4 +137,14 @@
     _phonelabel.frame = CGRectMake(0, 0, _deleteButton.un_left, self.un_height);
 }
 
+- (void)notShowView {
+    self.backgroundColor = [UIColor clearColor];
+    _deleteButton.hidden = YES;
+}
+
+- (void)showView {
+    self.backgroundColor = [UIColor whiteColor];
+    _deleteButton.hidden = NO;
+}
+
 @end

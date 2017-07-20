@@ -38,7 +38,7 @@
         <scene sceneID="2Oj-Fn-T1k">
             <objects>
                 <navigationController title="商城" id="DbG-xP-2CW" customClass="navHomeViewController" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="商城" image="mall_bar_nor" selectedImage="mall_bar_pre" id="iJW-Ui-4cG"/>
+                    <tabBarItem key="tabBarItem" title="推荐" image="mall_bar_nor" selectedImage="mall_bar_pre" id="iJW-Ui-4cG"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="pyx-IF-q4Q">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -2643,8 +2643,8 @@
         <image name="icon_zd" width="17" height="17"/>
         <image name="log_hidewords" width="33" height="32"/>
         <image name="logo" width="48" height="48"/>
-        <image name="mall_bar_nor" width="19" height="19"/>
-        <image name="mall_bar_pre" width="19" height="19"/>
+        <image name="mall_bar_nor" width="24" height="24"/>
+        <image name="mall_bar_pre" width="24" height="24"/>
         <image name="msg_addman" width="23" height="23"/>
         <image name="msg_write" width="23" height="23"/>
         <image name="my_center_nor" width="18" height="18"/>

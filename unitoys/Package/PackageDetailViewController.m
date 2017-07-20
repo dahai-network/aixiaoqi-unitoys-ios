@@ -16,13 +16,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.chooseButtonIndex = 1;
-    
-    if (self.isAbroadMessage) {
+    self.title = INTERNATIONALSTRING(@"套餐详情");
+//    if (self.isAbroadMessage) {
 //        self.title = self.currentTitle;
 //        [self setRightButton:INTERNATIONALSTRING(@"使用教程")];
-    }else{
-        self.title = INTERNATIONALSTRING(@"套餐详情");
-    }
+//    }else{
+//        self.title = INTERNATIONALSTRING(@"套餐详情");
+//    }
     
     self.tableView.estimatedRowHeight = 10;
     self.tableView.rowHeight = UITableViewAutomaticDimension;

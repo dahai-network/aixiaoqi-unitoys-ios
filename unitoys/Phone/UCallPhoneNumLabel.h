@@ -23,4 +23,8 @@ typedef void(^PhoneLabelChangeBlock)(NSString *currentText, NSString *currentNum
 
 - (void)updatePhoneLabel:(NSString *)phone currentNum:(NSString *)number;
 
+- (void)notShowView;
+
+- (void)showView;
+
 @end
