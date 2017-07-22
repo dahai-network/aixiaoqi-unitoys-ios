@@ -2077,7 +2077,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
                         [self creatAsocketTcp];
                     }
                     if (![BlueToothDataManager shareManager].isConnected) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"scanToConnect"];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"scanToConnect" object:@"connect"];
                     }
                 } else {
                     UNLogLBEProcess(@"进入前台--没网络")

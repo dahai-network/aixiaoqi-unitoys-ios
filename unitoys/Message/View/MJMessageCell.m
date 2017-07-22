@@ -14,6 +14,7 @@
 #import "UIImage+Extension.h"
 #import "global.h"
 #import "UIView+Utils.h"
+#import "UNRichLabel.h"
 
 @interface MJMessageCell()
 {
@@ -44,11 +45,6 @@
  *  正文背景
  */
 @property (nonatomic, weak) UIImageView *bgImageView;
-
-/**
- *  正文
- */
-@property (nonatomic, weak) UILabel *contentLabel;
 
 /**
  *  正在加载
@@ -109,7 +105,7 @@
         self.bgImageView = bgImageView;
         [containerView addSubview:bgImageView];
         
-        UILabel *contentLabel = [[UILabel alloc] init];
+        UNRichLabel *contentLabel = [[UNRichLabel alloc] init];
         self.contentLabel = contentLabel;
         contentLabel.userInteractionEnabled = YES;
         contentLabel.font = MJTextFont;

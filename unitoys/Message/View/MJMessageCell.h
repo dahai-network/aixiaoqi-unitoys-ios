@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UNRichLabel.h"
 
 @class UNMessageFrameModel;
 
@@ -14,6 +15,11 @@ typedef void(^LongPressCellBlock)(NSInteger index, NSString *content, UIView *lo
 typedef void(^RepeatSendMessageBlock)(UNMessageFrameModel *messageFrame);
 
 @interface MJMessageCell : UITableViewCell
+
+/**
+ *  正文
+ */
+@property (nonatomic, weak) UNRichLabel *contentLabel;
 
 + (instancetype)cellWithTableView:(UITableView *)tableView;
 

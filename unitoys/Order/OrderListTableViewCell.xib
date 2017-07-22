@@ -51,7 +51,7 @@
                             <constraint firstAttribute="height" constant="10" id="zUd-bH-uAf"/>
                         </constraints>
                     </view>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CTE-TA-1XM" customClass="CutomButton">
+                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CTE-TA-1XM" customClass="CutomButton">
                         <rect key="frame" x="235" y="17.5" width="70" height="40"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="40" id="BXR-Ea-uiF"/>

@@ -104,6 +104,7 @@
 		04EAB8BC1E2787F6000D3D13 /* AlarmListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EAB8BA1E2787F6000D3D13 /* AlarmListViewController.m */; };
 		04EAB8C11E2788DB000D3D13 /* AlarmListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04EAB8BF1E2788DB000D3D13 /* AlarmListTableViewCell.m */; };
 		04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04EAB8C01E2788DB000D3D13 /* AlarmListTableViewCell.xib */; };
+		04F1CE981F2093D300262EC0 /* UNRichLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F1CE971F2093D300262EC0 /* UNRichLabel.m */; };
 		04F727971E641CE4002EB54C /* About.txt in Resources */ = {isa = PBXBuildFile; fileRef = 04F727521E641CE4002EB54C /* About.txt */; };
 		04F727981E641CE4002EB54C /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F727541E641CE4002EB54C /* GCDAsyncSocket.m */; };
 		04F727A21E641CE4002EB54C /* DDData.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F7276A1E641CE4002EB54C /* DDData.m */; };
@@ -616,6 +617,8 @@
 		04EAB8BE1E2788DB000D3D13 /* AlarmListTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlarmListTableViewCell.h; sourceTree = "<group>"; };
 		04EAB8BF1E2788DB000D3D13 /* AlarmListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlarmListTableViewCell.m; sourceTree = "<group>"; };
 		04EAB8C01E2788DB000D3D13 /* AlarmListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AlarmListTableViewCell.xib; sourceTree = "<group>"; };
+		04F1CE961F2093D300262EC0 /* UNRichLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNRichLabel.h; sourceTree = "<group>"; };
+		04F1CE971F2093D300262EC0 /* UNRichLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNRichLabel.m; sourceTree = "<group>"; };
 		04F727521E641CE4002EB54C /* About.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = About.txt; sourceTree = "<group>"; };
 		04F727531E641CE4002EB54C /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		04F727541E641CE4002EB54C /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
@@ -1577,6 +1580,8 @@
 				3CD913471E70E59F00434465 /* UNBLEDataManager.m */,
 				3CD913481E70E59F00434465 /* UNGetSimData.h */,
 				3CD913491E70E59F00434465 /* UNGetSimData.m */,
+				04F1CE961F2093D300262EC0 /* UNRichLabel.h */,
+				04F1CE971F2093D300262EC0 /* UNRichLabel.m */,
 				3CD9134A1E70E59F00434465 /* UNSimCardAuthenticationModel.h */,
 				3CD9134B1E70E59F00434465 /* UNSimCardAuthenticationModel.m */,
 				3CE5CC861E7F63F100FCEA81 /* UNBlueToothTool.h */,
@@ -2969,6 +2974,7 @@
 				04F727B11E641CE4002EB54C /* HTTPRedirectResponse.m in Sources */,
 				04EAB8BC1E2787F6000D3D13 /* AlarmListViewController.m in Sources */,
 				3CC3E0CF1E64346700A62F8C /* AbroadPackageDescView.m in Sources */,
+				04F1CE981F2093D300262EC0 /* UNRichLabel.m in Sources */,
 				3CC3E0BD1E63FB9100A62F8C /* ExplainDetailsChildController.m in Sources */,
 				740FD3931E287F9E009413F1 /* sim_com_interface.c in Sources */,
 				3C8E77981E5D280600C4833E /* UNDefines.m in Sources */,

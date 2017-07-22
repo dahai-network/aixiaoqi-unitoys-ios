@@ -148,6 +148,7 @@ static UNBlueToothTool *instance = nil;
             UNDebugLogVerbose(@"断开蓝牙2");
             [_mgr cancelPeripheralConnection:_peripheral];
         }
+        [BlueToothDataManager shareManager].isConnected = NO;
     }
     if (_mgr) {
         [_mgr stopScan];
@@ -915,6 +916,7 @@ static UNBlueToothTool *instance = nil;
     [UNCreatLocalNoti clearLBEDisConnectNoti];
     [BlueToothDataManager shareManager].isConnected = YES;
     [BlueToothDataManager shareManager].isLbeConnecting = NO;
+    [BlueToothDataManager shareManager].isAccordBreak = NO;
     [self.mgr stopScan];
     [self.timer setFireDate:[NSDate distantFuture]];
     [self.scanAndConnectingTimer setFireDate:[NSDate distantFuture]];

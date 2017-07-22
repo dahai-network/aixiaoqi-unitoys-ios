@@ -23,6 +23,7 @@
 #import "ContactsViewController.h"
 #import "AddTouchAreaButton.h"
 #import "BlueToothDataManager.h"
+#import "UNRichLabel.h"
 
 @interface UNMessageContentController ()<UITableViewDataSource, UITableViewDelegate, NotifyTextFieldDelegate, UIMessageInputViewDelegate,PhoneNumberSelectDelegate>
 
@@ -619,6 +620,14 @@
     cell.repeatSendMessageBlock = ^(UNMessageFrameModel *messageFrame){
         [weakSelf repeatSendMessage:messageFrame];
     };
+    
+    KILinkTapHandler tapHandler = ^(UNRichLabel *label, NSString *string, NSRange range) {
+        [self tappedLink:string cellForRowAtIndexPath:indexPath];
+    };
+    
+    cell.contentLabel.userHandleLinkTapHandler = tapHandler;
+    cell.contentLabel.urlLinkTapHandler = tapHandler;
+    cell.contentLabel.hashtagLinkTapHandler = tapHandler;
     // 3.返回cell
     return cell;
 }
@@ -708,6 +717,54 @@
     } failure:^(NSError * _Nonnull error) {
         UNDebugLogVerbose(@"啥都没：%@",[error description]);
     }];
+}
+
+/**
+ *  Called when a link is tapped.
+ *
+ *  @param link    The link that was tapped
+ *  @param indexPath Index path of the cell containing the link that was tapped.
+ */
+- (void)tappedLink:(NSString *)link cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *title = [NSString stringWithFormat:@"Tapped %@", link];
+//    NSString *message = [NSString stringWithFormat:@"You tapped %@ in section %@, row %@.",
+//                         link,
+//                         @(indexPath.section),
+//                         @(indexPath.row)];
+//    
+//    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+//                                                                   message:message
+//                                                            preferredStyle:UIAlertControllerStyleAlert];
+//    [alert addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:nil]];
+//    
+//    [self presentViewController:alert animated:YES completion:nil];
+    [self attemptOpenURL:[NSURL URLWithString:link]];
+}
+
+/**
+ *  Checks to see if its an URL that we can open in safari. If we can then open it,
+ *  otherwise put up an alert to the user.
+ *
+ *  @param url URL to open in Safari
+ */
+- (void)attemptOpenURL:(NSURL *)url
+{
+    BOOL safariCompatible = [url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"];
+    
+    if (safariCompatible && [[UIApplication sharedApplication] canOpenURL:url])
+    {
+        [[UIApplication sharedApplication] openURL:url];
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"提示"
+                                                        message:@"抱歉，该链接无法打开！"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"确定"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
 }
 
 //点击发送消息

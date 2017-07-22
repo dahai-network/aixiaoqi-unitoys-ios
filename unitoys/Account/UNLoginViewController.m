@@ -186,11 +186,13 @@
         [self clearInputDataWithType:LoginVCStatuTypeRegister];
     }else if (self.currentStatuType == LoginVCStatuTypeRegister){
         if ([self validateParams] == NO) return ;
+        sender.enabled = NO;
         //当前为注册界面,进行注册
         [self registerRrequest];
     }else{
         //当前为忘记密码界面,重置密码
         if ([self validateParams] == NO) return ;
+        sender.enabled = NO;
         [self forgetRrequest];
     }
     self.topLineView.hidden = NO;
@@ -470,6 +472,7 @@
     [SSNetworkRequest postRequest:apiForgetPassword params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"密码找回成功") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            self.registerbtn.enabled = YES;
 //            [self dismissViewControllerAnimated:YES completion:nil];
             //跳转到登录界面
             [self resetCaptchButton];
@@ -477,10 +480,13 @@
             self.accountField.text = params[@"Tel"];
         }else{
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[NSString stringWithFormat:@"%@：%@", INTERNATIONALSTRING(@"密码找回失败"),[resonseObj objectForKey:@"msg"]] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            self.registerbtn.enabled = YES;
         }
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
+        HUDNormal(@"网络貌似有问题")
+        self.registerbtn.enabled = YES;
     } headers:self.headers];
 }
 
@@ -493,6 +499,7 @@
     NSLog(@"注册");
     if (!self.readButton.isSelected) {
         [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:INTERNATIONALSTRING(@"请先阅读并同意用户许可") delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+        self.registerbtn.enabled = YES;
         return;
     }
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:self.accountField.text,@"Tel",self.passWordField.text,@"PassWord", self.reCaptchaField.text,@"smsVerCode", nil];
@@ -500,15 +507,19 @@
     [self getBasicHeader];
     [SSNetworkRequest postRequest:apiRegisterUser params:params success:^(id resonseObj){
         if ([[resonseObj objectForKey:@"status"] intValue]==1) {
+            self.registerbtn.enabled = YES;
             //注册成功之后登录
             [self registerSuccessAndLogin];
         }else{
             [[[UIAlertView alloc] initWithTitle:INTERNATIONALSTRING(@"系统提示") message:[NSString stringWithFormat:@"%@：%@", INTERNATIONALSTRING(@"用户注册失败"),[resonseObj objectForKey:@"msg"]] delegate:self cancelButtonTitle:INTERNATIONALSTRING(@"确定") otherButtonTitles:nil, nil] show];
+            self.registerbtn.enabled = YES;
         }
         
     }failure:^(id dataObj, NSError *error) {
         NSLog(@"数据:%@ 错误:%@",dataObj,[error description]);
         NSLog(@"登录异常");
+        HUDNormal(@"网络貌似出问题了")
+        self.registerbtn.enabled = YES;
         
     } headers:self.headers];
 
