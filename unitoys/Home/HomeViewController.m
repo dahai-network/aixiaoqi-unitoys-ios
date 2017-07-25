@@ -886,10 +886,10 @@
                 NSString *showStr = [NSString stringWithFormat:@"%@\n%@", INTERNATIONALSTRING(@"正在重启蓝牙"), INTERNATIONALSTRING(@"升级过程中请勿退出程序")];
                 self.progressNumberLabel.text = showStr;
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    //            NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"yynew15" ofType:@"zip"];
+//                                NSString *pathStr = [[NSBundle mainBundle] pathForResource:@"unibox1.20" ofType:@"zip"];
                     
                     NSURL *fileURL = [NSURL fileURLWithPath:filepath];
-                    //            NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
+//                                NSURL *fileURL = [NSURL fileURLWithPath:pathStr];
                     DFUFirmware *selectedFirmware = [[DFUFirmware alloc] initWithUrlToZipFile:fileURL type:DFUFirmwareTypeApplication];
                     UNDebugLogVerbose(@"mgr---%@=====peripheral----%@",[UNBlueToothTool shareBlueToothTool].mgr,[UNBlueToothTool shareBlueToothTool].peripheral);
                     DFUServiceInitiator *initiator = [[DFUServiceInitiator alloc] initWithCentralManager:[UNBlueToothTool shareBlueToothTool].mgr target:[UNBlueToothTool shareBlueToothTool].peripheral];

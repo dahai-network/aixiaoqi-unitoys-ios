@@ -56,7 +56,7 @@ static VSWManager * manager=nil;
     Byte bytes = (Byte)[[self convertHexStrToData:dataStr] bytes];
     
     appEvtSendBuff.pData = [[self convertHexStrToData:dataStr] bytes];//传value
-    UNLogLBEProcess(@"发送给服务器的数据 -- %@", [self convertHexStrToData:dataStr]);
+    UNLogLBEProcess(@"发送给服务器的数据59 -- %@", [self convertHexStrToData:dataStr]);
     SimComEvtApp2Drv(&appEvtSendBuff);
 }
 

@@ -1192,6 +1192,8 @@ static UNBlueToothTool *instance = nil;
     [self sendMessageToBLEWithType:BLECheckElectricQuantity validData:nil];
     //仅钥匙扣能连接
     [BlueToothDataManager shareManager].isSame = NO;
+    self.appdenStr = nil;
+    [BlueToothDataManager shareManager].checkStr = nil;
     if (!self.appdenStr) {
         for (int i = 0; i < 8; i++) {
             int a = arc4random() % 255;
@@ -1970,10 +1972,12 @@ static UNBlueToothTool *instance = nil;
                                     UNLogLBEProcess(@"iccid======%@", [UNPushKitMessageManager shareManager].iccidString);
                                     if (dict) {
                                         //创建tcp,建立连接
+                                        UNLogLBEProcess(@"创建tcp,建立连接 - 1975");
                                         [BlueToothDataManager shareManager].isFirstRegist = NO;
                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
                                     }else{
                                         //创建udp,初始化操作
+                                        UNLogLBEProcess(@"创建udp,初始化操作 -1979");
                                         [BlueToothDataManager shareManager].isFirstRegist = YES;
                                         [UNPushKitMessageManager shareManager].isNeedRegister = YES;
                                         [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];
@@ -2399,10 +2403,12 @@ static UNBlueToothTool *instance = nil;
                 //接收到app返回的加密数据
                 UNLogLBEProcess(@"接收到app返回的加密数据 -- %@", contentStr)
                 if (![contentStr isEqualToString:[BlueToothDataManager shareManager].checkStr]) {
+                    UNLogLBEProcess(@"加密数据不对，断开蓝牙:\n接收到的数据-%@ 自己生成的数据-%@", contentStr, [BlueToothDataManager shareManager].checkStr)
                     [BlueToothDataManager shareManager].isSame = NO;
                     [self closeConnecting];
                 } else {
                     [BlueToothDataManager shareManager].isSame = YES;
+                    UNLogLBEProcess(@"加密数据一致")
                 }
                 [self.encryptionTimer setFireDate:[NSDate distantFuture]];
                 break;
@@ -2859,12 +2865,12 @@ static UNBlueToothTool *instance = nil;
                                 NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:[[UNPushKitMessageManager shareManager].iccidString lowercaseString]];
                                 if (dict) {
                                     //创建tcp,建立连接
-                                    DebugUNLog(@"创建tcp,建立连接");
+                                    UNLogLBEProcess(@"创建tcp,建立连接");
                                     [BlueToothDataManager shareManager].isFirstRegist = NO;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateTCPSocketToBLE" object:[UNPushKitMessageManager shareManager].iccidString];
                                 }else{
                                     //创建udp,初始化操作
-                                    DebugUNLog(@"创建udp,初始化操作");
+                                    UNLogLBEProcess(@"创建udp,初始化操作");
                                     [BlueToothDataManager shareManager].isFirstRegist = YES;
                                     [UNPushKitMessageManager shareManager].isNeedRegister = YES;
                                     [[NSNotificationCenter defaultCenter] postNotificationName:@"CreateUDPSocketToBLE" object:self.simtype];

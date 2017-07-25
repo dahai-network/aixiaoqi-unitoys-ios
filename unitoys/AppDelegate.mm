@@ -765,7 +765,7 @@
     UNDebugLogVerbose(@"替换后面的文字之后 -- %@", appendString);
     NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", countLengthStr.length/2]];
     NSString *tcpString = [appendString stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
-    UNLogLBEProcess(@"发送给服务器的数据 -- %@", tcpString)
+    UNLogLBEProcess(@"发送给服务器的数据tcp -- %@", tcpString)
     [UNPushKitMessageManager shareManager].tcpPacketStrWithPushKit = tcpString;
     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送给服务器的数据--%@", tcpString]];
     [self sendMsgWithMessage:tcpString];
@@ -1608,7 +1608,7 @@
     NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", countLengthStr.length/2]];
 //    NSString *finalString = [newStr stringByReplacingOccurrencesOfString:[newStr substringWithRange:NSMakeRange(20, 4)] withString:countLengthHex];
     NSString *finalString = [newStr stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
-    UNLogLBEProcess(@"发送给服务器的数据 -- %@", finalString)
+    UNLogLBEProcess(@"发送给服务器的数据1611 -- %@", finalString)
     [self sendMsgWithMessage:finalString];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"downElectic" object:@"downElectic"];//发送对卡断电通知
 }
@@ -2665,7 +2665,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
     NSString *countLengthStr = [appendString substringFromIndex:24];
     NSString *countLengthHex = [self hexFinalTLVLength:[NSString stringWithFormat:@"%zd", countLengthStr.length/2]];
     NSString *tcpString = [appendString stringByReplacingCharactersInRange:NSMakeRange(20, 4) withString:countLengthHex];
-    UNLogLBEProcess(@"发送给服务器的数据 -- %@", tcpString)
+    UNLogLBEProcess(@"发送给服务器的数据2668 -- %@", tcpString)
     [UNCreatLocalNoti createLocalNotiMessageString:[NSString stringWithFormat:@"发送PushKit心跳包给服务器的数据--%@", tcpString]];
     [self sendMsgWithMessage:tcpString];
     
