@@ -536,6 +536,8 @@
         }else{
             //数据请求失败
             [BlueToothDataManager shareManager].isShowHud = NO;
+            HUDStop;
+            HUDNormal(responseObj[@"msg"])
         }
         
         
