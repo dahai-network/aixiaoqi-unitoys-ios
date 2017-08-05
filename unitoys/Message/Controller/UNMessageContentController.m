@@ -727,7 +727,7 @@
  */
 - (void)tappedLink:(NSString *)link cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *title = [NSString stringWithFormat:@"Tapped %@", link];
+//    NSString *title = [NSString stringWithFormat:@"Tapped %@", link];
 //    NSString *message = [NSString stringWithFormat:@"You tapped %@ in section %@, row %@.",
 //                         link,
 //                         @(indexPath.section),
@@ -739,7 +739,12 @@
 //    [alert addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:nil]];
 //    
 //    [self presentViewController:alert animated:YES completion:nil];
-    [self attemptOpenURL:[NSURL URLWithString:link]];
+    
+    if ([link containsString:@"http"] || [link containsString:@"https"]) {
+        [self attemptOpenURL:[NSURL URLWithString:link]];
+    } else {
+        [self attemptOpenURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@", link]]];
+    }
 }
 
 /**
@@ -765,6 +770,8 @@
                                               otherButtonTitles:nil];
         [alert show];
     }
+    
+//    [[UIApplication sharedApplication] openURL:url];
 }
 
 //点击发送消息

@@ -170,7 +170,6 @@
     self.containerView.frame = messageFrame.containerViewF;
     self.bgImageView.frame = self.containerView.bounds;
     self.contentLabel.frame = CGRectMake(messageFrame.contentEdge.left, messageFrame.contentEdge.top, messageFrame.containerViewF.size.width - messageFrame.contentEdge.left - messageFrame.contentEdge.right, messageFrame.containerViewF.size.height - messageFrame.contentEdge.top - messageFrame.contentEdge.bottom);
-    self.contentLabel.text = message.SMSContent;
     
     if (message.type == MJMessageTypeMe) {
 //        self.bgImageView.tintColor = DefultColor;
@@ -229,6 +228,7 @@
         [self.bgImageView setImage:[UIImage resizableImage:@"pic_sms_a"]];
         [self.contentLabel setTextColor:UIColorFromRGB(0x333333)];
     }
+    self.contentLabel.text = message.SMSContent;
     
     // 4.正文的背景(设置拉升效果）
 //    if (message.type == MJMessageTypeMe) { // 自己发的,蓝色
