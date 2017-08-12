@@ -180,6 +180,7 @@
     }
     
     if (kSystemVersionValue >= 8.0) {
+        UNLogLBEProcess(@"注册pushkit")
         PKPushRegistry *pushRegistry = [[PKPushRegistry alloc] initWithQueue:dispatch_get_main_queue()];
         pushRegistry.delegate = self;
         pushRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];
@@ -2426,7 +2427,7 @@ void addressBookChanged(ABAddressBookRef addressBook, CFDictionaryRef info, void
 }
 
 
-#pragma mark --- PuskKitDelegate
+#pragma mark - PuskKitDelegate
 //此处获取PushKit Token
 - (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type {
     NSString *tokenString = [[[[credentials.token description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];

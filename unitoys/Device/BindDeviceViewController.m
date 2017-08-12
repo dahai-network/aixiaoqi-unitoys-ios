@@ -105,18 +105,26 @@
     switch ([BlueToothDataManager shareManager].chargingState) {
         case 1:
             self.customView.subTitleLabel.text = @"剩余电量";
+            self.customView.progressLabel.hidden = NO;
+            self.customView.batteryView.hidden = YES;
             UNDebugLogVerbose(@"剩余电量");
             break;
         case 2:
             self.customView.subTitleLabel.text = @"正在充电";
+            self.customView.progressLabel.hidden = YES;
+            self.customView.batteryView.hidden = NO;
             UNDebugLogVerbose(@"正在充电");
             break;
         case 3:
             self.customView.subTitleLabel.text = @"充电完成";
+            self.customView.progressLabel.hidden = NO;
+            self.customView.batteryView.hidden = YES;
             UNDebugLogVerbose(@"充电完成");
             break;
         default:
             self.customView.subTitleLabel.text = @"剩余电量";
+            self.customView.progressLabel.hidden = NO;
+            self.customView.batteryView.hidden = YES;
             UNDebugLogVerbose(@"充电状态有问题");
             break;
     }

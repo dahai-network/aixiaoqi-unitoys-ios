@@ -37,6 +37,12 @@
 @property (nonatomic,strong)UILabel * progressLabel;
 @property (nonatomic, strong) UILabel *subTitleLabel;
 
+
+/**
+ 电池图标
+ */
+@property (nonatomic, strong) UIImageView *batteryView;
+
 /**
  *  是否显示单层波浪，默认NO
  */

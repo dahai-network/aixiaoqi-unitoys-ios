@@ -122,6 +122,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showRegistProgress:) name:@"changeStatue" object:nil];//改变状态和百分比
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offsetCanEnable) name:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(currentStatueChangeAndChangeHeight) name:@"currentStatueChangedAndHeightChange" object:@"currentStatueChangedAndHeightChange"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkBLEStatue) name:@"chargeStatuChanged" object:@"chargeStatuChanged"];//充电状态改变了
 }
 
 #pragma mark KVO执行的方法
@@ -423,7 +424,11 @@
         self.connectedDeviceView.hidden = NO;
         if ([BlueToothDataManager shareManager].isConnected) {
             if ([BlueToothDataManager shareManager].electricQuantity) {
-                self.electricNum.text = [NSString stringWithFormat:@"%@%%", [BlueToothDataManager shareManager].electricQuantity];
+                if ([BlueToothDataManager shareManager].chargingState == 2) {
+                    self.electricNum.text = @"正在充电";
+                } else {
+                    self.electricNum.text = [NSString stringWithFormat:@"%@%%", [BlueToothDataManager shareManager].electricQuantity];
+                }
             } else {
                 self.electricNum.text = @"----";
             }
@@ -869,5 +874,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"changeStatue" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"isAlreadyCanRegist" object:@"isAlreadyCanRegist"];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"currentStatueChangedAndHeightChange" object:@"currentStatueChangedAndHeightChange"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"chargeStatuChanged" object:@"chargeStatuChanged"];
 }
 @end

@@ -58,6 +58,7 @@
         
         [self addSubview:self.progressLabel];
         [self addSubview:self.subTitleLabel];
+        [self addSubview:self.batteryView];
         
         
        
@@ -244,6 +245,18 @@
         _progressLabel.textAlignment=1;
     }
     return _progressLabel;
+}
+
+- (UIImageView *)batteryView {
+    if (!_batteryView) {
+        _batteryView = [[UIImageView alloc] init];
+        float height = self.progressLabel.un_height-10;
+        _batteryView.frame = CGRectMake(0, 0, height*2, height);
+        _batteryView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds)+10);
+        _batteryView.image = [UIImage imageNamed:@"battery"];
+        _batteryView.hidden = YES;
+    }
+    return _batteryView;
 }
 
 -(UILabel *)subTitleLabel{
