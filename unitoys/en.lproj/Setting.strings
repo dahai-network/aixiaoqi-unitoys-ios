@@ -26,11 +26,11 @@
 /* Class = "UIButton"; normalTitle = "发送"; ObjectID = "ZDN-R1-g1B"; */
 "ZDN-R1-g1B.normalTitle" = "Send";
 
-/* Class = "UIButton"; normalTitle = "退出登录"; ObjectID = "fCP-XO-INQ"; */
-"fCP-XO-INQ.normalTitle" = "Log out";
+/* Class = "UIButton"; normalTitle = "退出登录"; ObjectID = "Y7Z-8D-fI5"; */
+"Y7Z-8D-fI5.normalTitle" = "Log out";
 
 /* Class = "UITableViewController"; title = "设置"; ObjectID = "fUR-bd-mDi"; */
-"fUR-bd-mDi.title" = "Setting";
+"fUR-bd-mDi.title" = "Settings";
 
 /* Class = "UIViewController"; title = "用户许可协议及服务协议"; ObjectID = "iPo-9S-MEB"; */
 "iPo-9S-MEB.title" = "Service Agreement";

@@ -582,7 +582,9 @@
         if ([[responseObj objectForKey:@"status"] intValue]==1) {
 //            self.lblAmount.text = [[[responseObj objectForKey:@"data"] objectForKey:@"amount"] stringValue];
             float amount = [responseObj[@"data"][@"amount"] floatValue];
-            self.lblAmount.text = [NSString stringWithFormat:@"余额：%.2f元", amount];
+            NSString *tempStr = INTERNATIONALSTRING(@"余额");
+            NSString *tempString = INTERNATIONALSTRING(@"元");
+            self.lblAmount.text = [NSString stringWithFormat:@"%@：%.2f%@", tempStr, amount, tempString];
         }else if ([[responseObj objectForKey:@"status"] intValue]==-999){
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"reloginNotify" object:nil];

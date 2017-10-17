@@ -155,8 +155,8 @@
 /* Class = "UIButton"; normalTitle = "更多>"; ObjectID = "cAW-Zz-6aP"; */
 "cAW-Zz-6aP.normalTitle" = "More";
 
-/* Class = "UILabel"; text = "设置"; ObjectID = "cQM-8y-MA7"; */
-//"cQM-8y-MA7.text" = "Settings";
+/* Class = "UILabel"; text = "权限管理"; ObjectID = "cQM-8y-MA7"; */
+"cQM-8y-MA7.text" = "Permission";
 
 /* Class = "UIBarButtonItem"; title = "Item"; ObjectID = "dYk-7g-8dR"; */
 "dYk-7g-8dR.title" = "Item";
@@ -268,3 +268,18 @@
 
 /* Class = "UIButton"; normalTitle = "轨迹"; ObjectID = "7Pj-7E-U6p"; */
 "7Pj-7E-U6p.normalTitle" = "Track";
+
+/* Class = "UILabel"; normalTitle = "账单"; ObjectID = "X6l-Lq-m6r"; */
+"X6l-Lq-m6r.text" = "Bill";
+
+/* Class = "UILabel"; text = "设置"; ObjectID = "efM-T3-HhV"; */
+"efM-T3-HhV.text" = "Settings";
+
+/* Class = "UIButton"; normalTitle = "充值"; ObjectID = "Rqg-XZ-4S2"; */
+"Rqg-XZ-4S2.normalTitle" = "Top up";
+
+/* Class = "UILabel"; text = "套餐剩余详情"; ObjectID = "RYm-kz-s5u"; */
+"RYm-kz-s5u.text" = "Packages";
+
+/* Class = "UIButton"; normalTitle = "套餐超市"; ObjectID = "u79-HE-8eH"; */
+"u79-HE-8eH.normalTitle" = "Packages Store";
