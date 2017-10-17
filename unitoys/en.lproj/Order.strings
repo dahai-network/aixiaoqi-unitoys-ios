@@ -163,3 +163,6 @@
 
 /* Class = "UILabel"; text = "最晚激活日期：2018年12月31日"; ObjectID = "zSX-89-Zqf"; */
 "zSX-89-Zqf.text" = "Activate before：----";
+
+/* Class = "UILabel"; text = "开始使用日期"; ObjectID = "NdP-o4-jrG"; */
+"NdP-o4-jrG.text" = "Start Date";

@@ -263,4 +263,6 @@
 "您已禁用位置服务，请开启定位功能体验更好的服务" = "You currently have all location services for this device disabled";
 "定位功能已禁用" = "Location Services Disabled";
 "好的" = "OK";
+"套餐购买成功" = "Buy success";
+"您必须激活才能使用" = "You must activate to use";
 

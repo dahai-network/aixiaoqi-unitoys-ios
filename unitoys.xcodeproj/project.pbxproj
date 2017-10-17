@@ -510,7 +510,6 @@
 		04440D3B1E77CE2C00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CommunicateDetailViewController.strings; sourceTree = "<group>"; };
 		04440D3D1E77CE2E00206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CommunicateDetailViewController.strings"; sourceTree = "<group>"; };
 		04440D3F1E77CE9500206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ActivateGiftCardViewController.xib; sourceTree = "<group>"; };
-		04440D421E77CE9C00206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ActivateGiftCardViewController.strings; sourceTree = "<group>"; };
 		04440D441E77CE9D00206877 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/ActivateGiftCardViewController.strings"; sourceTree = "<group>"; };
 		04440D461E77CEE000206877 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/BindGiftBagCardViewController.xib; sourceTree = "<group>"; };
 		04440D491E77CEE500206877 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/BindGiftBagCardViewController.strings; sourceTree = "<group>"; };
@@ -597,6 +596,7 @@
 		04AFE6681EC584D100B3BC8F /* ZBTableRreshViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZBTableRreshViewController.m; sourceTree = "<group>"; };
 		04B4164F1EB35365005E31C9 /* 3des.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 3des.c; sourceTree = "<group>"; };
 		04B416501EB35365005E31C9 /* 3des.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3des.h; sourceTree = "<group>"; };
+		04BBFEF71F95F01D004452C8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ActivateGiftCardViewController.strings; sourceTree = "<group>"; };
 		04CC5CAE1EFA259300AA31CA /* ThroughLineLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThroughLineLabel.h; sourceTree = "<group>"; };
 		04CC5CAF1EFA259300AA31CA /* ThroughLineLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThroughLineLabel.m; sourceTree = "<group>"; };
 		04D5EED21E9B959D0015B8DA /* ProductCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductCollectionViewCell.h; sourceTree = "<group>"; };
@@ -3175,9 +3175,9 @@
 			isa = PBXVariantGroup;
 			children = (
 				04440D3F1E77CE9500206877 /* Base */,
-				04440D421E77CE9C00206877 /* en */,
 				04440D441E77CE9D00206877 /* zh-Hans */,
 				04A0EC951E7B83A500F155A3 /* de */,
+				04BBFEF71F95F01D004452C8 /* en */,
 			);
 			name = ActivateGiftCardViewController.xib;
 			sourceTree = "<group>";

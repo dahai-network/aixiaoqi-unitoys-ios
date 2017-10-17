@@ -90,7 +90,7 @@
 "I1E-Y7-lMD.text" = "Consumed/kcal";
 
 /* Class = "UILabel"; text = "已购套餐"; ObjectID = "Icg-WE-vyi"; */
-//"Icg-WE-vyi.text" = "Purchased";
+"Icg-WE-vyi.text" = "Combos";
 
 /* Class = "UILabel"; text = "手环闹钟"; ObjectID = "JAv-Nd-PC8"; */
 "JAv-Nd-PC8.text" = "Alarm clock for bracelet";
@@ -117,7 +117,7 @@
 "QdB-9f-EXC.text" = "0";
 
 /* Class = "UILabel"; text = "热门流量套餐"; ObjectID = "R5T-eh-pqI"; */
-//"R5T-eh-pqI.text" = "Hot Packages";
+"R5T-eh-pqI.text" = "Products";
 
 /* Class = "UILabel"; text = "有效期：--天"; ObjectID = "TCy-Xb-7Us"; */
 "TCy-Xb-7Us.text" = "Expiry：--day";

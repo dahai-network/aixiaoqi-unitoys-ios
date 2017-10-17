@@ -338,7 +338,7 @@
         checkButton.un_width = littleView.un_width;
         checkButton.un_height = littleView.un_height*0.21973;
         checkButton.un_top = littleView.un_height-checkButton.un_height;
-        [checkButton setTitle:@"确定" forState:UIControlStateNormal];
+        [checkButton setTitle:INTERNATIONALSTRING(@"确定") forState:UIControlStateNormal];
         checkButton.titleLabel.font = [UIFont systemFontOfSize:21];
         [checkButton setTitleColor:UIColorFromRGB(0x00a0e9) forState:UIControlStateNormal];
         [checkButton addTarget:self action:@selector(checkAction) forControlEvents:UIControlEventTouchUpInside];
@@ -357,14 +357,14 @@
         [littleView addSubview:paySuccessImg];
         
         UILabel *upLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, paySuccessImg.un_bottom+littleView.un_height*0.04, littleView.un_width, 21)];
-        upLabel.text = @"套餐购买成功";
+        upLabel.text = INTERNATIONALSTRING(@"套餐购买成功");
         upLabel.textAlignment = NSTextAlignmentCenter;
         upLabel.textColor = UIColorFromRGB(0x333333);
         upLabel.font = [UIFont systemFontOfSize:14];
         [littleView addSubview:upLabel];
         
         UILabel *downLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, lineView.un_top-littleView.un_height*0.07-upLabel.un_height, littleView.un_width, upLabel.un_height)];
-        downLabel.text = @"您必须激活才能使用";
+        downLabel.text = INTERNATIONALSTRING(@"您必须激活才能使用");
         downLabel.textAlignment = NSTextAlignmentCenter;
         downLabel.textColor = UIColorFromRGB(0x333333);
         downLabel.font = [UIFont systemFontOfSize:14];
