@@ -55,7 +55,7 @@
     
     CGFloat titlesViewW = 0;
     for (int i = 0; i < titlesArray.count; i++) {
-        NSString *currentStr = titlesArray[i];
+        NSString *currentStr = INTERNATIONALSTRING(titlesArray[i]);
         CGFloat titleW = [currentStr boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:17]} context:nil].size.width;
         
         AddTouchAreaButton *button = [AddTouchAreaButton buttonWithType:UIButtonTypeCustom];

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -16,21 +16,21 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="后台应用刷新权限" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mkH-19-KAO">
-                        <rect key="frame" x="55" y="11" width="140" height="21"/>
+                        <rect key="frame" x="55" y="11" width="160" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="cI6-wm-SPB"/>
-                            <constraint firstAttribute="width" constant="140" id="w3Q-2f-8GO"/>
+                            <constraint firstAttribute="width" constant="160" id="w3Q-2f-8GO"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mSk-i4-gmU">
-                        <rect key="frame" x="205" y="11" width="87" height="21"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mSk-i4-gmU">
+                        <rect key="frame" x="215" y="11" width="77" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="Wav-iv-jAD"/>
                         </constraints>
@@ -64,7 +64,7 @@
                     <constraint firstItem="mSk-i4-gmU" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="GeZ-K9-V2p"/>
                     <constraint firstItem="mkH-19-KAO" firstAttribute="leading" secondItem="QRx-GF-w9U" secondAttribute="trailing" constant="10" id="Gi3-0e-xNx"/>
                     <constraint firstItem="mkH-19-KAO" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="H1S-Q5-58G"/>
-                    <constraint firstItem="mSk-i4-gmU" firstAttribute="leading" secondItem="mkH-19-KAO" secondAttribute="trailing" constant="10" id="NAt-Ln-PmY"/>
+                    <constraint firstItem="mSk-i4-gmU" firstAttribute="leading" secondItem="mkH-19-KAO" secondAttribute="trailing" id="NAt-Ln-PmY"/>
                     <constraint firstAttribute="trailing" secondItem="Fa0-oL-0lJ" secondAttribute="trailing" constant="15" id="Usw-8Q-pk3"/>
                     <constraint firstAttribute="bottom" secondItem="nVi-nj-Iew" secondAttribute="bottom" id="WDg-HC-gBy"/>
                     <constraint firstItem="nVi-nj-Iew" firstAttribute="trailing" secondItem="Fa0-oL-0lJ" secondAttribute="trailing" id="X3U-aS-f54"/>

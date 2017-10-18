@@ -74,7 +74,7 @@
     if ([BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected && ![BlueToothDataManager shareManager].isBeingRegisting) {
         self.lblStatue.text = INTERNATIONALSTRING(@"信号强");
     }
-    self.lblStatue.text = [BlueToothDataManager shareManager].statuesTitleString;
+    self.lblStatue.text = INTERNATIONALSTRING([BlueToothDataManager shareManager].statuesTitleString);
     if ([BlueToothDataManager shareManager].isBeingRegisting && ![BlueToothDataManager shareManager].isRegisted && [BlueToothDataManager shareManager].isConnected) {
         //正在注册
         NSString *senderStr = [BlueToothDataManager shareManager].stepNumber;
@@ -104,25 +104,25 @@
 - (void)checkChargeStatue {
     switch ([BlueToothDataManager shareManager].chargingState) {
         case 1:
-            self.customView.subTitleLabel.text = @"剩余电量";
+            self.customView.subTitleLabel.text = INTERNATIONALSTRING(@"剩余电量");
             self.customView.progressLabel.hidden = NO;
             self.customView.batteryView.hidden = YES;
             UNDebugLogVerbose(@"剩余电量");
             break;
         case 2:
-            self.customView.subTitleLabel.text = @"正在充电";
+            self.customView.subTitleLabel.text = INTERNATIONALSTRING(@"正在充电");
             self.customView.progressLabel.hidden = YES;
             self.customView.batteryView.hidden = NO;
             UNDebugLogVerbose(@"正在充电");
             break;
         case 3:
-            self.customView.subTitleLabel.text = @"充电完成";
+            self.customView.subTitleLabel.text = INTERNATIONALSTRING(@"充电完成");
             self.customView.progressLabel.hidden = NO;
             self.customView.batteryView.hidden = YES;
             UNDebugLogVerbose(@"充电完成");
             break;
         default:
-            self.customView.subTitleLabel.text = @"剩余电量";
+            self.customView.subTitleLabel.text = INTERNATIONALSTRING(@"剩余电量");
             self.customView.progressLabel.hidden = NO;
             self.customView.batteryView.hidden = YES;
             UNDebugLogVerbose(@"充电状态有问题");
@@ -301,10 +301,10 @@
         CGFloat a = (float)[num intValue]/100.00;
         self.customView.progress = a;
         if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-            self.deviceName.text = @"手环";
+            self.deviceName.text = INTERNATIONALSTRING(@"手环");
             self.deviceName.hidden = NO;
         } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
-            self.deviceName.text = @"双待王";
+            self.deviceName.text = INTERNATIONALSTRING(@"双待王");
             self.deviceName.hidden = NO;
         } else {
             UNDebugLogVerbose(@"这是连接的什么？");

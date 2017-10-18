@@ -241,7 +241,7 @@
     [self.view addSubview:_topEditLinkManView];
     
     UILabel *leftLabel = [[UILabel alloc] init];
-    leftLabel.text = @"收件人:";
+    leftLabel.text = INTERNATIONALSTRING(@"收件人:");
     leftLabel.textColor = UIColorFromRGB(0x333333);
     leftLabel.font = [UIFont systemFontOfSize:15];
     [leftLabel sizeToFit];

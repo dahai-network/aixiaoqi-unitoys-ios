@@ -97,7 +97,7 @@
     }
     if (!_sendButton) {
         _sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_sendButton setTitle:@"发送" forState:UIControlStateNormal];
+        [_sendButton setTitle:INTERNATIONALSTRING(@"发送") forState:UIControlStateNormal];
         [_sendButton addTarget:self action:@selector(sendMessageAction:) forControlEvents:UIControlEventTouchUpInside];
         _sendButton.titleLabel.font = [UIFont systemFontOfSize:14];
         _sendButton.backgroundColor = DefultColor;

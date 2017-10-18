@@ -18,7 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = @"海外节费引导";
+    self.title = INTERNATIONALSTRING(@"海外节费引导");
     NSArray *imageArr = @[@"ios_001", @"ios_002", @"ios_003"];
     self.detailView.localizationImageNamesGroup = imageArr;
     self.detailView.currentPageDotColor = UIColorFromRGB(0x00a0e9);

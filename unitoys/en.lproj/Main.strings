@@ -282,4 +282,22 @@
 "RYm-kz-s5u.text" = "Packages";
 
 /* Class = "UIButton"; normalTitle = "套餐超市"; ObjectID = "u79-HE-8eH"; */
-"u79-HE-8eH.normalTitle" = "Packages Store";
+"u79-HE-8eH.normalTitle" = "Store";
+
+/* Class = "UILabel"; text = "服务"; ObjectID = "vzV-B3-qlj"; */
+"vzV-B3-qlj.text" = "Service";
+
+/* Class = "UILabel"; text = "已激活套餐"; ObjectID = "pil-KP-crL"; */
+"pil-KP-crL.text" = "Activated";
+
+/* Class = "UILabel"; text = "电量"; ObjectID = "SeJ-IK-rxs"; */
+"SeJ-IK-rxs.text" = "Battery";
+
+/* Class = "UILabel"; text = "开关"; ObjectID = "9l2-VY-kAR"; */
+"9l2-VY-kAR.text" = "Switch";
+
+/* Class = "UIButton"; normalTitle = "添加设备"; ObjectID = "U8D-0w-gXi"; */
+"U8D-0w-gXi.normalTitle" = "Add Devices";
+
+/* Class = "UIButton"; normalTitle = "购买套餐"; ObjectID = "EeW-fH-pWD"; */
+"EeW-fH-pWD.normalTitle" = "Purchase Packages";

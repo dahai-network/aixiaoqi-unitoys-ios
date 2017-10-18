@@ -49,7 +49,7 @@
         self.title = INTERNATIONALSTRING(@"已购境外套餐");
         [self setRightButton:INTERNATIONALSTRING(@"套餐超市")];
     }else{
-        self.title = @"我的套餐";
+        self.title = INTERNATIONALSTRING(@"我的套餐");
         //右边按钮
 //        UIBarButtonItem *right = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"mypackge_add"] style:UIBarButtonItemStyleDone target:self action:@selector(rightButtonAction)];
 //        self.navigationItem.rightBarButtonItem = right;

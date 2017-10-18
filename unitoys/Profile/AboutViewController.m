@@ -425,7 +425,7 @@
         if ([BlueToothDataManager shareManager].isConnected) {
             if ([BlueToothDataManager shareManager].electricQuantity) {
                 if ([BlueToothDataManager shareManager].chargingState == 2) {
-                    self.electricNum.text = @"正在充电";
+                    self.electricNum.text = INTERNATIONALSTRING(@"正在充电");
                 } else {
                     self.electricNum.text = [NSString stringWithFormat:@"%@%%", [BlueToothDataManager shareManager].electricQuantity];
                 }
@@ -433,9 +433,9 @@
                 self.electricNum.text = @"----";
             }
             if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNITOYS]) {
-                self.deviceName.text = [NSString stringWithFormat:@"设备：手环"];
+                self.deviceName.text = [NSString stringWithFormat:@"%@：%@", INTERNATIONALSTRING(@"设备"), INTERNATIONALSTRING(@"手环")];
             } else if ([[BlueToothDataManager shareManager].connectedDeviceName isEqualToString:MYDEVICENAMEUNIBOX]) {
-                self.deviceName.text = [NSString stringWithFormat:@"设备：双待王"];
+                self.deviceName.text = [NSString stringWithFormat:@"%@：%@", INTERNATIONALSTRING(@"设备"), INTERNATIONALSTRING(@"双待王")];
             } else {
                 NSLog(@"这是连接的什么？");
             }
@@ -449,7 +449,7 @@
         } else {
             self.operatorName.text = @"----";
             self.electricNum.text = @"----";
-            self.deviceName.text = [NSString stringWithFormat:@"设备：---"];
+            self.deviceName.text = [NSString stringWithFormat:@"%@：---", INTERNATIONALSTRING(@"设备")];
             self.hasNewVersionLabel.hidden = YES;
         }
         
@@ -473,19 +473,19 @@
             break;
         case 1:
             //                NSLog(@"插卡，移动");
-            self.operatorName.text = @"中国移动";
+            self.operatorName.text = INTERNATIONALSTRING(@"中国移动");
             break;
         case 2:
             //                NSLog(@"插卡，联通");
-            self.operatorName.text = @"中国联通";
+            self.operatorName.text = INTERNATIONALSTRING(@"中国联通");
             break;
         case 3:
             //                NSLog(@"插卡，电信");
-            self.operatorName.text = @"中国电信";
+            self.operatorName.text = INTERNATIONALSTRING(@"中国电信");
             break;
         case 4:
             //                NSLog(@"插卡，爱小器");
-            self.operatorName.text = @"爱小器卡";
+            self.operatorName.text = INTERNATIONALSTRING(@"爱小器卡");
             break;
         case 5:
             //                NSLog(@"无卡");
@@ -509,7 +509,7 @@
                 self.havePackageView.hidden = YES;
                 NSLog(@"没有已激活的套餐");
             } else {
-                self.totalPackageNum.text = [NSString stringWithFormat:@"%@个", responseObj[@"data"][@"Used"][@"TotalNum"]];
+                self.totalPackageNum.text = [NSString stringWithFormat:@"%@", responseObj[@"data"][@"Used"][@"TotalNum"]];
                 if ([responseObj[@"data"][@"Used"][@"ServiceName"] isEqualToString:@""]) {
                     self.commicateMin.text = @"----";
                 } else {
@@ -521,26 +521,26 @@
                     case 0:
                         NSLog(@"没有已激活的流量套餐(买了没有激活或者没有购买套餐)");
                         if (responseObj[@"data"][@"Unactivated"][@"TotalNumFlow"]) {
-                            self.flowLbl.text = [NSString stringWithFormat:@"%@个", responseObj[@"data"][@"Unactivated"][@"TotalNumFlow"]];
+                            self.flowLbl.text = [NSString stringWithFormat:@"%@", responseObj[@"data"][@"Unactivated"][@"TotalNumFlow"]];
                         } else {
-                            self.flowLbl.text = [NSString stringWithFormat:@"%@个", responseObj[@"data"][@"Used"][@"TotalNumFlow"]];
+                            self.flowLbl.text = [NSString stringWithFormat:@"%@", responseObj[@"data"][@"Used"][@"TotalNumFlow"]];
                         }
-                        self.flowName.text = @"未激活流量";
+                        self.flowName.text = INTERNATIONALSTRING(@"未激活流量");
                         break;
                     case 1:
 //                        NSLog(@"没有已激活的流量套餐(买了没有激活或者没有购买套餐)");
                         if (responseObj[@"data"][@"Used"][@"FlowPackageName"]) {
                             self.flowLbl.text = [NSString stringWithFormat:@"%@", responseObj[@"data"][@"Used"][@"FlowPackageName"]];
                         } else {
-                            self.flowLbl.text = [NSString stringWithFormat:@"%@个", responseObj[@"data"][@"Used"][@"TotalNumFlow"]];
+                            self.flowLbl.text = [NSString stringWithFormat:@"%@", responseObj[@"data"][@"Used"][@"TotalNumFlow"]];
                         }
-                        self.flowName.text = @"激活流量";
+                        self.flowName.text = INTERNATIONALSTRING(@"激活流量");
                         break;
                     default:
                         if (responseObj[@"data"][@"Used"][@"TotalNumFlow"]) {
-                            self.flowLbl.text = [NSString stringWithFormat:@"%@个", responseObj[@"data"][@"Used"][@"TotalNumFlow"]];
+                            self.flowLbl.text = [NSString stringWithFormat:@"%@", responseObj[@"data"][@"Used"][@"TotalNumFlow"]];
                         }
-                        self.flowName.text = @"激活流量";
+                        self.flowName.text = INTERNATIONALSTRING(@"激活流量");
                         break;
                 }
                 

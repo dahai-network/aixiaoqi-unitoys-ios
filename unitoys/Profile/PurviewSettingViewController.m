@@ -339,8 +339,8 @@
         cell=[[[NSBundle mainBundle] loadNibNamed:@"PurviewSettingTableViewCell" owner:nil options:nil] firstObject];
     }
     NSDictionary *dict = self.dataArr[indexPath.row];
-    cell.lblName.text = dict[@"lblName"];
-    cell.lblLast.text = dict[@"status"];
+    cell.lblName.text = INTERNATIONALSTRING(dict[@"lblName"]);
+    cell.lblLast.text = INTERNATIONALSTRING(dict[@"status"]);
     cell.imgSettingImage.image = [UIImage imageNamed:dict[@"img"]];
     return cell;
 }

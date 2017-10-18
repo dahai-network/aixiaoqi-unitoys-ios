@@ -38,8 +38,8 @@
 /* Class = "UILabel"; text = "在境外"; ObjectID = "TJY-md-bLe"; */
 "TJY-md-bLe.text" = "Abroad";
 
-/* Class = "UIButton"; normalTitle = "解除绑定"; ObjectID = "VuM-1L-NWo"; */
-"VuM-1L-NWo.normalTitle" = "Unbound";
+/* Class = "UIButton"; normalTitle = "解除绑定"; ObjectID = "9Sp-Lp-ZjW"; */
+"9Sp-Lp-ZjW.normalTitle" = "Unbound";
 
 /* Class = "UITableViewController"; title = "出国前"; ObjectID = "WXU-a7-F5R"; */
 "WXU-a7-F5R.title" = "Before going abroad";
@@ -67,6 +67,9 @@
 
 /* Class = "UILabel"; text = "设备MAC地址"; ObjectID = "w9O-Ff-xvu"; */
 "w9O-Ff-xvu.text" = "Mac Address";
+
+/* Class = "UILabel"; text = "设备名称"; ObjectID = "1ER-W0-H9x"; */
+"1ER-W0-H9x.text" = "Device Name";
 
 /* Class = "UILabel"; text = "设置APN"; ObjectID = "xK6-iL-XNz"; */
 "xK6-iL-XNz.text" = "Set up APN";

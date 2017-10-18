@@ -85,3 +85,9 @@
 
 /* Class = "UILabel"; text = "￥0.00"; ObjectID = "zTv-2E-GWU"; */
 "zTv-2E-GWU.text" = "￥0.00";
+
+/* Class = "UIButton"; normalTitle = "立即支付"; ObjectID = "S5j-lF-x0G"; */
+"S5j-lF-x0G.normalTitle" = "Pay";
+
+/* Class = "UIButton"; normalTitle = "使用充值卡"; ObjectID = "3Pk-h5-OIF"; */
+"3Pk-h5-OIF.normalTitle" = "Recharge Card";
