@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		04001D3B1EE50C820084BF67 /* IsBoundingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04001D391EE50C820084BF67 /* IsBoundingTableViewCell.m */; };
-		04001D3C1EE50C820084BF67 /* IsBoundingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04001D3A1EE50C820084BF67 /* IsBoundingTableViewCell.xib */; };
 		0404BB911E7FCDE6009DEA1D /* DJPageControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0404BB901E7FCDE6009DEA1D /* DJPageControl.m */; };
 		040FC5161E7F81EE0056745D /* CutomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FC5151E7F81EE0056745D /* CutomButton.m */; };
 		040FC51B1E7FB0A50056745D /* HWNewfeatureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040FC51A1E7FB0A50056745D /* HWNewfeatureViewController.m */; };
@@ -92,6 +91,7 @@
 		04AFE6661EC568D700B3BC8F /* ZBRreshViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE6651EC568D700B3BC8F /* ZBRreshViewController.m */; };
 		04AFE6691EC584D100B3BC8F /* ZBTableRreshViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04AFE6681EC584D100B3BC8F /* ZBTableRreshViewController.m */; };
 		04B416511EB35365005E31C9 /* 3des.c in Sources */ = {isa = PBXBuildFile; fileRef = 04B4164F1EB35365005E31C9 /* 3des.c */; };
+		04BBFEF81F98B453004452C8 /* IsBoundingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04BBFEFA1F98B453004452C8 /* IsBoundingTableViewCell.xib */; };
 		04CC5CB01EFA259300AA31CA /* ThroughLineLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 04CC5CAF1EFA259300AA31CA /* ThroughLineLabel.m */; };
 		04D5EED41E9B959D0015B8DA /* ProductCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D5EED31E9B959D0015B8DA /* ProductCollectionViewCell.m */; };
 		04D835D71F035AF0008E096A /* ChooseWhereCardsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04D835D51F035AF0008E096A /* ChooseWhereCardsViewController.m */; };
@@ -421,7 +421,6 @@
 /* Begin PBXFileReference section */
 		04001D381EE50C820084BF67 /* IsBoundingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IsBoundingTableViewCell.h; sourceTree = "<group>"; };
 		04001D391EE50C820084BF67 /* IsBoundingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IsBoundingTableViewCell.m; sourceTree = "<group>"; };
-		04001D3A1EE50C820084BF67 /* IsBoundingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IsBoundingTableViewCell.xib; sourceTree = "<group>"; };
 		0404BB8F1E7FCDE6009DEA1D /* DJPageControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DJPageControl.h; sourceTree = "<group>"; };
 		0404BB901E7FCDE6009DEA1D /* DJPageControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DJPageControl.m; sourceTree = "<group>"; };
 		040FC5141E7F81EE0056745D /* CutomButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CutomButton.h; sourceTree = "<group>"; };
@@ -597,6 +596,10 @@
 		04B4164F1EB35365005E31C9 /* 3des.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = 3des.c; sourceTree = "<group>"; };
 		04B416501EB35365005E31C9 /* 3des.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = 3des.h; sourceTree = "<group>"; };
 		04BBFEF71F95F01D004452C8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ActivateGiftCardViewController.strings; sourceTree = "<group>"; };
+		04BBFEF91F98B453004452C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IsBoundingTableViewCell.xib; sourceTree = "<group>"; };
+		04BBFEFC1F98B458004452C8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/IsBoundingTableViewCell.strings; sourceTree = "<group>"; };
+		04BBFEFE1F98B45A004452C8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/IsBoundingTableViewCell.strings"; sourceTree = "<group>"; };
+		04BBFF001F98B45C004452C8 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/IsBoundingTableViewCell.strings; sourceTree = "<group>"; };
 		04CC5CAE1EFA259300AA31CA /* ThroughLineLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThroughLineLabel.h; sourceTree = "<group>"; };
 		04CC5CAF1EFA259300AA31CA /* ThroughLineLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThroughLineLabel.m; sourceTree = "<group>"; };
 		04D5EED21E9B959D0015B8DA /* ProductCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductCollectionViewCell.h; sourceTree = "<group>"; };
@@ -2376,7 +2379,7 @@
 				04440D4E1E77D15900206877 /* IsBoundingViewController.xib */,
 				04001D381EE50C820084BF67 /* IsBoundingTableViewCell.h */,
 				04001D391EE50C820084BF67 /* IsBoundingTableViewCell.m */,
-				04001D3A1EE50C820084BF67 /* IsBoundingTableViewCell.xib */,
+				04BBFEFA1F98B453004452C8 /* IsBoundingTableViewCell.xib */,
 				95E918541DDC7AA8005DABC0 /* BindDeviceViewController.h */,
 				95E918551DDC7AA8005DABC0 /* BindDeviceViewController.m */,
 				0428D43F1F14AAEB00479CF8 /* HelpViewController.h */,
@@ -2672,7 +2675,7 @@
 				04EAB8C21E2788DB000D3D13 /* AlarmListTableViewCell.xib in Resources */,
 				95C575F51DA77AB200F459DF /* PhoneRecordCell.xib in Resources */,
 				04440D1B1E77BBF000206877 /* Profile.storyboard in Resources */,
-				04001D3C1EE50C820084BF67 /* IsBoundingTableViewCell.xib in Resources */,
+				04BBFEF81F98B453004452C8 /* IsBoundingTableViewCell.xib in Resources */,
 				04553F381E73FB840025CA34 /* scan.gif in Resources */,
 				04440CF41E778A2E00206877 /* Localizable.strings in Resources */,
 				04440D301E77C98F00206877 /* CallComingInViewController.xib in Resources */,
@@ -3202,6 +3205,17 @@
 				04A0EC931E7B83A500F155A3 /* de */,
 			);
 			name = IsBoundingViewController.xib;
+			sourceTree = "<group>";
+		};
+		04BBFEFA1F98B453004452C8 /* IsBoundingTableViewCell.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				04BBFEF91F98B453004452C8 /* Base */,
+				04BBFEFC1F98B458004452C8 /* en */,
+				04BBFEFE1F98B45A004452C8 /* zh-Hans */,
+				04BBFF001F98B45C004452C8 /* de */,
+			);
+			name = IsBoundingTableViewCell.xib;
 			sourceTree = "<group>";
 		};
 		95F337201D853256000B5461 /* Main.storyboard */ = {

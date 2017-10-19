@@ -305,4 +305,16 @@
 "海外节费引导" = "Section fee guide";
 "发送" = "Send";
 "收件人:" = "Addressee：";
-
+"正在搜索爱小器双待王" = "Searching";
+"正在搜索爱小器手环" = "Searching";
+"请将手环贴近手机" = "Keep device close to your phone within effective distance";
+"请将双待王贴近手机" = "Keep device close to your phone within effective distance";
+"暂不搜索" = "No search";
+"重新搜索" = "Search again";
+"暂不绑定" = "No binding";
+"未搜索到设备" = "The device was not searched";
+"请按一下双待王按键" = "Please push the button on device";
+"已找到双待王" = "Have to search device";
+"请连接" = "Please connect";
+"已绑定" = "Bound";
+"帮助" = "Help";

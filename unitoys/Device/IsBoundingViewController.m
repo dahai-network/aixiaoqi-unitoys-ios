@@ -70,16 +70,16 @@
 - (void)refreshBoundDeviceInfo:(NSNotification *)sender {
     self.isShowBackButton = YES;
     [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
-    [self setRightButton:@"帮助"];
+    [self setRightButton:INTERNATIONALSTRING(@"帮助")];
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
     self.deviceDataArr = sender.object;
     if (sender) {
-        [self.cancelButton setTitle:@"重新搜索" forState:UIControlStateNormal];
+        [self.cancelButton setTitle:INTERNATIONALSTRING(@"重新搜索") forState:UIControlStateNormal];
         [self changeFrame];
         UNDebugLogVerbose(@"传过来的设备数组:%@", self.deviceDataArr);
     } else {
         UNDebugLogVerbose(@"传过来的设备数组是空的");
-        HUDNormal(@"未搜索到设备")
+        HUDNormal(INTERNATIONALSTRING(@"未搜索到设备"))
     }
     [self.showDeviceTableView reloadData];
 }
@@ -117,7 +117,7 @@
     self.handupImg.hidden = YES;
     [self returnFrame];
     self.searchAnimationImg.image = [UIImage imageNamed:@"pic_by_z"];
-    [self.cancelButton setTitle:@"暂不搜索" forState:UIControlStateNormal];
+    [self.cancelButton setTitle:INTERNATIONALSTRING(@"暂不搜索") forState:UIControlStateNormal];
     self.cancelButton.hidden = NO;
     [BlueToothDataManager shareManager].isShowAlert = YES;
     self.isback = YES;
@@ -128,13 +128,13 @@
     if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNITOYS]) {
         //爱小器手环
         self.typeImg.image = [UIImage imageNamed:@"pic_cp_sh"];
-        self.firstTitle.text = @"正在搜索爱小器手环";
-        self.subTitleLbl.text = @"请将手环贴近手机";
+        self.firstTitle.text = INTERNATIONALSTRING(@"正在搜索爱小器手环");
+        self.subTitleLbl.text = INTERNATIONALSTRING(@"请将手环贴近手机");
     } else if ([[BlueToothDataManager shareManager].deviceType isEqualToString:MYDEVICENAMEUNIBOX]) {
         //爱小器双待王
         self.typeImg.image = [UIImage imageNamed:@"pic_sdw"];
-        self.firstTitle.text = @"正在搜索爱小器双待王";
-        self.subTitleLbl.text = @"请将双待王贴近手机";
+        self.firstTitle.text = INTERNATIONALSTRING(@"正在搜索爱小器双待王");
+        self.subTitleLbl.text = INTERNATIONALSTRING(@"请将双待王贴近手机");
     } else {
         UNDebugLogVerbose(@"这是什么鬼类型？");
     }
@@ -182,20 +182,20 @@
 
 #pragma mark 取消扫描
 - (IBAction)cancelScanAction:(UIButton *)sender {
-    if ([sender.titleLabel.text isEqualToString:@"重新搜索"]) {
+    if ([sender.titleLabel.text isEqualToString:INTERNATIONALSTRING(@"重新搜索")]) {
         //重新搜索
         [self beginToScan];
-    } else if ([sender.titleLabel.text isEqualToString:@"暂不绑定"]) {
+    } else if ([sender.titleLabel.text isEqualToString:INTERNATIONALSTRING(@"暂不绑定")]) {
         self.handupImg.hidden = YES;
         [self.handupImg stopAnimating];
         [[UNBlueToothTool shareBlueToothTool] cancelToBound];
         self.isShowBackButton = YES;
-        [self.cancelButton setTitle:@"重新搜索" forState:UIControlStateNormal];
+        [self.cancelButton setTitle:INTERNATIONALSTRING(@"重新搜索") forState:UIControlStateNormal];
         [self setLeftButton:[UIImage imageNamed:@"btn_back"]];
-        [self setRightButton:@"帮助"];
+        [self setRightButton:INTERNATIONALSTRING(@"帮助")];
         //            self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
         [self changeFrame];
-    } else if ([sender.titleLabel.text isEqualToString:@"暂不搜索"]) {
+    } else if ([sender.titleLabel.text isEqualToString:INTERNATIONALSTRING(@"暂不搜索")]) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"stopScanBLE" object:@"stopScanBLE"];
         [BlueToothDataManager shareManager].isShowAlert = YES;
         self.time = 0;
@@ -212,9 +212,9 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(ANIMATIONTIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.time = 0;
         [self.timer setFireDate:[NSDate distantFuture]];
-        self.firstTitle.text = @"请按一下双待王按键";
-        self.subTitleLbl.text = [NSString stringWithFormat:@"已找到双待王%@，请连接", [BlueToothDataManager shareManager].deviceMacAddress];
-        [self.cancelButton setTitle:@"暂不绑定" forState:UIControlStateNormal];
+        self.firstTitle.text = INTERNATIONALSTRING(@"请按一下双待王按键");
+        self.subTitleLbl.text = [NSString stringWithFormat:@"%@ %@，%@", INTERNATIONALSTRING(@"已找到双待王"), [BlueToothDataManager shareManager].deviceMacAddress, INTERNATIONALSTRING(@"请连接")];
+        [self.cancelButton setTitle:INTERNATIONALSTRING(@"暂不绑定") forState:UIControlStateNormal];
         self.searchAnimationImg.image = [UIImage imageNamed:@"pic_zy_pre"];
         [self startToShowClickAnimation];
     });
@@ -355,12 +355,12 @@
         cell.lblDeviceName.text = [NSString stringWithFormat:@"Unibox-%@", info[@"mac"]];
 //        cell.lblDeviceName.text = info[@"mac"];
         if ([info[@"isAlreadyBind"] isEqualToString:@"0"]) {
-            cell.lblDeviceStatue.text = @"未绑定";
+            cell.lblDeviceStatue.text = INTERNATIONALSTRING(@"未绑定");
             cell.lblDeviceName.textColor = UIColorFromRGB(0x333333);
             cell.lblDeviceStatue.hidden = YES;
             cell.btnConnect.hidden = NO;
         } else if ([info[@"isAlreadyBind"] isEqualToString:@"1"]) {
-            cell.lblDeviceStatue.text = @"已绑定";
+            cell.lblDeviceStatue.text = INTERNATIONALSTRING(@"已绑定");
             cell.lblDeviceName.textColor = UIColorFromRGB(0xe5e5e5);
             cell.lblDeviceStatue.hidden = NO;
             cell.btnConnect.hidden = YES;

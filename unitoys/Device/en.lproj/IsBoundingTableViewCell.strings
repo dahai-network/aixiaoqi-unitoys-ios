@@ -1,0 +1,9 @@
+
+/* Class = "UILabel"; text = "已绑定"; ObjectID = "09a-dV-Azu"; */
+"09a-dV-Azu.text" = "Bound";
+
+/* Class = "UIButton"; normalTitle = "绑定"; ObjectID = "JPy-uO-sf3"; */
+"JPy-uO-sf3.normalTitle" = "Binding";
+
+/* Class = "UILabel"; text = "Unibox-12:34:56:78:aa"; ObjectID = "wRH-Y2-JZA"; */
+"wRH-Y2-JZA.text" = "Unibox-12:34:56:78:aa";
